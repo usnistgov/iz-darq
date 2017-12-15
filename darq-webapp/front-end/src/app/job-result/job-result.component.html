@@ -1,0 +1,92 @@
+<div fxFlexFill class="back" fxLayout="column" fxLayoutAlign="start stretch">
+	<div style="height: 60px;"></div>
+	<div fxFlex fxLayout="column" fxLayoutAlign="start stretch" style="padding: 20px;  width: 100%; padding: 50px;">
+		<div fxLayout="column" fxLayoutAlign="start stretch" class="card" style="padding: 50px; height: 90%;">
+			<div class="card-block"  fxFlex="90" fxLayout="column" fxLayoutAlign="start stretch">
+				<h4 class="card-title" fxLayout="row" fxLayoutAlign="space-between center">
+					<span> Analysis Results </span>
+					<div fxLayout="row" fxLayoutAlign="end center">
+						<button routerLink="../../dashboard" fxFlexOffset="2" type="button" class="btn btn-warning">
+							<span>Dashboard</span>
+						</button>
+					</div>
+				</h4>
+				<div fxFlex fxLayout="row" fxLayoutAlign="start stretch" >
+					<div fxFlex="20" fxLayout="column" style="margin-top: 20px;" fxLayoutAlign="start stretch">
+						<p-tree [(selection)]="selected"  (onNodeSelect)="nodeSelect($event)" selectionMode="single"[value]="tree" [styleClass]="'ftree'" fxFlex="100"></p-tree>
+					</div>
+					<div fxFlexOffset="2" fxFlex="78" fxLayout="column" style="margin-top: 20px; height: 100%; background-color: lightgrey;" fxLayoutAlign="start start">
+						<ul class="nav nav-pills nav-fill" style="width: 100%;">
+							<li class="nav-item">
+								<a  [class]="tab === 'S' ? 'nav-link active' : 'nav-link'" (click)="tab === 'S';" >Statistics</a>
+							</li>
+							<li class="nav-item">
+								<a [class]="tab === 'D' ? 'nav-link active' : 'nav-link'" (click)="tab === 'D';"  >Detections</a>
+							</li>
+						</ul>
+						<div style="text-align : center; background-color : white; border : 1px solid black; width: 100%;" *ngIf="selected">
+							<span style="font-weight: bold; font-size: 18px;">{{selected.data.fieldOfInterest}}</span>
+						</div>
+						<div fxLayout="column" fxLayoutAlign="center center" fxFlex style="width: 100%;" *ngIf="selected && tab === 'S'" >
+
+							<div fxLayout="column" fxLayoutAlign="start start" style="width: 70%;">
+								<div style="width: 100%; height: 10px;" fxLayout="row" fxLayoutAlign="start center">
+									<div style="width: 20%; text-align: center;">Base Line</div>
+									<div style="width: 60%; height: 100%; background-color: black;"></div>
+									<div style="width: 20%; text-align: center;">100% (out of {{result.totalRecords}})</div>
+								</div>
+								<div fxFlexOffset="1" *ngFor="let stat of selected.data.statistics" style="width: 100%; height: 10px;" fxLayout="row" fxLayoutAlign="start center">
+									<div style="width: 20%; text-align: center;">{{stat.statisticId}}</div>
+									<div style="width: 60%; height: 100%;" fxLayout="row" fxLayout="start stretch">
+										<div  style="background-color: blue;" [fxFlex]="stat.count === 0 ? 0 :  (stat.count / stat.total) * 100"></div>
+									</div>
+									<div style="width: 20%; text-align: center;">{{(stat.count === 0 ? 0 :  (stat.count / stat.total) * 100) | number:'.1' }}% ({{stat.count}})</div>
+								</div>
+							</div>
+
+							<!--<span style="color: lightgrey; font-weight: bold;" *ngIf="!selected.data.statistics"> No Statistic </span>-->
+							<!--<div *ngFor="let stat of selected.data.statistics" class="progress" fxLayout="column"-->
+								 <!--fxLayoutAlign="center start"-->
+								 <!--style="position:relative; background-color: lightgrey; width: 80%; height: 30px; text-align: center; margin: auto;">-->
+								<!--<div style="height: 30px;"-->
+									 <!--class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"-->
+									 <!--[ngStyle]="{ 'width' : (stat.count === 0 ? 0 :  stat.count / stat.total * 100) +'%' }">-->
+								<!--</div>-->
+								<!--<span style="color : black; font-weight: bold; width : 100%; text-align : center; font-size : 15px; position: absolute;">{{stat.statisticId}} {{(stat.count === 0 ? 0 :  stat.count / stat.total * 100) | number:'.1' }}%</span>-->
+							<!--</div>-->
+						</div>
+						<div fxFlex style="width: 100%;" *ngIf="selected && tab === 'D'">
+
+						</div>
+					</div>
+
+				<!--<table class="table table-sm table-striped" style="width: 100%;">-->
+					<!--<thead>-->
+						<!--<tr>-->
+							<!--<th style="text-align:  center; width: 200px;"> Field ID </th>-->
+							<!--<th style="text-align:  center"> Statistics </th>-->
+							<!--<th style="text-align:  center"> Detections </th>-->
+						<!--</tr>-->
+					<!--</thead>-->
+					<!--<tbody>-->
+						<!--<tr *ngFor="let subject of result.fields">-->
+							<!--<td style="vertical-align: middle;">{{subject.fieldOfInterest}}</td>-->
+							<!--<td fxLayout="column" fxLayoutAlign="center center">-->
+								<!--<span style="color: lightgrey; font-weight: bold;" *ngIf="!subject.statistics"> No Statistic </span>-->
+								<!--<div *ngFor="let stat of subject.statistics" class="progress" fxLayout="column" fxLayoutAlign="center start" style="position:relative; background-color: lightgrey; width: 80%; height: 30px; text-align: center; margin: auto;" >-->
+									<!--<div style="height: 30px;" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [ngStyle]="{ 'width' : (stat.count === 0 ? 0 :  stat.count / stat.total * 100) +'%' }">-->
+									<!--</div>-->
+									<!--<span style="color : black; font-weight: bold; width : 100%; text-align : center; font-size : 15px; position: absolute;">{{stat.statisticId}} {{(stat.count === 0 ? 0 :  stat.count / stat.total * 100) | number:'.1' }}%</span>-->
+								<!--</div>-->
+							<!--</td>-->
+							<!--<td style="text-align: center">-->
+								<!--<span style="color: lightgrey; font-weight: bold;" *ngIf="!subject.detections"> No Detection </span>-->
+							<!--</td>-->
+						<!--</tr>-->
+					<!--</tbody>-->
+				<!--</table>-->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

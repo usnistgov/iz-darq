@@ -1,0 +1,25 @@
+.upload {
+	position: absolute;
+	width: 100%;
+}
+
+.file-upload {
+	cursor: pointer;
+	height: 100%;
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
+
+.sleep {
+	border: 2px dashed lightgrey;
+}
+
+.wake {
+	border: 3px dashed darkblue;
+}
+
+div {
+	position: relative;
+	vertical-align: middle;
+	text-align: center;
+}

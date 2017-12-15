@@ -1,0 +1,641 @@
+{
+	"id" : "5a303e69f25d5188319f27f3",
+	"totalRecords" : 90000,
+	"fields" : [ {
+		"fieldOfInterest" : "patient.patID",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 0,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.own_name.first",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 903,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.own_name.middle",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 903,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.own_name.last",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 903,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.mother_name.first",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 903,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.mother_name.middle",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 903,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.mother_name.last",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 903,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.alias_name.first",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.alias_name.middle",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.alias_name.last",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.responsible_party.relationshipToPatient",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.responsible_party.name.first",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.responsible_party.name.middle",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.responsible_party.name.last",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.address.street",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 906,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.address.country",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 906,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.address.city",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 906,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.address.state",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 906,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.address.zip",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 906,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.date_of_birth",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 911,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.gender",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 906,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.mother_maiden_name",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 903,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.language",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.email_address",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.phone",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.ethnicity_codes",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.race_codes",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.birth_facility_name",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.multi_birth_indicator",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 929,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.birth_order",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 869,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.provider_facility_level",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 989,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "patient.iis_level",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 989,
+			"total" : 90000
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 90000
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.patID",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 0,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.vaccine_type_cvx",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6677,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.vaccine_type_ndc",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6677,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.administration_date",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6752,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.manufacturer",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6727,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.lot_number",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6727,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.event_information_source",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6727,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.admin_provider",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6727,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.admin_location",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6727,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.admin_route",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6727,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.admin_site",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6727,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.exp_date",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6895,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.volume_unit",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6823,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.ordering_provider.first",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6823,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.ordering_provider.middle",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6823,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.ordering_provider.last",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6823,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.vis.type",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6823,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.vis.publication_date",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6638,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.vis.given_date",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6638,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.eligibility_at_dose",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6677,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	}, {
+		"fieldOfInterest" : "vaccination.complete_status",
+		"statistics" : [ {
+			"statisticId" : "not-extracted",
+			"count" : 6677,
+			"total" : 674949
+		}, {
+			"statisticId" : "not-valued",
+			"count" : 0,
+			"total" : 674949
+		} ],
+		"detections" : null
+	} ]
+}

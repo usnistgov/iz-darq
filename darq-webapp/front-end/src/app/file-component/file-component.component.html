@@ -1,0 +1,12 @@
+<div fxLayoutAlign="center stretch" fxLayout="column" style="height: 100%; width: 100%;">
+	<div fileDrop (hover)="onHover($event)" (dropped)="drop($event)" fxFlex="100" style="padding: 8px; background-color: lightgrey;" fxLayoutAlign="center stretch" fxLayout="column">
+		<div fxFlex="100" style="position: relative; background-color: aliceblue;" [class]="hover ? 'wake' : 'sleep'" fxLayoutAlign="center stretch" fxLayout="column">
+			<span *ngIf="!current" style="color: darkblue; opacity: 0.5; font-weight: bold; font-size: 20px; text-align: center;">{{label}}</span>
+			<i (click)="clear()" *ngIf="current" class="fa fa-minus" style="color: darkred; z-index : 100000000; position: absolute; top: 5px; right: 5px; cursor: pointer;"></i>
+			<i *ngIf="current" class="fa fa-file" style="font-size: 5em; color: darkgrey;"></i>
+			<span fxFlexOffset="5" *ngIf="current" style="text-align: center; word-wrap:break-word;font-weight: bold; color: darkgrey;">{{current.name}}</span>
+			<input #input name="up2" type="file" (change)="change($event)" class="upload file-upload" />
+		</div>
+	</div>
+</div>
+
