@@ -10,7 +10,8 @@ public class AnalysisRawResult {
 	private String id;
 	private int totalRecords = 0;
 	private List<SubjectAnalysis> fields;
-
+	private List<Detection> detections;
+	
 	public int getTotalRecords() {
 		return totalRecords;
 	}
@@ -38,6 +39,19 @@ public class AnalysisRawResult {
 	public void factorIn(AnalysisRawResult x){
 		this.totalRecords += x.getTotalRecords();
 		StatisticCalculator.merge(this.getFields(), x.getFields());
+		this.getDetections().addAll(x.getDetections());
+	}
+	
+
+	public List<Detection> getDetections() {
+		if(this.detections == null){
+			this.detections = new ArrayList<>();
+		}
+		return detections;
+	}
+
+	public void setDetections(List<Detection> detections) {
+		this.detections = detections;
 	}
 
 	public String getId() {

@@ -6,6 +6,18 @@ public class Detection {
 	private String type;
 	private String message;
 	
+	
+	public Detection(String recordId, String type, String message) {
+		super();
+		this.recordId = recordId;
+		this.type = type;
+		this.message = message;
+	}
+	
+	public Detection() {
+		super();
+	}
+
 	public String getRecordId() {
 		return recordId;
 	}

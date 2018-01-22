@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 
 import gov.nist.healthcare.iz.darq.analysis.AnalysisRawResult;
+import gov.nist.healthcare.iz.darq.analysis.DataQualityProcessor;
 import gov.nist.healthcare.iz.darq.analysis.stats.StatisticsProcessor;
 import gov.nist.healthcare.iz.darq.batch.service.AnalysisReporter;
 import gov.nist.healthcare.iz.darq.batch.service.CallableJob;
@@ -35,13 +36,15 @@ public class Job implements CallableJob {
 	private boolean stoped = false;
 	private StatisticsProcessor statsProcessor;
 	private AnalysisReporter reporter;
+	private DataQualityProcessor dqaProcessor;
 	private final int records_before_commit = 1000;
 	
-	public Job(JobData data, ObjectComposer<AggregatePatientRecord> composer,  LightWeightIndexer indexer, JobRegistry registry, StatisticsProcessor statsCalculator, AnalysisReporter reporter) {
+	public Job(JobData data, ObjectComposer<AggregatePatientRecord> composer,  LightWeightIndexer indexer, JobRegistry registry, StatisticsProcessor statsCalculator, DataQualityProcessor dqa, AnalysisReporter reporter) {
 		this.composer = composer;
 		this.data = data;
 		this.registry = registry;
 		this.indexer = indexer;
+		this.dqaProcessor = dqa;
 		this.executor = Executors.newFixedThreadPool(THREADS);
 		this.statsProcessor = statsCalculator;
 		this.reporter = reporter;
@@ -130,6 +133,7 @@ public class Job implements CallableJob {
 					apr.ID = apr.patient.patID.getValue();
 					try {
 						this.statsProcessor.process(results.getFields(), apr);
+						results.getDetections().addAll(this.dqaProcessor.inspect(apr));
 					}
 					catch(Exception e){
 						e.printStackTrace();

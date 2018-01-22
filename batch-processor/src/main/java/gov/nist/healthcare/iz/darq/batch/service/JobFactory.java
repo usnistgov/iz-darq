@@ -3,6 +3,8 @@ package gov.nist.healthcare.iz.darq.batch.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import gov.nist.healthcare.iz.darq.analysis.DataQualityProcessor;
 import gov.nist.healthcare.iz.darq.analysis.stats.StatisticsProcessor;
 import gov.nist.healthcare.iz.darq.batch.domain.Job;
 import gov.nist.healthcare.iz.darq.batch.domain.JobData;
@@ -22,9 +24,11 @@ public class JobFactory {
 	@Autowired
 	private StatisticsProcessor stats;
 	@Autowired
+	private DataQualityProcessor dqa;
+	@Autowired
 	private AnalysisReporter reporter;
 	
 	public Job getJob(JobData data) {
-		return new Job(data, composer, indexer.build(), registry, stats, reporter);
+		return new Job(data, composer, indexer.build(), registry, stats, dqa, reporter);
 	}
 }

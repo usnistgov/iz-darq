@@ -32,6 +32,8 @@ public class Patient extends Record {
 	public DqString iis_level;
 	
 	
+	
+	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
