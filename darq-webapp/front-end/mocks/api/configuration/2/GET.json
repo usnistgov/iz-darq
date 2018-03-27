@@ -1,0 +1,26 @@
+{
+	"id" : "2",
+	"vonly" : true,
+	"owner" : "AIRA",
+	"name" : "v2 Draft",
+	"lastUpdated" : "01/01/2018",
+	"payload" : {
+		"ageGroups" : [
+			{
+				"min" : {
+					"year" : 0,
+					"month" : 0,
+					"day" : 0
+				},
+				"max" : {
+					"year" : 18,
+					"month" : 0,
+					"day" : 0
+				}
+			}
+		],
+		"detections" : [
+			"MQE0209"
+		]
+	}
+}

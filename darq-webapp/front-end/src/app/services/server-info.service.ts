@@ -1,17 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from "@angular/http";
+import {ServerInfo} from "../domain/info";
 
-export class ServerInfo {
-	version : string;
-	qualifier : string;
-	date : Date;
 
-	constructor(v : string, q : string, d : Date){
-		this.version = v;
-		this.qualifier = q;
-		this.date = d;
-	}
-}
 
 @Injectable()
 export class ServerInfoService {
@@ -41,8 +32,5 @@ export class ServerInfoService {
 			return this.fetch();
 		}
 	}
-
-
-
 
 }

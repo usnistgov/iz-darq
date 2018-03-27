@@ -34,7 +34,7 @@ public class Main {
 		// 2 - STR / 1 - DATE / 7 - STR / 1 - DATE / 5 - STR / 2 - DATE / 2 - STR
 		LineModel vaccination = LineModel.builder()
 							.step(DataType.STRING, 2)
-							.step(DataType.NO_EXTRACT)
+							.step(DataType.DATE)
 							.step(DataType.STRING, 7)
 							.step(DataType.DATE, 1)
 							.step(DataType.STRING, 5)
@@ -51,7 +51,7 @@ public class Main {
 		GeneratedData destination = new GeneratedData(patientsFile, vaccinesFile)
 		) {
 			
-			generator.generateData(10000, 1, 10, patient, vaccination, destination);
+			generator.generateData(1000000, 1, 5, patient, vaccination, destination);
 			Time.INSTANCE.checkPoint("FINISH GENERATION");
 			
 		}

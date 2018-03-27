@@ -1,0 +1,62 @@
+{
+	"id" : "abc",
+	"uploadedOn" : "01/01/2018",
+	"analysedOn" : "01/01/2018",
+	"name" : "Michigan State",
+	"owner" : "Hossam",
+	"path" : "eder-werw-wewe",
+	"summary" : {
+		"counts" : {
+			"totalReadVaccinations" : 229,
+			"totalReadPatientRecords" : 94,
+			"totalSkippedPatientRecords" : 5,
+			"maxVaccinationsPerRecord" : 5,
+			"minVaccinationsPerRecord" : 0,
+			"numberOfProviders" : 222,
+			"avgVaccinationsPerRecord" : 2,
+			"maxVaccinationsPerProvider" : 0,
+			"minVaccinationsPerProvider" : 0,
+			"avgVaccinationsPerProvider" : 0
+		},
+		"outOfRange" : 10,
+		"extract" : {
+			"a" : 0.0,
+			"b" : 100.0,
+			"c" : 90.0
+		},
+		"countByAgeGroup" : [
+			{
+				"range" : {
+					"min" : {
+						"year" : 10,
+						"month" : 0,
+						"day" : 0
+					},
+					"max" : {
+						"year" : 18,
+						"month" : 2,
+						"day" : 0
+					}
+				},
+				"nb" : 219
+			}
+		]
+	},
+	"configuration" : {
+		"ageGroups" : {
+			"0g" : {
+				"min" : {
+					"year" : 10,
+					"month" : 0,
+					"day" : 0
+				},
+				"max" : {
+					"year" : 18,
+					"month" : 2,
+					"day" : 0
+				}
+			}
+		},
+		"detections" : [ "MQE0553", "MQE0446", "MQE0203", "MQE0201", "MQE0202", "MQE0200" ]
+	}
+}

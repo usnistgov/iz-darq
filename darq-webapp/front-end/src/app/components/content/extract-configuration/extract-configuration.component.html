@@ -1,0 +1,107 @@
+<div fxFlexFill class="back" fxLayout="column" fxLayoutAlign="start stretch" style="overflow: auto">
+	<div style="height: 95px;"></div>
+	<div fxLayout="column" fxLayoutAlign="start stretch" style="padding-right: 10px; width: 100%; height: 100%;">
+		<mat-sidenav-container fxFlex="100">
+			<mat-sidenav #snav opened="true" mode="side" style="background-color : #031a4c; border-right : 1px solid black; min-width: 200px;">
+				<div class="btn-primary" style="width: 100%; border-bottom: 1px solid; text-align: center; padding: 10px;">
+					<span> Configurations </span>
+					<span style="color: white; cursor: pointer; float: right;"><i class="fa fa-plus" [routerLink]="['../new']" ></i></span>
+				</div>
+				<mat-nav-list style="padding-top: 0 !important;">
+					<a mat-list-item  *ngFor="let c of catalog" [routerLink]="['../'+c.id]" routerLinkActive="nav-link-active" style="border-bottom: 1px solid white; text-align : center; color: white; "><span class="badge badge-info">{{c.owner}}</span> &nbsp; {{c.name}}</a>
+				</mat-nav-list>
+			</mat-sidenav>
+			<mat-sidenav-content style="background-color: transparent !important;">
+				<div fxLayout="column" fxLayoutAlign="start stretch" style="width: 100%; height: 100%; padding: 15px;">
+					<div *ngIf="control.edit && control.vonly" fxLayout="row" fxLayoutAlign="space-between center">
+						<h4 style="color: white;">View Configuration</h4>
+						<a download="configuration.json" [href]="'/api/configuration/'+conf.id+'/download'">
+							<button class="btn btn-info">
+								<i class="fa fa-download"></i>
+								Download
+							</button>
+						</a>
+					</div>
+					<div *ngIf="control.edit && !control.vonly" fxLayout="row" fxLayoutAlign="space-between center">
+						<h4 style="color: white;">Edit Configuration</h4>
+						<div fxLayout="row" fxLayoutAlign="end center">
+							<a download="configuration.json" [href]="'/api/configuration/'+conf.id+'/download'">
+								<button class="btn btn-info">
+									<i class="fa fa-download"></i>
+									Download
+								</button>
+							</a>
+							<button class="btn btn-danger" (click)="delete()">
+								<i class="fa fa-trash"></i>
+								Delete
+							</button>
+							<button class="btn btn-success" *ngIf="submittable()" (click)="save()">
+								<i class="fa fa-save"></i>
+								Save
+							</button>
+						</div>
+					</div>
+					<div *ngIf="!control.edit" fxLayout="row" fxLayoutAlign="space-between center">
+						<h4 style="color: white;">Create Configuration</h4>
+						<button class="btn btn-success" *ngIf="submittable()" (click)="save()">
+							<i class="fa fa-save"></i>
+							Save
+						</button>
+					</div>
+					<div fxLayout="column" fxLayoutAlign="start stretch">
+						<strong style="margin-bottom: 5px; color: white;">Configuration Name</strong>
+						<input disabled="{{control.vonly}}" [(ngModel)]="conf.name" placeholder="Name"/>
+					</div>
+					<div fxLayout="column" fxLayoutAlign="start stretch">
+						<strong style="margin-bottom: 5px; color: white;">Description</strong>
+						<textarea disabled="{{control.vonly}}" [(ngModel)]="conf.description" rows="5" placeholder="Description"></textarea>
+					</div>
+					<div fxFlex fxLayout="row" fxLayoutAlign="start stretch">
+
+						<div fxFlex="60" fxLayout="row" fxLayoutAligh="center center">
+							<div fxLayout="column" fxLayoutAlign="start stretch" fxFlex style="padding-top : 10px;">
+								<strong style="margin-bottom: 5px; color: white;">Supported Detections</strong>
+								<p-table #det [value]="detections" [globalFilterFields]="['id','description','target']"
+										 [resizableColumns]="true" [(selection)]="detSupport" dataKey="id"
+										 [scrollable]="true" scrollHeight="90%">
+
+									<ng-template pTemplate="caption">
+										<input type="text" pInputText size="50" placeholder="Filter"
+											   (input)="det.filterGlobal($event.target.value, 'contains')"
+											   style="width:100%;">
+									</ng-template>
+									<ng-template pTemplate="header" let-columns>
+										<tr>
+											<th style="width: 2.25em" *ngIf="!control.vonly" >
+												<p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+											</th>
+											<th [pSortableColumn]="'id'">Code</th>
+											<th [pSortableColumn]="'description'">Description</th>
+											<th [pSortableColumn]="'target'">Target</th>
+										</tr>
+									</ng-template>
+									<ng-template pTemplate="body" let-node>
+										<tr [pSelectableRow]="node">
+											<td *ngIf="!control.vonly" style="width: 2.25em">
+												<p-tableCheckbox [value]="node"></p-tableCheckbox>
+											</td>
+											<td style="vertical-align: top;">{{node.id}}</td>
+											<td style="vertical-align: top;">{{node.description}}</td>
+											<td style="vertical-align: top;">{{node.target}}</td>
+										</tr>
+									</ng-template>
+								</p-table>
+							</div>
+						</div>
+						<div fxFlex="39" fxLayout="row" fxLayoutAligh="center center">
+							<div fxLayout="column" fxLayoutAlign="start stretch" fxFlex style="padding : 10px;">
+								<strong style="margin-bottom: 5px; color: white;">Age Groups</strong>
+								<app-age-group [editable]="!control.vonly" [rangeList]="conf.payload.ageGroups" (change)="ageGroups($event)" ></app-age-group>
+							</div>
+						</div>
+					</div>
+				</div>
+			</mat-sidenav-content>
+		</mat-sidenav-container>
+	</div>
+</div>

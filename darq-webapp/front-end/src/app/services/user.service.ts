@@ -3,26 +3,7 @@ import {Http, Response} from "@angular/http";
 import 'rxjs/add/operator/map';
 import {Subject} from "rxjs";
 import {Router} from "@angular/router";
-
-export class User {
-
-	constructor(public id : string, public username : string, public roles : string[]){
-
-	}
-}
-
-export class LoginResponse {
-
-	public user : User;
-	public status : boolean;
-	public message : string;
-
-	constructor(user : User, status : boolean, message : string){
-		this.user = user;
-		this.status = status;
-		this.message = message;
-	}
-}
+import {User, LoginResponse} from "../domain/user-management";
 
 
 @Injectable()

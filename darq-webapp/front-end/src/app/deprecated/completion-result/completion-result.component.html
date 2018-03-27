@@ -1,0 +1,15 @@
+<div fxFlexFill fxLayout="row" fxLayoutAlign="start stretch" *ngIf="result">
+	<p-tree fxFlex="15" (onNodeSelect)="nodeSelect($event)" [(selection)]="selected" selectionMode="checkbox" [value]="tree" [styleClass]="'ftree'" [propagateSelectionUp]="true" [propagateSelectionDown]="true"></p-tree>
+	<div fxFlex="85" fxLayout="row" fxLayoutAlign="center center">
+		<ngx-charts-bar-horizontal
+			[results]="chart | chartFilter : selected"
+			[xAxis]="true"
+			[yAxis]="true"
+			[legend]="true"
+			[showXAxisLabel]="true"
+			[showYAxisLabel]="true"
+			[xAxisLabel]="'% Value'"
+			[yAxisLabel]="'Field'">
+		</ngx-charts-bar-horizontal>
+	</div>
+</div>

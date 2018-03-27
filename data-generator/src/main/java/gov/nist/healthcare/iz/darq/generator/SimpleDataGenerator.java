@@ -57,12 +57,12 @@ public class SimpleDataGenerator implements Generator {
 		
 		switch(type){
 		case NUMERIC : return "1233432";
-		case DATE : return "2017-04-10";
+		case DATE : return "20170410";
 		case NO_EXTRACT : return "[[NOT_EXTRACTED]]";
 		default : {
-			int  n = (new Random()).nextInt(20);
-			if(n == 1) return "[[VALUE_NOT_PRESENT]]";
-			else return "STRINGSTRINGSTRING";
+//			int  n = (new Random()).nextInt(20);
+//			if(n == 1) return "[[VALUE_NOT_PRESENT]]";
+			return "STRINGSTRINGSTRING";
 		}
 		}
 	}

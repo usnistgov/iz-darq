@@ -1,0 +1,113 @@
+<div fxLayout="column" fxLayoutAlign="start stretch">
+	<strong>Analysis Type</strong>
+	<mat-select [compareWith]="same" (selectionChange)="reset()" style="background-color: #e3e3e3; margin-top: 5px; margin-bottom: 5px;" [(value)]="selected" >
+		<mat-option *ngFor="let group of types" [value]="group">{{group.label}}</mat-option>
+	</mat-select>
+	<div fxLayout="row" fxLayoutAlign="space-between stretch" style="margin-top: 5px;" *ngIf="selected">
+		<div fxFlex="29" fxLayout="column" fxLayoutAlign="start stretch" style="border: 1px solid black; padding: 10px; text-align: center;">
+			<strong> Criteria </strong>
+			<mat-list [dndList]="{
+                    disabled: false,
+                    effectAllowed: 'move',
+                    allowedTypes: []
+                    }" [dndModel]="selected.fields" [dndPlaceholder]="placeholder">
+				<div *ngFor="let field of selected.fields; let i = index"
+					 [dndDraggable]="{draggable: true, effectAllowed:'move'}"
+					 [dndObject]="field"
+					 [dndType]="'field'"
+					 (dndMoved)="removeField(i, selected.fields)">
+					<mat-divider></mat-divider>
+					<mat-list-item >
+						<div fxLayout="row" fxLayoutAlign="space-between center" style="width: 100%; height: 100%;">
+							<i class="fa fa-bars" style="color: blue;"></i>
+							<strong fxFlex style="text-align: center;">{{field}}</strong>
+						</div>
+					</mat-list-item>
+				</div>
+			</mat-list>
+		</div>
+		<div fxFlex="69" fxLayout="row" fxLayoutAlign="start stretch" style="border: 1px solid blue;">
+			<div fxFlex fxLayout="column" fxLayoutAlign="start stretch" style="padding: 10px; border-right: 1px solid blue; text-align: center;"
+				 [dndList]="{ disabled: false, effectAllowed: 'move'}" [dndModel]="filters" [dndPlaceholder]="placeholder">
+				<strong> Filter </strong>
+				<mat-list>
+					<div *ngFor="let filter of filters; let i = index" fxLayout="column" fxLayoutAlign="start stretch">
+						<mat-divider></mat-divider>
+						<mat-list-item style="padding-right : 0px !important;">
+							<div fxLayout="row" fxLayoutAlign="space-between center" style="width: 100%;">
+								<i class="fa fa-minus float-right" style="color: red; cursor: pointer;" (click)="remove(i, filters, filter)"></i>
+								<strong style="margin-right: 5px;">{{filter}}</strong>
+								<ng-container *ngTemplateOutlet="template(filter); context : {$implicit : filter}"></ng-container>
+							</div>
+						</mat-list-item>
+					</div>
+				</mat-list>
+			</div>
+			<div fxFlex fxLayout="column" fxLayoutAlign="start stretch" style="padding: 10px; border-right: 1px solid blue; text-align: center;"
+				 [dndList]="{
+                    disabled: false,
+                    effectAllowed: 'move'
+                    }"
+				 [dndModel]="groupBy" [dndPlaceholder]="placeholder">
+				<strong> Group By </strong>
+				<mat-list>
+					<div *ngFor="let group of groupBy; let i = index">
+						<mat-divider></mat-divider>
+						<mat-list-item>
+							<div fxLayout="row" fxLayoutAlign="space-between center" style="width: 100%; height: 100%;">
+								<i class="fa fa-minus" style="color: red; cursor: pointer;" (click)="remove(i, groupBy, group)"></i>
+								<strong fxFlex style="text-align: center;">{{group}}</strong>
+							</div>
+						</mat-list-item>
+					</div>
+				</mat-list>
+
+			</div>
+			<!--<div fxFlex fxLayout="column" fxLayoutAlign="start center" style="padding: 10px;">-->
+				<!--<strong> Compute </strong>-->
+			<!--</div>-->
+		</div>
+		<div fxLayout="row" fxLayoutAlign="center center" #placeholder style="background-color: lightgrey; height: 100%; width: 100%; border: 2px dashed black;">
+			<strong style="font-size: 20px; color: black;"> Drop Here </strong>
+		</div>
+	</div>
+	<div>
+		<button class="btn btn-success float-right" style="cursor: pointer; margin-top: 5px; width: 150px;" (click)="closeDialog()" *ngIf="submittable()">
+			<i class="fa fa-plus"></i>
+			Add
+		</button>
+	</div>
+</div>
+
+<ng-template #detection let-key>
+	<mat-select [(value)]="values[key]" style="width: 200px;">
+		<mat-option *ngFor="let detection of detectionsList()" [value]="detection">{{detection}} - {{detectionsDescriptions[detection].description}} - {{detectionsDescriptions[detection].target}}</mat-option>
+	</mat-select>
+</ng-template>
+<ng-template #table let-key>
+	<mat-select [(value)]="values[key]" style="width: 200px;">
+		<mat-option *ngFor="let table of tables()" [value]="table">{{table}}</mat-option>
+	</mat-select>
+</ng-template>
+<ng-template #gender let-key>
+	<mat-select [(value)]="values[key]" style="width: 200px;">
+		<mat-option [value]="'M'">Male</mat-option>
+		<mat-option [value]="'F'">Female</mat-option>
+		<mat-option [value]="'U'">Unknown</mat-option>
+	</mat-select>
+</ng-template>
+<ng-template #event let-key>
+	<mat-select [(value)]="values[key]" style="width: 200px;">
+		<mat-option [value]="'00'">Administered</mat-option>
+		<mat-option [value]="'01'">Historical</mat-option>
+	</mat-select>
+</ng-template>
+<ng-template #ageGroup let-key>
+	<mat-select [(value)]="values[key]" style="width: 200px;">
+		<mat-option *ngFor="let group of configuration.ageGroups; let i = index" [value]="i+'g'">{{printRange(group)}}</mat-option>
+	</mat-select>
+</ng-template>
+<ng-template #value let-key>
+	<input [(ngModel)]="values[key]" style="text-align: center;">
+</ng-template>
+

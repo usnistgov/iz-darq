@@ -1,0 +1,51 @@
+<div fxFlexFill class="back" fxLayout="column" fxLayoutAlign="start stretch" *blockUI="'adf-upload'">
+	<div style="height: 85px;"></div>
+	<div fxFlex fxLayout="column" fxLayoutAlign="start stretch" style="padding: 10px;  width: 100%;">
+		<!--<div fxLayout="column" fxLayoutAlign="start stretch" class="card" style="height: 100%; padding: 10px;">-->
+		<div style="padding : 1.25rem;" fxLayout="column" fxLayoutAlign="space-between start">
+			<h3  style="color: white;">Upload Aggregate Detections File</h3>
+			<button class="btn btn-warning" style="cursor: pointer;" [routerLink]="['../files']" style="border-color: white;">
+				<i class="fa fa-arrow-circle-left"></i>
+				Back
+			</button>
+		</div>
+
+			<!--<div fxLayout="column">-->
+				<!--<mat-form-field>-->
+					<!--<input matInput placeholder="Export Name">-->
+				<!--</mat-form-field>-->
+
+				<!--<mat-form-field>-->
+					<!--<textarea matInput [value]="terms" [disabled]="true" ></textarea>-->
+				<!--</mat-form-field>-->
+
+				<!--<mat-form-field>-->
+					<!--<mat-select placeholder="Select">-->
+						<!--<mat-option value="option">Option</mat-option>-->
+					<!--</mat-select>-->
+				<!--</mat-form-field>-->
+			<!--</div>-->
+			<div class="card-block">
+				<div class="form-group">
+					<label style="color: white; font-weight: bold;" for="name">Export Name</label>
+					<input type="text" class="form-control" id="name" placeholder="Name" [(ngModel)]="name">
+				</div>
+				<div class="form-group" style="height: 100px;">
+					<app-file-component [required]="true" (file)="setFile($event)" label="Aggregate Detections File"></app-file-component>
+				</div>
+				<div class="form-group">
+					<label style="color: white; font-weight: bold;" for="terms">Terms & Conditions</label>
+					<textarea rows="9"  id="terms" class="form-control" [value]="terms" disabled></textarea>
+				</div>
+				<div class="form-check">
+					<input type="checkbox" id="check" [(ngModel)]="check">
+					<label style="color: white; font-weight: bold;" class="form-check-label" for="check">I have read and accept the terms & conditions of use</label>
+				</div>
+				<button type="submit" class="btn btn-primary" style="border-color: white;" *ngIf="name && file && check" (click)="create()" >
+					<i class="fa fa-upload"></i>
+					Upload
+				</button>
+			</div>
+		<!--</div>-->
+	</div>
+</div>

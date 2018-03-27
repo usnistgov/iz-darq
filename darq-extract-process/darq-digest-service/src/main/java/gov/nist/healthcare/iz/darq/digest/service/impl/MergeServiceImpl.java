@@ -1,0 +1,205 @@
+package gov.nist.healthcare.iz.darq.digest.service.impl;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
+import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
+import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
+import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
+import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
+import gov.nist.healthcare.iz.darq.digest.domain.VaccinationPayload;
+import gov.nist.healthcare.iz.darq.digest.service.MergeService;
+
+@Service
+public class MergeServiceImpl implements MergeService {
+	
+	
+
+	@Override
+	public synchronized ADChunk mergeChunk(ADChunk a, ADChunk b){
+		a.setVaccinationSection(mergeVxProvider(a.getVaccinationSection(), b.getVaccinationSection()));
+		a.setPatientSection(mergePatAgeGroup(a.getPatientSection(), b.getPatientSection()));
+		a.setExtraction(mergeExtract(a.getExtraction(), b.getExtraction()));
+		a.setProviders(mergeProvider(a.getProviders(), b.getProviders()));
+		a.getIssues().addAll(b.getIssues());
+		a.setUnread(a.getUnread() + b.getUnread());
+		a.setNbPatients(a.getNbPatients() + b.getNbPatients());
+		a.setNbVaccinations(a.getNbVaccinations() + b.getNbVaccinations());
+		a.setMaxVaccination(b.getNbVaccinations());
+		a.setMinVaccination(b.getNbVaccinations());
+		return a;
+	}
+	
+	
+	public Map<String, String> mergeProvider(Map<String, String> a, Map<String, String> b){
+		Map<String, String> x =  new HashMap<>(a);
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, this::mergeProvider);
+			});
+		}
+		return x;
+	}
+	
+	public Map<String, Fraction> mergeExtract(Map<String, Fraction> a, Map<String, Fraction> b){
+		Map<String, Fraction> x =  new HashMap<>(a);
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, Fraction::merge);
+			});
+		}
+		return x;
+	}
+	
+	public String mergeProvider(String a, String b){
+		if(!a.equals(b))
+			return "ERROR";
+		else
+			return a;
+	}
+
+	@Override
+	public Map<String, Map<String, VaccinationPayload>> mergeVxProvider(Map<String, Map<String, VaccinationPayload>> a, Map<String, Map<String, VaccinationPayload>> b){
+		Map<String, Map<String, VaccinationPayload>> x =  new HashMap<>(a);
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, this::mergeVxAgeGroup);
+			});
+		}
+		return x;
+	}
+	
+	@Override
+	public Map<String, VaccinationPayload> mergeVxAgeGroup(Map<String, VaccinationPayload> a, Map<String, VaccinationPayload> b){
+		Map<String, VaccinationPayload> x =  new HashMap<>(a);
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, this::mergeVxPayload);
+			});
+		}
+		return x;
+	}
+	
+	@Override
+	public VaccinationPayload mergeVxPayload(VaccinationPayload a, VaccinationPayload b){
+		VaccinationPayload vxP = new VaccinationPayload();
+		vxP.setCountAdministred(a.getCountAdministred() + b.getCountAdministred());
+		vxP.setCountHistorical(a.getCountHistorical() + b.getCountHistorical());
+		vxP.setDetection(mergeDets(a.getDetection(), b.getDetection()));
+		vxP.setCodeTable(mergeCodeTable(a.getCodeTable(), b.getCodeTable()));
+		vxP.setVaccinations(mergeVxCode(a.getVaccinations(), b.getVaccinations()));
+		return vxP;
+	}
+	
+	@Override
+	public Map<String, DetectionSum> mergeDets(Map<String, DetectionSum> a, Map<String, DetectionSum> b){
+		Map<String, DetectionSum> x =  a != null ? new HashMap<>(a) : new HashMap<>();
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, DetectionSum::merge);
+			});
+		}
+		return x;
+	}
+	
+	@Override
+	public Map<String, TablePayload> mergeCodeTable(Map<String, TablePayload> a, Map<String, TablePayload> b){
+		Map<String, TablePayload> x =  a != null ? new HashMap<>(a) : new HashMap<>();
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, this::mergeCode);
+			});
+		}
+		return x;
+	}
+	
+	
+	
+	@Override
+	public TablePayload mergeCode(TablePayload a, TablePayload b){
+		TablePayload t =  new TablePayload();
+		t.setTotal(a.getTotal() + b.getTotal());
+		Map<String, Integer> codes = new HashMap<>(a.getCodes());
+		b.getCodes().forEach((k, v) -> {
+			codes.merge(k, v, (x, y) -> {
+				return x + y;
+			});
+		});
+		t.setCodes(codes);
+		return t;
+	}
+	
+	@Override
+	public Map<String, Map<String, Map<String, Map<String, Integer>>>> mergeVxCode(Map<String, Map<String, Map<String, Map<String, Integer>>>> a, Map<String, Map<String, Map<String, Map<String, Integer>>>> b){
+		Map<String, Map<String, Map<String, Map<String, Integer>>>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, this::mergeVxYear);
+			});
+		}
+		return x;
+	}
+	
+	@Override
+	public Map<String, Map<String, Map<String, Integer>>> mergeVxYear(Map<String, Map<String, Map<String, Integer>>> a, Map<String, Map<String, Map<String, Integer>>> b){
+		Map<String, Map<String, Map<String, Integer>>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, this::mergeVxSource);
+			});
+		}
+		return x;
+	}
+	
+	@Override
+	public Map<String, Map<String, Integer>> mergeVxSource(Map<String, Map<String, Integer>> a, Map<String, Map<String, Integer>> b){
+		Map<String, Map<String, Integer>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, this::mergeVxSex);
+			});
+		}
+		return x;
+	}
+	
+	@Override
+	public Map<String, Integer> mergeVxSex(Map<String, Integer> a, Map<String, Integer> b){
+		Map<String, Integer> x =  a != null ? new HashMap<>(a) : new HashMap<>();
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, this::merge);
+			});
+		}
+		return x;
+	}
+	
+	@Override
+	public Integer merge(Integer a, Integer b){
+		return a + b;
+	}
+	
+	@Override
+	public Map<String, PatientPayload> mergePatAgeGroup(Map<String, PatientPayload> a, Map<String, PatientPayload> b){
+		Map<String, PatientPayload> x =  a != null ? new HashMap<>(a) : new HashMap<>();
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, this::mergePat);
+			});
+		}
+		return x;
+	}
+	
+	@Override
+	public PatientPayload mergePat(PatientPayload a, PatientPayload b){
+		PatientPayload pt = new PatientPayload();
+		pt.setCount(a.getCount() + b.getCount());
+		pt.setDetection(mergeDets(a.getDetection(), b.getDetection()));
+		pt.setCodeTable(mergeCodeTable(a.getCodeTable(), b.getCodeTable()));
+		return pt;
+	}
+
+
+}

@@ -1,7 +1,5 @@
 package gov.nist.healthcare.iz.darq.parser.type;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 import gov.nist.lightdb.exception.InvalidValueException;
 
 public abstract class DataUnit<T> {
@@ -10,14 +8,14 @@ public abstract class DataUnit<T> {
 	protected T value;
 	private boolean extracted;
 	private ExtractionData placeholder;
-	
+
 	public DataUnit(String payload) throws InvalidValueException {
 		int length = -1;
 		DescriptorType code;
-		
-		if(payload.startsWith("[[") && payload.endsWith("]]")){
+		extracted = false;
+		if(payload != null && payload.startsWith("[[") && payload.endsWith("]]")){
 			
-			extracted = false;
+			
 			String extCode = payload.replace("[[", "").replace("]]", "");
 			
 			if(extCode.contains("VALUE_LENGTH_IS")){	
@@ -46,11 +44,16 @@ public abstract class DataUnit<T> {
 		}
 		else {
 			
-			if(payload == null || payload.isEmpty()){
-				throw new InvalidValueException("Field value can't be empty");
+			if(payload == null){
+				throw new InvalidValueException("Field value can't be null");
 			}
-			
-			this.value = validate(payload);
+			else if(payload.isEmpty()){
+				placeholder = new ExtractionData(DescriptorType.EMPTY, -1);
+			}
+			else {
+				this.value = validate(payload);
+				this.extracted = true;
+			}
 		}
 		this.payload = payload;
 	}
@@ -73,6 +76,4 @@ public abstract class DataUnit<T> {
 	
 	protected abstract T validate(String payload) throws InvalidValueException;
 
-	
-	
 }

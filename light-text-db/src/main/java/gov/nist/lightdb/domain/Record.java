@@ -1,5 +1,6 @@
 package gov.nist.lightdb.domain;
 
-public class Record {
-
+public abstract class Record {
+	
+	public abstract String getID();
 }

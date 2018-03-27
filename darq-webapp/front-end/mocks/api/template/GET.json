@@ -1,0 +1,13 @@
+[{
+	"id" : "1",
+	"owner" : "AIRA",
+	"name" : "Analysis v1",
+	"compatibilities" : [
+		{
+			"id" : "1",
+			"owner" : "AIRA",
+			"name" : "v1 Draft",
+			"lastUpdated" : "01/01/2018"
+		}
+	]
+}]

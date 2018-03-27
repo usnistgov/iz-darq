@@ -6,4 +6,11 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>darq-domain-repository</artifactId>
+  <dependencies>
+  	<dependency>
+  		<groupId>gov.nist.healthcare.iz</groupId>
+  		<artifactId>darq-digest-model</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
 </project>

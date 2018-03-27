@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 import gov.nist.lightdb.domain.EntityTypeRegistry;
 import gov.nist.lightdb.domain.EntityTypeRegistry.EntityType;
+import gov.nist.lightdb.exception.InvalidValueException;
 import gov.nist.lightdb.service.LightWeightIndexer.Document;
 
 public class LightWeigthSearcher implements Searcher {
@@ -214,6 +215,31 @@ public class LightWeigthSearcher implements Searcher {
 				return composer.compose("", result);
 			}
 			catch(Exception e){
+				e.printStackTrace();
+				this.forceStop = true;
+				return null;
+			}
+			
+		}
+		
+		public synchronized T nextRecord() throws InvalidValueException {
+			Map<EntityType, List<String>> result = new HashMap<EntityType, List<String>>();
+			
+			try {
+				
+				String line = stream.readLine();
+				IndexLineReader reader = new IndexLineReader(line);
+				for(EntityType t : types){
+					if(reader.types().contains(t)){
+						result.put(t, read(files.get(t), reader.get(t)));
+					}
+				}
+
+				this.i++;
+				//TODO Expose ID 
+				return composer.compose(result.get(EntityTypeRegistry.byId("p")).get(0), result);
+			}
+			catch(IOException e){
 				e.printStackTrace();
 				this.forceStop = true;
 				return null;

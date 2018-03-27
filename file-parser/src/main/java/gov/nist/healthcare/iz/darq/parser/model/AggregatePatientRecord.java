@@ -8,7 +8,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class AggregatePatientRecord {
 	
 	public String ID;
+	@FieldName("Patient Information")
 	public Patient patient;
+	@FieldName("Vaccination History")
 	public List<VaccineRecord> history;
 	
 	

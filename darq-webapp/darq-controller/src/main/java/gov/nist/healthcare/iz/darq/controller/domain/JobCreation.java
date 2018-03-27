@@ -23,6 +23,4 @@ public class JobCreation {
 		this.message = message;
 	}
 	
-	
-
 }

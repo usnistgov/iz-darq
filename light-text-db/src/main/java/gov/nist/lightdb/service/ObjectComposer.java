@@ -84,12 +84,16 @@ public class ObjectComposer<T> {
 		return new ArrayList<>(this.parsers.keySet());
 	}
 	
-	public T compose(String ID, Map<EntityType,List<String>> lines) throws InvalidValueException{
+	public T compose(String ID, Map<EntityType,List<String>> lines) throws InvalidValueException {
 		Map<EntityType, List<Record>> entities = new HashMap<>();
 		for(EntityType t : lines.keySet()){
 			List<Record> list = new ArrayList<>();
 			for(String line : lines.get(t)){
-				list.add(this.parsers.get(t).parse(line));
+				try {
+					list.add(this.parsers.get(t).parse(line));
+				} catch (InvalidValueException e) {
+					throw new InvalidValueException("["+t.name+"] " + e.getMessage());
+				}
 			}
 			entities.put(t, list);
 		}

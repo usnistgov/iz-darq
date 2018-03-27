@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>gov.nist.healthcare.iz</groupId>
+		<artifactId>darq-extract-process</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>darq-digest-service</artifactId>
+	<name>darq-digest-service</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+	
+		<dependency>
+			<groupId>gov.nist.healthcare.iz</groupId>
+			<artifactId>darq-digest-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.immregistries</groupId>
+			<artifactId>dqa-validator</artifactId>
+			<version>2.0.2-DEVELOPMENT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.j2html</groupId>
+			<artifactId>j2html</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.9.9</version>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.healthcare.iz</groupId>
+			<artifactId>file-parser</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.healthcare.iz</groupId>
+			<artifactId>darq-adf-utils</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>

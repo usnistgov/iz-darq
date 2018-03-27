@@ -2,73 +2,56 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {AppComponent} from './app.component';
-import {HeaderComponent} from './header/header.component';
-import {FooterComponent} from './footer/footer.component';
-import {LoginComponent} from './login/login.component';
+import {HeaderComponent} from './components/structural/header/header.component';
+import {FooterComponent} from './components/structural/footer/footer.component';
+import {LoginComponent} from './components/content/login/login.component';
 import {RouterModule} from "@angular/router";
-import {HomeComponent} from './home/home.component';
+import {HomeComponent} from './components/content/home/home.component';
 import {UserService} from "./services/user.service";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {ServerInfoService} from "./services/server-info.service";
-import {HttpModule} from "@angular/http";
 import {AuthInterceptor} from "./services/auth.interceptor";
 import {FormsModule} from "@angular/forms";
-import { JobsComponent } from './jobs/jobs.component';
 import {AuthGuard} from "./guards/auth.guard";
 import {BsDropdownModule} from "ngx-bootstrap";
-import {JobsService} from "./services/jobs.service";
-import { JobCreatorComponent } from './job-creator/job-creator.component';
-import { FileComponentComponent } from './file-component/file-component.component';
-import { FileDropDirective } from './file-drop.directive';
-import { ExternalDropDirective } from './external-drop.directive';
+import {FileComponentComponent} from './components/fragments/file-component/file-component.component';
+import {FileDropDirective} from './directives/file-drop.directive';
+import {ExternalDropDirective} from './directives/external-drop.directive';
 import {ToastyModule} from "ng2-toasty";
-import { JobResultComponent } from './job-result/job-result.component';
 import {TreeModule} from "primeng/components/tree/tree";
 import {BlockUIModule} from "ng-block-ui";
-
-const routes = [
-	{
-		path: "login",
-		component: LoginComponent
-	},
-	{
-		path: "home",
-		component: HomeComponent
-	},
-	{
-		path: "jobs",
-		//canActivate : [ AuthGuard ],
-		children : [
-			{
-				path : "",
-				redirectTo : "dashboard",
-				pathMatch: "prefix"
-			},
-			{
-				path : "dashboard",
-				component: JobsComponent
-			},
-			{
-				path : "create",
-				component: JobCreatorComponent
-			},
-			{
-				path : "analysis",
-				children : [
-					{
-						path : ":id",
-						component : JobResultComponent
-					}
-				]
-			}
-		]
-	},
-	{
-		path : "",
-		pathMatch : "full",
-		redirectTo : "home"
-	}
-];
+import {MaterialModule} from "./material.module";
+import {PanelMenuModule} from "primeng/components/panelmenu/panelmenu";
+import {SideNavMenuModule} from "mat-sidenav-menu";
+import {NgxChartsModule} from "@swimlane/ngx-charts";
+import {ChartFilterPipe} from "./directives/chart-filter.pipe";
+import {TextPipe} from "./pipes/text.pipe";
+import {ConfigurationService} from "./services/configuration.service";
+import {TreeTableModule} from "primeng/components/treetable/treetable";
+import {DropdownModule} from "primeng/components/dropdown/dropdown";
+import {TableModule} from "primeng/components/table/table";
+import {MetricPipe} from "./pipes/metrics-filter.pipe";
+import {ROUTES} from "./app.routes";
+import {
+	ConfigurationResolver, ConfigurationCatalogResolver, DetectionsListResolver
+} from "./resolvers/configuration.resolver";
+import {HttpModule} from "@angular/http";
+import {DataComponent} from "./components/content/data/data.component";
+import {UploadComponent} from "./components/content/upload/upload.component";
+import {ADFSummaryComponent} from "./components/content/adf-summary/adf-summary.component";
+import {ADFResolver, ADFListResolver} from "./resolvers/adf.resolver";
+import {AdfService} from "./services/adf.service";
+import {ExtractConfigurationComponent} from "./components/content/extract-configuration/extract-configuration.component";
+import {AgeGroupComponent} from "./components/fragments/age-group/age-group.component";
+import {RangesService} from "./services/ranges.service";
+import {TemplateComponent} from "./components/content/template/template.component";
+import {ReportSectionComponent} from "./components/fragments/report-section/report-section.component";
+import {AnalysisPayloadDialogComponent} from "./components/fragments/analysis-payload-dialog/analysis-payload-dialog.component";
+import {MAT_DIALOG_DEFAULT_OPTIONS} from "@angular/material";
+import {TemplateFilterPipe} from "./pipes/template-filter.pipe";
+import {TemplateService} from "./services/template.service";
+import {TemplateCatalogResolver, TemplateResolver} from "./resolvers/template.resolver";
+import {DndListModule} from "ngx-drag-and-drop-lists";
 
 @NgModule({
 	declarations: [
@@ -77,31 +60,67 @@ const routes = [
 		FooterComponent,
 		LoginComponent,
 		HomeComponent,
-		JobsComponent,
-		JobCreatorComponent,
+		ADFSummaryComponent,
 		FileComponentComponent,
 		FileDropDirective,
+		DataComponent,
 		ExternalDropDirective,
-		JobResultComponent
+		UploadComponent,
+		ChartFilterPipe,
+		MetricPipe,
+		TextPipe,
+		TemplateFilterPipe,
+		AgeGroupComponent,
+		ExtractConfigurationComponent,
+		TemplateComponent,
+		ReportSectionComponent,
+		AnalysisPayloadDialogComponent
 	],
 	imports: [
 		BrowserModule,
-		RouterModule.forRoot(routes, { useHash: true }),
+		RouterModule.forRoot(ROUTES, {useHash: true}),
 		FlexLayoutModule,
 		BsDropdownModule.forRoot(),
-		HttpModule,
+		MaterialModule,
+		NgxChartsModule,
+		PanelMenuModule,
+		SideNavMenuModule,
+		TreeTableModule,
+		DropdownModule,
+		TableModule,
 		FormsModule,
+		DndListModule,
 		BlockUIModule,
+		HttpModule,
 		TreeModule,
 		ToastyModule.forRoot(),
 		HttpClientModule
 	],
-	providers: [ServerInfoService, UserService, AuthGuard, JobsService,
+	providers: [
+		ServerInfoService,
+		UserService,
+		TemplateService,
+		TemplateCatalogResolver,
+		TemplateResolver,
+		AuthGuard,
+		RangesService,
+		ConfigurationService,
+		MetricPipe,
+		ConfigurationResolver,
+		ADFResolver,
+		ADFListResolver,
+		DetectionsListResolver,
+		AdfService,
+		ConfigurationCatalogResolver,
 		{
 			provide: HTTP_INTERCEPTORS,
 			useClass: AuthInterceptor,
 			multi: true
-		}],
+		}
+	],
+	entryComponents : [
+		AnalysisPayloadDialogComponent
+	],
 	bootstrap: [AppComponent]
 })
 export class AppModule {

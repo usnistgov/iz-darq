@@ -14,32 +14,43 @@ import gov.nist.lightdb.service.Parser;
 public class PatientParser implements Parser<Patient> {
 
 	@Override
-	public Patient parse(String line) throws InvalidValueException {
+	public Patient parse(String line) throws InvalidValueException  {
 		String[] payloads = line.split("\t");
 		assert(payloads.length == 32);
 			
 		Patient pat = new Patient();
-			
-		pat.patID = new DqString(payloads[0]);
 		
-		pat.own_name = readName(payloads, 1); // + 3
-		pat.mother_maiden_name = new DqString(payloads[4]);
-		pat.mother_name = readName(payloads, 5); // + 3
-		pat.date_of_birth = new DqDate(payloads[8]);
-		pat.gender = new DqString(payloads[9]);
-		pat.address = readAddress(payloads, 10); // + 5
-		pat.race_codes = new DqNumeric(payloads[15]);
-		pat.ethnicity_codes = new DqNumeric(payloads[16]);
-		pat.phone =  new DqString(payloads[17]);
-		pat.email_address = new DqString(payloads[18]);
-		pat.language = new DqString(payloads[19]);
-		pat.alias_name = readName(payloads, 20); // + 3
-		pat.responsible_party = readResponsibleParty(payloads, 23); // + 4
-		pat.birth_facility_name = new DqString(payloads[27]);
-		pat.multi_birth_indicator = new DqString(payloads[28]);
-		pat.birth_order = new DqNumeric(payloads[29]);
-		pat.provider_facility_level = new DqString(payloads[30]);
-		pat.iis_level = new DqString(payloads[31]);
+		try {
+			pat.patID = new DqString(payloads[0]);
+			if(!pat.patID.hasValue()) throw new InvalidValueException("No ID was defined for line : "+line);
+		}
+		catch(InvalidValueException e) {
+			throw new InvalidValueException("ID IS REQUIRED "+e.toString());
+		}
+		
+		try {
+			pat.own_name = readName(payloads, 1); // + 3
+			pat.mother_maiden_name = new DqString(payloads[4]);
+			pat.mother_name = readName(payloads, 5); // + 3
+			pat.date_of_birth = new DqDate(payloads[8]);
+			pat.gender = new DqString(payloads[9]);
+			pat.address = readAddress(payloads, 10); // + 5
+			pat.race_code = new DqNumeric(payloads[15]);
+			pat.ethnicity_code = new DqNumeric(payloads[16]);
+			pat.phone =  new DqString(payloads[17]);
+			pat.email_address = new DqString(payloads[18]);
+			pat.language = new DqString(payloads[19]);
+			pat.alias_name = readName(payloads, 20); // + 3
+			pat.responsible_party = readResponsibleParty(payloads, 23); // + 4
+			pat.birth_facility_name = new DqString(payloads[27]);
+			pat.multi_birth_indicator = new DqString(payloads[28]);
+			pat.birth_order = new DqNumeric(payloads[29]);
+			pat.provider_facility_level = new DqString(payloads[30]);
+			pat.iis_level = new DqString(payloads[31]);
+		}
+		catch(InvalidValueException e) {
+			throw new InvalidValueException("[Record : "+pat.patID.getValue()+"] "+e.toString());
+		}
 		
 		return pat;
 	}

@@ -7,8 +7,11 @@ import gov.nist.healthcare.iz.darq.parser.type.DqString;
 
 public class VISInformation {
 	
+	@FieldName("Type")
 	public DqString type;
+	@FieldName("Publication Date")
 	public DqDate publication_date;
+	@FieldName("Presented Date")
 	public DqDate given_date;
 
 	@Override

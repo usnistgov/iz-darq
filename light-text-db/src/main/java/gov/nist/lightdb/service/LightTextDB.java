@@ -136,7 +136,7 @@ public class LightTextDB {
 		List<Chunk> chunks = new ArrayList<>();
 		
 		long masterLines = Files.lines(Paths.get(index().toString(), "master.idx")).parallel().count();
-		int chunkSize = (int) masterLines / size;
+		int chunkSize = size > masterLines ? (int) masterLines : (int) masterLines / size;
 		
 		try (
 				Stream<String> input = Files.lines(Paths.get(index().toString(), "master.idx"));	
@@ -186,9 +186,7 @@ public class LightTextDB {
 	public static LightTextDB refresh(String path, EntityType master, LightWeightIndexer indexer, EntityType... slaves) throws Exception {
 		if(path != null && !path.isEmpty()){
 			LightTextDB db = new LightTextDB(path);
-			System.out.println("START MASTER");
 			db.index(IndexType.MASTER, master, indexer);
-			System.out.println("MASTER");
 			for(EntityType slave : slaves){
 				db.index(IndexType.SLAVE, slave, indexer);
 			}

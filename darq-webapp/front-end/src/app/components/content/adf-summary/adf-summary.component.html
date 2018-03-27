@@ -1,0 +1,111 @@
+<div fxFlexFill class="back" fxLayout="column" fxLayoutAlign="start stretch" style="overflow: auto">
+	<div style="height: 100px;"></div>
+	<div fxLayout="column" fxLayoutAlign="start stretch" style="padding: 10px;  width: 100%;">
+		<div style="padding-top : 1.25rem; padding-left : 1.25rem;">
+			<h3  style="color: bisque;">{{file.name}} ADF Summary ({{file.analysedOn | date:'yyyy-MM-dd HH:mm' }} - {{file.size}})</h3>
+			<button class="btn btn-warning" style="cursor: pointer; border-color: white;" [routerLink]="['../../']">
+				<i class="fa fa-arrow-circle-left"></i>
+				Back
+			</button>
+		</div>
+		<div class="card-block">
+			<h4 style="color: white; padding-top : 1.25rem;" class="card-title">Counts</h4>
+			<table style="background-color: white;" class="table table-striped">
+				<thead>
+				<tr>
+					<th>Label</th>
+					<th>Count</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>Total Read Patient Records</td>
+					<td>{{summary.counts.totalReadPatientRecords}}</td>
+				</tr>
+				<tr>
+					<td>Total Skipped Patient Records Due To Errors</td>
+					<td>{{summary.counts.totalSkippedPatientRecords}}</td>
+				</tr>
+				<tr>
+					<td>Total Read Vaccination Records</td>
+					<td>{{summary.counts.totalReadVaccinations}}</td>
+				</tr>
+				<tr>
+					<td>Minimum Vaccinations per Patient</td>
+					<td>{{summary.counts.minVaccinationsPerRecord}}</td>
+				</tr>
+				<tr>
+					<td>Maximum Vaccinations per Patient</td>
+					<td>{{summary.counts.maxVaccinationsPerRecord}}</td>
+				</tr>
+				<tr>
+					<td>Average Vaccinations per Patient</td>
+					<td>{{summary.counts.avgVaccinationsPerRecord}}</td>
+				</tr>
+				<tr>
+					<td>Total Number of Providers</td>
+					<td>{{summary.counts.numberOfProviders}}</td>
+				</tr>
+				</tbody>
+			</table>
+			<h4 style="color: white; padding-top : 1.25rem;" class="card-title">Age Groups</h4>
+			<table style="background-color: white;" class="table table-striped">
+				<thead>
+				<tr>
+					<th>Range</th>
+					<th>Count</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let ageGroup of summary.countByAgeGroup">
+					<td>{{printRange(ageGroup.range)}}</td>
+					<td>{{ageGroup.nb}}</td>
+				</tr>
+				<tr>
+					<td>+</td>
+					<td>{{summary.outOfRange}}</td>
+				</tr>
+				</tbody>
+			</table>
+			<h4 style="color: white; padding-top : 1.25rem;" class="card-title">Extract Percentages</h4>
+			<p-table #tt [value]="itemizeExtract()" [globalFilterFields]="['label']" [resizableColumns]="true" [scrollable]="true" scrollHeight="200px">
+				<ng-template pTemplate="caption">
+					<input type="text" pInputText size="50" placeholder="Filter"
+						   (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:100%;">
+				</ng-template>
+				<ng-template pTemplate="header" let-columns>
+					<tr>
+						<th [pSortableColumn]="'label'">Element</th>
+						<th [pSortableColumn]="'value'">Valued %</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-node>
+					<tr>
+						<td>{{node.label}}</td>
+						<td>{{node.value}}</td>
+					</tr>
+				</ng-template>
+			</p-table>
+			<h4 style="color: white; padding-top : 1.25rem;" class="card-title">Supported Detections</h4>
+			<p-table #tt [value]="detectionsList()" [globalFilterFields]="['label','value']" [resizableColumns]="true" [scrollable]="true" >
+				<ng-template pTemplate="caption">
+					<input type="text" pInputText size="50" placeholder="Filter"
+						   (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:100%;">
+				</ng-template>
+				<ng-template pTemplate="header" let-columns>
+					<tr>
+						<th [pSortableColumn]="'label'">Code</th>
+						<th [pSortableColumn]="'value'">Description</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-node>
+					<tr>
+						<td>{{node.label}}</td>
+						<td>{{node.value}}</td>
+					</tr>
+				</ng-template>
+			</p-table>
+
+		</div>
+	</div>
+</div>

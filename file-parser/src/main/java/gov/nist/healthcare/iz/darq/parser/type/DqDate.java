@@ -7,6 +7,7 @@ import java.util.Date;
 import gov.nist.lightdb.exception.InvalidValueException;
 
 public class DqDate extends DataUnit<Date> {
+	 
 	
 	public DqDate(String payload) throws InvalidValueException {
 		super(payload);
@@ -15,11 +16,13 @@ public class DqDate extends DataUnit<Date> {
 	@Override
 	public Date validate(String payload) throws InvalidValueException {
 		try {
-			return new SimpleDateFormat("yyyy-MM-dd").parse(payload);
+			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+			format.setLenient(false);
+			return format.parse(payload);
 		}
 		catch(ParseException e){
-			throw new InvalidValueException("'"+payload+"' is invalid date format must be yyyy-MM-dd");
+			throw new InvalidValueException("'"+payload+"' is invalid date format must be yyyyMMdd");
 		}
 	}
-
+	
 }

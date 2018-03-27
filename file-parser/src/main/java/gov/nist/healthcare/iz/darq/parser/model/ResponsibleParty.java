@@ -6,7 +6,9 @@ import gov.nist.healthcare.iz.darq.parser.type.DqString;
 
 public class ResponsibleParty {
 	
+	@FieldName("Relationship To Patient")
 	public DqString relationshipToPatient;
+	@FieldName("Name")
 	public Name name = new Name();
 
 	@Override
