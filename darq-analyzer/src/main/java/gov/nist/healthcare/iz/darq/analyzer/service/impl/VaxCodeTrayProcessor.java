@@ -22,7 +22,7 @@ public class VaxCodeTrayProcessor extends TrayProcessor {
 
 	@Override
 	public List<Tray> inner(ADFile file) {
-		provider(file.getVaccinations(), new VaxDetectionTray());
+		provider(file.getVaccinations(), new VaxCodeTray());
 		return this.work;
 	}
 
@@ -59,6 +59,7 @@ public class VaxCodeTrayProcessor extends TrayProcessor {
 		for(String code : db.getCodes().keySet()){
 			t.add(Field.CODE, code);
 			if(!guard(t)) {
+				t.setWeigth(db.getCodes().get(code));
 				t.setCount(db.getCodes().get(code));
 				finalize(t);
 			}

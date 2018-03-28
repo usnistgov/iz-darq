@@ -117,7 +117,7 @@ public class AnalysisQuery {
 				.map(x -> consider(x))
 				.filter(y -> y.equals(Action.KILL))
 				.findAny().isPresent();
-		
+		System.out.println(t.full() + " - " + kill);
 		return kill ? Action.KILL : t.full() ? Action.TAKE : Action.CONTINUE;
 	}
 	

@@ -66,6 +66,7 @@ public class ParallelDigestRunner implements DigestRunner {
 						catch(Exception e){
 							file.incUnread();
 							file.getIssues().add(e.getMessage());
+//							e.printStackTrace();
 						}
 					}
 				

@@ -40,8 +40,19 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 	filters : Field[];
 	groupBy : Field[];
 	values : {
-		[index : string] : string
+		[index : string] : any
 	};
+	detectionList : {
+		[index : string] : {
+			label : string,
+			value : {
+				code : string,
+				target : string,
+				description : string
+			}
+		}[]
+	};
+
 	detectionsDescriptions : Detections;
 
 	constructor(public dialogRef: MatDialogRef<AnalysisPayloadDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any, private $range : RangesService) {
@@ -53,7 +64,7 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 
 	tables(){
 		if(this.selected){
-			if(this.selected.key.charAt(0) === 'V'){
+			if(this.selected.key.charAt(0) === 'P'){
 				return ['GENDER', 'ETH', 'LANGUAGE', 'RACE']
 			}
 			else {
@@ -71,7 +82,7 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 			this.types.push({
 				key : x,
 				label : this.data.names[x],
-				fields : _comp[x]
+				fields : _comp[x].concat([])
 			});
 		}
 		this.filters = [];
@@ -94,7 +105,12 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 		payload.type = CG[this.selected.key];
 		payload.groupBy = this.groupBy;
 		for(let k in this.values){
-			payload.filters.push({ field : Field[k], value : this.values[k] });
+			if(Field[k] === Field.DETECTION){
+				payload.filters.push({ field : Field[k], value : this.values[k].code });
+			}
+			else {
+				payload.filters.push({ field : Field[k], value : this.values[k] });
+			}
 		}
 		return payload;
 	}
@@ -129,22 +145,10 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 	detectionsList(){
 		if(this.selected) {
 			if (this.selected.key.charAt(0) === 'V') {
-				let l = [];
-				for(let d of this.configuration.detections){
-					if(this.detectionsDescriptions[d]['target'] === "VACCINATION"){
-						l.push(d);
-					}
-				}
-				return l;
+				return this.detectionList["VACCINATION"];
 			}
 			else {
-				let l = [];
-				for(let d of this.configuration.detections){
-					if(this.detectionsDescriptions[d]['target'] !== "VACCINATION"){
-						l.push(d);
-					}
-				}
-				return l;
+				return this.detectionList["PATIENT"];
 			}
 		}
 	}
@@ -159,7 +163,34 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 		console.log(this.data.configuration);
 		this.configuration = this.data.configuration;
 		this.detectionsDescriptions = this.data.detections;
-		// this.payload = new AnalysisPayload();
+		this.detectionList = {
+			'PATIENT' : [],
+			'VACCINATION' : []
+		};
+
+		for(let d of this.configuration.detections){
+			if(this.data.detections[d]['target'] === "VACCINATION"){
+				this.detectionList["VACCINATION"].push({
+					label : this.data.detections[d]['description'],
+					value :{
+						code : d,
+						description : this.data.detections[d]['description'],
+						target : this.data.detections[d]['target']
+					}
+				});
+			}
+			else {
+				this.detectionList["PATIENT"].push({
+					label : this.data.detections[d]['description'],
+					value : {
+						code : d,
+						description : this.data.detections[d]['description'],
+						target : this.data.detections[d]['target']
+					}
+				});
+			}
+		}
+
 	}
 
 }

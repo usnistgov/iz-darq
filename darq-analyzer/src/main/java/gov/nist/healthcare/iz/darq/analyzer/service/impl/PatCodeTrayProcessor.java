@@ -22,7 +22,7 @@ public class PatCodeTrayProcessor extends TrayProcessor {
 
 	@Override
 	public List<Tray> inner(ADFile file) {
-		ageGroup(file.getPatients(), new VaxDetectionTray());
+		ageGroup(file.getPatients(), new PatCodeTray());
 		return this.work;
 	}
 
@@ -50,6 +50,7 @@ public class PatCodeTrayProcessor extends TrayProcessor {
 		for(String code : db.getCodes().keySet()){
 			t.add(Field.CODE, code);
 			if(!guard(t)) {
+				t.setWeigth(db.getCodes().get(code));
 				t.setCount(db.getCodes().get(code));
 				finalize(t);
 			}

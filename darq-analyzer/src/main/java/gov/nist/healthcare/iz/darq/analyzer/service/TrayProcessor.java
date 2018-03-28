@@ -29,6 +29,7 @@ public abstract class TrayProcessor {
 	public abstract _CG analysisPath();
 	
 	protected void finalize(Tray t){
+//		System.out.println(predicate.apply(t).equals(Action.TAKE));
 		if(predicate.apply(t).equals(Action.TAKE)) work.add(t.cloneTray());
 	}
 	

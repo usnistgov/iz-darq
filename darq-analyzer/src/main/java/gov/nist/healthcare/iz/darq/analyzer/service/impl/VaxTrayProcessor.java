@@ -73,7 +73,9 @@ public class VaxTrayProcessor extends TrayProcessor {
 		for(String source : db.keySet()){
 			t.add(Field.EVENT, source);
 			if(!guard(t)){
+				t.setWeigth(db.get(source));
 				t.setCount(db.get(source));
+				System.out.println("PASS GUARD");
 				finalize(t);
 			}		
 		}

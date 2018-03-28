@@ -29,7 +29,8 @@
 									{{filter.field}}
 								</td>
 								<td>
-									{{filter.value}}
+									<span *ngIf="filter.field === 'AGE_GROUP'">{{print(filter.value)}}</span>
+									<span *ngIf="filter.field !== 'AGE_GROUP'">{{filter.value}}</span>
 								</td>
 							</tr>
 						</table>

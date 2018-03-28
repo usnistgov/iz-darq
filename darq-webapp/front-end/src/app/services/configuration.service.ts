@@ -90,7 +90,7 @@ export class ConfigurationService {
 	}
 
 	async getDetections(){
-		return await this.http.get<Detections>("api/detections").toPromise();
+		return await this.http.get<Detections>("public/detections").toPromise();
 	}
 
 	async getExtractTree(){

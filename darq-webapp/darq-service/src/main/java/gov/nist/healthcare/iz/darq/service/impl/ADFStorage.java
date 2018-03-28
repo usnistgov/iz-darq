@@ -51,7 +51,7 @@ public class ADFStorage implements ADFStore {
 	public ADFile getFile(String id, String owner) throws Exception {
 		ADFMetaData md = get(id, owner);
 		if(md != null){
-			FileInputStream fis = new FileInputStream(Paths.get("~/adf_storage/"+md.getPath()).toFile());
+			FileInputStream fis = new FileInputStream(Paths.get("/Users/hnt5/adf_storage/"+md.getPath()+"/adf.data").toFile());
 			byte[] content = IOUtils.toByteArray(fis);
 			ADFile file = crypto.decrypt(content);
 			return file;

@@ -12,7 +12,8 @@
 			<mat-sidenav #snav opened="true" mode="side" style="background-color : #031a4c; border-right : 1px solid black; max-width: 200px;">
 				<div class="btn-primary" style="width: 100%; border-bottom: 1px solid; text-align: center; padding: 10px;">
 					<span style="font-weight : bold; color: white;">Configuration</span>
-					<mat-select (selectionChange)="configChange($event)" [compareWith]="same" [(value)]="configuration" style="background-color: white; text-align: center;">
+					<mat-select [compareWith]="same" [(value)]="configuration" style="background-color: white; text-align: center;">
+						<mat-option>None</mat-option>
 						<mat-option *ngFor="let config of configCatalog" [value]="config">{{config.name}}</mat-option>
 					</mat-select>
 					<mat-divider></mat-divider>
@@ -25,18 +26,18 @@
 				</mat-nav-list>
 			</mat-sidenav>
 			<mat-sidenav-content style="background-color: transparent !important;">
-				<div *ngIf="configuration && configuration.id && configuration.id !== ''" style="height: 100%; width: 100%; padding: 10px;" fxLayout="column" fxLayoutAlign="start stretch">
+				<div style="height: 100%; width: 100%; padding: 10px;" fxLayout="column" fxLayoutAlign="start stretch">
 					<div *ngIf="control.edit && control.vonly" fxLayout="row" fxLayoutAlign="space-between center">
 						<h4 style="color: white;">View Template</h4>
 					</div>
 					<div *ngIf="control.edit && !control.vonly" fxLayout="row" fxLayoutAlign="space-between center">
 						<h4 style="color: white;">Edit Template</h4>
 						<div fxLayout="row" fxLayoutAlign="end center">
-							<button class="btn btn-danger">
+							<button class="btn btn-danger" (click)="deleteTemplate()">
 								<i class="fa fa-trash"></i>
 								Delete
 							</button>
-							<button class="btn btn-success">
+							<button class="btn btn-success" *ngIf="submittable()" (click)="save()">
 								<i class="fa fa-save"></i>
 								Save
 							</button>
@@ -44,7 +45,7 @@
 					</div>
 					<div *ngIf="!control.edit" fxLayout="row" fxLayoutAlign="space-between center">
 						<h4 style="color: white;">Create Template</h4>
-						<button class="btn btn-success">
+						<button class="btn btn-success" *ngIf="submittable()" (click)="save()">
 							<i class="fa fa-save"></i>
 							Save
 						</button>
@@ -57,7 +58,13 @@
 						<strong style="margin-bottom: 5px; color: white;">Description</strong>
 						<textarea disabled="{{control.vonly}}" [(ngModel)]="template.description" rows="5" placeholder="Description"></textarea>
 					</div>
-					<div style="margin-top: 5px; margin-bottom: 5px;" fxLayout="row" fxLayoutAlign="end end">
+					<div *ngIf="!control.edit"  fxLayout="column" fxLayoutAlign="start stretch">
+						<strong style="margin-bottom: 5px; color: white;">Base On Configuration</strong>
+						<mat-select *ngIf="!control.edit" (selectionChange)="selectConfig($event)" [compareWith]="same" [(value)]="baseOn" style="background-color: white; text-align: center;">
+							<mat-option *ngFor="let config of configCatalog" [value]="config">{{config.name}}</mat-option>
+						</mat-select>
+					</div>
+					<div  *ngIf="template.configuration"  style="margin-top: 5px; margin-bottom: 5px;" fxLayout="row" fxLayoutAlign="end end">
 						<button class="btn btn-primary" style="border: 1px solid white;" (click)="add()">
 							<i class="fa fa-plus"></i>
 							Add Section
@@ -73,9 +80,9 @@
 						</div>
 					</div>
 				</div>
-				<div *ngIf="!(configuration && configuration.id && configuration.id !== '')" style="height: 100%; width: 100%; padding: 10px;" fxLayout="column" fxLayoutAlign="center center">
-					<span style="color: lightgrey; font-weight: bold; font-size: 25px;">SELECT A CONFIGURATION ABOVE</span>
-				</div>
+				<!--<div *ngIf="!(configuration && configuration.id && configuration.id !== '')" style="height: 100%; width: 100%; padding: 10px;" fxLayout="column" fxLayoutAlign="center center">-->
+					<!--<span style="color: lightgrey; font-weight: bold; font-size: 25px;">SELECT A CONFIGURATION ABOVE</span>-->
+				<!--</div>-->
 			</mat-sidenav-content>
 		</mat-sidenav-container>
 	</div>

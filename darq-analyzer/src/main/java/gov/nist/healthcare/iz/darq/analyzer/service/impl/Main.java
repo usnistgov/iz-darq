@@ -14,6 +14,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,6 +36,7 @@ import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 
 @Configuration
 @ComponentScan("gov.nist.healthcare")
+@PropertySource("classpath:/key.properties")
 public class Main {
 
 	
@@ -54,43 +56,89 @@ public class Main {
 		ObjectMapper mapper = new ObjectMapper();
 		
 		System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(ar));
-		System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(template()));
+//		System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(template()));
 
 //		Set<C> set = new HashSet<>();
 //		set.add(new C("A",1));
 //		set.add(new C("A",2));
 //		System.out.println(set);
 	}
+//	MQE0141
+//	@Bean
+//	public ADFStore store(){
+//		return new ADFStore() {
+//			
+//			@Override
+//			public String store(ADFMetaData metadata) {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//			
+//			@Override
+//			public ADFile getFile(String id, String owner) throws Exception {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//			
+//			@Override
+//			public ADFMetaData get(String id, String owner) {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//			
+//			@Override
+//			public boolean delete(String id, String owner) throws IOException {
+//				// TODO Auto-generated method stub
+//				return false;
+//			}
+//		};
+//	}
+//	
+//	static ReportTemplate template(){
+//		ReportTemplate template = new ReportTemplate();
+//		template.setName("TEST");
+//		
+//		ReportSection section = new ReportSection();
+//		section.setTitle("PCV17 by Year");
+//		
+//		AnalysisPayload payload = new AnalysisPayload();
+//		payload.setType(_CG.PT);
+//		List<FieldValue> filters = new ArrayList<>();
+//		filters.add(new FieldValue(Field.TABLE, "GENDER"));
+////		filters.add(new FieldValue(Field.C, "M"));
+//		payload.setFilters(filters);
+//		payload.setGroupBy(Arrays.asList(Field.CODE));
+//		
+//		section.setPayloads(Arrays.asList(payload));
+//		
+//		template.setSections(Arrays.asList(section));
+//		
+//		
+//		return template;
+//	}
 	
-	@Bean
-	public ADFStore store(){
-		return new ADFStore() {
-			
-			@Override
-			public String store(ADFMetaData metadata) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public ADFile getFile(String id, String owner) throws Exception {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public ADFMetaData get(String id, String owner) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public boolean delete(String id, String owner) throws IOException {
-				// TODO Auto-generated method stub
-				return false;
-			}
-		};
-	}
+//	static ReportTemplate template(){
+//		ReportTemplate template = new ReportTemplate();
+//		template.setName("TEST");
+//		
+//		ReportSection section = new ReportSection();
+//		section.setTitle("PCV17 by Year");
+//		
+//		AnalysisPayload payload = new AnalysisPayload();
+//		payload.setType(_CG.PD);
+//		List<FieldValue> filters = new ArrayList<>();
+//		filters.add(new FieldValue(Field.DETECTION, "MQE0141"));
+////		filters.add(new FieldValue(Field.C, "M"));
+//		payload.setFilters(filters);
+////		payload.setGroupBy(Arrays.asList(Field.CODE));
+//		
+//		section.setPayloads(Arrays.asList(payload));
+//		
+//		template.setSections(Arrays.asList(section));
+//		
+//		
+//		return template;
+//	}
 	
 	static ReportTemplate template(){
 		ReportTemplate template = new ReportTemplate();
@@ -102,10 +150,10 @@ public class Main {
 		AnalysisPayload payload = new AnalysisPayload();
 		payload.setType(_CG.V);
 		List<FieldValue> filters = new ArrayList<>();
-		filters.add(new FieldValue(Field.VACCINATION_YEAR, "2008"));
-		filters.add(new FieldValue(Field.GENDER, "M"));
+//		filters.add(new FieldValue(Field.DETECTION, "MQE0141"));
+//		filters.add(new FieldValue(Field.C, "M"));
 		payload.setFilters(filters);
-//		payload.setGroupBy(Arrays.asList(Field.VACCINE_CODE));
+		payload.setGroupBy(Arrays.asList(Field.VACCINE_CODE));
 		
 		section.setPayloads(Arrays.asList(payload));
 		
@@ -114,6 +162,7 @@ public class Main {
 		
 		return template;
 	}
+	
 	public static class C {
 		public String a;
 		public int b;

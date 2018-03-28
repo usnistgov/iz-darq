@@ -12,5 +12,10 @@
   		<artifactId>darq-digest-model</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+  		<groupId>gov.nist.healthcare.iz</groupId>
+  		<artifactId>darq-analyzer</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
 </project>

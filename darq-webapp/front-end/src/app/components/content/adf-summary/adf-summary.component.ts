@@ -36,7 +36,7 @@ export class ADFSummaryComponent implements OnInit {
 		if(this.file && this.file.configuration && this.file.configuration.detections){
 			let items = [];
 			for(let code of this.file.configuration.detections){
-				items.push({ label : code, value : this.detections[code] });
+				items.push({ id : code, description : this.detections[code].description, target :  this.detections[code].target});
 			}
 			return items;
 		}

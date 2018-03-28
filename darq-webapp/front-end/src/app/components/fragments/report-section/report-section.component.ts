@@ -4,6 +4,8 @@ import {MatDialog} from "@angular/material";
 import {AnalysisPayloadDialogComponent} from "../analysis-payload-dialog/analysis-payload-dialog.component";
 import {ConfigurationPayload} from "../../../domain/configuration";
 import {Detections} from "../../../domain/adf";
+import {RangesService} from "../../../services/ranges.service";
+import {Range} from "../../../domain/summary";
 
 @Component({
 	selector: 'app-report-section',
@@ -22,8 +24,12 @@ export class ReportSectionComponent implements OnInit {
 		PD : "Patient Related Detections",
 		PT : "Patient Related Code Table"
 	};
+	ageGroups : {
+		[index : string] : Range
+	};
+
 	@Output("change") change : EventEmitter<Section> = new EventEmitter();
-	constructor(public dialog: MatDialog) {
+	constructor(public dialog: MatDialog, public $range : RangesService) {
 		this.section = new Section();
 	}
 
@@ -37,6 +43,12 @@ export class ReportSectionComponent implements OnInit {
 
 	@Input() set configuration(c : ConfigurationPayload){
 		this._configuration = c;
+		this.ageGroups = {};
+		let i = 0;
+		for(let r of this._configuration.ageGroups){
+			this.ageGroups[i+'g'] = r;
+			i++;
+		}
 	}
 
 	remove(i : number, list : AnalysisPayload[]){
@@ -45,6 +57,10 @@ export class ReportSectionComponent implements OnInit {
 
 	changed(){
 		this.change.emit(this._section);
+	}
+
+	print(r : string){
+		return this.$range.print(this.ageGroups[r]);
 	}
 
 	openDialog(): void {

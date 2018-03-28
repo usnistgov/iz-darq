@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.immregistries.dqa.validator.domain.TargetType;
 import org.immregistries.dqa.validator.engine.MessageValidator;
 import org.immregistries.dqa.validator.engine.ValidationRuleResult;
+import org.immregistries.dqa.validator.issue.Detection;
 import org.immregistries.dqa.validator.issue.ValidationIssue;
 import org.immregistries.dqa.vxu.DqaMessageReceived;
 import org.immregistries.dqa.vxu.DqaVaccination;
@@ -26,12 +27,14 @@ public class DQAValidator {
 		boolean vaccine;
 		String provider;
 		String age;
-		public Issue(String code, boolean vaccine, String provider, String age) {
+		boolean positive;
+		public Issue(String code, boolean vaccine, String provider, String age, boolean positive) {
 			super();
 			this.code = code;
 			this.vaccine = vaccine;
 			this.provider = provider;
 			this.age = age;
+			this.positive = positive;
 		}
 		public String getCode() {
 			return code;
@@ -45,6 +48,13 @@ public class DQAValidator {
 		public String getAgeGroup() {
 			return age;
 		}
+		public boolean isPositive() {
+			return positive;
+		}
+		public void setPositive(boolean positive) {
+			this.positive = positive;
+		}
+		
 	}
 	
 	public class VxInfo {
@@ -122,12 +132,19 @@ public class DQAValidator {
 		}
 		
 		for(ValidationRuleResult r : results){
+			List<Detection> possible = r.getPossible().stream().filter(x -> x != null).collect(Collectors.toList());
 			boolean vaccine = r.getTargetType() == TargetType.Vaccination;
 			DqaVaccination vx = byId(msg, r.getTargetId());
 			String ageGroup = vaccine ? this.ageGroupCalculator.getGroup(msg.getPatient().getBirthDateString(), vx.getAdminDateString()) : currentAgeGroup;
 			for(ValidationIssue vi : r.getIssues()){
 				if(this.filter.in(vi.getIssue().getDqaErrorCode())){
-					this.issues.add(new Issue(vi.getIssue().getDqaErrorCode(), vaccine, vaccine ? this.providers.get(vx.getID()) : null, ageGroup));
+					possible.remove(vi.getIssue());
+					this.issues.add(new Issue(vi.getIssue().getDqaErrorCode(), vaccine, vaccine ? this.providers.get(vx.getID()) : null, ageGroup, false));
+				}
+			}
+			for(Detection d : possible){
+				if(this.filter.in(d.getDqaErrorCode())){
+					this.issues.add(new Issue(d.getDqaErrorCode(), vaccine, vaccine ? this.providers.get(vx.getID()) : null, ageGroup, true));
 				}
 			}
 		}
@@ -157,9 +174,9 @@ public class DQAValidator {
 										Collectors.groupingBy(
 												Issue::getCode,
 												Collectors.collectingAndThen(
-														Collectors.toList(),
+														Collectors.groupingBy(Issue::isPositive),
 														(x) -> {
-															return new DetectionSum(x.size(), nbVx - x.size());
+															return new DetectionSum(x.containsKey(true) ? x.get(true).size() : 0, x.containsKey(false) ? x.get(false).size() : 0);
 														})
 												)
 										)
@@ -176,9 +193,9 @@ public class DQAValidator {
 								Collectors.groupingBy(
 										Issue::getCode,
 										Collectors.collectingAndThen(
-												Collectors.toList(),
+												Collectors.groupingBy(Issue::isPositive),
 												(x) -> {
-													return new DetectionSum(x.size(), 0);
+													return new DetectionSum(x.containsKey(true) ? x.get(true).size() : 0, x.containsKey(false) ? x.get(false).size() : 0);
 												})
 										)
 								)

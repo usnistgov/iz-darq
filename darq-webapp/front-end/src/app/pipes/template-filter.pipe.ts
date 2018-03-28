@@ -8,9 +8,8 @@ import {ConfigurationDescriptor} from "../domain/configuration";
 export class TemplateFilterPipe implements PipeTransform {
 
   transform(value: ReportDescriptor[], arg: ConfigurationDescriptor): any {
-  	console.log("ABC");
   	if(!arg){
-  		return [];
+  		return value;
 	}
   	return value.filter(x => {
   		return x.compatibilities.filter(y => {

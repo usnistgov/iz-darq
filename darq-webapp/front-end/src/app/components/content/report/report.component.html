@@ -1,0 +1,59 @@
+<div fxFlexFill class="back" fxLayout="column" fxLayoutAlign="start stretch" *blockUI="'report'">
+	<div style="height: 100px;"></div>
+	<div fxFlex fxLayout="column" fxLayoutAlign="start start" style="padding: 10px;  width: 100%;" *ngIf="result">
+		<h2 style="color: white;">Analysis Report (ADF - {{result.adfName}}) (Report Template - {{result.name}})</h2>
+		<button class="btn btn-warning" style="cursor: pointer;" [routerLink]="['/data']" style="border-color: white;">
+			<i class="fa fa-arrow-circle-left"></i>
+			Back
+		</button>
+		<p style="color: white;">
+			{{result.description}}
+		</p>
+		<div fxLayout="column" fxLayoutAlign="start stretch" style="overflow-y: auto; width: 100%;">
+			<div class="card" *ngFor="let section of result.sections" style="margin-right: 5px; margin-top: 10px;  display: initial !important;">
+				<div class="card-block">
+					<h4 class="card-title">{{section.title}}</h4>
+					<span style="max-width: 300px; word-break: normal;">{{section.description}}</span>
+					<div *ngFor="let p of section.results" fxLayout="column">
+						<ng-container *ngIf="p.filters && p.filters.length > 0">
+							<strong>Filters</strong>
+							<span *ngFor="let f of p.filters">{{f.field}} : {{f.value}}  {{ f.field === 'DETECTION' ? ' - '+detections[f.value].description : ''}}</span>
+						</ng-container>
+						<ng-container *ngTemplateOutlet="template(p); context : {$implicit : p, data : p.chart}"></ng-container>
+						<mat-divider style="margin-top: 10px; margin-bottom: 10px;"></mat-divider>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<ng-template #indicator let-payload>
+	<div fxLayout="column" fxLayoutAlign="start start" *ngIf="payload.values && payload.values.indicator">
+		<strong>{{(((payload.values.indicator.count / payload.values.indicator.total)*100)).toFixed(2)+'%'}} ({{payload.values.indicator.count}} / {{payload.values.indicator.total}})</strong>
+		<div class="progress" style="width: 300px; background-color: #a7d3e8 !important;">
+			<div class="progress-bar" role="progressbar" [ngStyle]="{width: ((payload.values.indicator.count / payload.values.indicator.total)*100)+'%'}" style="background-color: black !important;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+		</div>
+	</div>
+	<div fxLayout="column" fxLayoutAlign="start start" *ngIf="!payload.values || !payload.values.indicator">
+		<strong>No Data</strong>
+	</div>
+</ng-template>
+
+<ng-template #chart let-payload let-node="data">
+	<div [ngStyle]="{padding: '10px', width : '100%'}" fxLayout="row" fxLayoutAlign="center center">
+		<div [ngStyle]="{ width : max(node.labels.length*70+100,500)+'px'}">
+			<canvas baseChart
+					[datasets]="[{data : node.values}]"
+
+					[labels]="node.labels"
+					[options]="barChartOptions"
+					[legend]="false"
+					(chartHover)="ev($event)"
+					(chartClick)="ev($event)"
+					[chartType]="barChartType"></canvas>
+		</div>
+	</div>
+
+</ng-template>

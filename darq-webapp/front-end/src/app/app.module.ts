@@ -52,6 +52,10 @@ import {TemplateFilterPipe} from "./pipes/template-filter.pipe";
 import {TemplateService} from "./services/template.service";
 import {TemplateCatalogResolver, TemplateResolver} from "./resolvers/template.resolver";
 import {DndListModule} from "ngx-drag-and-drop-lists";
+import {NgSelectModule} from "@ng-select/ng-select";
+import {AnalysisDialogComponent} from "./components/fragments/analysis-dialog/analysis-dialog.component";
+import {ReportComponent} from "./components/content/report/report.component";
+import {ChartsModule} from "ng2-charts";
 
 @NgModule({
 	declarations: [
@@ -74,7 +78,9 @@ import {DndListModule} from "ngx-drag-and-drop-lists";
 		ExtractConfigurationComponent,
 		TemplateComponent,
 		ReportSectionComponent,
-		AnalysisPayloadDialogComponent
+		AnalysisPayloadDialogComponent,
+		AnalysisDialogComponent,
+		ReportComponent
 	],
 	imports: [
 		BrowserModule,
@@ -85,10 +91,12 @@ import {DndListModule} from "ngx-drag-and-drop-lists";
 		NgxChartsModule,
 		PanelMenuModule,
 		SideNavMenuModule,
+		ChartsModule,
 		TreeTableModule,
 		DropdownModule,
 		TableModule,
 		FormsModule,
+		NgSelectModule,
 		DndListModule,
 		BlockUIModule,
 		HttpModule,
@@ -119,7 +127,8 @@ import {DndListModule} from "ngx-drag-and-drop-lists";
 		}
 	],
 	entryComponents : [
-		AnalysisPayloadDialogComponent
+		AnalysisPayloadDialogComponent,
+		AnalysisDialogComponent
 	],
 	bootstrap: [AppComponent]
 })

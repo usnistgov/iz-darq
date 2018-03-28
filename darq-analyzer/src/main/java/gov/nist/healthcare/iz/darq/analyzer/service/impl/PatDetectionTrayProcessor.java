@@ -39,6 +39,7 @@ public class PatDetectionTrayProcessor extends TrayProcessor {
 		for (String detCode : db.getDetection().keySet()) {
 			t.add(Field.DETECTION, detCode);
 			if (!guard(t)) {
+				t.setWeigth(db.getDetection().get(detCode).getNegative() + db.getDetection().get(detCode).getPositive());
 				t.setCount(db.getDetection().get(detCode).getNegative());
 				finalize(t);
 			}

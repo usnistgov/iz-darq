@@ -35,8 +35,10 @@
 						<mat-divider></mat-divider>
 						<mat-list-item style="padding-right : 0px !important;">
 							<div fxLayout="row" fxLayoutAlign="space-between center" style="width: 100%;">
-								<i class="fa fa-minus float-right" style="color: red; cursor: pointer;" (click)="remove(i, filters, filter)"></i>
-								<strong style="margin-right: 5px;">{{filter}}</strong>
+								<div  fxLayout="row" fxLayoutAlign="start center" style="margin-right: 5px;">
+									<i class="fa fa-minus" style="color: red; cursor: pointer; margin-right: 5px;" (click)="remove(i, filters, filter)"></i>
+									<strong style="margin-right: 5px;">{{filter}}</strong>
+								</div>
 								<ng-container *ngTemplateOutlet="template(filter); context : {$implicit : filter}"></ng-container>
 							</div>
 						</mat-list-item>
@@ -80,30 +82,41 @@
 </div>
 
 <ng-template #detection let-key>
-	<mat-select [(value)]="values[key]" style="width: 200px;">
-		<mat-option *ngFor="let detection of detectionsList()" [value]="detection">{{detection}} - {{detectionsDescriptions[detection].description}} - {{detectionsDescriptions[detection].target}}</mat-option>
-	</mat-select>
+	<!--<mat-select [(value)]="values[key]" style="width: 200px;">-->
+		<!--<mat-option *ngFor="let detection of detectionsList()" [value]="detection">{{detection}} - {{detectionsDescriptions[detection].description}} - {{detectionsDescriptions[detection].target}}</mat-option>-->
+	<!--</mat-select>-->
+	<p-dropdown [options]="detectionsList()" [(ngModel)]="values[key]" appendTo="body" [filter]="true" filterBy="label,value.code"></p-dropdown>
+	<!--<ng-select [items]="detectionsList()"-->
+			   <!--style="width: 100%; text-align: center;"-->
+			   <!--bindLabel="description"-->
+			   <!--bindValue="code"-->
+			   <!--placeholder="Select Detection"-->
+			   <!--[(ngModel)]="values[key]">-->
+		<!--<ng-template ng-option-tmp let-item="item">-->
+			<!--[{{item.code}}] - {{item.description}}-->
+		<!--</ng-template>-->
+	<!--</ng-select>-->
 </ng-template>
 <ng-template #table let-key>
-	<mat-select [(value)]="values[key]" style="width: 200px;">
+	<mat-select [(value)]="values[key]" >
 		<mat-option *ngFor="let table of tables()" [value]="table">{{table}}</mat-option>
 	</mat-select>
 </ng-template>
 <ng-template #gender let-key>
-	<mat-select [(value)]="values[key]" style="width: 200px;">
+	<mat-select [(value)]="values[key]" >
 		<mat-option [value]="'M'">Male</mat-option>
 		<mat-option [value]="'F'">Female</mat-option>
 		<mat-option [value]="'U'">Unknown</mat-option>
 	</mat-select>
 </ng-template>
 <ng-template #event let-key>
-	<mat-select [(value)]="values[key]" style="width: 200px;">
+	<mat-select [(value)]="values[key]">
 		<mat-option [value]="'00'">Administered</mat-option>
 		<mat-option [value]="'01'">Historical</mat-option>
 	</mat-select>
 </ng-template>
 <ng-template #ageGroup let-key>
-	<mat-select [(value)]="values[key]" style="width: 200px;">
+	<mat-select [(value)]="values[key]">
 		<mat-option *ngFor="let group of configuration.ageGroups; let i = index" [value]="i+'g'">{{printRange(group)}}</mat-option>
 	</mat-select>
 </ng-template>

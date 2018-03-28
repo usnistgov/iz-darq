@@ -41,11 +41,7 @@ export class AgeGroupComponent implements OnInit {
 
 	add(n : Barket){
 		let found = false;
-		let copy = {
-			year : n.year,
-			month : n.month,
-			day : n.day
-		};
+		let copy = new Barket(n.year,n.month, n.day);
 
 		for(let b of this.barkets){
 			if(b.year === n.year && b.month === n.month && b.day === n.day)
@@ -54,7 +50,7 @@ export class AgeGroupComponent implements OnInit {
 
 		if(!found && (n.year + n.month + n.day) != 0){
 			this.barkets.push(copy);
-			n = { year : 0, month : 0, day : 0};
+			n = new Barket();
 		}
 		this.sort();
 		this.change.emit(this.groups());
@@ -66,7 +62,7 @@ export class AgeGroupComponent implements OnInit {
 	}
 
 	groups(){
-		let start : Barket = { day : 0, year : 0, month : 0};
+		let start : Barket = new Barket();
 		let ranges : Range[] = [];
 		for(let b of this.barkets){
 			ranges.push({min : start, max : b});

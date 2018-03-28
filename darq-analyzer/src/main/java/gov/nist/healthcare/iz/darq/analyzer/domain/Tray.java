@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.spi.ThrowableInformation;
+
 import gov.nist.healthcare.iz.darq.analyzer.domain.Field._CG;
 
 public abstract class Tray implements Cloneable {
@@ -66,14 +68,14 @@ public abstract class Tray implements Cloneable {
 			// TODO Auto-generated constructor stub
 		}
 
-		public VaxTray(Set<TrayField> fields, int count) {
-			super(fields, count);
+		public VaxTray(Set<TrayField> fields, int count, int weigth) {
+			super(fields, count, weigth);
 			// TODO Auto-generated constructor stub
 		}
 
 		@Override
 		public boolean full() {
-			return has(Arrays.asList(Field.PROVIDER, Field.AGE_GROUP, Field.CODE, Field.GENDER, Field.VACCINATION_YEAR, Field.EVENT));
+			return has(Arrays.asList(Field.PROVIDER, Field.AGE_GROUP, Field.VACCINE_CODE, Field.GENDER, Field.VACCINATION_YEAR, Field.EVENT));
 		}
 
 		@Override
@@ -83,7 +85,7 @@ public abstract class Tray implements Cloneable {
 
 		@Override
 		public VaxTray cloneTray() {
-			return new VaxTray(this.copyList(), count);
+			return new VaxTray(this.copyList(), count, weigth);
 		}
 	}
 	
@@ -94,8 +96,8 @@ public abstract class Tray implements Cloneable {
 			// TODO Auto-generated constructor stub
 		}
 
-		public VaxDetectionTray(Set<TrayField> fields, int count) {
-			super(fields, count);
+		public VaxDetectionTray(Set<TrayField> fields, int count, int weigth) {
+			super(fields, count, weigth);
 			// TODO Auto-generated constructor stub
 		}
 
@@ -111,7 +113,7 @@ public abstract class Tray implements Cloneable {
 
 		@Override
 		public Tray cloneTray() {
-			return new VaxDetectionTray(this.copyList(), count);
+			return new VaxDetectionTray(this.copyList(), count, weigth);
 		}
 	}
 	
@@ -122,8 +124,8 @@ public abstract class Tray implements Cloneable {
 			// TODO Auto-generated constructor stub
 		}
 
-		public VaxCodeTray(Set<TrayField> fields, int count) {
-			super(fields, count);
+		public VaxCodeTray(Set<TrayField> fields, int count, int weigth) {
+			super(fields, count, weigth);
 			// TODO Auto-generated constructor stub
 		}
 
@@ -139,7 +141,7 @@ public abstract class Tray implements Cloneable {
 
 		@Override
 		public Tray cloneTray() {
-			return new VaxCodeTray(this.copyList(), count);
+			return new VaxCodeTray(this.copyList(), count, weigth);
 		}
 	}
 	
@@ -150,8 +152,8 @@ public abstract class Tray implements Cloneable {
 			// TODO Auto-generated constructor stub
 		}
 
-		public PatCodeTray(Set<TrayField> fields, int count) {
-			super(fields, count);
+		public PatCodeTray(Set<TrayField> fields, int count, int weigth) {
+			super(fields, count, weigth);
 			// TODO Auto-generated constructor stub
 		}
 
@@ -167,7 +169,7 @@ public abstract class Tray implements Cloneable {
 
 		@Override
 		public Tray cloneTray() {
-			return new PatCodeTray(this.copyList(), count);
+			return new PatCodeTray(this.copyList(), count, weigth);
 		}
 	}
 	
@@ -178,8 +180,8 @@ public abstract class Tray implements Cloneable {
 			// TODO Auto-generated constructor stub
 		}
 
-		public PatDetectionTray(Set<TrayField> fields, int count) {
-			super(fields, count);
+		public PatDetectionTray(Set<TrayField> fields, int count, int weigth) {
+			super(fields, count, weigth);
 			// TODO Auto-generated constructor stub
 		}
 
@@ -195,37 +197,50 @@ public abstract class Tray implements Cloneable {
 
 		@Override
 		public Tray cloneTray() {
-			return new PatDetectionTray(this.copyList(), count);
+			return new PatDetectionTray(this.copyList(), count, weigth);
 		}
 	}
 	
 	Set<TrayField> fields;
 	int count;
+	int weigth;
 	
 	public Tray() {
 		super();
 		this.fields = new HashSet<>();
 	}
 	
-	public Tray(Set<TrayField> fields, int count) {
+	public Tray(Set<TrayField> fields, int count, int weigth) {
 		super();
 		this.fields = fields;
 		this.count = count;
+		this.weigth = weigth;
 	}
 
 	public abstract boolean full();
 	public abstract _CG compatibilityGroup();
 	public abstract Tray cloneTray();
 	public boolean has(List<Field> fs){
-		long n = fields.stream().filter(tf -> fs.contains(tf.field)).collect(Collectors.counting());
-		//System.out.println(n + " " + fs.size() - 1);
-		return n == (fs.size() - 1);
+		return fields.stream().map(x -> {
+			System.out.print(x.field);
+			return x.field;
+		})
+		.collect(Collectors.toSet()).containsAll(new HashSet<>(fs));
+		
 	}
 	
 	public void clean(){
 		this.fields.clear();
 	}
 	
+	public int getWeigth() {
+		return weigth;
+	}
+
+	public void setWeigth(int weigth) {
+		this.weigth = weigth;
+	}
+
 	Set<TrayField> copyList(){
 		Set<TrayField> copy = new HashSet<>();
 		for(TrayField tf : this.fields){
@@ -264,7 +279,7 @@ public abstract class Tray implements Cloneable {
 	}
 	@Override
 	public String toString() {
-		return "Tray [fields=" + fields + ", count=" + count + "]";
+		return "Tray [fields=" + fields + ", count=" + count + ", weigth=" + weigth + "]";
 	}
 	
 }

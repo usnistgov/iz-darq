@@ -42,10 +42,7 @@ export class Section {
 }
 export class AnalysisPayload {
 	type : CG;
-	filters : {
-		field : Field,
-		value : string
-	}[];
+	filters : FieldValue[];
 	groupBy : Field[];
 
 	constructor(){
@@ -54,6 +51,12 @@ export class AnalysisPayload {
 		this.groupBy = [];
 	}
 }
+
+export class FieldValue {
+	field : Field;
+	value : string;
+}
+
 export enum CG {
 	V="V",
 	VD="VD",
@@ -84,3 +87,28 @@ export let _comp : Compatibility = {
 	PD : [Field.AGE_GROUP, Field.DETECTION],
 	PT : [Field.AGE_GROUP, Field.TABLE, Field.CODE]
 };
+
+export class AnalysisResult {
+	adfName : string;
+	name : string;
+	description : string;
+	sections : AnalysisSectionResult[];
+}
+
+export class AnalysisSectionResult {
+	title : string;
+	description : string;
+	results : AnalysisPayloadResult[];
+}
+
+export class AnalysisPayloadResult {
+	filters : FieldValue[];
+	groups : FieldValue[][];
+	values : {
+		[index : string] : {
+			count : number;
+			total : number;
+		}
+	};
+	chart : any;
+}

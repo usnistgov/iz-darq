@@ -37,8 +37,8 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	
 	@Value("${darq.public.key}")
 	private String PUBLIC_KEY;
-	@Value("${darq.private.key}")
-	private String PRIVATE_KEY; 
+//	@Value("${darq.private.key}")
+	private String PRIVATE_KEY = "/Users/hnt5/darq-keys/certificate.key"; 
 	private ObjectMapper mapper = new ObjectMapper(new BsonFactory());
 
 	@Override

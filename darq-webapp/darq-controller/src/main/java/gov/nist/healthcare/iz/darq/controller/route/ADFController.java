@@ -49,16 +49,6 @@ public class ADFController {
 	private DigestConfigurationRepository confRepo;
 	@Autowired
 	private ADFStore storage;
-	
-    @RequestMapping(value = "/detections", method = RequestMethod.GET)
-    @ResponseBody
-    public Map<String, String> index() {
-    	Map<String, String> detections = new HashMap<>();
-    	for(Detection d : Detection.values()) {
-    		detections.put(d.getDqaErrorCode(), d.getDisplayText());
-    	}
-        return detections;
-    }
     
 	@RequestMapping(value="/adf/upload", method=RequestMethod.POST)
 	@ResponseBody

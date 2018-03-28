@@ -4,6 +4,7 @@ import {Router, ActivatedRoute} from "@angular/router";
 import {Section, ReportTemplate, ReportDescriptor} from "../../../domain/report";
 import {ConfigurationService} from "../../../services/configuration.service";
 import {Detections} from "../../../domain/adf";
+import {TemplateService} from "../../../services/template.service";
 
 @Component({
 	selector: 'app-template',
@@ -22,11 +23,11 @@ export class TemplateComponent implements OnInit {
 	configCatalog : ConfigurationDescriptor[];
 	catalog : ReportDescriptor[];
 	configuration : ConfigurationDescriptor;
-	configurationValue : Configuration;
 	template : ReportTemplate;
 	detections : Detections;
+	baseOn : ConfigurationDescriptor;
 
-	constructor(private route: ActivatedRoute, private router : Router, private $config : ConfigurationService) {
+	constructor(private route: ActivatedRoute, private router : Router, private $config : ConfigurationService, private $template : TemplateService) {
 		this.configCatalog = [];
 	}
 
@@ -38,8 +39,41 @@ export class TemplateComponent implements OnInit {
 		return a.id === b.id;
 	}
 
-	async configChange($event){
-		this.configurationValue = await this.$config.findById($event.value.id);
+	submittable(){
+		let basic = this.template.name && this.template.name !== '' && this.template.configuration && this.template.sections && this.template.sections.length > 0;
+		let sections = true;
+		for(let s of this.template.sections){
+			sections = sections && s.title && s.title !== '' && s.payloads && s.payloads.length > 0;
+		}
+		return basic && sections;
+	}
+
+	async save(){
+		let ctrl = this;
+		this.$template.save(this.template).then(async function (x) {
+			ctrl.catalog = await ctrl.$template.catalog();
+			if(x.status === "SUCCESS"){
+				ctrl.router.navigate(["/report-templates/"+x.message]).then(function (y) {
+					ctrl.baseOn = null;
+				});
+			}
+		});
+	}
+
+	async deleteTemplate(){
+		let ctrl = this;
+		this.$template.remove(this.template).then(async function (x) {
+			ctrl.catalog = await ctrl.$template.catalog();
+			ctrl.router.navigate(["/report-templates/new"]).then(function (y) {
+				ctrl.baseOn = null;
+			});
+		});
+	}
+
+	async selectConfig($event){
+		let config = await this.$config.findById($event.value.id);
+		this.template.configuration = config.payload;
+		this.template.sections = [];
 	}
 
 	filtered(){

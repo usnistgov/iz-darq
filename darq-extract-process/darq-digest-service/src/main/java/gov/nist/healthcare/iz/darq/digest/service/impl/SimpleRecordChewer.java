@@ -46,12 +46,14 @@ public class SimpleRecordChewer implements RecordChewer {
 			e.printStackTrace();
 		}
 		
+//		System.out.println(validator.patientDetections().get("2g").get("MQE0141"));
+		
 		Map<String, String> providers = new HashMap<>();
 		Map<String, Map<String, VaccinationPayload>> vaccinationSection = this.groupService.makeVxSectionProvider(configuration.ageGroupService(), validator.getVxInfo(), validator.vaccinationDetections(), collector.getVaccinationCodes());
 		Map<String, PatientPayload> patientSection = this.groupService.makePatSectionAge(configuration.ageGroupService(), validator.patientDetections(), collector.getPatientCodes());
 		Map<String, Fraction> extraction = collector.getExtract();
 		List<String> issues = new ArrayList<>();
-		
+//		System.out.println(patientSection.get("2g").getDetection().get("MQE0141"));
 		
 		Map<String, Map<String, VaccinationPayload>> deIdentifiedSection = new HashMap<>();
 		for(String provider : vaccinationSection.keySet()){

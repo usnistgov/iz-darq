@@ -35,7 +35,7 @@
 					<td>{{ file.size }}</td>
 					<td fxLayout="column">
 						<ng-container *ngIf="file.compatibilities && file.compatibilities.length > 0">
-							<span *ngFor="let conf of file.compatibilities" class="badge badge-info">{{conf.owner}} <span class="badge badge-primary">{{conf.name}}</span></span>
+							<span *ngFor="let conf of file.compatibilities" class="badge badge-info" style="border: 1px solid black; margin-bottom: 5px;" >{{conf.owner}} <span class="badge badge-primary">{{conf.name}}</span></span>
 						</ng-container>
 						<span  *ngIf="!file.compatibilities || file.compatibilities.length === 0" class="badge badge-primary">CUSTOM</span>
 					</td>
@@ -43,7 +43,7 @@
 						<div fxLayout="row" fxLayoutAlign="end center">
 							<span matTooltip="Analysis Report"><i class="fa fa-file" style="color: cornflowerblue; font-size: 1.5em; margin-right: 10px; cursor: pointer;"></i></span>
 							<span [routerLink]="['./'+file.id+'/summary']" matTooltip="Summary"><i class="fa fa-search" style="color: #031a4c; font-size: 1.5em; margin-right: 10px; cursor: pointer;"></i></span>
-							<span matTooltip="Analyze"><i class="fa fa-bar-chart" style="color: #332bff; font-size: 1.5em; margin-right: 10px; cursor: pointer;"></i></span>
+							<span *ngIf="file.compatibilities && file.compatibilities.length > 0" (click)="openDialog(file.id)" matTooltip="Analyze"><i class="fa fa-bar-chart" style="color: #332bff; font-size: 1.5em; margin-right: 10px; cursor: pointer;"></i></span>
 							<span matTooltip="Delete"><i class="fa fa-times" style="color: red; font-size: 1.5em; margin-right: 10px; cursor: pointer;"></i></span>
 						</div>
 					</td>

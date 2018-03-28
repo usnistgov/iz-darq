@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnalysisReport {
-	
+	private String adfName;
 	private String name;
 	private String description;
 	private List<AnalysisSectionResult> sections;
@@ -16,6 +16,12 @@ public class AnalysisReport {
 	}
 	public String getName() {
 		return name;
+	}
+	public String getAdfName() {
+		return adfName;
+	}
+	public void setAdfName(String adfName) {
+		this.adfName = adfName;
 	}
 	public void setName(String name) {
 		this.name = name;

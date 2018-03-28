@@ -38,7 +38,7 @@ public class Summary {
 		counts.totalReadVaccinations = chunk.getNbVaccinations();
 		counts.totalSkippedPatientRecords = chunk.getUnread();
 		counts.maxVaccinationsPerRecord = chunk.getMaxVaccination();
-		counts.avgVaccinationsPerRecord = counts.totalReadVaccinations / counts.totalReadPatientRecords;
+		counts.avgVaccinationsPerRecord = counts.totalReadPatientRecords > 0 ? counts.totalReadVaccinations / counts.totalReadPatientRecords : 0;
 		counts.numberOfProviders = chunk.getProviders().size();
 		counts.minVaccinationsPerRecord = chunk.getMinVaccination();
 	}

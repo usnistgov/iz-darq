@@ -7,13 +7,14 @@ import java.util.Map;
 import java.util.Set;
 
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisPayload.FieldValue;
+import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 
 public class AnalysisSectionResult {
 	
 	public static class AnalysisPayloadResult {
 		private List<FieldValue> filters;
 		private List<Set<FieldValue>> groups;
-		private Map<String, Double> values;
+		private Map<String, Fraction> values;
 		
 		
 		public AnalysisPayloadResult() {
@@ -35,10 +36,11 @@ public class AnalysisSectionResult {
 		public void setGroups(List<Set<FieldValue>> groups) {
 			this.groups = groups;
 		}
-		public Map<String, Double> getValues() {
+
+		public Map<String, Fraction> getValues() {
 			return values;
 		}
-		public void setValues(Map<String, Double> values) {
+		public void setValues(Map<String, Fraction> values) {
 			this.values = values;
 		}
 	}

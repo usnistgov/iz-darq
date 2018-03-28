@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-
-import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
 import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 
 public interface DigestConfigurationRepository extends MongoRepository<DigestConfiguration, String>{

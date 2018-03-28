@@ -12,6 +12,7 @@ import {ADFResolver, ADFListResolver} from "./resolvers/adf.resolver";
 import {ExtractConfigurationComponent} from "./components/content/extract-configuration/extract-configuration.component";
 import {TemplateComponent} from "./components/content/template/template.component";
 import {TemplateCatalogResolver, TemplateResolver} from "./resolvers/template.resolver";
+import {ReportComponent} from "./components/content/report/report.component";
 
 
 export const ROUTES = [
@@ -59,6 +60,13 @@ export const ROUTES = [
 			},
 
 		]
+	},
+	{
+		path : "report/:tId/:fId",
+		component : ReportComponent,
+		resolve: {
+			detections : DetectionsListResolver
+		}
 	},
 	{
 		path: "home",
