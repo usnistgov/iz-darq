@@ -71,9 +71,18 @@ public abstract class DataUnit<T> {
 	}
 	
 	public T getValue(){
-		return value;
+		if(this.placeholder != null && this.placeholder.getCode().equals(DescriptorType.VALUE_PRESENT)){
+			return dummy(-1);
+		}
+		else if(this.placeholder != null && this.placeholder.getCode().equals(DescriptorType.VALUE_LENGTH)){
+			return dummy(this.placeholder.getLength());
+		}
+		else
+			return value;
 	}
 	
+	protected abstract T dummy(int n);
+	protected abstract void validatePlaceHolder(DescriptorType placeholder) throws InvalidValueException;
 	protected abstract T validate(String payload) throws InvalidValueException;
-
+	
 }

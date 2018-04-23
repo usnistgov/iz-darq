@@ -68,10 +68,10 @@
 				</tbody>
 			</table>
 			<h4 style="color: white; padding-top : 1.25rem;" class="card-title">Extract Percentages</h4>
-			<p-table #tt [value]="itemizeExtract()" [globalFilterFields]="['label']" [resizableColumns]="true" [scrollable]="true" scrollHeight="200px">
+			<p-table #tte [value]="itemizeExtract()" [globalFilterFields]="['label']" [resizableColumns]="true" [scrollable]="true" scrollHeight="200px">
 				<ng-template pTemplate="caption">
 					<input type="text" pInputText size="50" placeholder="Filter"
-						   (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:100%;">
+						   (input)="tte.filterGlobal($event.target.value, 'contains')" style="width:100%;">
 				</ng-template>
 				<ng-template pTemplate="header" let-columns>
 					<tr>
@@ -87,10 +87,10 @@
 				</ng-template>
 			</p-table>
 			<h4 style="color: white; padding-top : 1.25rem;" class="card-title">Supported Detections</h4>
-			<p-table #tt [value]="detectionsList()" [globalFilterFields]="['id','description','target']" [resizableColumns]="true" [scrollable]="true" scrollHeight="200px" >
+			<p-table #ttd [value]="detectionsList()" [globalFilterFields]="['id','description','target']" [resizableColumns]="true" [scrollable]="true" scrollHeight="200px" >
 				<ng-template pTemplate="caption">
 					<input type="text" pInputText size="50" placeholder="Filter"
-						   (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:100%;">
+						   (input)="ttd.filterGlobal($event.target.value, 'contains')" style="width:100%;">
 				</ng-template>
 				<ng-template pTemplate="header" let-columns>
 					<tr>
@@ -107,7 +107,37 @@
 					</tr>
 				</ng-template>
 			</p-table>
-
+			<h4 style="color: white; padding-top : 1.25rem;" class="card-title">Vocabulary By Field</h4>
+			<div style="width: 100%; margin-bottom: 5px;" fxLayoutAlign="start start">
+				<ng-container  *ngFor="let field of vocabularyTreeByField">
+					<ng-container *ngTemplateOutlet="listValue; context : {$implicit : field.children, name : field.data.a}"></ng-container>
+				</ng-container>
+			</div>
+			<h4 style="color: white; padding-top : 1.25rem;" class="card-title">Vocabulary By Table</h4>
+			<div style="width: 100%; margin-bottom: 5px;" fxLayoutAlign="start start">
+				<ng-container  *ngFor="let field of vocabularyTreeByTable">
+					<ng-container *ngTemplateOutlet="listValue; context : {$implicit : field.children, name : field.data.a}"></ng-container>
+				</ng-container>
+			</div>
 		</div>
 	</div>
 </div>
+
+<ng-template #listValue let-list let-name="name">
+	<p-table  #lv [value]="list" [globalFilterFields]="['data.b']" [resizableColumns]="true" [scrollable]="true" scrollHeight="200px">
+		<ng-template pTemplate="caption">
+			<input type="text" pInputText size="50" placeholder="Filter"
+				   (input)="lv.filterGlobal($event.target.value, 'contains')" style="width:100%;">
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th>{{name}}</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-node>
+			<tr>
+				<td>{{node.data.b}}</td>
+			</tr>
+		</ng-template>
+	</p-table>
+</ng-template>

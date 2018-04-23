@@ -7,24 +7,23 @@ public class DataElement {
 	String name;
 	boolean isCoded;
 	String table;
+	String dummyValue;
 	DataUnit<?> value;
 	
 	
-	public DataElement(String key, String name, boolean isCoded, String table, DataUnit<?> value) {
+	public DataElement(String key, String name, boolean isCoded, String table, String dummy, DataUnit<?> value) {
 		super();
 		this.key = key;
 		this.name = name;
 		this.isCoded = isCoded;
 		this.table = table;
 		this.value = value;
+		this.dummyValue = dummy;
 	}
-	
 	
 	public DataElement() {
 		super();
 	}
-
-
 	public String getKey() {
 		return key;
 	}
@@ -55,6 +54,11 @@ public class DataElement {
 	public void setValue(DataUnit<?> value) {
 		this.value = value;
 	}
-	
+	public String getDummyValue() {
+		return dummyValue;
+	}
+	public void setDummyValue(String dummyValue) {
+		this.dummyValue = dummyValue;
+	}
 	
 }

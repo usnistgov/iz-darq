@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {Summary, Range} from "../../../domain/summary";
+import {Summary, Range, Vocabulary} from "../../../domain/summary";
 import {ActivatedRoute} from "@angular/router";
 import {ADFData, Detections} from "../../../domain/adf";
 import {RangesService} from "../../../services/ranges.service";
+import {TreeNode} from "primeng/components/common/treenode";
 
 @Component({
 	selector: 'app-adf-summary',
@@ -14,6 +15,8 @@ export class ADFSummaryComponent implements OnInit {
 	summary : Summary;
 	file : ADFData;
 	detections : Detections;
+	vocabularyTreeByField : TreeNode[];
+	vocabularyTreeByTable : TreeNode[];
 
 	constructor(private route: ActivatedRoute, private $range : RangesService) {
 	}
@@ -24,6 +27,43 @@ export class ADFSummaryComponent implements OnInit {
 			ctrl.summary = data['file'].summary;
 			ctrl.file = data['file'];
 			ctrl.detections = data['detections'];
+			let v : Vocabulary = ctrl.file.vocabulary;
+			ctrl.vocabularyTreeByField = [];
+			ctrl.vocabularyTreeByTable = [];
+			for(let k in v.byField){
+				let node : TreeNode = {
+					data : {
+						a : k,
+					},
+					children : v.byField[k].map(x => {
+						return {
+							data : {
+								b : x
+							},
+							children : []
+						}
+					})
+				};
+				ctrl.vocabularyTreeByField.push(node);
+			}
+
+			for(let t in v.byTable){
+				let node : TreeNode = {
+					label : t,
+					data : {
+						a : t
+					},
+					children : v.byTable[t].map(x => {
+						return {
+							data : {
+								b : x
+							},
+							children : []
+						}
+					})
+				};
+				ctrl.vocabularyTreeByTable.push(node);
+			}
 		});
 	}
 

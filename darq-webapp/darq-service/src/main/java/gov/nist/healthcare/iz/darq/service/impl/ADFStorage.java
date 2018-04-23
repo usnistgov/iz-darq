@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
@@ -16,12 +18,15 @@ import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 
 @Service
+@PropertySource("classpath:/configuration.properties")
 public class ADFStorage implements ADFStore {
 
 	@Autowired
 	private ADFMetaDataRepository repo;
 	@Autowired
 	private CryptoUtils crypto;
+	@Value("${darq.store}")
+	private String PATH;
 	
 	@Override
 	public String store(ADFMetaData metadata) {
@@ -33,7 +38,7 @@ public class ADFStorage implements ADFStore {
 	public boolean delete(String id, String owner) throws IOException {
 		ADFMetaData md = get(id, owner);
 		if(md != null){
-			FileUtils.deleteDirectory(Paths.get("~/adf_storage/"+md.getPath()).toFile());
+			FileUtils.deleteDirectory(Paths.get(PATH+"/"+md.getPath()).toFile());
 			repo.delete(id);
 			return true;
 		}
@@ -51,7 +56,7 @@ public class ADFStorage implements ADFStore {
 	public ADFile getFile(String id, String owner) throws Exception {
 		ADFMetaData md = get(id, owner);
 		if(md != null){
-			FileInputStream fis = new FileInputStream(Paths.get("/Users/hnt5/adf_storage/"+md.getPath()+"/adf.data").toFile());
+			FileInputStream fis = new FileInputStream(Paths.get(PATH+"/"+md.getPath()+"/adf.data").toFile());
 			byte[] content = IOUtils.toByteArray(fis);
 			ADFile file = crypto.decrypt(content);
 			return file;

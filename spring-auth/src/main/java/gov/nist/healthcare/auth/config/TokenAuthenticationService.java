@@ -44,7 +44,6 @@ public class TokenAuthenticationService {
 								return x.getAuthority();
 							})
 							.collect(Collectors.toList()));
-		
 		String JWT = Jwts.builder()
 					.setClaims(claims).setSubject(username)
 					.setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME * 1000))

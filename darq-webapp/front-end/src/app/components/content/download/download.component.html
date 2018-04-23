@@ -1,0 +1,32 @@
+<div fxFlexFill class="back" fxLayout="column" fxLayoutAlign="start stretch">
+	<div style="height: 100px;"></div>
+	<div fxFlex fxLayout="column" fxLayoutAlign="start center" style=" width: 100%; padding: 50px;" >
+		<div fxFlexOffset="2" class="card" style="padding: 10px; width: 80%;">
+			<h4 class="card-title">Downloads</h4>
+			<table class="table table-striped">
+				<thead>
+				<tr>
+					<th>Filename</th>
+					<th>Description</th>
+					<th>Size</th>
+					<th></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let doc of catalog">
+					<td>{{doc.name}}</td>
+					<td>{{doc.description}}</td>
+					<td>{{doc.size}}</td>
+					<td>
+						<a [href]="'/public/download/'+doc.id">
+							<button class="btn btn-primary float-right" style="cursor: pointer;">
+								<i class="fa fa-download" style="color: white;"></i>
+						</button>
+						</a>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

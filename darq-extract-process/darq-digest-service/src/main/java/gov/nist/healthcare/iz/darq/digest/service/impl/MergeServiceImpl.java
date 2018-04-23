@@ -1,12 +1,15 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
 import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
 import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
@@ -30,12 +33,14 @@ public class MergeServiceImpl implements MergeService {
 		a.setNbVaccinations(a.getNbVaccinations() + b.getNbVaccinations());
 		a.setMaxVaccination(b.getNbVaccinations());
 		a.setMinVaccination(b.getNbVaccinations());
+		a.setCodes(mergeCodeValues(a.getCodes(), b.getCodes()));
+		a.setValues(mergeFieldValues(a.getValues(), b.getValues()));
 		return a;
 	}
 	
 	
 	public Map<String, String> mergeProvider(Map<String, String> a, Map<String, String> b){
-		Map<String, String> x =  new HashMap<>(a);
+		Map<String, String> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
 			b.forEach((k, v) -> {
 				x.merge(k, v, this::mergeProvider);
@@ -44,8 +49,36 @@ public class MergeServiceImpl implements MergeService {
 		return x;
 	}
 	
+	public Map<String, Set<String>> mergeCodeValues(Map<String, Set<String>> a, Map<String, Set<String>> b){
+		Map<String, Set<String>> x =   a != null ? new HashMap<>(a) : new HashMap<>();
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, this::mergeSet);
+			});
+		}
+		return x;
+	}
+	
+	public Map<Field, Set<String>> mergeFieldValues(Map<Field, Set<String>> a, Map<Field, Set<String>> b){
+		Map<Field, Set<String>> x =   a != null ? new HashMap<>(a) : new HashMap<>();
+		if(b != null){
+			b.forEach((k, v) -> {
+				x.merge(k, v, this::mergeSet);
+			});
+		}
+		return x;
+	}
+	
+	public Set<String> mergeSet(Set<String> a, Set<String> b){
+		 Set<String> x = a != null ? new HashSet<>(a) : new HashSet<>();
+		 if(b != null){
+			 x.addAll(b);
+		 }
+		 return x;
+	}
+	
 	public Map<String, Fraction> mergeExtract(Map<String, Fraction> a, Map<String, Fraction> b){
-		Map<String, Fraction> x =  new HashMap<>(a);
+		Map<String, Fraction> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
 			b.forEach((k, v) -> {
 				x.merge(k, v, Fraction::merge);
@@ -63,7 +96,7 @@ public class MergeServiceImpl implements MergeService {
 
 	@Override
 	public Map<String, Map<String, VaccinationPayload>> mergeVxProvider(Map<String, Map<String, VaccinationPayload>> a, Map<String, Map<String, VaccinationPayload>> b){
-		Map<String, Map<String, VaccinationPayload>> x =  new HashMap<>(a);
+		Map<String, Map<String, VaccinationPayload>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
 			b.forEach((k, v) -> {
 				x.merge(k, v, this::mergeVxAgeGroup);
@@ -74,7 +107,7 @@ public class MergeServiceImpl implements MergeService {
 	
 	@Override
 	public Map<String, VaccinationPayload> mergeVxAgeGroup(Map<String, VaccinationPayload> a, Map<String, VaccinationPayload> b){
-		Map<String, VaccinationPayload> x =  new HashMap<>(a);
+		Map<String, VaccinationPayload> x = a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
 			b.forEach((k, v) -> {
 				x.merge(k, v, this::mergeVxPayload);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class ADChunk {
@@ -18,10 +19,11 @@ public class ADChunk {
 	private Map<String, Map<String, VaccinationPayload>> vaccinationSection;
 	private Map<String, PatientPayload> patientSection;
 	private Map<String, Fraction> extraction;
-	
+	private Map<Field, Set<String>> values;
+	private Map<String, Set<String>> codes;
 	
 	public ADChunk(Map<String, String> providers, Map<String, Map<String, VaccinationPayload>> vaccinationSection,
-			Map<String, PatientPayload> patientSection, Map<String, Fraction> extraction, List<String> issues, int nbVaccinations, int nbPatients) {
+			Map<String, PatientPayload> patientSection, Map<String, Fraction> extraction, List<String> issues, int nbVaccinations, int nbPatients, Map<Field, Set<String>> values, Map<String, Set<String>> codes) {
 		super();
 		this.providers = providers;
 		this.vaccinationSection = vaccinationSection;
@@ -30,6 +32,8 @@ public class ADChunk {
 		this.issues = issues;
 		this.nbVaccinations = nbVaccinations;
 		this.nbPatients = nbPatients;
+		this.values = values;
+		this.codes = codes;
 	}
 	
 	
@@ -139,10 +143,25 @@ public class ADChunk {
 	public void setMinVaccination(int v) {
 		this.minVaccination = v < minVaccination ? v : minVaccination;
 	}
-	
-	
-	
-	
-	
+
+
+	public Map<Field, Set<String>> getValues() {
+		return values;
+	}
+
+
+	public void setValues(Map<Field, Set<String>> values) {
+		this.values = values;
+	}
+
+
+	public Map<String, Set<String>> getCodes() {
+		return codes;
+	}
+
+
+	public void setCodes(Map<String, Set<String>> codes) {
+		this.codes = codes;
+	}
 
 }

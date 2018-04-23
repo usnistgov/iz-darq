@@ -1,0 +1,16 @@
+{
+	"darq-cli" : {
+		"name" : "darq-cli.jar",
+		"size" : "12Mb",
+		"path" : "darq-cli.jar",
+		"type" : "application/java-archive",
+		"description" : "Command Line Tool to generate Aggregated Detections File (Requirement : Java)"
+	},
+	"extract-doc" : {
+		"name" : "DAR_Extract_Specification_draft.docx",
+		"size" : "4Mb",
+		"path" : "nist-darq-extract-format.docx",
+		"type" : "application/msword",
+		"description" : "NIST's specification for the IIS data extract format"
+	}
+}

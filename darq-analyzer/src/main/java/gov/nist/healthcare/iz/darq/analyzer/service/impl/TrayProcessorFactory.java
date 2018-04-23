@@ -5,9 +5,9 @@ import java.util.function.Function;
 import org.springframework.stereotype.Service;
 
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisQuery.Action;
-import gov.nist.healthcare.iz.darq.analyzer.domain.Field._CG;
 import gov.nist.healthcare.iz.darq.analyzer.domain.Tray;
 import gov.nist.healthcare.iz.darq.analyzer.service.TrayProcessor;
+import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
 
 @Service
 public class TrayProcessorFactory implements gov.nist.healthcare.iz.darq.analyzer.service.TrayProcessorFactory {

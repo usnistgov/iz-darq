@@ -1,8 +1,9 @@
-package gov.nist.healthcare.iz.darq.analyzer.domain;
+package gov.nist.healthcare.iz.darq.digest.domain;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 
 public enum Field {
 	PROVIDER(_CG.V, _CG.VD, _CG.VT), 

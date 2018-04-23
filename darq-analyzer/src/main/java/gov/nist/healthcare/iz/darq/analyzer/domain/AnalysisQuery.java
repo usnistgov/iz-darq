@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import gov.nist.healthcare.iz.darq.analyzer.domain.Field._CG;
 import gov.nist.healthcare.iz.darq.analyzer.domain.Tray.TrayField;
+import gov.nist.healthcare.iz.darq.digest.domain.Analysis;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
+import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
 
 public class AnalysisQuery {
 	public static enum Action {
@@ -117,7 +119,7 @@ public class AnalysisQuery {
 				.map(x -> consider(x))
 				.filter(y -> y.equals(Action.KILL))
 				.findAny().isPresent();
-		System.out.println(t.full() + " - " + kill);
+//		System.out.println(t.full() + " - " + kill);
 		return kill ? Action.KILL : t.full() ? Action.TAKE : Action.CONTINUE;
 	}
 	

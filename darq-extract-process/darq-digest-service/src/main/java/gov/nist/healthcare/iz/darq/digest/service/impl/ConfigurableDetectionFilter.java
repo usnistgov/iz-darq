@@ -14,7 +14,7 @@ public class ConfigurableDetectionFilter implements DetectionFilter {
 	
 	@Override
 	public boolean in(String code) {
-		return considered.contains(code);
+		return considered != null ? considered.contains(code) : false;
 	}
 
 }

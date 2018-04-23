@@ -44,12 +44,28 @@ export class AnalysisPayload {
 	type : CG;
 	filters : FieldValue[];
 	groupBy : Field[];
+	groupFilters : {
+		[index : string] : any
+	}[];
+	options : Options;
 
 	constructor(){
 		this.type = null;
 		this.filters = [];
 		this.groupBy = [];
+		this.groupFilters = [];
+		this.options = {
+			threshold : 0,
+			chartType : 'bar',
+			countType : 'per'
+		};
 	}
+}
+
+export class Options {
+	threshold : number;
+	chartType : string;
+	countType : string;
 }
 
 export class FieldValue {
@@ -88,8 +104,17 @@ export let _comp : Compatibility = {
 	PT : [Field.AGE_GROUP, Field.TABLE, Field.CODE]
 };
 
+export let names = {
+	V : "Vaccination Events",
+	VD : "Vaccination Related Detections",
+	VT : "Vaccination Related Code Table",
+	PD : "Patient Related Detections",
+	PT : "Patient Related Code Table"
+};
+
 export class AnalysisResult {
 	adfName : string;
+	configuration : ConfigurationPayload;
 	name : string;
 	description : string;
 	sections : AnalysisSectionResult[];
@@ -102,13 +127,18 @@ export class AnalysisSectionResult {
 }
 
 export class AnalysisPayloadResult {
+	type : CG;
 	filters : FieldValue[];
 	groups : FieldValue[][];
 	values : {
-		[index : string] : {
-			count : number;
-			total : number;
-		}
+		[index : string] : Fraction
 	};
+	distribution : boolean;
+	display : Options;
 	chart : any;
+}
+
+export class Fraction {
+	count : number;
+	total : number;
 }

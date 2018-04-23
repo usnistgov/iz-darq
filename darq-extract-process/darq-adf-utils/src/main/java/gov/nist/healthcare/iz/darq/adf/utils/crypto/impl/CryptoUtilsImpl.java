@@ -32,13 +32,11 @@ import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 import gov.nist.healthcare.iz.darq.digest.domain.EncryptedADF;
 
 @Service
-@PropertySource("classpath:/key.properties")
+@PropertySource("classpath:/configuration.properties")
 public class CryptoUtilsImpl implements CryptoUtils {
 	
-	@Value("${darq.public.key}")
-	private String PUBLIC_KEY;
-//	@Value("${darq.private.key}")
-	private String PRIVATE_KEY = "/Users/hnt5/darq-keys/certificate.key"; 
+	@Value("${darq.keys}")
+	private String PRIVATE_KEY;
 	private ObjectMapper mapper = new ObjectMapper(new BsonFactory());
 
 	@Override
@@ -78,14 +76,14 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	}
 	
 	private PublicKey pub() throws FileNotFoundException, IOException, NoSuchAlgorithmException, InvalidKeySpecException{
-		byte[] cert_bytes = IOUtils.toByteArray(new FileInputStream(PUBLIC_KEY));
+		byte[] cert_bytes = IOUtils.toByteArray(CryptoUtilsImpl.class.getResourceAsStream("/certificate.pub"));
 	    X509EncodedKeySpec ks = new X509EncodedKeySpec(cert_bytes);
 	    KeyFactory kf = KeyFactory.getInstance("RSA");
 	    return kf.generatePublic(ks);
 	}
 	
 	private PrivateKey priv() throws FileNotFoundException, IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-		byte[] bytes = IOUtils.toByteArray(new FileInputStream(PRIVATE_KEY));
+		byte[] bytes = IOUtils.toByteArray(new FileInputStream(PRIVATE_KEY+"/certificate.key"));
 		PKCS8EncodedKeySpec ks = new PKCS8EncodedKeySpec(bytes);
 		KeyFactory kf = KeyFactory.getInstance("RSA");
 		return kf.generatePrivate(ks);

@@ -3,15 +3,12 @@ package gov.nist.healthcare.iz.darq.controller.route;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
-import org.immregistries.dqa.validator.issue.Detection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +27,6 @@ import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
 import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
-import gov.nist.healthcare.iz.darq.service.impl.ADFStorage;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 
 @RestController
@@ -66,7 +62,6 @@ public class ADFController {
 				size = p.getSize();
 			}
 		}
-
 		uploadHandler.handle(name, stream, a.getUsername(), size);
 		return new OpAck(AckStatus.SUCCESS, "ADF Uploaded", "upload");
 	}

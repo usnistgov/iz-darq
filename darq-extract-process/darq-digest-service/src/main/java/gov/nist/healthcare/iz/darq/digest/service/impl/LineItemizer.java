@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import gov.nist.healthcare.iz.darq.parser.model.Address;
 import gov.nist.healthcare.iz.darq.parser.model.Code;
 import gov.nist.healthcare.iz.darq.parser.model.DataElement;
+import gov.nist.healthcare.iz.darq.parser.model.DummyValue;
 import gov.nist.healthcare.iz.darq.parser.model.FieldName;
 import gov.nist.healthcare.iz.darq.parser.model.Name;
 import gov.nist.healthcare.iz.darq.parser.model.Patient;
@@ -44,6 +45,7 @@ public class LineItemizer {
 				
 				String _name_ = f.isAnnotationPresent(FieldName.class) ? f.getAnnotation(FieldName.class).value() : "";
 				String table = f.isAnnotationPresent(Code.class) ? f.getAnnotation(Code.class).value() : "";
+				String dummy = f.isAnnotationPresent(DummyValue.class) ? f.getAnnotation(DummyValue.class).value() : "";
 				String _path = path.isEmpty() ? f.getName() : path+"/"+f.getName();
 				String _name = name.isEmpty() ? _name_ : name + " - " + _name_;
 
@@ -51,7 +53,7 @@ public class LineItemizer {
 					_lc.addAll(process(f.getType(), f.getType().cast(f.get(obj)), _path, _name));
 				}
 				else {
-					_lc.add(new DataElement(_path, _name, !table.isEmpty(), table, (DataUnit<?>) f.get(obj)));
+					_lc.add(new DataElement(_path, _name, !table.isEmpty(), table, dummy, (DataUnit<?>) f.get(obj)));
 				}	
 			}
 		}

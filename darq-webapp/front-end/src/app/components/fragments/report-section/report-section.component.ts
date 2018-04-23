@@ -1,11 +1,12 @@
 import {Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
-import {Section, AnalysisPayload} from "../../../domain/report";
+import {Section, AnalysisPayload, names} from "../../../domain/report";
 import {MatDialog} from "@angular/material";
 import {AnalysisPayloadDialogComponent} from "../analysis-payload-dialog/analysis-payload-dialog.component";
-import {ConfigurationPayload} from "../../../domain/configuration";
+import {ConfigurationPayload, CVX} from "../../../domain/configuration";
 import {Detections} from "../../../domain/adf";
 import {RangesService} from "../../../services/ranges.service";
 import {Range} from "../../../domain/summary";
+import {TemplateService} from "../../../services/template.service";
 
 @Component({
 	selector: 'app-report-section',
@@ -17,19 +18,16 @@ export class ReportSectionComponent implements OnInit {
 	_section : Section;
 	_configuration : ConfigurationPayload;
 	_detections : Detections;
-	names = {
-		V : "Vaccination Events",
-		VD : "Vaccination Related Detections",
-		VT : "Vaccination Related Code Table",
-		PD : "Patient Related Detections",
-		PT : "Patient Related Code Table"
-	};
+	_cvxs : {};
+	_cvx : CVX[];
 	ageGroups : {
 		[index : string] : Range
 	};
+	names = names;
 
 	@Output("change") change : EventEmitter<Section> = new EventEmitter();
-	constructor(public dialog: MatDialog, public $range : RangesService) {
+	@Output("delete") delEv : EventEmitter<boolean> = new EventEmitter();
+	constructor(public dialog: MatDialog, public $range : RangesService, public $template : TemplateService) {
 		this.section = new Section();
 	}
 
@@ -39,6 +37,13 @@ export class ReportSectionComponent implements OnInit {
 
 	@Input() set section(s : Section){
 		this._section = s;
+	}
+	@Input() set cvx(s : CVX[]){
+		this._cvxs = {};
+		this._cvx = s;
+		for(let cvx of s){
+			this._cvxs[cvx.cvx] = cvx.name;
+		}
 	}
 
 	@Input() set configuration(c : ConfigurationPayload){
@@ -55,6 +60,10 @@ export class ReportSectionComponent implements OnInit {
 		list.splice(i,1);
 	}
 
+	del(){
+		this.delEv.emit();
+	}
+
 	changed(){
 		this.change.emit(this._section);
 	}
@@ -67,9 +76,10 @@ export class ReportSectionComponent implements OnInit {
 		let ctrl = this;
 		let dialogRef = this.dialog.open(AnalysisPayloadDialogComponent, {
 			data: {
-				names : ctrl.names,
+				names : names,
 				configuration : this._configuration,
-				detections : this._detections
+				detections : this._detections,
+				cvx : this._cvxs
 			}
 		});
 

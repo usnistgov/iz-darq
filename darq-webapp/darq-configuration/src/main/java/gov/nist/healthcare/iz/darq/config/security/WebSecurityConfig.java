@@ -49,7 +49,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/api/**").fullyAuthenticated()
 		.and()
 		.addFilterBefore(loginFilter(), UsernamePasswordAuthenticationFilter.class)
-		.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
 		.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 

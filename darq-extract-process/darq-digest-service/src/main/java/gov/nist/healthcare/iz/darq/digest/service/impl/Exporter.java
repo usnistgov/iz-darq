@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
 import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
+import gov.nist.healthcare.iz.darq.digest.domain.ADFile.Vocabulary;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Summary;
 import gov.nist.healthcare.iz.darq.digest.service.ExportADChunk;
@@ -26,8 +27,8 @@ public class Exporter implements ExportADChunk {
 	@Override
 	public void export(ConfigurationPayload payload, ADChunk chunk) throws Exception {
 		
-		Summary summary = new Summary(chunk,  payload.getAgeGroups());
-		ADFile file = new ADFile(chunk.getExtraction(), chunk.getPatientSection(), chunk.getVaccinationSection(), payload, summary);
+		Summary summary = new Summary(chunk, payload.getVaxCodeAbstraction(), payload.getAgeGroups());
+		ADFile file = new ADFile(chunk.getExtraction(), chunk.getPatientSection(), chunk.getVaccinationSection(), payload, summary, new Vocabulary(chunk.getValues(), chunk.getCodes()));
 		
 		File output = new File("./darq-analysis/");
 	    output.mkdirs();

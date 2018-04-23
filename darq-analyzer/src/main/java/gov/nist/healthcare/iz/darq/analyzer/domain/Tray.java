@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 
 import org.apache.log4j.spi.ThrowableInformation;
 
-import gov.nist.healthcare.iz.darq.analyzer.domain.Field._CG;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
+import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
 
 public abstract class Tray implements Cloneable {
 	public static class TrayField {
@@ -222,7 +223,6 @@ public abstract class Tray implements Cloneable {
 	public abstract Tray cloneTray();
 	public boolean has(List<Field> fs){
 		return fields.stream().map(x -> {
-			System.out.print(x.field);
 			return x.field;
 		})
 		.collect(Collectors.toSet()).containsAll(new HashSet<>(fs));

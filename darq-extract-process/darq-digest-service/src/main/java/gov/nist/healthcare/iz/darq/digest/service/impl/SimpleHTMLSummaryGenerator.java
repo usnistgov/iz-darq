@@ -118,7 +118,7 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 	    			    	    		)
     		    	    		),
     		    	    		card(
-    		    	    				".full-width",
+    		    	    				".half-width.space-left",
 	    			    	    		"Age Groups",
 	    			    	    		table(
 	    			    	    				attrs(".table.table-condensed.table-striped"),
@@ -134,6 +134,23 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 	    			        						tr(
 	    			        								td("+"), td(summary.getOutOfRange()+"")
 	    			        						)
+	    			    	    				)
+	    			    	    		)
+    			    	    	),
+    		    	    		card(
+    		    	    				".half-width.space-left",
+	    			    	    		"CVX Codes Abstraction",
+	    			    	    		table(
+	    			    	    				attrs(".table.table-condensed.table-striped"),
+	    			    	    				thead(
+	    			    	    						tr(
+	    			    	    								th("CVX Code"), th("Abstraction")
+	    			    	    						)
+	    			    	    				),
+	    			    	    				tbody(
+	    			        						each(summary.getCvxAbstraction().entrySet(), entry -> tr(
+	    			        	    						td(entry.getKey()), td(entry.getValue())
+	    			        	    				))
 	    			    	    				)
 	    			    	    		)
     			    	    	)

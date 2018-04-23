@@ -12,8 +12,9 @@ public class Summary {
 	private int outOfRange = 0; 
 	private SummaryCounts counts;
 	private Map<String, Double> extract;
+	private Map<String, String> cvxAbstraction;
 	
-	public Summary(ADChunk chunk, List<Range> groups){
+	public Summary(ADChunk chunk, Map<String, String> cvxAbstraction, List<Range> groups){
 		super();
 		this.issues = chunk.getIssues();
 		this.countByAgeGroup = new ArrayList<>();
@@ -33,7 +34,7 @@ public class Summary {
 		this.outOfRange = ageCounts.getOrDefault(groups.size()+"g", 0);
 		this.countByAgeGroup.sort(null);
 		counts = new SummaryCounts();
-		
+		this.cvxAbstraction = cvxAbstraction;
 		counts.totalReadPatientRecords = chunk.getNbPatients();
 		counts.totalReadVaccinations = chunk.getNbVaccinations();
 		counts.totalSkippedPatientRecords = chunk.getUnread();
@@ -78,23 +79,16 @@ public class Summary {
 	public void setOutOfRange(int outOfRange) {
 		this.outOfRange = outOfRange;
 	}
-
-
-
-
-
+	public Map<String, String> getCvxAbstraction() {
+		return cvxAbstraction != null ? cvxAbstraction : new HashMap<>();
+	}
+	public void setCvxAbstraction(Map<String, String> cvxAbstraction) {
+		this.cvxAbstraction = cvxAbstraction;
+	}
 	public SummaryCounts getCounts() {
 		return counts;
 	}
-
-
-
-
-
 	public void setCounts(SummaryCounts counts) {
 		this.counts = counts;
 	}
-	
-	
-	
 }

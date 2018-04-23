@@ -14,6 +14,7 @@
 		<module>darq-service</module>
 		<module>darq-controller</module>
 		<module>darq-app</module>
+		<module>darq-installer</module>
 	</modules>
 	<dependencies>
 		<dependency>

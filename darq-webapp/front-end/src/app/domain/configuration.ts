@@ -28,6 +28,11 @@ export class ConfigurationPayload {
 	}
 }
 
+export class CVX {
+	name : string;
+	cvx : string;
+}
+
 export interface ConfigurationDescriptor {
 	id : string,
 	name : string,

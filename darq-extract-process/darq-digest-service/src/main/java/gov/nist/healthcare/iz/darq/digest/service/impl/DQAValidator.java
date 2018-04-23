@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.immregistries.dqa.validator.domain.TargetType;
@@ -16,8 +18,10 @@ import org.immregistries.dqa.vxu.DqaVaccination;
 import org.joda.time.LocalDate;
 
 import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.service.AgeGroupService;
 import gov.nist.healthcare.iz.darq.digest.service.DetectionFilter;
+import gov.nist.healthcare.iz.darq.digest.service.VaxGroupMapper;
 import gov.nist.healthcare.iz.darq.parser.model.AggregatePatientRecord;
 
 public class DQAValidator {
@@ -101,9 +105,10 @@ public class DQAValidator {
 	public Map<String, String> providers;
 	public AgeGroupService ageGroupCalculator;
 	private DetectionFilter filter;
+	private VaxGroupMapper vaxMapper;
 	public int nbVx;
 
-	public DQAValidator(AgeGroupService ageGroupCalculator, DetectionFilter filter) {
+	public DQAValidator(AgeGroupService ageGroupCalculator, DetectionFilter filter, VaxGroupMapper vaxMapper) {
 		super();
 		this.transformer = new DQATransformService();
 		this.issues = new ArrayList<>();
@@ -112,25 +117,28 @@ public class DQAValidator {
 		this.nbVx = 0;
 		this.ageGroupCalculator = ageGroupCalculator;
 		this.filter = filter;
+		this.vaxMapper = vaxMapper;
 	}
 	
 	public void validateRecord(AggregatePatientRecord apr, LocalDate date){
 		DqaMessageReceived msg = this.transformer.transform(apr);
 		nbVx = msg.getVaccinations().size();
 		String currentAgeGroup = this.ageGroupCalculator.getGroup(msg.getPatient().getBirthDateString(), date.toString("yyyyMMdd"));
+
 		for(DqaVaccination vx : msg.getVaccinations()){
 			this.providers.put(vx.getID(), vx.getFacilityName());
 			String ageGroup = this.ageGroupCalculator.getGroup(msg.getPatient().getBirthDateString(), vx.getAdminDateString());
-			this.vx.add(new VxInfo(vx.getFacilityName(), ageGroup, vx.getAdminCvxCode(), msg.getPatient().getSex(), vx.getAdminDateString().substring(0,4), vx.getInformationSourceCode()));
+			this.vx.add(new VxInfo(vx.getFacilityName(), ageGroup, this.vaxMapper.translate(vx.getAdminCvxCode()), msg.getPatient().getSex(), vx.getAdminDateString().substring(0,4), vx.getInformationSourceCode()));
 		}
 		List<ValidationRuleResult> results = new ArrayList<>();
+
 		try {
 			results = this.validator.validateMessageNIST(msg);
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		
+
 		for(ValidationRuleResult r : results){
 			List<Detection> possible = r.getPossible().stream().filter(x -> x != null).collect(Collectors.toList());
 			boolean vaccine = r.getTargetType() == TargetType.Vaccination;
@@ -230,6 +238,36 @@ public class DQAValidator {
 										)
 								)
 						);
+	}
+	
+
+	public Map<Field, Set<String>> vocabulary(){
+		Map<Field, Set<String>> vocabulary = new HashMap<>();
+		Set<String> year = this.keySet(VxInfo::getYear);
+		Set<String> source = this.keySet(VxInfo::getSource);
+		Set<String> vaxCode  = this.keySet(VxInfo::getCode);
+		Set<String> detections = this.issues.stream()
+		.collect(
+				Collectors.groupingBy(
+						Issue::getCode
+				)
+		).keySet();
+		
+		vocabulary.put(Field.VACCINATION_YEAR, year);
+		vocabulary.put(Field.EVENT, source);
+		vocabulary.put(Field.VACCINE_CODE, vaxCode);
+		vocabulary.put(Field.DETECTION, detections);
+		
+		return vocabulary;
+	}
+	
+	public Set<String> keySet(Function<? super VxInfo, String> func){
+		return this.vx.stream()
+				.collect(
+						Collectors.groupingBy(
+								func
+						)
+				).keySet();
 	}
 	
 	

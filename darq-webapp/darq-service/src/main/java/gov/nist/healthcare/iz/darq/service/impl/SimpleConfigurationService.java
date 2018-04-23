@@ -52,7 +52,7 @@ public class SimpleConfigurationService implements ConfigurationService {
 			}
 		}
 		
-		return age_groups && detections;
+		return age_groups && slave.getAgeGroups().size() == master.getAgeGroups().size() && detections;
 	}
 	
 	@Override

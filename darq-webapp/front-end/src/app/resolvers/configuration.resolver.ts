@@ -4,8 +4,9 @@
 import {Resolve, ActivatedRouteSnapshot} from "@angular/router";
 import {ConfigurationService} from "../services/configuration.service";
 import {Injectable} from "@angular/core";
-import {Configuration, Field, Metric, ConfigurationDescriptor} from "../domain/configuration";
+import {Configuration, Field, Metric, ConfigurationDescriptor, CVX} from "../domain/configuration";
 import {Detections} from "../domain/adf";
+import {FileDownload, DownloadService} from "../services/download.service";
 
 
 @Injectable()
@@ -52,3 +53,22 @@ export class DetectionsListResolver implements Resolve<Detections> {
 	}
 }
 
+@Injectable()
+export class CVXListResolver implements Resolve<CVX[]> {
+
+	constructor(private $config : ConfigurationService) {}
+
+	resolve(route: ActivatedRouteSnapshot) {
+		return this.$config.getCVX();
+	}
+}
+
+@Injectable()
+export class DownloadResolver implements Resolve<FileDownload[]> {
+
+	constructor(private $download : DownloadService) {}
+
+	resolve(route: ActivatedRouteSnapshot) {
+		return this.$download.catalog();
+	}
+}

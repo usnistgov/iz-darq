@@ -33,7 +33,7 @@ import {TableModule} from "primeng/components/table/table";
 import {MetricPipe} from "./pipes/metrics-filter.pipe";
 import {ROUTES} from "./app.routes";
 import {
-	ConfigurationResolver, ConfigurationCatalogResolver, DetectionsListResolver
+	ConfigurationResolver, ConfigurationCatalogResolver, DetectionsListResolver, CVXListResolver, DownloadResolver
 } from "./resolvers/configuration.resolver";
 import {HttpModule} from "@angular/http";
 import {DataComponent} from "./components/content/data/data.component";
@@ -56,6 +56,12 @@ import {NgSelectModule} from "@ng-select/ng-select";
 import {AnalysisDialogComponent} from "./components/fragments/analysis-dialog/analysis-dialog.component";
 import {ReportComponent} from "./components/content/report/report.component";
 import {ChartsModule} from "ng2-charts";
+import {VarDirective} from "./directives/var.directive";
+import {Ng2GoogleChartsModule} from "ng2-google-charts";
+import {AutoCompleteModule} from "primeng/components/autocomplete/autocomplete";
+import {DownloadComponent} from "./components/content/download/download.component";
+import {DownloadService} from "./services/download.service";
+
 
 @NgModule({
 	declarations: [
@@ -69,9 +75,11 @@ import {ChartsModule} from "ng2-charts";
 		FileDropDirective,
 		DataComponent,
 		ExternalDropDirective,
+		VarDirective,
 		UploadComponent,
 		ChartFilterPipe,
 		MetricPipe,
+		DownloadComponent,
 		TextPipe,
 		TemplateFilterPipe,
 		AgeGroupComponent,
@@ -90,6 +98,7 @@ import {ChartsModule} from "ng2-charts";
 		MaterialModule,
 		NgxChartsModule,
 		PanelMenuModule,
+		AutoCompleteModule,
 		SideNavMenuModule,
 		ChartsModule,
 		TreeTableModule,
@@ -99,6 +108,7 @@ import {ChartsModule} from "ng2-charts";
 		NgSelectModule,
 		DndListModule,
 		BlockUIModule,
+		Ng2GoogleChartsModule,
 		HttpModule,
 		TreeModule,
 		ToastyModule.forRoot(),
@@ -118,6 +128,9 @@ import {ChartsModule} from "ng2-charts";
 		ADFResolver,
 		ADFListResolver,
 		DetectionsListResolver,
+		CVXListResolver,
+		DownloadService,
+		DownloadResolver,
 		AdfService,
 		ConfigurationCatalogResolver,
 		{

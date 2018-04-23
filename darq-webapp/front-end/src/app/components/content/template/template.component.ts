@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ConfigurationDescriptor, Configuration} from "../../../domain/configuration";
+import {ConfigurationDescriptor, Configuration, CVX} from "../../../domain/configuration";
 import {Router, ActivatedRoute} from "@angular/router";
 import {Section, ReportTemplate, ReportDescriptor} from "../../../domain/report";
 import {ConfigurationService} from "../../../services/configuration.service";
@@ -26,6 +26,7 @@ export class TemplateComponent implements OnInit {
 	template : ReportTemplate;
 	detections : Detections;
 	baseOn : ConfigurationDescriptor;
+	cvx : CVX[];
 
 	constructor(private route: ActivatedRoute, private router : Router, private $config : ConfigurationService, private $template : TemplateService) {
 		this.configCatalog = [];
@@ -114,6 +115,9 @@ export class TemplateComponent implements OnInit {
 			}
 			if(data['detectionList']){
 				ctrl.detections = data['detectionList'];
+			}
+			if(data['cvx']){
+				ctrl.cvx = data['cvx'];
 			}
 			if(!data['template']){
 				ctrl.template = new ReportTemplate();

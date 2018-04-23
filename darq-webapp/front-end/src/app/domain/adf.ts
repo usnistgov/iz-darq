@@ -1,4 +1,4 @@
-import {Summary, Range} from "./summary";
+import {Summary, Range, Vocabulary} from "./summary";
 import {ConfigurationDescriptor, ConfigurationPayload} from "./configuration";
 /**
  * Created by hnt5 on 3/22/18.
@@ -11,7 +11,9 @@ export class ADFData {
 	owner : string;
 	analysedOn : Date;
 	uploadedOn : Date;
-	configuration : ConfigurationPayload
+	configuration : ConfigurationPayload;
+	summary : Summary;
+	vocabulary : Vocabulary;
 }
 
 export class ADFDescriptor {

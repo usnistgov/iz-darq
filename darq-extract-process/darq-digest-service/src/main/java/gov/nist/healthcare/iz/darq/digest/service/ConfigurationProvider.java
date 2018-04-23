@@ -4,5 +4,6 @@ public interface ConfigurationProvider {
 	
 	AgeGroupService ageGroupService();
 	DetectionFilter detectionFilter();
+	VaxGroupMapper vaxGroupMapper();
 
 }

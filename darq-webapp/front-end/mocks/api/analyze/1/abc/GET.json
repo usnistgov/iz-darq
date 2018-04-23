@@ -1,1 +1,3057 @@
-{"adfName":"DEMO","name":"Template 1","description":"","sections":[{"title":"Patient Name Completeness","description":"","results":[{"filters":[{"field":"DETECTION","value":"MQE0141"}],"groups":[],"values":{"indicator":{"count":3,"total":94}}},{"filters":[{"field":"DETECTION","value":"MQE0154"}],"groups":[],"values":{}}]},{"title":"Gender Distribution","description":"","results":[{"filters":[{"field":"TABLE","value":"GENDER"}],"groups":[[{"field":"CODE","value":"M"}],[{"field":"CODE","value":"F"}]],"values":{"0grp":{"count":41,"total":94},"1grp":{"count":53,"total":94}}}]},{"title":"Vaccine Distribution in 2008","description":"","results":[{"filters":[{"field":"VACCINATION_YEAR","value":"2008"}],"groups":[[{"field":"VACCINE_CODE","value":"21"}],[{"field":"VACCINE_CODE","value":"116"}],[{"field":"VACCINE_CODE","value":"49"}],[{"field":"VACCINE_CODE","value":"52"}],[{"field":"VACCINE_CODE","value":"155"}],[{"field":"VACCINE_CODE","value":"03"}],[{"field":"VACCINE_CODE","value":"20"}]],"values":{"0grp":{"count":5,"total":20},"1grp":{"count":4,"total":20},"6grp":{"count":1,"total":20},"4grp":{"count":1,"total":20},"5grp":{"count":2,"total":20},"3grp":{"count":3,"total":20},"2grp":{"count":4,"total":20}}}]}]}
+{
+	"adfName": "DEMO",
+	"name": "Template",
+	"description": "",
+	"sections": [
+		{
+			"title": "Patient Name Completion",
+			"description": "",
+			"results": [
+				{
+					"type": "PD",
+					"filters": [
+						{
+							"field": "DETECTION",
+							"value": "MQE0141"
+						}
+					],
+					"groups": [],
+					"values": {
+						"indicator": {
+							"count": 3,
+							"total": 94
+						}
+					},
+					"complete": true,
+					"display": {
+						"threshold": 3,
+						"chartType": "bar",
+						"countType": "per"
+					}
+				},
+				{
+					"type": "PD",
+					"filters": [
+						{
+							"field": "DETECTION",
+							"value": "MQE0166"
+						}
+					],
+					"groups": [],
+					"values": {
+						"indicator": {
+							"count": 0,
+							"total": 94
+						}
+					},
+					"complete": true,
+					"display": {
+						"threshold": 3,
+						"chartType": "bar",
+						"countType": "per"
+					}
+				}
+			]
+		},
+		{
+			"title": "Gender Distribution",
+			"description": "",
+			"results": [
+				{
+					"type": "PT",
+					"filters": [
+						{
+							"field": "TABLE",
+							"value": "GENDER"
+						}
+					],
+					"groups": [
+						[
+							{
+								"field": "CODE",
+								"value": "M"
+							}
+						],
+						[
+							{
+								"field": "CODE",
+								"value": "F"
+							}
+						]
+					],
+					"values": {
+						"0grp": {
+							"count": 41,
+							"total": 94
+						},
+						"1grp": {
+							"count": 53,
+							"total": 94
+						}
+					},
+					"complete": true,
+					"display": {
+						"threshold": 0,
+						"chartType": "pie",
+						"countType": "per"
+					}
+				}
+			]
+		},
+		{
+			"title": "Vaccinations of 2008",
+			"description": "",
+			"results": [
+				{
+					"type": "V",
+					"filters": [
+						{
+							"field": "VACCINATION_YEAR",
+							"value": "2008"
+						}
+					],
+					"groups": [
+						[
+							{
+								"field": "GENDER",
+								"value": "M"
+							},
+							{
+								"field": "VACCINE_CODE",
+								"value": "49"
+							}
+						],
+						[
+							{
+								"field": "VACCINE_CODE",
+								"value": "21"
+							},
+							{
+								"field": "GENDER",
+								"value": "M"
+							}
+						],
+						[
+							{
+								"field": "VACCINE_CODE",
+								"value": "155"
+							},
+							{
+								"field": "GENDER",
+								"value": "M"
+							}
+						],
+						[
+							{
+								"field": "VACCINE_CODE",
+								"value": "116"
+							},
+							{
+								"field": "GENDER",
+								"value": "M"
+							}
+						],
+						[
+							{
+								"field": "VACCINE_CODE",
+								"value": "20"
+							},
+							{
+								"field": "GENDER",
+								"value": "M"
+							}
+						],
+						[
+							{
+								"field": "VACCINE_CODE",
+								"value": "52"
+							},
+							{
+								"field": "GENDER",
+								"value": "M"
+							}
+						]
+					],
+					"values": {
+						"0grp": {
+							"count": 3,
+							"total": 20
+						},
+						"1grp": {
+							"count": 1,
+							"total": 20
+						},
+						"4grp": {
+							"count": 1,
+							"total": 20
+						},
+						"5grp": {
+							"count": 1,
+							"total": 20
+						},
+						"3grp": {
+							"count": 2,
+							"total": 20
+						},
+						"2grp": {
+							"count": 1,
+							"total": 20
+						}
+					},
+					"complete": true,
+					"display": {
+						"threshold": 0,
+						"chartType": "bar",
+						"countType": "per"
+					}
+				},
+				{
+					"type": "PD",
+					"filters": [],
+					"groups": [
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0460"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0459"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0458"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0211"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0453"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0451"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0176"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0175"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0457"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0456"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0455"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0212"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0454"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0196"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0195"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0194"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0193"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0109"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0108"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0107"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0106"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0222"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0101"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0221"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0100"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0220"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0462"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0461"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0105"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0104"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0224"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0103"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0102"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0552"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0551"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0550"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0157"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0170"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0174"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0173"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0172"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0171"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0167"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0200"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0166"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0165"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0169"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0168"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0141"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0140"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0134"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0530"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0133"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0132"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0099"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0131"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0098"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0533"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0394"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0393"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0549"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0548"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0547"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0546"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0142"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0545"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0119"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0118"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0117"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0519"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0518"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0517"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0112"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0111"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0199"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0110"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0198"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0197"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0116"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0115"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0114"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0113"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0093"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0092"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0130"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0097"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0096"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0095"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0094"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0129"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0408"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0123"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0122"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0121"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0120"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0125"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0521"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0124"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0520"
+							}
+						]
+					],
+					"values": {
+						"1grp": {
+							"count": 0,
+							"total": 94
+						},
+						"34grp": {
+							"count": 0,
+							"total": 94
+						},
+						"28grp": {
+							"count": 0,
+							"total": 94
+						},
+						"57grp": {
+							"count": 0,
+							"total": 94
+						},
+						"86grp": {
+							"count": 0,
+							"total": 94
+						},
+						"11grp": {
+							"count": 94,
+							"total": 94
+						},
+						"48grp": {
+							"count": 3,
+							"total": 94
+						},
+						"9grp": {
+							"count": 94,
+							"total": 94
+						},
+						"92grp": {
+							"count": 0,
+							"total": 94
+						},
+						"25grp": {
+							"count": 94,
+							"total": 94
+						},
+						"63grp": {
+							"count": 0,
+							"total": 188
+						},
+						"40grp": {
+							"count": 0,
+							"total": 94
+						},
+						"31grp": {
+							"count": 94,
+							"total": 94
+						},
+						"77grp": {
+							"count": 94,
+							"total": 94
+						},
+						"83grp": {
+							"count": 0,
+							"total": 94
+						},
+						"4grp": {
+							"count": 0,
+							"total": 94
+						},
+						"14grp": {
+							"count": 0,
+							"total": 94
+						},
+						"52grp": {
+							"count": 0,
+							"total": 94
+						},
+						"20grp": {
+							"count": 0,
+							"total": 94
+						},
+						"17grp": {
+							"count": 0,
+							"total": 94
+						},
+						"45grp": {
+							"count": 0,
+							"total": 94
+						},
+						"72grp": {
+							"count": 0,
+							"total": 94
+						},
+						"66grp": {
+							"count": 0,
+							"total": 94
+						},
+						"97grp": {
+							"count": 0,
+							"total": 94
+						},
+						"55grp": {
+							"count": 0,
+							"total": 94
+						},
+						"78grp": {
+							"count": 0,
+							"total": 94
+						},
+						"84grp": {
+							"count": 0,
+							"total": 94
+						},
+						"13grp": {
+							"count": 0,
+							"total": 94
+						},
+						"36grp": {
+							"count": 0,
+							"total": 94
+						},
+						"42grp": {
+							"count": 0,
+							"total": 94
+						},
+						"7grp": {
+							"count": 0,
+							"total": 94
+						},
+						"90grp": {
+							"count": 94,
+							"total": 94
+						},
+						"39grp": {
+							"count": 0,
+							"total": 94
+						},
+						"69grp": {
+							"count": 0,
+							"total": 94
+						},
+						"98grp": {
+							"count": 0,
+							"total": 94
+						},
+						"61grp": {
+							"count": 0,
+							"total": 94
+						},
+						"27grp": {
+							"count": 94,
+							"total": 94
+						},
+						"81grp": {
+							"count": 0,
+							"total": 94
+						},
+						"33grp": {
+							"count": 0,
+							"total": 94
+						},
+						"58grp": {
+							"count": 94,
+							"total": 94
+						},
+						"75grp": {
+							"count": 0,
+							"total": 94
+						},
+						"50grp": {
+							"count": 94,
+							"total": 94
+						},
+						"2grp": {
+							"count": 0,
+							"total": 94
+						},
+						"16grp": {
+							"count": 94,
+							"total": 94
+						},
+						"19grp": {
+							"count": 0,
+							"total": 94
+						},
+						"70grp": {
+							"count": 0,
+							"total": 94
+						},
+						"89grp": {
+							"count": 0,
+							"total": 94
+						},
+						"47grp": {
+							"count": 94,
+							"total": 94
+						},
+						"64grp": {
+							"count": 0,
+							"total": 94
+						},
+						"95grp": {
+							"count": 0,
+							"total": 188
+						},
+						"22grp": {
+							"count": 0,
+							"total": 94
+						},
+						"53grp": {
+							"count": 0,
+							"total": 94
+						},
+						"82grp": {
+							"count": 0,
+							"total": 94
+						},
+						"76grp": {
+							"count": 0,
+							"total": 94
+						},
+						"5grp": {
+							"count": 94,
+							"total": 94
+						},
+						"38grp": {
+							"count": 0,
+							"total": 94
+						},
+						"15grp": {
+							"count": 0,
+							"total": 94
+						},
+						"30grp": {
+							"count": 94,
+							"total": 94
+						},
+						"44grp": {
+							"count": 0,
+							"total": 94
+						},
+						"18grp": {
+							"count": 0,
+							"total": 94
+						},
+						"96grp": {
+							"count": 0,
+							"total": 188
+						},
+						"73grp": {
+							"count": 94,
+							"total": 94
+						},
+						"67grp": {
+							"count": 0,
+							"total": 94
+						},
+						"21grp": {
+							"count": 0,
+							"total": 94
+						},
+						"56grp": {
+							"count": 0,
+							"total": 94
+						},
+						"0grp": {
+							"count": 0,
+							"total": 94
+						},
+						"87grp": {
+							"count": 0,
+							"total": 94
+						},
+						"35grp": {
+							"count": 0,
+							"total": 94
+						},
+						"10grp": {
+							"count": 0,
+							"total": 94
+						},
+						"93grp": {
+							"count": 94,
+							"total": 94
+						},
+						"8grp": {
+							"count": 0,
+							"total": 94
+						},
+						"49grp": {
+							"count": 0,
+							"total": 94
+						},
+						"62grp": {
+							"count": 0,
+							"total": 94
+						},
+						"24grp": {
+							"count": 0,
+							"total": 94
+						},
+						"41grp": {
+							"count": 0,
+							"total": 94
+						},
+						"32grp": {
+							"count": 0,
+							"total": 94
+						},
+						"80grp": {
+							"count": 0,
+							"total": 94
+						},
+						"59grp": {
+							"count": 94,
+							"total": 94
+						},
+						"74grp": {
+							"count": 0,
+							"total": 94
+						},
+						"3grp": {
+							"count": 0,
+							"total": 94
+						},
+						"51grp": {
+							"count": 94,
+							"total": 94
+						},
+						"65grp": {
+							"count": 0,
+							"total": 94
+						},
+						"46grp": {
+							"count": 0,
+							"total": 94
+						},
+						"71grp": {
+							"count": 0,
+							"total": 94
+						},
+						"88grp": {
+							"count": 0,
+							"total": 94
+						},
+						"94grp": {
+							"count": 0,
+							"total": 94
+						},
+						"23grp": {
+							"count": 0,
+							"total": 94
+						},
+						"79grp": {
+							"count": 0,
+							"total": 94
+						},
+						"29grp": {
+							"count": 0,
+							"total": 94
+						},
+						"54grp": {
+							"count": 0,
+							"total": 94
+						},
+						"85grp": {
+							"count": 0,
+							"total": 94
+						},
+						"37grp": {
+							"count": 0,
+							"total": 94
+						},
+						"12grp": {
+							"count": 0,
+							"total": 94
+						},
+						"68grp": {
+							"count": 0,
+							"total": 94
+						},
+						"43grp": {
+							"count": 0,
+							"total": 188
+						},
+						"6grp": {
+							"count": 0,
+							"total": 94
+						},
+						"91grp": {
+							"count": 0,
+							"total": 188
+						},
+						"26grp": {
+							"count": 0,
+							"total": 94
+						},
+						"60grp": {
+							"count": 0,
+							"total": 94
+						}
+					},
+					"complete": false,
+					"display": {
+						"threshold": 0,
+						"chartType": "bar",
+						"countType": "per"
+					}
+				},
+				{
+					"type": "VD",
+					"filters": [],
+					"groups": [
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0339"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0338"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0337"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0332"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0331"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0330"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0335"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0334"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0333"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0350"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0349"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0348"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0469"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0343"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0342"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0341"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0340"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0347"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0468"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0346"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0467"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0345"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0466"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0465"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0344"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0280"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0284"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0283"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0282"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0281"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0316"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0277"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0310"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0276"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0275"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0274"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0555"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0279"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0554"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0278"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0553"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0291"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0290"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0293"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0292"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0329"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0328"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0327"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0288"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0287"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0286"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0285"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0289"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0262"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0261"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0260"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0255"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0254"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0495"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0253"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0494"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0252"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0259"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0258"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0257"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0256"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0273"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0271"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0270"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0307"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0306"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0305"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0304"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0309"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0308"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0266"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0265"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0264"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0263"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0303"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0302"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0268"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0301"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0542"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0300"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0267"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0361"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0240"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0360"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0239"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0359"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0238"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0354"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0233"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0353"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0232"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0352"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0351"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0358"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0237"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0357"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0236"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0356"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0235"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0355"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0234"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0493"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0251"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0492"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0250"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0491"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0490"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0249"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0244"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0365"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0486"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0364"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0243"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0363"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0242"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0362"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0241"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0248"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0247"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0489"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0246"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0367"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0488"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0245"
+							}
+						],
+						[
+							{
+								"field": "DETECTION",
+								"value": "MQE0487"
+							}
+						]
+					],
+					"values": {
+						"1grp": {
+							"count": 0,
+							"total": 1
+						},
+						"34grp": {
+							"count": 0,
+							"total": 1
+						},
+						"28grp": {
+							"count": 0,
+							"total": 1
+						},
+						"117grp": {
+							"count": 0,
+							"total": 1
+						},
+						"123grp": {
+							"count": 0,
+							"total": 1
+						},
+						"57grp": {
+							"count": 0,
+							"total": 2
+						},
+						"86grp": {
+							"count": 0,
+							"total": 1
+						},
+						"100grp": {
+							"count": 114,
+							"total": 1
+						},
+						"11grp": {
+							"count": 114,
+							"total": 1
+						},
+						"108grp": {
+							"count": 0,
+							"total": 1
+						},
+						"48grp": {
+							"count": 0,
+							"total": 1
+						},
+						"9grp": {
+							"count": 0,
+							"total": 1
+						},
+						"92grp": {
+							"count": 0,
+							"total": 1
+						},
+						"25grp": {
+							"count": 0,
+							"total": 1
+						},
+						"63grp": {
+							"count": 125,
+							"total": 1
+						},
+						"40grp": {
+							"count": 0,
+							"total": 2
+						},
+						"31grp": {
+							"count": 0,
+							"total": 1
+						},
+						"120grp": {
+							"count": 0,
+							"total": 1
+						},
+						"77grp": {
+							"count": 2,
+							"total": 2
+						},
+						"83grp": {
+							"count": 114,
+							"total": 1
+						},
+						"4grp": {
+							"count": 0,
+							"total": 1
+						},
+						"14grp": {
+							"count": 0,
+							"total": 1
+						},
+						"52grp": {
+							"count": 0,
+							"total": 1
+						},
+						"103grp": {
+							"count": 229,
+							"total": 1
+						},
+						"20grp": {
+							"count": 0,
+							"total": 1
+						},
+						"17grp": {
+							"count": 0,
+							"total": 1
+						},
+						"45grp": {
+							"count": 115,
+							"total": 2
+						},
+						"72grp": {
+							"count": 0,
+							"total": 1
+						},
+						"66grp": {
+							"count": 0,
+							"total": 1
+						},
+						"128grp": {
+							"count": 0,
+							"total": 2
+						},
+						"114grp": {
+							"count": 0,
+							"total": 1
+						},
+						"97grp": {
+							"count": 0,
+							"total": 1
+						},
+						"55grp": {
+							"count": 0,
+							"total": 2
+						},
+						"78grp": {
+							"count": 3,
+							"total": 2
+						},
+						"125grp": {
+							"count": 0,
+							"total": 2
+						},
+						"84grp": {
+							"count": 0,
+							"total": 1
+						},
+						"119grp": {
+							"count": 0,
+							"total": 1
+						},
+						"13grp": {
+							"count": 0,
+							"total": 1
+						},
+						"102grp": {
+							"count": 0,
+							"total": 1
+						},
+						"36grp": {
+							"count": 114,
+							"total": 1
+						},
+						"42grp": {
+							"count": 229,
+							"total": 1
+						},
+						"111grp": {
+							"count": 0,
+							"total": 1
+						},
+						"7grp": {
+							"count": 114,
+							"total": 1
+						},
+						"90grp": {
+							"count": 0,
+							"total": 2
+						},
+						"39grp": {
+							"count": 114,
+							"total": 1
+						},
+						"69grp": {
+							"count": 0,
+							"total": 1
+						},
+						"98grp": {
+							"count": 0,
+							"total": 1
+						},
+						"61grp": {
+							"count": 0,
+							"total": 2
+						},
+						"27grp": {
+							"count": 0,
+							"total": 1
+						},
+						"81grp": {
+							"count": 0,
+							"total": 1
+						},
+						"33grp": {
+							"count": 0,
+							"total": 1
+						},
+						"122grp": {
+							"count": 0,
+							"total": 1
+						},
+						"116grp": {
+							"count": 0,
+							"total": 1
+						},
+						"58grp": {
+							"count": 0,
+							"total": 2
+						},
+						"75grp": {
+							"count": 0,
+							"total": 1
+						},
+						"50grp": {
+							"count": 0,
+							"total": 1
+						},
+						"2grp": {
+							"count": 0,
+							"total": 1
+						},
+						"16grp": {
+							"count": 0,
+							"total": 1
+						},
+						"19grp": {
+							"count": 0,
+							"total": 1
+						},
+						"70grp": {
+							"count": 0,
+							"total": 1
+						},
+						"89grp": {
+							"count": 0,
+							"total": 1
+						},
+						"105grp": {
+							"count": 0,
+							"total": 1
+						},
+						"47grp": {
+							"count": 0,
+							"total": 2
+						},
+						"64grp": {
+							"count": 0,
+							"total": 1
+						},
+						"95grp": {
+							"count": 0,
+							"total": 1
+						},
+						"22grp": {
+							"count": 0,
+							"total": 1
+						},
+						"53grp": {
+							"count": 7,
+							"total": 2
+						},
+						"82grp": {
+							"count": 0,
+							"total": 1
+						},
+						"76grp": {
+							"count": 0,
+							"total": 1
+						},
+						"5grp": {
+							"count": 0,
+							"total": 1
+						},
+						"38grp": {
+							"count": 0,
+							"total": 1
+						},
+						"104grp": {
+							"count": 0,
+							"total": 1
+						},
+						"15grp": {
+							"count": 0,
+							"total": 1
+						},
+						"30grp": {
+							"count": 0,
+							"total": 1
+						},
+						"44grp": {
+							"count": 0,
+							"total": 1
+						},
+						"18grp": {
+							"count": 0,
+							"total": 2
+						},
+						"96grp": {
+							"count": 114,
+							"total": 2
+						},
+						"73grp": {
+							"count": 0,
+							"total": 1
+						},
+						"67grp": {
+							"count": 0,
+							"total": 1
+						},
+						"127grp": {
+							"count": 0,
+							"total": 1
+						},
+						"113grp": {
+							"count": 0,
+							"total": 1
+						},
+						"21grp": {
+							"count": 0,
+							"total": 1
+						},
+						"56grp": {
+							"count": 0,
+							"total": 2
+						},
+						"0grp": {
+							"count": 0,
+							"total": 1
+						},
+						"124grp": {
+							"count": 0,
+							"total": 2
+						},
+						"118grp": {
+							"count": 0,
+							"total": 2
+						},
+						"87grp": {
+							"count": 0,
+							"total": 2
+						},
+						"35grp": {
+							"count": 0,
+							"total": 1
+						},
+						"10grp": {
+							"count": 0,
+							"total": 1
+						},
+						"93grp": {
+							"count": 0,
+							"total": 1
+						},
+						"107grp": {
+							"count": 0,
+							"total": 2
+						},
+						"110grp": {
+							"count": 0,
+							"total": 1
+						},
+						"8grp": {
+							"count": 0,
+							"total": 1
+						},
+						"49grp": {
+							"count": 0,
+							"total": 1
+						},
+						"62grp": {
+							"count": 0,
+							"total": 1
+						},
+						"24grp": {
+							"count": 114,
+							"total": 1
+						},
+						"41grp": {
+							"count": 0,
+							"total": 1
+						},
+						"32grp": {
+							"count": 0,
+							"total": 1
+						},
+						"121grp": {
+							"count": 0,
+							"total": 1
+						},
+						"80grp": {
+							"count": 0,
+							"total": 1
+						},
+						"59grp": {
+							"count": 0,
+							"total": 2
+						},
+						"74grp": {
+							"count": 0,
+							"total": 1
+						},
+						"3grp": {
+							"count": 0,
+							"total": 2
+						},
+						"51grp": {
+							"count": 0,
+							"total": 1
+						},
+						"65grp": {
+							"count": 0,
+							"total": 1
+						},
+						"129grp": {
+							"count": 0,
+							"total": 1
+						},
+						"46grp": {
+							"count": 0,
+							"total": 1
+						},
+						"71grp": {
+							"count": 0,
+							"total": 1
+						},
+						"88grp": {
+							"count": 0,
+							"total": 1
+						},
+						"106grp": {
+							"count": 0,
+							"total": 1
+						},
+						"94grp": {
+							"count": 0,
+							"total": 1
+						},
+						"115grp": {
+							"count": 0,
+							"total": 1
+						},
+						"23grp": {
+							"count": 0,
+							"total": 1
+						},
+						"79grp": {
+							"count": 0,
+							"total": 1
+						},
+						"29grp": {
+							"count": 0,
+							"total": 1
+						},
+						"54grp": {
+							"count": 0,
+							"total": 2
+						},
+						"85grp": {
+							"count": 229,
+							"total": 1
+						},
+						"37grp": {
+							"count": 0,
+							"total": 1
+						},
+						"126grp": {
+							"count": 229,
+							"total": 1
+						},
+						"101grp": {
+							"count": 0,
+							"total": 1
+						},
+						"12grp": {
+							"count": 114,
+							"total": 1
+						},
+						"68grp": {
+							"count": 0,
+							"total": 1
+						},
+						"43grp": {
+							"count": 0,
+							"total": 2
+						},
+						"6grp": {
+							"count": 115,
+							"total": 2
+						},
+						"91grp": {
+							"count": 0,
+							"total": 2
+						},
+						"109grp": {
+							"count": 0,
+							"total": 1
+						},
+						"26grp": {
+							"count": 114,
+							"total": 1
+						},
+						"60grp": {
+							"count": 0,
+							"total": 2
+						},
+						"99grp": {
+							"count": 0,
+							"total": 1
+						},
+						"112grp": {
+							"count": 0,
+							"total": 1
+						}
+					},
+					"complete": false,
+					"display": {
+						"threshold": 0,
+						"chartType": "pie",
+						"countType": "per"
+					}
+				}
+			]
+		},
+		{
+			"title": "??",
+			"description": "",
+			"results": [
+				{
+					"type": "VD",
+					"filters": [],
+					"groups": [],
+					"values": {
+						"indicator": {
+							"count": 2423,
+							"total": 1
+						}
+					},
+					"complete": true,
+					"display": {
+						"threshold": 0,
+						"chartType": "bar",
+						"countType": "per"
+					}
+				},
+				{
+					"type": "PD",
+					"filters": [],
+					"groups": [],
+					"values": {
+						"indicator": {
+							"count": 1601,
+							"total": 94
+						}
+					},
+					"complete": true,
+					"display": {
+						"threshold": 0,
+						"chartType": "bar",
+						"countType": "per"
+					}
+				},
+				{
+					"type": "PT",
+					"filters": [
+						{
+							"field": "TABLE",
+							"value": "GENDER"
+						}
+					],
+					"groups": [],
+					"values": {
+						"indicator": {
+							"count": 94,
+							"total": 94
+						}
+					},
+					"complete": true,
+					"display": {
+						"threshold": 0,
+						"chartType": "bar",
+						"countType": "per"
+					}
+				}
+			]
+		}
+	],
+	"configuration": {
+		"ageGroups": [
+			{
+				"min": {
+					"year": 0,
+					"month": 0,
+					"day": 0
+				},
+				"max": {
+					"year": 1,
+					"month": 0,
+					"day": 0
+				}
+			},
+			{
+				"min": {
+					"year": 1,
+					"month": 0,
+					"day": 0
+				},
+				"max": {
+					"year": 2,
+					"month": 0,
+					"day": 0
+				}
+			}
+		],
+		"detections": [
+			"MQE0209",
+			"MQE0060",
+			"MQE0180",
+			"MQE0064",
+			"MQE0185",
+			"MQE0063",
+			"MQE0184",
+			"MQE0062",
+			"MQE0183",
+			"MQE0061",
+			"MQE0182",
+			"MQE0057",
+			"MQE0178",
+			"MQE0299",
+			"MQE0056",
+			"MQE0177",
+			"MQE0298",
+			"MQE0176",
+			"MQE0297",
+			"MQE0175",
+			"MQE0296",
+			"MQE0059",
+			"MQE0058",
+			"MQE0179",
+			"MQE0071",
+			"MQE0192",
+			"MQE0070",
+			"MQE0191",
+			"MQE0190",
+			"MQE0075",
+			"MQE0196",
+			"MQE0074",
+			"MQE0195",
+			"MQE0073",
+			"MQE0194",
+			"MQE0072",
+			"MQE0193",
+			"MQE0068",
+			"MQE0189",
+			"MQE0067",
+			"MQE0188",
+			"MQE0066",
+			"MQE0187",
+			"MQE0065",
+			"MQE0186",
+			"MQE0069",
+			"MQE0280",
+			"MQE0163",
+			"MQE0284",
+			"MQE0162",
+			"MQE0283",
+			"MQE0161",
+			"MQE0282",
+			"MQE0160",
+			"MQE0281",
+			"MQE0398",
+			"MQE0156",
+			"MQE0277",
+			"MQE0397",
+			"MQE0155",
+			"MQE0276",
+			"MQE0396",
+			"MQE0154",
+			"MQE0275",
+			"MQE0395",
+			"MQE0153",
+			"MQE0274",
+			"MQE0159",
+			"MQE0158",
+			"MQE0279",
+			"MQE0399",
+			"MQE0157",
+			"MQE0278",
+			"MQE0170",
+			"MQE0291",
+			"MQE0290",
+			"MQE0174",
+			"MQE0295",
+			"MQE0173",
+			"MQE0294",
+			"MQE0172",
+			"MQE0293",
+			"MQE0171",
+			"MQE0292",
+			"MQE0167",
+			"MQE0288",
+			"MQE0166",
+			"MQE0287",
+			"MQE0165",
+			"MQE0286",
+			"MQE0164",
+			"MQE0285",
+			"MQE0169",
+			"MQE0168",
+			"MQE0289",
+			"MQE0099",
+			"MQE0098",
+			"MQE0082",
+			"MQE0081",
+			"MQE0080",
+			"MQE0086",
+			"MQE0085",
+			"MQE0084",
+			"MQE0083",
+			"MQE0079",
+			"MQE0078",
+			"MQE0199",
+			"MQE0077",
+			"MQE0198",
+			"MQE0076",
+			"MQE0197",
+			"MQE0093",
+			"MQE0092",
+			"MQE0091",
+			"MQE0090",
+			"MQE0097",
+			"MQE0096",
+			"MQE0095",
+			"MQE0094",
+			"MQE0089",
+			"MQE0088",
+			"MQE0087",
+			"MQE0460",
+			"MQE0219",
+			"MQE0218",
+			"MQE0339",
+			"MQE0459",
+			"MQE0217",
+			"MQE0338",
+			"MQE0458",
+			"MQE0216",
+			"MQE0337",
+			"MQE0453",
+			"MQE0211",
+			"MQE0332",
+			"MQE0210",
+			"MQE0331",
+			"MQE0451",
+			"MQE0330",
+			"MQE0450",
+			"MQE0457",
+			"MQE0215",
+			"MQE0336",
+			"MQE0456",
+			"MQE0214",
+			"MQE0335",
+			"MQE0455",
+			"MQE0213",
+			"MQE0334",
+			"MQE0454",
+			"MQE0212",
+			"MQE0333",
+			"MQE0350",
+			"MQE0109",
+			"MQE0108",
+			"MQE0229",
+			"MQE0107",
+			"MQE0228",
+			"MQE0349",
+			"MQE0106",
+			"MQE0227",
+			"MQE0469",
+			"MQE0348",
+			"MQE0101",
+			"MQE0222",
+			"MQE0343",
+			"MQE0100",
+			"MQE0221",
+			"MQE0342",
+			"MQE0462",
+			"MQE0220",
+			"MQE0341",
+			"MQE0461",
+			"MQE0340",
+			"MQE0105",
+			"MQE0226",
+			"MQE0468",
+			"MQE0347",
+			"MQE0104",
+			"MQE0225",
+			"MQE0467",
+			"MQE0346",
+			"MQE0103",
+			"MQE0224",
+			"MQE0466",
+			"MQE0345",
+			"MQE0102",
+			"MQE0223",
+			"MQE0465",
+			"MQE0344",
+			"MQE0318",
+			"MQE0317",
+			"MQE0316",
+			"MQE0315",
+			"MQE0319",
+			"MQE0552",
+			"MQE0310",
+			"MQE0551",
+			"MQE0550",
+			"MQE0314",
+			"MQE0555",
+			"MQE0313",
+			"MQE0554",
+			"MQE0312",
+			"MQE0553",
+			"MQE0311",
+			"MQE0208",
+			"MQE0329",
+			"MQE0207",
+			"MQE0449",
+			"MQE0328",
+			"MQE0206",
+			"MQE0448",
+			"MQE0327",
+			"MQE0205",
+			"MQE0447",
+			"MQE0326",
+			"MQE0181",
+			"MQE0200",
+			"MQE0321",
+			"MQE0442",
+			"MQE0320",
+			"MQE0441",
+			"MQE0204",
+			"MQE0325",
+			"MQE0446",
+			"MQE0203",
+			"MQE0324",
+			"MQE0445",
+			"MQE0202",
+			"MQE0323",
+			"MQE0444",
+			"MQE0201",
+			"MQE0322",
+			"MQE0443",
+			"MQE0141",
+			"MQE0262",
+			"MQE0383",
+			"MQE0140",
+			"MQE0261",
+			"MQE0382",
+			"MQE0260",
+			"MQE0381",
+			"MQE0380",
+			"MQE0139",
+			"MQE0376",
+			"MQE0134",
+			"MQE0255",
+			"MQE0497",
+			"MQE0375",
+			"MQE0133",
+			"MQE0254",
+			"MQE0496",
+			"MQE0374",
+			"MQE0132",
+			"MQE0253",
+			"MQE0495",
+			"MQE0131",
+			"MQE0252",
+			"MQE0494",
+			"MQE0373",
+			"MQE0138",
+			"MQE0259",
+			"MQE0137",
+			"MQE0258",
+			"MQE0379",
+			"MQE0378",
+			"MQE0136",
+			"MQE0257",
+			"MQE0499",
+			"MQE0377",
+			"MQE0135",
+			"MQE0256",
+			"MQE0498",
+			"MQE0152",
+			"MQE0394",
+			"MQE0273",
+			"MQE0151",
+			"MQE0393",
+			"MQE0272",
+			"MQE0150",
+			"MQE0271",
+			"MQE0270",
+			"MQE0145",
+			"MQE0266",
+			"MQE0387",
+			"MQE0144",
+			"MQE0265",
+			"MQE0386",
+			"MQE0143",
+			"MQE0264",
+			"MQE0385",
+			"MQE0142",
+			"MQE0263",
+			"MQE0384",
+			"MQE0149",
+			"MQE0148",
+			"MQE0147",
+			"MQE0268",
+			"MQE0146",
+			"MQE0267",
+			"MQE0388",
+			"MQE0240",
+			"MQE0361",
+			"MQE0360",
+			"MQE0119",
+			"MQE0118",
+			"MQE0239",
+			"MQE0117",
+			"MQE0238",
+			"MQE0359",
+			"MQE0112",
+			"MQE0233",
+			"MQE0354",
+			"MQE0111",
+			"MQE0232",
+			"MQE0353",
+			"MQE0110",
+			"MQE0231",
+			"MQE0352",
+			"MQE0230",
+			"MQE0351",
+			"MQE0116",
+			"MQE0237",
+			"MQE0358",
+			"MQE0115",
+			"MQE0236",
+			"MQE0357",
+			"MQE0114",
+			"MQE0235",
+			"MQE0356",
+			"MQE0113",
+			"MQE0234",
+			"MQE0355",
+			"MQE0130",
+			"MQE0251",
+			"MQE0372",
+			"MQE0493",
+			"MQE0250",
+			"MQE0371",
+			"MQE0492",
+			"MQE0491",
+			"MQE0370",
+			"MQE0490",
+			"MQE0129",
+			"MQE0128",
+			"MQE0249",
+			"MQE0123",
+			"MQE0244",
+			"MQE0486",
+			"MQE0365",
+			"MQE0485",
+			"MQE0122",
+			"MQE0243",
+			"MQE0364",
+			"MQE0121",
+			"MQE0242",
+			"MQE0484",
+			"MQE0363",
+			"MQE0120",
+			"MQE0241",
+			"MQE0483",
+			"MQE0362",
+			"MQE0127",
+			"MQE0248",
+			"MQE0369",
+			"MQE0126",
+			"MQE0247",
+			"MQE0489",
+			"MQE0125",
+			"MQE0246",
+			"MQE0488",
+			"MQE0367",
+			"MQE0124",
+			"MQE0245",
+			"MQE0487",
+			"MQE0366",
+			"MQE0505",
+			"MQE0504",
+			"MQE0503",
+			"MQE0502",
+			"MQE0509",
+			"MQE0508",
+			"MQE0507",
+			"MQE0506",
+			"MQE0501",
+			"MQE0500",
+			"MQE0538",
+			"MQE0537",
+			"MQE0536",
+			"MQE0535",
+			"MQE0539",
+			"MQE0530",
+			"MQE0534",
+			"MQE0533",
+			"MQE0549",
+			"MQE0307",
+			"MQE0548",
+			"MQE0306",
+			"MQE0547",
+			"MQE0305",
+			"MQE0546",
+			"MQE0304",
+			"MQE0309",
+			"MQE0308",
+			"MQE0541",
+			"MQE0540",
+			"MQE0545",
+			"MQE0303",
+			"MQE0302",
+			"MQE0544",
+			"MQE0301",
+			"MQE0543",
+			"MQE0300",
+			"MQE0542",
+			"MQE0516",
+			"MQE0515",
+			"MQE0514",
+			"MQE0513",
+			"MQE0519",
+			"MQE0518",
+			"MQE0517",
+			"MQE0512",
+			"MQE0511",
+			"MQE0510",
+			"MQE0406",
+			"MQE0405",
+			"MQE0409",
+			"MQE0529",
+			"MQE0408",
+			"MQE0528",
+			"MQE0407",
+			"MQE0522",
+			"MQE0521",
+			"MQE0520"
+		],
+		"vaxCodeAbstraction": null
+	}
+}

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {
 	Configuration, Metric, Field, ExtractTreeDelta, MetricParam, ExtractType,
-	ConfigurationDescriptor
+	ConfigurationDescriptor, CVX
 } from "../domain/configuration";
 import {TreeNode} from "primeng/components/common/treenode";
 import * as _ from "lodash";
@@ -85,16 +85,21 @@ export class ConfigurationService {
 	// 	return result;
 	// }
 
-	async getMetrics(){
-		return await this.http.get<Metric[]>("api/detections").toPromise();
-	}
+	// async getMetrics(){
+	// 	return await this.http.get<Metric[]>("api/detections").toPromise();
+	// }
 
 	async getDetections(){
 		return await this.http.get<Detections>("public/detections").toPromise();
 	}
 
-	async getExtractTree(){
-		return await this.http.get<Field[]>("api/extract/model").toPromise();
+	async getCVX(){
+		return await this.http.get<CVX[]>("public/cvx").toPromise();
 	}
+
+
+	// async getExtractTree(){
+	// 	return await this.http.get<Field[]>("api/extract/model").toPromise();
+	// }
 
 }

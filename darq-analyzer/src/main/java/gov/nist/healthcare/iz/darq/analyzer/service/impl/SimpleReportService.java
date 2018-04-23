@@ -13,7 +13,6 @@ import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisQuery.QueryField;
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisReport;
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisSectionResult;
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisSectionResult.AnalysisPayloadResult;
-import gov.nist.healthcare.iz.darq.analyzer.domain.Field;
 import gov.nist.healthcare.iz.darq.analyzer.domain.ReportSection;
 import gov.nist.healthcare.iz.darq.analyzer.domain.ReportTemplate;
 import gov.nist.healthcare.iz.darq.analyzer.exception.IncompatibleFields;
@@ -21,6 +20,7 @@ import gov.nist.healthcare.iz.darq.analyzer.service.ReportService;
 import gov.nist.healthcare.iz.darq.analyzer.service.TrayAggregator;
 import gov.nist.healthcare.iz.darq.analyzer.service.TrayProcessor;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
 
 @Service
 public class SimpleReportService implements ReportService {
@@ -49,6 +49,7 @@ public class SimpleReportService implements ReportService {
 			}
 			result.getSections().add(section);
 		}
+		result.setConfiguration(template.getConfiguration());
 		
 		return result;
 	}

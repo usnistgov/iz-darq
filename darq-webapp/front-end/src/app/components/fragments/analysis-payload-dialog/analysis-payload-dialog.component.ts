@@ -1,9 +1,10 @@
 import {Component, OnInit, Inject, TemplateRef, ViewChild} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material";
-import {Field, _comp, AnalysisPayload, CG} from "../../../domain/report";
+import {Field, _comp, AnalysisPayload, CG, Options} from "../../../domain/report";
 import {ConfigurationPayload} from "../../../domain/configuration";
 import {RangesService} from "../../../services/ranges.service";
 import {Detections} from "../../../domain/adf";
+import {TemplateService} from "../../../services/template.service";
 
 @Component({
 	selector: 'app-analysis-payload-dialog',
@@ -24,7 +25,7 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 	ageGroup: TemplateRef<any>;
 	@ViewChild('value')
 	value: TemplateRef<any>;
-
+	step : number;
 	types : {
 		key : string,
 		label : string,
@@ -36,12 +37,20 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 		fields : Field[]
 	};
 	configuration : ConfigurationPayload;
-	// payload : AnalysisPayload;
+	threshold : boolean;
+
 	filters : Field[];
 	groupBy : Field[];
 	values : {
 		[index : string] : any
 	};
+	groupFilters : {
+		[index : string] : any
+	}[];
+	enabledFilters : {
+		[index : string] : boolean
+	};
+
 	detectionList : {
 		[index : string] : {
 			label : string,
@@ -53,12 +62,21 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 		}[]
 	};
 
+	cvxs : {};
+	options : Options;
+
+
 	detectionsDescriptions : Detections;
 
-	constructor(public dialogRef: MatDialogRef<AnalysisPayloadDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any, private $range : RangesService) {
+	constructor(public dialogRef: MatDialogRef<AnalysisPayloadDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any, private $range : RangesService, private $template : TemplateService) {
+		this.step = 1;
 	}
 
 	removeField(i, list){
+		let e = list[i];
+		for(let gF of this.groupFilters){
+			delete gF[e];
+		}
 		list.splice(i,1);
 	}
 
@@ -85,9 +103,35 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 				fields : _comp[x].concat([])
 			});
 		}
+		this.threshold = false;
 		this.filters = [];
 		this.groupBy = [];
+		this.groupFilters = [];
+		this.enabledFilters = {};
 		this.values = {};
+		this.options = {
+			threshold : 0,
+			chartType : 'bar',
+			countType : 'per'
+		};
+
+		if(this.selected &&  (CG[this.selected.key] === CG.PT || CG[this.selected.key] === CG.VT)){
+			this.selected.fields.splice(this.selected.fields.lastIndexOf(Field.TABLE),1);
+			this.filters.push(Field.TABLE);
+		}
+	}
+
+	submit() {
+
+	}
+
+	fixed(g : Field){
+		if(CG[this.selected.key] === CG.PT || CG[this.selected.key] === CG.VT && g === Field.TABLE){
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	submittable(){
@@ -104,6 +148,9 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 		let payload : AnalysisPayload = new AnalysisPayload();
 		payload.type = CG[this.selected.key];
 		payload.groupBy = this.groupBy;
+		payload.options = this.options;
+		payload.options.threshold = this.threshold ? payload.options.threshold : null;
+
 		for(let k in this.values){
 			if(Field[k] === Field.DETECTION){
 				payload.filters.push({ field : Field[k], value : this.values[k].code });
@@ -112,7 +159,34 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 				payload.filters.push({ field : Field[k], value : this.values[k] });
 			}
 		}
+
+		for(let row of this.groupFilters){
+			let rerow = {};
+			for(let cell in row){
+				if(Field[cell] === Field.DETECTION){
+					rerow[cell] = row[cell].code;
+				}
+				else {
+					rerow[cell] = row[cell];
+				}
+			}
+			payload.groupFilters.push(rerow);
+		}
+
 		return payload;
+	}
+
+	search($event, obj, list){
+		list.values = Object.keys(obj).filter(x => {
+			return x.includes($event.query) || obj[x].includes($event.query);
+		});
+	}
+
+	suggestions(f : Field){
+		if(Field[f] === Field.VACCINE_CODE)
+			return this.cvxs;
+		else
+			return {};
 	}
 
 	closeDialog() {
@@ -157,6 +231,10 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 		return a.key === b.key;
 	}
 
+	print(x){
+		console.log(x);
+	}
+
 
 	ngOnInit() {
 		this.reset();
@@ -167,6 +245,8 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 			'PATIENT' : [],
 			'VACCINATION' : []
 		};
+		this.cvxs = this.data.cvx;
+
 
 		for(let d of this.configuration.detections){
 			if(this.data.detections[d]['target'] === "VACCINATION"){
@@ -190,7 +270,154 @@ export class AnalysisPayloadDialogComponent implements OnInit {
 				});
 			}
 		}
-
 	}
+
+	addGroupFilter(){
+		this.groupFilters.push({});
+	}
+
+	removeGroupFilter(i : number){
+		this.groupFilters.splice(i, 1);
+	}
+
+	enable(e : Field, b){
+		console.log(this.groupFilters);
+		if(b.checked === false){
+			for(let gF of this.groupFilters){
+				delete gF[e];
+			}
+		}
+		this.enabledFilters[e] = b.checked;
+	}
+
+	aFilterIsEnabled(){
+		let x = false;
+		for(let g of this.groupBy){
+			x = x || this.enabledFilters[g];
+		}
+		return x;
+	}
+
+	canStep(){
+		let i = this.step;
+		if(i === 1){
+			let v = true;
+			for(let f of this.filters){
+				v = v && this.values[f] && this.values[f] !== '';
+			}
+			return v;
+		}
+		else if(i === 2){
+			let must = (((CG[this.selected.key] === CG.VD) || (CG[this.selected.key] === CG.PD)) && this.selected.fields.lastIndexOf(Field.DETECTION) != -1) || (((CG[this.selected.key] === CG.VT) || (CG[this.selected.key] === CG.PT)) && this.selected.fields.lastIndexOf(Field.CODE) != -1)
+			return (this.filters && this.filters.length > 0) || (this.groupBy && this.groupBy.length > 0) && !must;
+		}
+		else if(i === 3){
+			let v = true;
+			for(let gF of this.groupFilters){
+				for(let g of this.groupBy){
+					v = v && (!this.enabledFilters[g] ||  (gF[g] && gF[g] !== ''));
+				}
+			}
+			return v;
+		}
+		else if(i === 4){
+			return true;
+		}
+		return false;
+	}
+
+	keysOf(x){
+		if(x){
+			return Object.keys(x);
+		}
+		else
+			return [];
+	}
+
+	next(){
+		if(this.step === 1)
+			this.step = 2;
+		else if(this.step === 2){
+			if(this.groupBy && this.groupBy.length > 0)
+				this.step = 3;
+			else
+				this.step = 4;
+		}
+		else if(this.step === 3){
+			if(this.plural()){
+				this.closeDialog();
+			}
+			else {
+				this.step++;
+			}
+		}
+		else if(this.step === 4){
+			this.closeDialog();
+		}
+		else {
+			this.step++;
+		}
+	}
+
+	plural(){
+		let p : AnalysisPayload = new AnalysisPayload();
+		p.groupFilters = this.groupFilters;
+		p.groupBy = this.groupBy;
+		return this.$template.plural(p);
+	}
+
+	back(){
+		if(this.step === 4){
+			if(this.groupBy && this.groupBy.length > 0)
+				this.step = 3;
+			else
+				this.step = 2;
+		}
+		else {
+			this.step--;
+		}
+	}
+
+
+	issues(){
+		if(this.step === 1){
+			let v = true;
+			for(let f of this.filters){
+				v = v && this.values[f] && this.values[f] !== '';
+			}
+			return v ? [] : ["Please fill all the selected filters"];
+		}
+		else if(this.step === 2){
+			let errors = [];
+			if(!((this.filters && this.filters.length > 0) || (this.groupBy && this.groupBy.length > 0))) errors.push("At least one filter or group is required");
+			switch (CG[this.selected.key]) {
+				case CG.VD :
+				case CG.PD :
+					if(this.selected.fields.lastIndexOf(Field.DETECTION) != -1) errors.push("[DETECTION] Criterion must be used as a Filter or Group");
+					break;
+				case CG.VT :
+				case CG.PT :
+					if(this.selected.fields.lastIndexOf(Field.CODE) != -1) errors.push("[CODE] Criterion must be used as a Filter or Group");
+					break;
+				case CG.V :
+					break;
+			}
+			return errors;
+		}
+		else if(this.step === 3){
+			let v = true;
+			for(let gF of this.groupFilters){
+				for(let g of this.groupBy){
+					v = v && (!this.enabledFilters[g] ||  (gF[g] && gF[g] !== ''));
+				}
+			}
+			return v ? [] : ["Please fill all the selected group filters"];
+		}
+		else if(this.step === 4){
+			return [];
+		}
+	}
+
+
 
 }

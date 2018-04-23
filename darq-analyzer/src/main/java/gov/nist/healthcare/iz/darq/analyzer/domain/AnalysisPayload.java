@@ -2,8 +2,10 @@ package gov.nist.healthcare.iz.darq.analyzer.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import gov.nist.healthcare.iz.darq.analyzer.domain.Field._CG;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
+import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
 
 public class AnalysisPayload {
 	
@@ -64,20 +66,45 @@ public class AnalysisPayload {
 		
 	}
 	
+	public static class Options {
+		private int threshold;
+		private String chartType;
+		private String countType;
+		public int getThreshold() {
+			return threshold;
+		}
+		public void setThreshold(int threshold) {
+			this.threshold = threshold;
+		}
+		public String getChartType() {
+			return chartType;
+		}
+		public void setChartType(String chartType) {
+			this.chartType = chartType;
+		}
+		public String getCountType() {
+			return countType;
+		}
+		public void setCountType(String countType) {
+			this.countType = countType;
+		}
+	}
+	
 	private _CG type;
 	private List<FieldValue> filters;
 	private List<Field> groupBy;
+	private List<Map<Field, String>> groupFilters;
+	private Options options;
+	
 	public _CG getType() {
 		return type;
 	}
-	
 	
 	public AnalysisPayload() {
 		super();
 		this.filters = new ArrayList<>();
 		this.groupBy = new ArrayList<>();
 	}
-
 
 	public void setType(_CG type) {
 		this.type = type;
@@ -93,5 +120,17 @@ public class AnalysisPayload {
 	}
 	public void setGroupBy(List<Field> groupBy) {
 		this.groupBy = groupBy;
+	}
+	public List<Map<Field, String>> getGroupFilters() {
+		return groupFilters;
+	}
+	public void setGroupFilters(List<Map<Field, String>> groupFilters) {
+		this.groupFilters = groupFilters;
+	}
+	public Options getOptions() {
+		return options;
+	}
+	public void setOptions(Options options) {
+		this.options = options;
 	}
 }

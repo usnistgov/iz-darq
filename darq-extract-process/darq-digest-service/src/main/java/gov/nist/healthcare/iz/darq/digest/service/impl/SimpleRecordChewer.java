@@ -31,11 +31,14 @@ public class SimpleRecordChewer implements RecordChewer {
 	
 	@Override
 	public ADChunk munch(ConfigurationProvider configuration, AggregatePatientRecord apr, LocalDate date) {
+
 		AgeGroupService ageGroupCalculator = configuration.ageGroupService();
-		DQAValidator validator = new DQAValidator(ageGroupCalculator, configuration.detectionFilter());
+		DQAValidator validator = new DQAValidator(ageGroupCalculator, configuration.detectionFilter(), configuration.vaxGroupMapper());
+		
 		CodeCollector collector = new CodeCollector();
 		
 		validator.validateRecord(apr, date);
+
 		try {
 			collector.collectPatient(itemizer.itemizePatient(apr.patient), ageGroupCalculator.getGroup(apr.patient.date_of_birth.toString(), date.toString("yyyyMMdd")));
 			for(VaccineRecord vr : apr.history){
@@ -46,14 +49,12 @@ public class SimpleRecordChewer implements RecordChewer {
 			e.printStackTrace();
 		}
 		
-//		System.out.println(validator.patientDetections().get("2g").get("MQE0141"));
-		
 		Map<String, String> providers = new HashMap<>();
 		Map<String, Map<String, VaccinationPayload>> vaccinationSection = this.groupService.makeVxSectionProvider(configuration.ageGroupService(), validator.getVxInfo(), validator.vaccinationDetections(), collector.getVaccinationCodes());
 		Map<String, PatientPayload> patientSection = this.groupService.makePatSectionAge(configuration.ageGroupService(), validator.patientDetections(), collector.getPatientCodes());
 		Map<String, Fraction> extraction = collector.getExtract();
 		List<String> issues = new ArrayList<>();
-//		System.out.println(patientSection.get("2g").getDetection().get("MQE0141"));
+		
 		
 		Map<String, Map<String, VaccinationPayload>> deIdentifiedSection = new HashMap<>();
 		for(String provider : vaccinationSection.keySet()){
@@ -62,8 +63,7 @@ public class SimpleRecordChewer implements RecordChewer {
 			providers.put(provider, hash);
 		}
 		
-		
-		return new ADChunk(providers, deIdentifiedSection, patientSection, extraction, issues, apr.history.size(), 1);
+		return new ADChunk(providers, deIdentifiedSection, patientSection, extraction, issues, apr.history.size(), 1, validator.vocabulary(), collector.codes());
 	}	
 
 }

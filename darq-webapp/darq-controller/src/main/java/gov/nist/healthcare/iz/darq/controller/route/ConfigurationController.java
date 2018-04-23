@@ -1,19 +1,11 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-
-import org.apache.commons.io.IOUtils;
-import org.immregistries.dqa.validator.issue.Detection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,17 +18,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.auth.service.AccountService;
-import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
-import gov.nist.healthcare.iz.darq.adf.service.ADFStoreUploadHandler;
-import gov.nist.healthcare.iz.darq.controller.domain.ADFDescriptor;
 import gov.nist.healthcare.iz.darq.controller.domain.OpAck;
 import gov.nist.healthcare.iz.darq.controller.domain.OpAck.AckStatus;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
 import gov.nist.healthcare.iz.darq.model.ConfigurationDescriptor;
 import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
-import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
-import gov.nist.healthcare.iz.darq.service.impl.ADFStorage;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 
 @RestController
@@ -45,8 +31,6 @@ public class ConfigurationController {
 
 	@Autowired
 	private AccountService accountService;
-	@Autowired
-	private ADFMetaDataRepository repo;
 	@Autowired
 	private ConfigurationService configService;
 	@Autowired

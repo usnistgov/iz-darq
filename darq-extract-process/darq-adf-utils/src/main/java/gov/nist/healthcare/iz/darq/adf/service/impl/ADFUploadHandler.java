@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
@@ -19,12 +21,15 @@ import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 
 @Service
+@PropertySource("classpath:/configuration.properties")
 public class ADFUploadHandler implements ADFStoreUploadHandler {
 
 	@Autowired
 	private ADFStore storage;
 	@Autowired
 	private CryptoUtils crypto;
+	@Value("${darq.store}")
+	private String PATH;
 	
 	@Override
 	public void handle(String name, InputStream stream, String owner, long size) throws InvalidFileFormat {
@@ -33,7 +38,7 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 			byte[] content = IOUtils.toByteArray(stream);
 			ADFile file = crypto.decrypt(content);
 			String uid = UUID.randomUUID().toString();
-			Path dir = Files.createDirectory(Paths.get("/Users/hnt5/adf_storage/"+uid));
+			Path dir = Files.createDirectory(Paths.get(PATH+uid));
 			if (dir.toFile().exists()) {
 				ADFMetaData metadata = new ADFMetaData(name, uid, owner, file.getAnalysisDate(), new Date(), file.getConfiguration(), file.getSummary(), humanReadableByteCount(size, true));
 				storage.store(metadata);

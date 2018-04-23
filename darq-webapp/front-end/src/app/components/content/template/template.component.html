@@ -70,19 +70,12 @@
 							Add Section
 						</button>
 					</div>
-					<div fxFlex style="overflow-y: scroll;" fxLayout="row" fxLayoutWrap>
-						<div *ngFor="let section of template.sections; let i = index" fxLayout="column" fxLayoutAlign="start stretch" style="margin-right: 10px;">
-							<button class="btn btn-danger" style="width: 100px;" (click)="delete(i)">
-								<i class="fa fa-trash"></i>
-								Delete
-							</button>
-							<app-report-section [detections]="detections" [configuration]="template.configuration" [section]="section" (change)="update(i,$event)"></app-report-section>
+					<div fxFlex style="overflow-y: auto;" fxLayout="row" fxLayoutWrap>
+						<div *ngFor="let section of template.sections; let i = index" style="margin-right: 10px; min-width : 500px; display: inherit !important;" fxLayout="column" fxLayoutAlign="start stretch">
+							<app-report-section [detections]="detections" [cvx]="cvx" [configuration]="template.configuration" [section]="section" (change)="update(i,$event)" (delete)="delete(i)"></app-report-section>
 						</div>
 					</div>
 				</div>
-				<!--<div *ngIf="!(configuration && configuration.id && configuration.id !== '')" style="height: 100%; width: 100%; padding: 10px;" fxLayout="column" fxLayoutAlign="center center">-->
-					<!--<span style="color: lightgrey; font-weight: bold; font-size: 25px;">SELECT A CONFIGURATION ABOVE</span>-->
-				<!--</div>-->
 			</mat-sidenav-content>
 		</mat-sidenav-container>
 	</div>

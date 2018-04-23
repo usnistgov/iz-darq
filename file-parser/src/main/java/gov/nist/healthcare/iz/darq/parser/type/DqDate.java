@@ -24,5 +24,17 @@ public class DqDate extends DataUnit<Date> {
 			throw new InvalidValueException("'"+payload+"' is invalid date format must be yyyyMMdd");
 		}
 	}
+
+	@Override
+	protected Date dummy(int n) {
+		return null;
+	}
+
+	@Override
+	protected void validatePlaceHolder(DescriptorType placeholder) throws InvalidValueException {
+		if(placeholder.equals(DescriptorType.VALUE_LENGTH) || placeholder.equals(DescriptorType.VALUE_PRESENT)){
+			throw new InvalidValueException("Cannot use metadata VALUE_PRESENT or VALUE_LENGTH on a date FIELD (unable to generate a meaningful value)");
+		}
+	}
 	
 }

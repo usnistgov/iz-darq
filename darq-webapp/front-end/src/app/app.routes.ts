@@ -2,7 +2,7 @@ import {LoginComponent} from "./components/content/login/login.component";
 import {HomeComponent} from "./components/content/home/home.component";
 import {
 	DetectionsListResolver, ConfigurationCatalogResolver,
-	ConfigurationResolver
+	ConfigurationResolver, CVXListResolver, DownloadResolver
 } from "./resolvers/configuration.resolver";
 import {AuthGuard} from "./guards/auth.guard";
 import {DataComponent} from "./components/content/data/data.component";
@@ -13,12 +13,20 @@ import {ExtractConfigurationComponent} from "./components/content/extract-config
 import {TemplateComponent} from "./components/content/template/template.component";
 import {TemplateCatalogResolver, TemplateResolver} from "./resolvers/template.resolver";
 import {ReportComponent} from "./components/content/report/report.component";
+import {DownloadComponent} from "./components/content/download/download.component";
 
 
 export const ROUTES = [
 	{
 		path: "login",
 		component: LoginComponent
+	},
+	{
+		path: "download",
+		component: DownloadComponent,
+		resolve : {
+			catalog : DownloadResolver
+		}
 	},
 	{
 		path : "data",
@@ -46,7 +54,8 @@ export const ROUTES = [
 								component : ADFSummaryComponent,
 								resolve : {
 									file : ADFResolver,
-									detections : DetectionsListResolver
+									detections : DetectionsListResolver,
+									cvx : CVXListResolver
 								}
 							}
 						]
@@ -63,9 +72,11 @@ export const ROUTES = [
 	},
 	{
 		path : "report/:tId/:fId",
+		// canActivate: [AuthGuard],
 		component : ReportComponent,
 		resolve: {
-			detections : DetectionsListResolver
+			detections : DetectionsListResolver,
+			cvx : CVXListResolver
 		}
 	},
 	{
@@ -74,6 +85,7 @@ export const ROUTES = [
 	},
 	{
 		path : "report-templates",
+		// canActivate: [AuthGuard],
 		children: [
 			{
 				path: "",
@@ -87,7 +99,8 @@ export const ROUTES = [
 					configCatalog : ConfigurationCatalogResolver,
 					catalog : TemplateCatalogResolver,
 					template : TemplateResolver,
-					detectionList : DetectionsListResolver
+					detectionList : DetectionsListResolver,
+					cvx : CVXListResolver
 				}
 			}
 		]
@@ -107,7 +120,8 @@ export const ROUTES = [
 				resolve: {
 					detections : DetectionsListResolver,
 					catalog : ConfigurationCatalogResolver,
-					configuration : ConfigurationResolver
+					configuration : ConfigurationResolver,
+					cvx : CVXListResolver
 				}
 			}
 		]

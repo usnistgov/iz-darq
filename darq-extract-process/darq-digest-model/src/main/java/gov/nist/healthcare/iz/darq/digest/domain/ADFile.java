@@ -2,8 +2,36 @@ package gov.nist.healthcare.iz.darq.digest.domain;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 public class ADFile {
+	
+	public static class Vocabulary {
+		private Map<Field, Set<String>> byField;
+		private Map<String, Set<String>> byTable;
+		
+		public Vocabulary() {
+			super();
+		}
+		public Vocabulary(Map<Field, Set<String>> byField, Map<String, Set<String>> byTable) {
+			super();
+			this.byField = byField;
+			this.byTable = byTable;
+		}
+		public Map<Field, Set<String>> getByField() {
+			return byField;
+		}
+		public void setByField(Map<Field, Set<String>> byField) {
+			this.byField = byField;
+		}
+		public Map<String, Set<String>> getByTable() {
+			return byTable;
+		}
+		public void setByTable(Map<String, Set<String>> byTable) {
+			this.byTable = byTable;
+		}
+	}
+	
 	
 	private Date analysisDate;
 	private Map<String, Fraction> extraction;
@@ -11,9 +39,10 @@ public class ADFile {
 	private Map<String, Map<String, VaccinationPayload>> vaccinations;
 	private ConfigurationPayload configuration;
 	private Summary summary;
+	private Vocabulary vocabulary;
 	
 	public ADFile(Map<String, Fraction> extraction, Map<String, PatientPayload> patients,
-			Map<String, Map<String, VaccinationPayload>> vaccinations, ConfigurationPayload configuration, Summary summary) {
+			Map<String, Map<String, VaccinationPayload>> vaccinations, ConfigurationPayload configuration, Summary summary, Vocabulary vocabulary) {
 		super();
 		this.extraction = extraction;
 		this.patients = patients;
@@ -21,7 +50,7 @@ public class ADFile {
 		this.configuration = configuration;
 		this.analysisDate = new Date();
 		this.summary = summary;
-		
+		this.vocabulary = vocabulary;
 	}
 	
 	
@@ -67,7 +96,10 @@ public class ADFile {
 	public void setSummary(Summary summary) {
 		this.summary = summary;
 	}
-	
-
-	
+	public Vocabulary getVocabulary() {
+		return vocabulary;
+	}
+	public void setVocabulary(Vocabulary vocabulary) {
+		this.vocabulary = vocabulary;
+	}
 }

@@ -9,51 +9,135 @@
 		<p style="color: white;">
 			{{result.description}}
 		</p>
-		<div fxLayout="column" fxLayoutAlign="start stretch" style="overflow-y: auto; width: 100%;">
-			<div class="card" *ngFor="let section of result.sections" style="margin-right: 5px; margin-top: 10px;  display: initial !important;">
-				<div class="card-block">
-					<h4 class="card-title">{{section.title}}</h4>
-					<span style="max-width: 300px; word-break: normal;">{{section.description}}</span>
-					<div *ngFor="let p of section.results" fxLayout="column">
-						<ng-container *ngIf="p.filters && p.filters.length > 0">
-							<strong>Filters</strong>
-							<span *ngFor="let f of p.filters">{{f.field}} : {{f.value}}  {{ f.field === 'DETECTION' ? ' - '+detections[f.value].description : ''}}</span>
-						</ng-container>
-						<ng-container *ngTemplateOutlet="template(p); context : {$implicit : p, data : p.chart}"></ng-container>
-						<mat-divider style="margin-top: 10px; margin-bottom: 10px;"></mat-divider>
+		<div fxLayout="row" fxLayoutAlign="start stretch" style="overflow-y: auto; width: 100%; padding :50px;" fxLayoutWrap>
+				<div fxFlex class="card" *ngFor="let section of result.sections" style="margin-right: 5px; margin-top: 10px; min-width : 600px; display: initial !important;"  >
+					<div class="card-block" fxLayout="column" fxLayoutAlign="start stretch" style="height: 100%;">
+						<h4 class="card-title">{{section.title}}</h4>
+						<span style="max-width: 300px; word-break: normal;">{{section.description}}</span>
+						<div style="width: 100%; height : 100%; padding: 5px;" fxLayout="row" fxLayoutAlign="center stretch">
+							<div fxFlex style="border: 1px dashed black; padding: 10px; background-color: #ececec; margin-right: 5px; margin-top: 5px; height: 100%;" *ngFor="let p of section.results" fxLayout="column" fxLayoutAlign="start stretch">
+								<span style="text-align: center;"><strong> Analysis Type : </strong>{{typeName(p.type)}}</span>
+								<mat-divider style="margin-bottom: 5px; margin-top: 5px;"></mat-divider>
+								<div fxLayout="column" fxLayoutAlign="space-between stretch" style="height: 100%;">
+									<div>
+										<table *ngIf="p.filters && p.filters.length > 0" class="table table-striped" style="text-align: center; background-color: white;">
+											<thead>
+											<tr>
+												<th colspan="2">Sample Selection</th>
+											</tr>
+											</thead>
+											<tbody>
+											<tr *ngFor="let f of p.filters">
+												<td>
+													{{f.field}}
+												</td>
+												<td>
+													{{value(f.field, f.value)}}
+												</td>
+											</tr>
+											</tbody>
+										</table>
+										<table class="table table-striped" *ngIf="p.groups && p.groups.length > 0">
+											<thead>
+											<tr>
+												<th>
+													GROUP BY
+												</th>
+												<th>
+													<span *ngFor="let g of p.groups[0]; let i = index">{{g.field}} {{i < (p.groups[0].length - 1) ? "-" : ''}}</span>
+												</th>
+											</tr>
+											</thead>
+										</table>
+										<table *ngIf="p.values" class="table table-striped" style="text-align: center; background-color: white;" #show="var" [var]="true">
+											<thead>
+											<tr>
+												<th colspan="2">
+													Analysis Data
+													<i (click)="show.var = !show.var;" [ngClass]="{'fa-eye' : show.var, 'fa-eye-slash' : !show.var}" class="fa float-right" style="cursor : pointer; color: green;"></i>
+												</th>
+											</tr>
+											</thead>
+											<tbody *ngIf="!show.var" style="max-height: 400px; overflow: auto; display: block;">
+											<tr *ngFor="let g of p.groups; let gId = index" style="display: block; width: 100%;" fxLayout="row" fxLayoutAlign="space-between stretch">
+												<td>
+													<table>
+														<tr *ngFor="let l of g; let lId = index">
+															<td>{{l.field}}</td>
+															<td>{{value(l.field, l.value)}}</td>
+														</tr>
+													</table>
+												</td>
+												<td>
+													{{p.values[gId+'grp'] ? percentage(p.values[gId+'grp'])+'% (' + p.values[gId+'grp'].count + '/' + p.values[gId+'grp'].total + ')': 'No Data'}}
+												</td>
+											</tr>
+											<tr *ngIf="!p.groups || p.groups.length === 0" style="display: block; width: 100%;" fxLayout="row" fxLayoutAlign="space-between stretch">
+												<td>
+													{{"Indicator"}}
+												</td>
+												<td>
+													{{p.values['indicator'] ? percentage(p.values['indicator'])+'% (' + p.values['indicator'].count + '/' + p.values['indicator'].total + ')': 'No Data'}}
+												</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+									<ng-container *ngTemplateOutlet="template(p); context : {$implicit : p, data : p.chart}" ></ng-container>
+								</div>
+
+							</div>
+						</div>
 					</div>
-				</div>
 			</div>
+
 		</div>
 
 	</div>
 </div>
 
 <ng-template #indicator let-payload>
-	<div fxLayout="column" fxLayoutAlign="start start" *ngIf="payload.values && payload.values.indicator">
-		<strong>{{(((payload.values.indicator.count / payload.values.indicator.total)*100)).toFixed(2)+'%'}} ({{payload.values.indicator.count}} / {{payload.values.indicator.total}})</strong>
-		<div class="progress" style="width: 300px; background-color: #a7d3e8 !important;">
-			<div class="progress-bar" role="progressbar" [ngStyle]="{width: ((payload.values.indicator.count / payload.values.indicator.total)*100)+'%'}" style="background-color: black !important;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+	<div fxFlex="grow"  fxLayout="column" fxLayoutAlign="center stretch" *ngIf="payload.values && payload.values.indicator" style="background-color: white; border: 1px solid black; padding: 10px;">
+		<div  fxLayout="row" fxLayoutAlign="start center">
+			<strong>{{percentage(payload.values.indicator)+'%'}} ({{payload.values.indicator.count}} / {{payload.values.indicator.total}})</strong>
+			<span class="badge badge-danger" style="margin-left : 5px;" *ngIf="flag(payload.values.indicator, payload.display)">Over Threshold ({{payload.display.threshold}}%)</span>
+		</div>
+		<div fxLayout="column" style="min-width: 600px;" fxLayoutAlign="start stretch">
+			<div class="progress" style="width: 100%; height: 40px; background-color: #a7d3e8 !important;">
+				<div class="progress-bar progress-bar-striped" [ngStyle]="{'width' : payload.display.threshold + '%'}" style="border-right : 1px solid red; height: 40px;" *ngIf="flag(payload.values.indicator, payload.display)">
+
+				</div>
+				<div [ngClass]="{'bg-danger' : flag(payload.values.indicator, payload.display)}" class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{width: (flag(payload.values.indicator, payload.display) ? (percentage(payload.values.indicator) - payload.display.threshold) : percentage(payload.values.indicator)) +'%'}" style="height: 40px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+			</div>
 		</div>
 	</div>
-	<div fxLayout="column" fxLayoutAlign="start start" *ngIf="!payload.values || !payload.values.indicator">
-		<strong>No Data</strong>
+	<div fxFlex="grow"  fxLayout="column" fxLayoutAlign="center stretch" *ngIf="!payload.values || !payload.values.indicator" style="background-color: lightgrey; text-align: center; border: dashed gray 1px; height: 100%; min-width: 600px;">
+		<strong style="font-weight: bold; color: darkgray;">NO DATA</strong>
 	</div>
 </ng-template>
-
 <ng-template #chart let-payload let-node="data">
-	<div [ngStyle]="{padding: '10px', width : '100%'}" fxLayout="row" fxLayoutAlign="center center">
-		<div [ngStyle]="{ width : max(node.labels.length*70+100,500)+'px'}">
-			<canvas baseChart
-					[datasets]="[{data : node.values}]"
+	<div fxFlex="grow" [ngStyle]="{padding: '10px', width : '100%'}" fxLayout="column" fxLayoutAlign="space-between center" style="background-color: white; border: 1px solid black;">
+		<mat-radio-group [(ngModel)]="payload.display.chartType" fxLayout="row" fxLayoutAlign="start start" *ngIf="payload.distribution">
+			<mat-radio-button style="margin-right: 5px;" value="bar">Bar Chart</mat-radio-button>
+			<mat-radio-button value="pie">Pie Chart</mat-radio-button>
+		</mat-radio-group>
+		<div fxFlex="grow" fxLayout="column" fxLayoutAlign="center center">
+			<div style="min-width: 600px; width: 100%;">
+				<google-chart [data]="{
+				chartType : payload.display.chartType === 'pie' ? 'PieChart' : 'BarChart',
+				dataTable : node,
+				options : {
+					height : payload.display.chartType !== 'pie' && node.length * 30 > 300 ? node.length * 30 : null,
+					legend : {position: 'bottom'},
+					hAxis : {
+						maxValue : 100
+					}
+				}
 
-					[labels]="node.labels"
-					[options]="barChartOptions"
-					[legend]="false"
-					(chartHover)="ev($event)"
-					(chartClick)="ev($event)"
-					[chartType]="barChartType"></canvas>
+			}"></google-chart>
+			</div>
 		</div>
 	</div>
 
 </ng-template>
+

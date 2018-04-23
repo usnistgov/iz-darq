@@ -18,5 +18,17 @@ public class DqNumeric extends DataUnit<Integer> {
 		}		
 	}
 
+	@Override
+	protected Integer dummy(int n) {
+		return 99;
+	}
+
+	@Override
+	protected void validatePlaceHolder(DescriptorType placeholder) throws InvalidValueException {
+		if(placeholder.equals(DescriptorType.VALUE_LENGTH)){
+			throw new InvalidValueException("Cannot use VALUE_LENGTH metadata on a numeric field");
+		}
+	}
+
 
 }

@@ -1,38 +1,30 @@
 package gov.nist.healthcare.iz.darq.analyzer.service.impl;
 
-import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+
 import java.util.List;
-import java.util.Set;
+
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
 import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisPayload;
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisPayload.FieldValue;
-import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisQuery;
-import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisQuery.QueryField;
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisReport;
-import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisResult;
-import gov.nist.healthcare.iz.darq.analyzer.domain.Field;
-import gov.nist.healthcare.iz.darq.analyzer.domain.Field._CG;
 import gov.nist.healthcare.iz.darq.analyzer.domain.ReportSection;
 import gov.nist.healthcare.iz.darq.analyzer.domain.ReportTemplate;
-import gov.nist.healthcare.iz.darq.analyzer.service.Analyzer;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
+import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
 
 @Configuration
 @ComponentScan("gov.nist.healthcare")
@@ -55,7 +47,7 @@ public class Main {
 		AnalysisReport ar = analyzer.analyse(file, template());
 		ObjectMapper mapper = new ObjectMapper();
 		
-		System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(ar));
+		System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(file));
 //		System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(template()));
 
 //		Set<C> set = new HashSet<>();

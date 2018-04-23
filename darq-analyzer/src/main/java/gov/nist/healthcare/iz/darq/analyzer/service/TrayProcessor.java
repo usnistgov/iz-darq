@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.function.Function;
 
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisQuery.Action;
-import gov.nist.healthcare.iz.darq.analyzer.domain.Field._CG;
 import gov.nist.healthcare.iz.darq.analyzer.domain.Tray;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
+import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
 
 public abstract class TrayProcessor {
 

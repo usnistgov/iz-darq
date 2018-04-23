@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
@@ -191,5 +192,21 @@ public class CodeCollector {
 								)
 						);
 	}
+	
+	public Map<String, Set<String>> codes(){
+		return this.codes.stream()
+		.collect(
+				Collectors.groupingBy(
+						Code::getTable,
+						Collectors.collectingAndThen(
+								Collectors.groupingBy(Code::getValue),
+								(x) -> {
+									return x.keySet();
+								}
+						)
+				)
+		);
+	}
+
 
 }

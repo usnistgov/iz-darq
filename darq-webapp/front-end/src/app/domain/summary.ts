@@ -24,6 +24,15 @@ export class Summary {
 	}[];
 }
 
+export class Vocabulary {
+	byField : {
+		[index : string] : string[]
+	};
+	byTable : {
+		[index : string] : string[]
+	};
+}
+
 export class Range {
 	min : Barket;
 	max : Barket;

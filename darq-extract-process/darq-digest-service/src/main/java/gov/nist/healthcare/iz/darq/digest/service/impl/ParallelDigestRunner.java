@@ -64,9 +64,9 @@ public class ParallelDigestRunner implements DigestRunner {
 							merge.mergeChunk(file, chewer.munch(config, apr, now));
 						}
 						catch(Exception e){
+//							e.printStackTrace();
 							file.incUnread();
 							file.getIssues().add(e.getMessage());
-//							e.printStackTrace();
 						}
 					}
 				

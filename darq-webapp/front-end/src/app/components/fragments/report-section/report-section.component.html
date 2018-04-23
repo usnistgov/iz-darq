@@ -1,4 +1,7 @@
 <div class="card" style="width: 100%; background-color: bisque; margin-bottom: 5px; padding: 10px;" fxLayout="column" fxLayoutAlign="start stretch">
+	<div>
+		<i class="fa fa-times float-right" style="color: red;" (click)="del()"></i>
+	</div>
 	<div fxLayout="column" fxLayoutAlign="start stretch">
 		<strong style="margin-bottom: 5px;">Title</strong>
 		<input  [(ngModel)]="_section.title" (ngModelChanged)="changed()" placeholder="Name"/>
@@ -13,35 +16,80 @@
 				<thead>
 					<tr>
 						<th fxLayout="row" fxLayoutAlign="space-between center">
-							<strong>{{ (payload.groupBy && payload.groupBy.length > 0) ? 'Chart' : 'Indicator'}} ({{ names[payload.type] }}) </strong>
+							<strong>{{ $template.plural(payload) ? 'Chart' : 'Indicator'}} ({{ names[payload.type] }}) </strong>
 							<i class="fa fa-minus float-right" style="color: red; margin-left: 5px; cursor: pointer;" (click)="remove(i,_section.payloads)"></i>
 						</th>
 					</tr>
 				</thead>
-				<tbody style="background-color: lightgrey;" *ngIf="payload.filters && payload.filters.length >0">
+				<tbody style="background-color: lightgrey;" *ngIf="payload.filters && payload.filters.length >0" #show="var" [var]="true">
 					<tr>
-						<th style="text-align: center;"> Selector </th>
+						<th style="text-align: center;" fxLayout="row" fxLayoutAlign="space-between center">
+							<strong>Selector</strong>
+							<i (click)="show.var = !show.var;" [ngClass]="{'fa-eye' : show.var, 'fa-eye-slash' : !show.var}" class="fa" style="cursor : pointer; color: green;"></i>
+						</th>
 					</tr>
-					<tr >
+					<tr *ngIf="!show.var">
 						<table style="width: 100%;">
 							<tr *ngFor="let filter of payload.filters">
 								<td>
 									{{filter.field}}
 								</td>
 								<td>
-									<span *ngIf="filter.field === 'AGE_GROUP'">{{print(filter.value)}}</span>
-									<span *ngIf="filter.field !== 'AGE_GROUP'">{{filter.value}}</span>
+									<span >{{$template.value(filter.value, filter.field, ageGroups, _detections, _cvx)}}</span>
 								</td>
 							</tr>
 						</table>
 					</tr>
 				</tbody>
-				<tbody *ngIf="payload.groupBy && payload.groupBy.length >0">
+				<tbody *ngIf="payload.groupBy && payload.groupBy.length >0" #show="var" [var]="true">
 					<tr>
-						<th style="text-align: center;"> Group By </th>
+						<th style="text-align: center;" fxLayout="row" fxLayoutAlign="space-between center">
+							<strong>Group By</strong>
+							<i (click)="show.var = !show.var;" [ngClass]="{'fa-eye' : show.var, 'fa-eye-slash' : !show.var}" class="fa" style="cursor : pointer; color: green;"></i>
+						</th>
 					</tr>
-					<tr *ngFor="let group of payload.groupBy">
-						<td style="text-align: center;">{{group}}</td>
+					<tr *ngIf="!show.var" >
+						<td>
+							<table style="width: 100%;">
+								<tr *ngFor="let group of payload.groupBy">
+									<td style="text-align: center;">{{group}}</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+				<tbody style="background-color: lightgrey;" *ngIf="payload.groupFilters && payload.groupFilters.length >0" #show="var" [var]="true">
+					<tr>
+						<th style="text-align: center;" [attr.colspan]="payload.groupBy.length" fxLayout="row" fxLayoutAlign="space-between center">
+							<strong>Group Filter</strong>
+							<i (click)="show.var = !show.var;" [ngClass]="{'fa-eye' : show.var, 'fa-eye-slash' : !show.var}" class="fa" style="cursor : pointer; color: green;"></i>
+						</th>
+					</tr>
+					<tr *ngIf="!show.var">
+						<td>
+							<table style="width: 100%;">
+								<tr>
+									<th style="text-align: center;" *ngFor="let g of payload.groupBy" > {{g}} </th>
+								</tr>
+								<tr *ngFor="let groupF of payload.groupFilters">
+									<td style="text-align: center;" *ngFor="let g of payload.groupBy" >{{groupF[g] ? $template.value(groupF[g], g, ageGroups, _detections, _cvx) : '*'}}</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+				<tbody *ngIf="payload.options" #show="var" [var]="true">
+					<tr>
+						<th style="text-align: center;" [attr.colspan]="payload.groupBy.length" fxLayout="row" fxLayoutAlign="space-between center">
+							<strong>Options</strong>
+							<i (click)="show.var = !show.var;" [ngClass]="{'fa-eye' : show.var, 'fa-eye-slash' : !show.var}" class="fa" style="cursor : pointer; color: green;"></i>
+						</th>
+					</tr>
+					<tr *ngIf="!show.var && !$template.plural(payload)">
+						<td fxLayout="row" fxLayoutAlign="space-between center">
+							<strong>Threshold</strong>
+							<span>{{payload.options.threshold != null ? payload.options.threshold : 'None'}}</span>
+						</td>
 					</tr>
 				</tbody>
 			</table>
