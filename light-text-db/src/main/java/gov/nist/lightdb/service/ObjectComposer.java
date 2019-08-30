@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import gov.nist.lightdb.domain.Line;
 import gov.nist.lightdb.domain.Record;
 import gov.nist.lightdb.exception.InvalidValueException;
 import gov.nist.lightdb.domain.EntityTypeRegistry.EntityType;
@@ -84,13 +86,13 @@ public class ObjectComposer<T> {
 		return new ArrayList<>(this.parsers.keySet());
 	}
 	
-	public T compose(String ID, Map<EntityType,List<String>> lines) throws InvalidValueException {
+	public T compose(String ID, Map<EntityType,List<Line>> lines) throws InvalidValueException {
 		Map<EntityType, List<Record>> entities = new HashMap<>();
 		for(EntityType t : lines.keySet()){
 			List<Record> list = new ArrayList<>();
-			for(String line : lines.get(t)){
+			for(Line line : lines.get(t)){
 				try {
-					list.add(this.parsers.get(t).parse(line));
+					list.add(this.parsers.get(t).parse(line.getContent(), line.getNb()));
 				} catch (InvalidValueException e) {
 					throw new InvalidValueException("["+t.name+"] " + e.getMessage());
 				}

@@ -44,3 +44,19 @@ html,body {
 	max-height: 200px !important;
 	overflow-y:  scroll;
 }
+
+.bars {
+	background-color: rgb(213, 213, 213) !important;
+}
+
+.bar {
+	height: 100%;
+}
+
+.data-row:hover {
+	background-color: #d6f4ff !important;
+}
+
+.data-row:hover td {
+	background-color: #d6f4ff !important;
+}

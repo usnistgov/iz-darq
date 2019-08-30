@@ -24,11 +24,12 @@ public class MergeServiceImpl implements MergeService {
 	@Override
 	public synchronized ADChunk mergeChunk(ADChunk a, ADChunk b){
 		a.setVaccinationSection(mergeVxProvider(a.getVaccinationSection(), b.getVaccinationSection()));
-		a.setPatientSection(mergePatAgeGroup(a.getPatientSection(), b.getPatientSection()));
+		a.setPatientSection(mergePatientAgeGroup(a.getPatientSection(), b.getPatientSection()));
 		a.setExtraction(mergeExtract(a.getExtraction(), b.getExtraction()));
 		a.setProviders(mergeProvider(a.getProviders(), b.getProviders()));
 		a.getIssues().addAll(b.getIssues());
-		a.setUnread(a.getUnread() + b.getUnread());
+		a.setUnreadVaccinations(a.getUnreadVaccinations() + b.getUnreadVaccinations());
+		a.setUnreadPatients(a.getUnreadPatients() + b.getUnreadPatients());
 		a.setNbPatients(a.getNbPatients() + b.getNbPatients());
 		a.setNbVaccinations(a.getNbVaccinations() + b.getNbVaccinations());
 		a.setMaxVaccination(b.getNbVaccinations());
@@ -121,14 +122,14 @@ public class MergeServiceImpl implements MergeService {
 		VaccinationPayload vxP = new VaccinationPayload();
 		vxP.setCountAdministred(a.getCountAdministred() + b.getCountAdministred());
 		vxP.setCountHistorical(a.getCountHistorical() + b.getCountHistorical());
-		vxP.setDetection(mergeDets(a.getDetection(), b.getDetection()));
+		vxP.setDetection(mergeDetections(a.getDetection(), b.getDetection()));
 		vxP.setCodeTable(mergeCodeTable(a.getCodeTable(), b.getCodeTable()));
 		vxP.setVaccinations(mergeVxCode(a.getVaccinations(), b.getVaccinations()));
 		return vxP;
 	}
 	
 	@Override
-	public Map<String, DetectionSum> mergeDets(Map<String, DetectionSum> a, Map<String, DetectionSum> b){
+	public Map<String, DetectionSum> mergeDetections(Map<String, DetectionSum> a, Map<String, DetectionSum> b){
 		Map<String, DetectionSum> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
 			b.forEach((k, v) -> {
@@ -215,21 +216,21 @@ public class MergeServiceImpl implements MergeService {
 	}
 	
 	@Override
-	public Map<String, PatientPayload> mergePatAgeGroup(Map<String, PatientPayload> a, Map<String, PatientPayload> b){
+	public Map<String, PatientPayload> mergePatientAgeGroup(Map<String, PatientPayload> a, Map<String, PatientPayload> b){
 		Map<String, PatientPayload> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
 			b.forEach((k, v) -> {
-				x.merge(k, v, this::mergePat);
+				x.merge(k, v, this::mergePatient);
 			});
 		}
 		return x;
 	}
 	
 	@Override
-	public PatientPayload mergePat(PatientPayload a, PatientPayload b){
+	public PatientPayload mergePatient(PatientPayload a, PatientPayload b){
 		PatientPayload pt = new PatientPayload();
 		pt.setCount(a.getCount() + b.getCount());
-		pt.setDetection(mergeDets(a.getDetection(), b.getDetection()));
+		pt.setDetection(mergeDetections(a.getDetection(), b.getDetection()));
 		pt.setCodeTable(mergeCodeTable(a.getCodeTable(), b.getCodeTable()));
 		return pt;
 	}

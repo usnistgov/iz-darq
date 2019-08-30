@@ -13,14 +13,19 @@
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   	<dependency>
-  		<groupId>org.immregistries</groupId>
-  		<artifactId>dqa-validator</artifactId>
-  		<version>2.0.2-DEVELOPMENT</version>
-  	</dependency>
-  	<dependency>
   		<groupId>gov.nist.healthcare.iz</groupId>
   		<artifactId>darq-adf-utils</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>gov.nist.healthcare.iz</groupId>
+  		<artifactId>file-parser</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.immregistries</groupId>
+  		<artifactId>mqe-validator</artifactId>
+  		<version>2018.9-BETA</version>
   	</dependency>
   </dependencies>
 </project>

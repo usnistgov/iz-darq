@@ -103,6 +103,31 @@ public class Main {
 //				}
 //			}
 //		}
+		String str = "ABC123";
+		System.out.println(str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+:\\d+-\\d+\\|)+"));
+		str = "ABC123>";
+		System.out.println(str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+:\\d+-\\d+\\|)+"));
+		str = "ABC123>EN1";
+		System.out.println(str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+:\\d+-\\d+\\|)+"));
+		str = "ABC123>EN1:";
+		System.out.println(str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+:\\d+-\\d+\\|)+"));
+		str = "ABC123>:1234-12650";
+		System.out.println(str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+:\\d+-\\d+\\|)+"));
+		str = "ABC123>EN1:1234";
+		System.out.println(str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+:\\d+-\\d+\\|)+"));
+		str = "ABC123>EN1:1234-12650";
+		System.out.println(str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+:\\d+-\\d+\\|)+"));
+		str = ">EN1:1234-12650";
+		System.out.println(str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+:\\d+-\\d+\\|)+"));
+		str = "EN1:1234-12650";
+		System.out.println(str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+:\\d+-\\d+\\|)+"));
+		
+		str = "X57053081>p:1219-321|";
+		System.out.println(str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+:\\d+-\\d+\\|)+"));
+		str = "ABC123>EN1:1234-12650|ASA>";
+		System.out.println(str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+:\\d+-\\d+\\|)+"));
+		str = "O78510089>p:45104-289|v:653913-339:654253-309:654563-300:654864-298:655163-304:655468-304:655773-303:656077-317:656395-300:656696-316|";
+		System.out.println(str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+(:\\d+-\\d+)+\\|)+"));
 	}
 }
 

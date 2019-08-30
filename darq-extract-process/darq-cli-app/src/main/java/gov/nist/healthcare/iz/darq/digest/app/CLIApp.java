@@ -4,12 +4,15 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
+import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,13 +25,13 @@ import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
 import gov.nist.healthcare.iz.darq.digest.service.impl.Exporter;
-import gov.nist.healthcare.iz.darq.digest.service.impl.ParallelDigestRunner;
 
 @Configuration
 @ComponentScan("gov.nist.healthcare")
 public class CLIApp {
 	
 	private static DecimalFormat df = new DecimalFormat(".##");
+	final static Logger logger = LoggerFactory.getLogger(CLIApp.class.getName());
 
 	
 	private static boolean exists(CommandLine cmd, String opt, String name){
@@ -38,6 +41,8 @@ public class CLIApp {
 		}
 		return true;
 	}
+
+	private static boolean running = false;
 	
     public static String success(String x){
     	return ConsoleColors.GREEN_BOLD + x + ConsoleColors.RESET;
@@ -47,6 +52,7 @@ public class CLIApp {
     	return ConsoleColors.RED_BOLD + x + ConsoleColors.RESET;
     }
 	
+	@SuppressWarnings("resource")
 	public static void main(String[] args) throws Exception {
 		ApplicationContext context = new AnnotationConfigApplicationContext(CLIApp.class);
 		//--- OPTIONS
@@ -102,17 +108,17 @@ public class CLIApp {
 		        	System.out.println("========================================================================");
 		        	
 		        	if(pFile && vFile && cFile && cFileValid){
-		        		ParallelDigestRunner runner = (ParallelDigestRunner) context.getBean(ParallelDigestRunner.class);
+		        		SimpleDigestRunner runner = (SimpleDigestRunner) context.getBean(SimpleDigestRunner.class);
 		        		Exporter export = (Exporter) context.getBean(Exporter.class);
 		        		Long start = System.currentTimeMillis();
+		        		running = true;
 		        		Thread t = progress(runner, start);
 		        		t.start();
 		            	ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath);
 		            	t.join();
 		            	System.out.println(ConsoleColors.GREEN_BRIGHT + "Analysis Finished" + ConsoleColors.RESET);
 		            	export.export(configurationPayload, chunk);
-		            	
-		            	
+		            
 		        	}
 				}
 			}
@@ -122,6 +128,13 @@ public class CLIApp {
 		}
 		catch (ParseException exp) {
 			System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+		}
+		catch (Exception exp) {
+			System.err.println("Execution Failed due to exception ");
+			exp.printStackTrace();
+		}
+		finally {
+			running = false;
 		}
 	}
 	
@@ -171,7 +184,7 @@ public class CLIApp {
 							e.printStackTrace();
 						}
 			
-					} while(f.percent() != 100);
+					} while(f.percent() != 100 && running);
 					System.out.println();
 					
 				}

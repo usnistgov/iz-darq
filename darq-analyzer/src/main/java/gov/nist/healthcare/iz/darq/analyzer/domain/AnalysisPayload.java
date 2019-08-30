@@ -66,8 +66,27 @@ public class AnalysisPayload {
 		
 	}
 	
+	public static class GroupFilter {
+		private Map<Field, String> values;
+		private int threshold = 0;
+		
+		
+		public Map<Field, String> getValues() {
+			return values;
+		}
+		public void setValues(Map<Field, String> values) {
+			this.values = values;
+		}
+		public int getThreshold() {
+			return threshold;
+		}
+		public void setThreshold(int threshold) {
+			this.threshold = threshold;
+		}
+	}
+	
 	public static class Options {
-		private int threshold;
+		private int threshold = -1;
 		private String chartType;
 		private String countType;
 		public int getThreshold() {
@@ -93,7 +112,7 @@ public class AnalysisPayload {
 	private _CG type;
 	private List<FieldValue> filters;
 	private List<Field> groupBy;
-	private List<Map<Field, String>> groupFilters;
+	private List<GroupFilter> groupFilters;
 	private Options options;
 	
 	public _CG getType() {
@@ -121,10 +140,10 @@ public class AnalysisPayload {
 	public void setGroupBy(List<Field> groupBy) {
 		this.groupBy = groupBy;
 	}
-	public List<Map<Field, String>> getGroupFilters() {
+	public List<GroupFilter> getGroupFilters() {
 		return groupFilters;
 	}
-	public void setGroupFilters(List<Map<Field, String>> groupFilters) {
+	public void setGroupFilters(List<GroupFilter> groupFilters) {
 		this.groupFilters = groupFilters;
 	}
 	public Options getOptions() {

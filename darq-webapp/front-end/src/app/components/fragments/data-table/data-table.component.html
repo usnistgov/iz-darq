@@ -1,0 +1,43 @@
+<p-table #tte [globalFilterFields]="['value','threshold','flag'].concat(_table.headers)" [resizableColumns]="true" [value]="_table.rows" [styleClass]="'table-sm'" >
+
+	<ng-template pTemplate="caption">
+		<input type="text" pInputText size="50" placeholder="Filter" (input)="tte.filterGlobal($event.target.value, 'contains')" style="width:100%;">
+	</ng-template>
+
+	<ng-template pTemplate="colgroup" let-columns>
+		<colgroup>
+			<col *ngFor="let col of _table.headers" >
+			<col style="width: 200px;">
+			<col style="width: 100px;">
+			<col style="width: 100px;">
+			<col style="min-width: 70px;">
+		</colgroup>
+	</ng-template>
+
+	<ng-template pTemplate="header" let-columns>
+		<tr>
+			<th style="text-align: center;" [pSortableColumn]="h" *ngFor="let h of _table.headers" pResizableColumn>{{h}}</th>
+			<th style="text-align: center;" [pSortableColumn]="'value'" > Value </th>
+			<th style="text-align: center;" [pSortableColumn]="'threshold'" > Threshold </th>
+			<th style="text-align: center;" [pSortableColumn]="'flag'" >Flag</th>
+			<th style="text-align: center;" [pSortableColumn]="'value'" >Visualization</th>
+		</tr>
+	</ng-template>
+
+	<ng-template pTemplate="body" let-node let-columns="columns">
+		<tr style="word-break: break-all; height: 100%;" class="data-row">
+			<td *ngFor="let h of _table.headers" >{{node[h] ? value(h, node[h]) : '*'}}</td>
+			<td>{{node.value | number:'.'}}% ( {{(node.fraction.count | number:'.') + " / " + (node.fraction.total | number:'.')}} )</td>
+			<td>{{!NaN(node.threshold)? (node.threshold | number:'.') + "%" : "NONE"}}</td>
+			<td [ngStyle]="{'background-color' : node.flag === 'ABOVE' ? 'lightpink' : node.flag === 'BELOW' ?'lightgreen' : 'lightgray'}">{{ node.flag }}</td>
+			<td  class="bars" style="height: 100%;  padding: 0 !important; vertical-align:middle;">
+				<div style="display: inline-block; width: 100%; height: 100%;" fxLayout="row" fxLayoutAlign="start stretch">
+					<div class="bar" [ngStyle]="{width: below(node.flag, node.threshold, node.value)+'%', 'background-color' : 'blue', height: '30px'}" ></div>
+					<div class="bar" [ngStyle]="{width: inside(node.flag, node.threshold, node.value)+'%', 'border-left' : node.flag == 'ABOVE' ? '5px solid darkred' : '', 'background-color' : node.flag == 'ABOVE' ? '#ff4d4d' : node.flag == 'BELOW' ? 'lightgreen' : '', height: '30px'}" ></div>
+					<div class="bar" [ngStyle]="{width: above(node.flag, node.value)+'%', 'border-left' : node.flag == 'BELOW' ? '5px solid darkred' : '', 'background-color' : node.flag != 'NONE' ? 'lightpink' : '', height: '30px'}" ></div>
+				</div>
+			</td>
+		</tr>
+	</ng-template>
+
+</p-table>

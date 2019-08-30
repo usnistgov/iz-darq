@@ -16,6 +16,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.nist.lightdb.domain.EntityTypeRegistry.EntityType;
 
@@ -25,6 +27,7 @@ public class LightWeightIndexer implements Indexer {
 	HashMap<String, List<Document.Load>> buffer;
 	int commitSize = 1000;
 	int chunks = 5;
+	final static Logger logger = LoggerFactory.getLogger(LightWeightIndexer.class.getName());
 	
 	public class Worker {
 		public boolean available;
@@ -175,12 +178,17 @@ public class LightWeightIndexer implements Indexer {
 		return new LightWeightIndexer().new Builder();
 	}
 	
+	public static boolean valid_mtu(String str){
+		return str.matches("[a-zA-Z0-9_-]+>([a-zA-Z0-9_-]+(:\\d+-\\d+)+\\|)+");
+	}
 
 	@Override
 	public void master(Path dataDir, Path index, EntityType type) throws Exception {
 		
 		Path master_file = Paths.get(index.toString(), "master.idx");
 		Path dataFile = Paths.get(dataDir.toString(), type.i.file);
+		logger.info("INDEX LOCATION : "+master_file.toString());
+		logger.info("DATA LOCATION : "+dataFile.toString());
 				 
 		//-- MASTER
 		String ID = type.i.id;
@@ -195,21 +203,26 @@ public class LightWeightIndexer implements Indexer {
 				Document.Builder builder = new Document().new Builder();
 				builder.init(str,offset.get());
 				Document doc = profile.build(builder);
-				
+				logger.info("READING DOC ["+offset.count()+"] : "+doc.id);
 				//-- WRITE INDEX
-				mtu_write(doc, writer, ID);
+				String entry = mtu_write(doc, writer, ID);
+				if(!valid_mtu(entry)){
+					logger.error("INVALID INDEX ENTRY ["+offset.count()+"] : {"+entry+"}");
+				}
+				
 				offset.inc((str+"\n").getBytes().length);
 			});
 		}
 		catch(Exception e){
-			System.out.println("HERE-EX");
+			logger.error("Invalid "+type.name+" file");
 			throw new Exception("Invalid "+type.name+" file");
 		}
 	}
 
-	private void mtu_write(Document doc, PrintWriter pr, String ID){
+	private String mtu_write(Document doc, PrintWriter pr, String ID){
 		String entry = String.format("%s>%s:%d-%d|", doc.id, ID, doc.offset, doc.span);
 		pr.println(entry);
+		return entry;
 	}
 	
 	@Override
@@ -217,6 +230,7 @@ public class LightWeightIndexer implements Indexer {
 		Worker worker = new Worker();
 		String ID = type.i.id;
 		Path dataFile = Paths.get(dataDir.toString(), type.i.file);
+		logger.info("DATA LOCATION : "+dataFile.toString());
 		
 		try (
 				Stream<String> input = Files.lines(dataFile);	
@@ -227,9 +241,12 @@ public class LightWeightIndexer implements Indexer {
 				Document.Builder builder = new Document().new Builder();
 				builder.init(str,offset.get());
 				Document doc = profile.build(builder);
+				logger.info("READING DOC ["+offset.count()+"] : "+doc.id);
 				addToBuffer(doc.id, doc.load());
 				offset.inc((str+"\n").getBytes().length);
+				
 				if(offset.count() >= this.commitSize && worker.available()) {
+					logger.info("COMMITING BUFFER");
 					worker.commit(index, ID, flush());
 					offset.reset();
 				}
@@ -241,7 +258,7 @@ public class LightWeightIndexer implements Indexer {
 			worker.shutdown();
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			logger.error("[Oops error while indexing slave at "+dataDir+"]",e);
 		}
 		
 	}
@@ -277,22 +294,27 @@ public class LightWeightIndexer implements Indexer {
 	
 	private static void commit(Path index, String entity, final HashMap<String, List<Document.Load>> page){
 		String commit_id = UUID.randomUUID().toString();
+		
 		try (
 				PrintWriter writer = new PrintWriter(Paths.get(index.toString(), commit_id).toFile());
 				Stream<String> input = Files.lines(Paths.get(index.toString(), "master.idx"));
 		) {
-			
+			logger.info("COMMIT["+commit_id+"] :"+Paths.get(index.toString(), commit_id));
 			input.forEach(str -> {
 				String id = str.split(">")[0];
 				String p = payload(page,id);
 				if(!p.isEmpty()){
 					String n = String.format("%s%s%s|", str, entity, p);
+					if(!valid_mtu(n)){
+						logger.error("INVALID INDEX ENTRY ["+id+"] : "+n);
+					}
 					writer.println(n);
 				}
 				else {
 					writer.println(str);
 				}
 			});
+			logger.info("COMMIT["+commit_id+"] : MERGED");
 			
 			writer.flush();
 			writer.close();
@@ -300,10 +322,18 @@ public class LightWeightIndexer implements Indexer {
 			
 			Paths.get(index.toString(), "master.idx").toFile().delete();
 			Paths.get(index.toString(), commit_id).toFile().renameTo(Paths.get(index.toString(), "master.idx").toFile());
+			logger.info("COMMIT["+commit_id+"] : MASTER REPLACED");
+			logger.info("COMMIT["+commit_id+"] : CLOSE");
+			if(!Paths.get(index.toString(), "master.idx").toFile().exists()){
+				logger.error("COMMIT["+commit_id+"] : MASTER FILE DOES NOT EXIST AT : "+Paths.get(index.toString(), "master.idx"));
+			}
+			else {
+				logger.info("COMMIT["+commit_id+"] : MASTER FILE EXIST AT : "+Paths.get(index.toString(), "master.idx"));
+			}
 			
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			logger.error("[Oops error while committing "+commit_id+"]",e);
 		}
 	}
 

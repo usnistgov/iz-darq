@@ -1,21 +1,21 @@
 package gov.nist.healthcare.iz.darq.parser.model;
 
+import gov.nist.healthcare.iz.darq.parser.annotation.Field;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import gov.nist.healthcare.iz.darq.parser.type.DqString;
 
 public class Address {
 	
-
-	@FieldName("Street Address")
+	@Field(name = "Street Address", index = 0)
 	public DqString street;
-	@FieldName("Country")
+	@Field(name = "Country", index = 3, coded = true, table = "HL70399")
 	public DqString country;
-	@FieldName("City")
+	@Field(name = "City", index = 1)
 	public DqString city;
-	@FieldName("State")
+	@Field(name = "State", index = 2, coded = true, table = "US_POSTAL_STATE")
 	public DqString state;
-	@FieldName("ZIP")
+	@Field(name = "ZIP", index = 4)
 	public DqString zip;
 
 	@Override

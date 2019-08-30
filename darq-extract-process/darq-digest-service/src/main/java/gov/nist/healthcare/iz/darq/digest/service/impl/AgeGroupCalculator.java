@@ -11,8 +11,6 @@ import java.util.stream.Stream;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import gov.nist.healthcare.iz.darq.digest.domain.Barket;
 import gov.nist.healthcare.iz.darq.digest.domain.Range;
@@ -20,7 +18,6 @@ import gov.nist.healthcare.iz.darq.digest.service.AgeGroupService;
 
 public class AgeGroupCalculator implements AgeGroupService {
 
-	private DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyyMMdd");
 	List<Range> ranges;
 	
 	public Map<String, Range> ageGroups() {
@@ -57,11 +54,9 @@ public class AgeGroupCalculator implements AgeGroupService {
 	
 
 	@Override
-	public String getGroup(String from, String to) {
-		LocalDate _from = LocalDate.parse(from, dateFormat);          
-		LocalDate _to = LocalDate.parse(to, dateFormat);                  
-		Period period = new Period(_from, _to, PeriodType.yearMonthDay());
-		
+	public String getGroup(LocalDate from, LocalDate to) {         
+		Period period = new Period(from, to, PeriodType.yearMonthDay());
+
 		for(int i = 0; i < this.ranges.size(); i++){
 			if(inside(period, this.ranges.get(i))){
 				return i+"g";
@@ -74,10 +69,37 @@ public class AgeGroupCalculator implements AgeGroupService {
 
 	@Override
 	public boolean inside(Period period, Range range){
-		if(period.getYears() >= range.min.getYear() && period.getYears() <= range.max.getYear()){
-			if(period.getMonths() >= range.min.getMonth() && period.getMonths() <= range.max.getMonth()){
-				if(period.getDays() >= range.min.getDay() && period.getDays() <= range.max.getDay()){
+		return this.afterOrEqual(period, range) && this.before(period, range);
+	}
+
+	private boolean afterOrEqual(Period period, Range range) {
+		if(period.getYears() > range.min.year) {
+			return true;
+		} else if(period.getYears() == range.min.year) {
+			if(period.getMonths() > range.min.month) {
+				return true;
+			} else if(period.getMonths() == range.min.month) {
+				if(period.getDays() > range.min.day) {
 					return true;
+				} else if(period.getDays() == range.min.day) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean before(Period period, Range range) {
+		if(period.getYears() < range.max.year) {
+			return true;
+		} else if(period.getYears() == range.max.year) {
+			if(period.getMonths() < range.max.month) {
+				return true;
+			} else if(period.getMonths() == range.max.month) {
+				if(period.getDays() < range.max.day) {
+					return true;
+				} else if(period.getDays() == range.max.day) {
+					return false;
 				}
 			}
 		}

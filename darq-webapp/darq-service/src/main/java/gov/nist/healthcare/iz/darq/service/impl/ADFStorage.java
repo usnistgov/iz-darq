@@ -8,7 +8,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
@@ -18,14 +17,15 @@ import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 
 @Service
-@PropertySource("classpath:/configuration.properties")
+//@PropertySource("classpath:/configuration.properties")
 public class ADFStorage implements ADFStore {
 
 	@Autowired
 	private ADFMetaDataRepository repo;
 	@Autowired
 	private CryptoUtils crypto;
-	@Value("${darq.store}")
+//	@Value("${darq.store}")
+	@Value("#{environment.DARQ_STORE}")
 	private String PATH;
 	
 	@Override

@@ -11,11 +11,15 @@ public class Summary {
 	private List<AgeGroupCount> countByAgeGroup;
 	private int outOfRange = 0; 
 	private SummaryCounts counts;
+	private String asOfDate;
 	private Map<String, Double> extract;
 	private Map<String, String> cvxAbstraction;
 	
-	public Summary(ADChunk chunk, Map<String, String> cvxAbstraction, List<Range> groups){
+	public Summary(ADChunk chunk, ConfigurationPayload payload){
 		super();
+		Map<String, String> cvxAbstraction = payload.getVaxCodeAbstraction();
+		List<Range> groups = payload.getAgeGroups();
+		this.asOfDate = payload.getAsOf();
 		this.issues = chunk.getIssues();
 		this.countByAgeGroup = new ArrayList<>();
 		Map<String, Integer> ageCounts = new HashMap<>();
@@ -37,7 +41,8 @@ public class Summary {
 		this.cvxAbstraction = cvxAbstraction;
 		counts.totalReadPatientRecords = chunk.getNbPatients();
 		counts.totalReadVaccinations = chunk.getNbVaccinations();
-		counts.totalSkippedPatientRecords = chunk.getUnread();
+		counts.totalSkippedPatientRecords = chunk.getUnreadPatients();
+		counts.totalSkippedVaccinationRecords = chunk.getUnreadVaccinations();
 		counts.maxVaccinationsPerRecord = chunk.getMaxVaccination();
 		counts.avgVaccinationsPerRecord = counts.totalReadPatientRecords > 0 ? counts.totalReadVaccinations / counts.totalReadPatientRecords : 0;
 		counts.numberOfProviders = chunk.getProviders().size();
@@ -48,7 +53,14 @@ public class Summary {
 		super();
 	}
 
-	
+	public String getAsOfDate() {
+		return asOfDate;
+	}
+
+	public void setAsOfDate(String asOfDate) {
+		this.asOfDate = asOfDate;
+	}
+
 	public Map<String, Double> getExtract() {
 		return extract;
 	}

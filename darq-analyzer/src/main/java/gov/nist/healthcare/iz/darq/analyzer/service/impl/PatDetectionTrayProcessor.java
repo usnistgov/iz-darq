@@ -27,12 +27,12 @@ public class PatDetectionTrayProcessor extends TrayProcessor {
 
 	void ageGroup(Map<String, PatientPayload> db, Tray t) {
 		for (String ageGroup : db.keySet()) {
-			t.add(Field.AGE_GROUP, ageGroup);
+			t.start(Field.AGE_GROUP, ageGroup);
 			if (!guard(t)) {
 				code(db.get(ageGroup), t);
 			}
-
 		}
+		t.remove(Field.AGE_GROUP);
 	}
 
 	void code(PatientPayload db, Tray t) {
@@ -43,8 +43,8 @@ public class PatDetectionTrayProcessor extends TrayProcessor {
 				t.setCount(db.getDetection().get(detCode).getNegative());
 				finalize(t);
 			}
-
 		}
+		t.remove(Field.DETECTION);
 	}
 
 	@Override

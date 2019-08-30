@@ -10,13 +10,13 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
 
 	AgeGroupService ageGroup;
 	DetectionFilter filter;
-	VaxGroupMapper vaxGroupMapper;
+	VaxGroupMapper vaxGroupMapperObj;
 	
 	public SimpleConfigurationProvider(ConfigurationPayload payload) {
 		super();
 		this.ageGroup = new AgeGroupCalculator(payload.getAgeGroups());
 		this.filter = new ConfigurableDetectionFilter(payload.getDetections());
-		this.vaxGroupMapper = new SimpleVaxGroupMapper(payload.getVaxCodeAbstraction());
+		this.vaxGroupMapperObj = new SimpleVaxGroupMapper(payload.getVaxCodeAbstraction());
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
 
 	@Override
 	public VaxGroupMapper vaxGroupMapper() {
-		return this.vaxGroupMapper;
+		return this.vaxGroupMapperObj;
 	}
 	
 	

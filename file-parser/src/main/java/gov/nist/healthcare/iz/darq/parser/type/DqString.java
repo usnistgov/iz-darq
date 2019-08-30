@@ -1,8 +1,7 @@
 package gov.nist.healthcare.iz.darq.parser.type;
 
+import gov.nist.healthcare.iz.darq.parser.exception.InvalidValueException;
 import org.apache.commons.lang3.RandomStringUtils;
-
-import gov.nist.lightdb.exception.InvalidValueException;
 
 public class DqString extends DataUnit<String> {
 
@@ -22,6 +21,11 @@ public class DqString extends DataUnit<String> {
 		else {
 			return RandomStringUtils.random(n);
 		}
+	}
+
+	@Override
+	protected String empty() {
+		return "";
 	}
 
 	@Override

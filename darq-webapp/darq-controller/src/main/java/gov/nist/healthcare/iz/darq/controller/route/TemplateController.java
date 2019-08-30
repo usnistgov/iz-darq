@@ -23,6 +23,7 @@ import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
 import gov.nist.healthcare.iz.darq.repository.TemplateRepository;
+import gov.nist.healthcare.iz.darq.service.utils.CodeSetService;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 
 @RestController
@@ -39,6 +40,8 @@ public class TemplateController {
 	private DigestConfigurationRepository confRepo;
 	@Autowired
 	private ADFMetaDataRepository repo;
+	@Autowired
+	private CodeSetService codeSet;
 	
     @RequestMapping(value = "/template", method = RequestMethod.GET)
     @ResponseBody
@@ -48,7 +51,7 @@ public class TemplateController {
 		List<TemplateDescriptor> result = new ArrayList<>();
 		List<DigestConfiguration> configurations = this.confRepo.findAccessible(a.getUsername());
 		for(ReportTemplate rt : templates){
-			result.add(new TemplateDescriptor(rt.getId(), rt.getName(), rt.getName(), this.configService.compatibilities(rt.getConfiguration(), configurations)));
+			result.add(new TemplateDescriptor(rt.getId(), rt.getName(), rt.getOwner(), this.configService.compatibilities(rt.getConfiguration(), configurations)));
 		}
 		return result;
     }
@@ -63,6 +66,17 @@ public class TemplateController {
 		}
 		this.templateRepo.save(template);
 		return new OpAck(AckStatus.SUCCESS, template.getId(), "upload");
+	}
+	
+	@RequestMapping(value="/template/codesets/{id}", method=RequestMethod.GET)
+	@ResponseBody
+	public List<String> codeset(@PathVariable("id") String id, final HttpServletResponse rsp) throws Exception {
+		if(id.equals("patient")){
+			return codeSet.patientCodes();
+		}
+		else {
+			return codeSet.vaccinationCodes();
+		}
 	}
 	
 	@RequestMapping(value="/template/{id}", method=RequestMethod.GET)

@@ -15,6 +15,6 @@ import gov.nist.healthcare.iz.darq.digest.domain.Range;
 
 public interface ExportADChunk {
 	
-	void export(ConfigurationPayload payload, ADChunk chunk) throws JsonGenerationException, JsonMappingException, IOException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, Exception;
+	void export(ConfigurationPayload payload, ADChunk chunk) throws Exception;
 
 }

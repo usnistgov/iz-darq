@@ -44,7 +44,7 @@
 							<span matTooltip="Analysis Report"><i class="fa fa-file" style="color: cornflowerblue; font-size: 1.5em; margin-right: 10px; cursor: pointer;"></i></span>
 							<span [routerLink]="['./'+file.id+'/summary']" matTooltip="Summary"><i class="fa fa-search" style="color: #031a4c; font-size: 1.5em; margin-right: 10px; cursor: pointer;"></i></span>
 							<span *ngIf="file.compatibilities && file.compatibilities.length > 0" (click)="openDialog(file.id)" matTooltip="Analyze"><i class="fa fa-bar-chart" style="color: #332bff; font-size: 1.5em; margin-right: 10px; cursor: pointer;"></i></span>
-							<span matTooltip="Delete"><i class="fa fa-times" style="color: red; font-size: 1.5em; margin-right: 10px; cursor: pointer;"></i></span>
+							<span matTooltip="Delete" (click)="deleteADF(file.id, file.name)"><i class="fa fa-times" style="color: red; font-size: 1.5em; margin-right: 10px; cursor: pointer;"></i></span>
 						</div>
 					</td>
 				</tr>

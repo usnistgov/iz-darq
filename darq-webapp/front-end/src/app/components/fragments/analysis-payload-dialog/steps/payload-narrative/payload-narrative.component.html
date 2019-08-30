@@ -1,0 +1,14 @@
+<div fxLayout="column" fxLayoutAlign="start stretch">
+	<app-step-header [position]="_position" [active]="_active" [title]="_title"></app-step-header>
+	<div *ngIf="_position === _active" fxLayout="column" fxLayoutAlign="start stretch">
+		<div fxLayout="column" fxLayoutAlign="start stretch">
+			<mat-form-field>
+				<input  [(ngModel)]="_narrative.title" matInput placeholder="Title"/>
+			</mat-form-field>
+		</div>
+		<div fxLayout="column" fxLayoutAlign="start stretch">
+			<textarea matInput [(ngModel)]="_narrative.description" rows="5" placeholder="Description"></textarea>
+		</div>
+	</div>
+</div>
+

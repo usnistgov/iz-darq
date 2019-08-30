@@ -21,7 +21,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartResolver;
@@ -34,28 +33,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.auth.service.AccountService;
+
 import gov.nist.healthcare.iz.darq.model.CVXCode;
 import gov.nist.healthcare.iz.darq.model.FileDownload;
+
 import gov.nist.healthcare.iz.darq.repository.CVXRepository;
 import gov.nist.healthcare.iz.darq.service.impl.SimpleDownloadService;
 import gov.nist.healthcare.iz.darq.service.utils.DownloadService;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "gov.nist.healthcare.iz.darq", "gov.nist.healthcare.auth" })
-@PropertySource("classpath:/configuration.properties")
 public class Application extends SpringBootServletInitializer{
 
 	@Autowired
 	private AccountService accountService;
 	@Autowired
 	private CVXRepository cvxRepo;
+
 	
-	@Value("${darq.store}")
+	@Value("#{environment.DARQ_STORE}")
 	private String ADF_FOLDER;
-	@Value("${darq.keys}")
+	@Value("#{environment.DARQ_KEY}")
 	private String KEY_FOLDER;
 	@Value("${darq.admin.default}") 
 	private String ADMIN_PASSWORD;
+
 	
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -71,7 +73,6 @@ public class Application extends SpringBootServletInitializer{
 		Jackson2ObjectMapperBuilder b = new Jackson2ObjectMapperBuilder();
 		return b;
 	}
-	
 	
 	@Bean
 	public BCryptPasswordEncoder encoder() {
@@ -91,8 +92,6 @@ public class Application extends SpringBootServletInitializer{
 		this.createCVX();
 		this.setup();
 	}
-	
-	
 	
 	@Bean
 	public MultipartResolver multipartResolver() {
@@ -136,8 +135,32 @@ public class Application extends SpringBootServletInitializer{
 		return new SimpleDownloadService(map);
 	}
 	
+	
+	public void createCliJAR() {
+		
+	}
+	
+	public void checkStoreIntegrity() {
+		
+	}
+	
     
-    public void setup() throws Exception{
+    public void setup() throws Exception {
+    	
+    	//-- Verify ENV
+    	boolean b = true;
+    	if(ADF_FOLDER == null || ADF_FOLDER.isEmpty()){
+    		b = false;
+    		System.out.println("[DARQ-SETUP] Could not find environment Variable DARQ_STORE");
+    	}
+    		
+    	if(KEY_FOLDER == null || KEY_FOLDER.isEmpty()){
+    		b = false;
+    		System.out.println("[DARQ-SETUP] Could not find environment Variable DARQ_KEY");
+    	}
+    	
+    	if(!b) throw new Exception("One or more Environement Variables were not found");
+    			
     	//-- Verify ADF Folder
     	File f = new File(ADF_FOLDER);
     	if(!f.exists()){
@@ -146,6 +169,7 @@ public class Application extends SpringBootServletInitializer{
     			throw new Exception("Could not create directory : "+ADF_FOLDER);
     		}
     	}
+    	
     	//-- Verify Keys
     	File k = new File(KEY_FOLDER);
     	if(!k.exists()){
@@ -162,6 +186,4 @@ public class Application extends SpringBootServletInitializer{
     		}
     	}
     }
-
-	
 }

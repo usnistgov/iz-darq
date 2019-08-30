@@ -1,26 +1,23 @@
 package gov.nist.healthcare.iz.darq.parser.model;
 
 import java.util.List;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
-
+import gov.nist.healthcare.iz.darq.parser.annotation.Field;
 
 public class AggregatePatientRecord {
 	
 	public String ID;
-	@FieldName("Patient Information")
+	@Field(name = "Patient Information")
 	public Patient patient;
-	@FieldName("Vaccination History")
+	@Field(name = "Vaccination History")
 	public List<VaccineRecord> history;
 	
-	
-	public AggregatePatientRecord(String iD, Patient patient, List<VaccineRecord> history) {
+	public AggregatePatientRecord(String ID, Patient patient, List<VaccineRecord> history) {
 		super();
-		ID = iD;
+		this.ID = ID;
 		this.patient = patient;
 		this.history = history;
 	}
-
 
 	@Override
 	public String toString() {

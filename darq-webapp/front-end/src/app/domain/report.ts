@@ -44,9 +44,7 @@ export class AnalysisPayload {
 	type : CG;
 	filters : FieldValue[];
 	groupBy : Field[];
-	groupFilters : {
-		[index : string] : any
-	}[];
+	groupFilters : GroupFilter[];
 	options : Options;
 
 	constructor(){
@@ -62,8 +60,16 @@ export class AnalysisPayload {
 	}
 }
 
+export class GroupFilter {
+	enableT? : boolean = false;
+	values : {
+		[index : string] : any
+	};
+	threshold? : number;
+}
+
 export class Options {
-	threshold : number;
+	threshold : number = -1;
 	chartType : string;
 	countType : string;
 }
@@ -122,23 +128,32 @@ export class AnalysisResult {
 
 export class AnalysisSectionResult {
 	title : string;
+	hasOverThreshold : boolean = false;
 	description : string;
 	results : AnalysisPayloadResult[];
 }
 
 export class AnalysisPayloadResult {
 	type : CG;
+	hasOverThreshold : boolean = false;
 	filters : FieldValue[];
-	groups : FieldValue[][];
+	groups : GroupField[];
 	values : {
 		[index : string] : Fraction
 	};
 	distribution : boolean;
 	display : Options;
 	chart : any;
+	table : any;
+}
+
+export class GroupField {
+	fields : FieldValue[];
+	threshold : number = -1;
 }
 
 export class Fraction {
 	count : number;
 	total : number;
+	threshold : number;
 }

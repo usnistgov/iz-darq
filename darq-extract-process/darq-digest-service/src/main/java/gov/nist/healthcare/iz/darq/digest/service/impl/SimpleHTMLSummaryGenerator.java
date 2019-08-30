@@ -42,7 +42,7 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 	    		),
 	    		body(
 	    				attrs(".back"),
-	    	    		navBar(new LocalDate()),
+	    	    		navBar(summary.getAsOfDate() , new LocalDate()),
 	    	    		div(
 	    	    				attrs(".content-area"),
 	    	    				card(
@@ -58,6 +58,7 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 	    			    	    				tbody(
 	    			        						tr(td("Total Read Patient Records"), td(summary.getCounts().totalReadPatientRecords+"")),
 	    			        						tr(td("Total Skipped Patient Records Due To Errors"), td(summary.getCounts().totalSkippedPatientRecords+"")),
+														tr(td("Total Skipped Vaccination Records Due To Errors"), td(summary.getCounts().totalSkippedVaccinationRecords+"")),
 	    			        						tr(td("Total Read Vaccination Records"), td(summary.getCounts().totalReadVaccinations+"")),
 	    			        						tr(td("Minimum Vaccinations per Patient"), td(summary.getCounts().minVaccinationsPerRecord+"")),
 	    			        						tr(td("Maximum Vaccinations per Patient"), td(summary.getCounts().maxVaccinationsPerRecord+"")),
@@ -166,7 +167,8 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 	    FileUtils.copyInputStreamToFile(Exporter.class.getResourceAsStream("/custom.css"), new File(path+"css/custom.css"));
 	}
 	
-	ContainerTag navBar(LocalDate d){
+	ContainerTag navBar(String date, LocalDate d){
+		String today = d.toString("MM/dd/yyyy");
 		return nav(
 				attrs(".navbar.fixed-top.navbar-dark.nav-back"),
 				a(
@@ -180,9 +182,15 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 								strong("   DARQ Command Line Tool Summary")
 						)
 				),
-				span(
-						attrs(".pull-right.date"),
-						d.toString("MM/dd/yyyy")
+				div(
+						span(
+								attrs(".pull-right.date"),
+								"Run on "+today
+						),
+						span(
+								attrs(".pull-right.date"),
+								" | As "+(date != null ? date : today)
+						)
 				)
 		);
 	}

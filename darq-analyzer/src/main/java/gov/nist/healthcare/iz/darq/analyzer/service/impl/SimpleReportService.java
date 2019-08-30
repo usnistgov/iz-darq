@@ -6,6 +6,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisPayload;
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisPayload.FieldValue;
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisQuery;
@@ -32,6 +34,7 @@ public class SimpleReportService implements ReportService {
 	
 	@Override
 	public AnalysisReport analyse(ADFile file, ReportTemplate template) throws IncompatibleFields {
+		ObjectMapper mapper = new ObjectMapper();
 		AnalysisReport result = new AnalysisReport();
 		result.setName(template.getName());
 		result.setDescription(template.getDescription());
@@ -49,8 +52,8 @@ public class SimpleReportService implements ReportService {
 			}
 			result.getSections().add(section);
 		}
-		result.setConfiguration(template.getConfiguration());
 		
+		result.setConfiguration(template.getConfiguration());
 		return result;
 	}
 	
@@ -62,7 +65,6 @@ public class SimpleReportService implements ReportService {
 		for(Field grp : payload.getGroupBy()){
 			fields.add(new QueryField(grp));
 		}
-		
 		return new AnalysisQuery(fields, payload.getType());
 	}
 

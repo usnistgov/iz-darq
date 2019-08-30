@@ -13,7 +13,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.nist.lightdb.domain.EntityTypeRegistry.EntityType;
 import gov.nist.lightdb.domain.Source;
@@ -28,6 +29,9 @@ public class LightTextDB {
 	Path mount;
 	LightWeightIndexer.Builder builder;
 	Map<Class<?>, ObjectComposer<?>> composers = new HashMap<>();
+	final static Logger logger = LoggerFactory.getLogger(LightTextDB.class.getName());
+
+	
 	
 	public enum IndexType {
 		MASTER, SLAVE
@@ -84,6 +88,7 @@ public class LightTextDB {
 	
 	public LightTextDB index(IndexType idx, EntityType type, LightWeightIndexer indexer) throws Exception {
 		
+		logger.info("INDEXING "+idx);
 		if(idx.equals(IndexType.MASTER) && this.anchored()) throw new IllegalAccessError("DB already anchored at "+index());		
 		switch(idx){
 		case MASTER : indexer.master(data(), index(), type);
@@ -134,10 +139,19 @@ public class LightTextDB {
 	
 	private List<Chunk> chunks(int size) throws IOException{
 		List<Chunk> chunks = new ArrayList<>();
+		logger.info("CREATING INDEX CHUNKS");
+		
+		if(!Paths.get(index().toString(), "master.idx").toFile().exists()){
+			logger.error("INDEX DO NOT EXIST AT "+Paths.get(index().toString(), "master.idx"));
+		}
+		else {
+			logger.info("INDEX AT : "+Paths.get(index().toString(), "master.idx"));
+		}
 		
 		long masterLines = Files.lines(Paths.get(index().toString(), "master.idx")).parallel().count();
 		int chunkSize = size > masterLines ? (int) masterLines : (int) masterLines / size;
-		
+		logger.info("NUMBER OF INDEX ITEMS "+masterLines);
+		logger.info("CHUNK SIZE "+chunkSize);
 		try (
 				Stream<String> input = Files.lines(Paths.get(index().toString(), "master.idx"));	
 		) {
@@ -147,11 +161,14 @@ public class LightTextDB {
 				
 				//-- CHUNK CHECKPOINT - LAST GET ALL
 				if(offset.count() % chunkSize == 0 && (masterLines - offset.count()) >= chunkSize){
+					
 					if((masterLines - offset.count()) < chunkSize * 2){
-						chunks.add(new Chunk(offset.get(),(int) (masterLines - offset.count())));
+						logger.info("CREATE CHUNK ITEMS AT COUNT "+offset.count());
+						chunks.add(new Chunk(offset.get(),(int) (masterLines - offset.count()), offset.count()));
 					}
 					else {
-						chunks.add(new Chunk(offset.get(), chunkSize));
+						logger.info("CREATE CHUNK ITEMS AT COUNT "+offset.count());
+						chunks.add(new Chunk(offset.get(), chunkSize, offset.count()));
 					}
 				}
 				offset.inc((str+"\n").getBytes().length);
@@ -160,7 +177,7 @@ public class LightTextDB {
 			return chunks;
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			logger.error("Error while creating chunk", e);
 			throw e;
 		}
 		
@@ -233,32 +250,31 @@ public class LightTextDB {
 			this.dir = true;
 			this.dirp = Paths.get(dir);
 			return this;
-		};
+		}
 		
 		public LightTextDBBuilder slave(Source slave) {
 			this.slaves.add(slave);
 			return this;
-		};
+		}
 		
 		public LightTextDBBuilder slaves(Source... slaves) {
 			this.slaves.addAll(Arrays.asList(slaves));
 			return this;
-		};
+		}
 		
 		public LightTextDBBuilder slaves(List<Source> slaves) {
 			this.slaves.addAll(slaves);
 			return this;
-		};
+		}
 		
 		public LightTextDBBuilder indexer(LightWeightIndexer indexer) {
 			this.indexer = indexer;
 			return this;
-		};
+		}
 		
 		public LightTextDB openWithMaster(Source master) throws Exception {
 			return this.dir ? LightTextDB.create(this.dirp,master, slaves, indexer) : LightTextDB.create(master, slaves, indexer);
-		};
-		
+		}
 	}
 	
 

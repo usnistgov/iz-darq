@@ -16,6 +16,11 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import gov.nist.lightdb.domain.Line;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gov.nist.lightdb.domain.EntityTypeRegistry;
 import gov.nist.lightdb.domain.EntityTypeRegistry.EntityType;
 import gov.nist.lightdb.exception.InvalidValueException;
@@ -32,6 +37,8 @@ public class LightWeigthSearcher implements Searcher {
 		protected EntityType[] types;
 		protected Scanner stream;
 		protected Map<EntityType,RandomAccessFile> files = new HashMap<>(); 
+		final Logger logger = LoggerFactory.getLogger(LightWeigthSearcher.class.getName());
+
 		
 		private AbstractIterator(Path index, Path data, EntityType... types) throws IOException{
 			i = 0;
@@ -58,8 +65,7 @@ public class LightWeigthSearcher implements Searcher {
 				try {
 					files.get(type).close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("[Oops error while closing Chunk]",e);
 				}
 			}
 		}
@@ -73,6 +79,8 @@ public class LightWeigthSearcher implements Searcher {
 	}
 	
 	public class LinesIterator extends AbstractIterator<Map<EntityType, List<String>>>{
+		final Logger logger = LoggerFactory.getLogger(LightWeigthSearcher.class.getName());
+
 		
 		private LinesIterator(Path index, Path data, EntityType... types) throws IOException{
 			super(index,data,types);
@@ -95,7 +103,7 @@ public class LightWeigthSearcher implements Searcher {
 				return result;
 			}
 			catch(Exception e){
-				e.printStackTrace();
+				logger.error("ERROR",e);
 				return null;
 			}
 			
@@ -105,7 +113,8 @@ public class LightWeigthSearcher implements Searcher {
 	
 	public class ItemIterator<T> extends AbstractIterator<T>{
 		ObjectComposer<T> composer;
-		
+		final Logger logger = LoggerFactory.getLogger(LightWeigthSearcher.class.getName());
+
 		private ItemIterator(ObjectComposer<T> composer, Path index, Path data, EntityType... types) throws IOException{
 			super(index,data,types);
 			this.composer = composer;
@@ -114,7 +123,7 @@ public class LightWeigthSearcher implements Searcher {
 		@Override
 		public synchronized T next() {
 			Map<EntityType, List<String>> result = new HashMap<EntityType, List<String>>();
-			
+
 			try {
 				
 				String line = stream.nextLine();
@@ -126,11 +135,12 @@ public class LightWeigthSearcher implements Searcher {
 				}
 
 				this.i++;
-				//TODO Expose ID 
-				return composer.compose("", result);
+				//TODO Expose ID
+				//TODO FIX
+				return composer.compose("", null);
 			}
 			catch(Exception e){
-				e.printStackTrace();
+				logger.error("ERROR",e);
 				return null;
 			}
 			
@@ -138,10 +148,11 @@ public class LightWeigthSearcher implements Searcher {
 		
 	}
 	
-	public class ChunkItemIterator<T> implements Iterator<T>{
+	public static class ChunkItemIterator<T> implements Iterator<T>{
 		
 		ObjectComposer<T> composer;
 		protected int start;
+		protected int ID;
 		protected int size;
 		protected int i;
 		protected Path index;
@@ -150,14 +161,16 @@ public class LightWeigthSearcher implements Searcher {
 		protected EntityType[] types;
 		protected RandomAccessFile stream;
 		protected Map<EntityType,RandomAccessFile> files = new HashMap<>(); 
+		static final Logger logger = LoggerFactory.getLogger(LightWeigthSearcher.class.getName());
 		
-		private ChunkItemIterator(Path index, Path data, Chunk chunk, ObjectComposer<T> composer, EntityType... types) throws IOException{
+		private ChunkItemIterator(Path index, Path data, Chunk chunk, ObjectComposer<T> composer, int x, EntityType... types) throws IOException{
 			i = 0;
 			this.composer = composer;
 			this.size = chunk.size;
 			this.index = index;
 			this.start = chunk.start;
 			this.data = data;
+			this.ID = x;
 			this.types = types;
 			this.stream = new RandomAccessFile(Paths.get(index.toString(), "master.idx").toString(),"r");
 			this.stream.seek(start);
@@ -186,8 +199,7 @@ public class LightWeigthSearcher implements Searcher {
 				try {
 					files.get(type).close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("[Oops error while closing Chunk "+ID+"]",e);
 				}
 			}
 		}
@@ -198,11 +210,13 @@ public class LightWeigthSearcher implements Searcher {
 		
 		@Override
 		public synchronized T next() {
-			Map<EntityType, List<String>> result = new HashMap<EntityType, List<String>>();
 			
+			Map<EntityType, List<String>> result = new HashMap<EntityType, List<String>>();
+		
 			try {
 				
 				String line = stream.readLine();
+				
 				IndexLineReader reader = new IndexLineReader(line);
 				for(EntityType t : types){
 					if(reader.types().contains(t)){
@@ -211,11 +225,12 @@ public class LightWeigthSearcher implements Searcher {
 				}
 
 				this.i++;
-				//TODO Expose ID 
-				return composer.compose("", result);
+				//TODO Expose ID
+				//TODO Fix
+				return composer.compose("", null);
 			}
 			catch(Exception e){
-				e.printStackTrace();
+				logger.error("[Oops error while getting record from Chunk "+ID+"]",e);
 				this.forceStop = true;
 				return null;
 			}
@@ -223,24 +238,35 @@ public class LightWeigthSearcher implements Searcher {
 		}
 		
 		public synchronized T nextRecord() throws InvalidValueException {
-			Map<EntityType, List<String>> result = new HashMap<EntityType, List<String>>();
+			Map<EntityType, List<Line>> result = new HashMap<EntityType, List<Line>>();
 			
 			try {
-				
-				String line = stream.readLine();
+
+				String line;
+				do {
+					line = stream.readLine();
+				} while(!LightWeightIndexer.valid_mtu(line));
+
+				if(LightWeightIndexer.valid_mtu(line)){
+					logger.info("READING FROM CHUNK ["+ID+"][ VALID ] : Index Line "+line);
+				}
+				else {
+					logger.info("READING FROM CHUNK ["+ID+"][INVALID] : Index Line "+line);
+				}
+
 				IndexLineReader reader = new IndexLineReader(line);
 				for(EntityType t : types){
 					if(reader.types().contains(t)){
-						result.put(t, read(files.get(t), reader.get(t)));
+						//TODO FIX
+//						result.put(t, read(files.get(t), reader.get(t)));
 					}
 				}
 
 				this.i++;
-				//TODO Expose ID 
-				return composer.compose(result.get(EntityTypeRegistry.byId("p")).get(0), result);
+				return composer.compose("", result);
 			}
 			catch(IOException e){
-				e.printStackTrace();
+				logger.error("[Oops error while getting record from Chunk "+ID+"]",e);
 				this.forceStop = true;
 				return null;
 			}
@@ -252,10 +278,12 @@ public class LightWeigthSearcher implements Searcher {
 	public static class Chunk {
 		public int start;
 		public int size;
-		public Chunk(int start, int size) {
+		public int line;
+		public Chunk(int start, int size, int line) {
 			super();
 			this.start = start;
 			this.size = size;
+			this.line = line;
 		}
 	}
 	
@@ -349,8 +377,9 @@ public class LightWeigthSearcher implements Searcher {
 	
 	public <T> List<ChunkItemIterator<T>> iterator(Path index, Path data, List<Chunk> chunks, ObjectComposer<T> composer, EntityType... types) throws IOException{
 		List<ChunkItemIterator<T>> l = new ArrayList<>();
+		int i = 0;
 		for(Chunk chunk : chunks){
-			l.add(new ChunkItemIterator<>(index, data, chunk, composer, types));
+			l.add(new ChunkItemIterator<>(index, data, chunk, composer, i++, types));
 		}
 		return l;
 	}
@@ -390,7 +419,7 @@ public class LightWeigthSearcher implements Searcher {
 	
 	
 	
-	private List<String> read(RandomAccessFile f,List<Document.Load> loads) throws IOException{
+	private static List<String> read(RandomAccessFile f,List<Document.Load> loads) throws IOException {
 		List<String> result = new ArrayList<>();
 		for(Document.Load load : loads){
 			f.seek(load.offset);

@@ -37,6 +37,10 @@ export class Range {
 	min : Barket;
 	max : Barket;
 
+	constructor(){
+
+	}
+
 	public toString = () : string  => {
 		return this.min.toString() +" -> "+this.max.toString();
 	}

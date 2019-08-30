@@ -1,6 +1,7 @@
 package gov.nist.healthcare.iz.darq.parser.type;
 
-import gov.nist.lightdb.exception.InvalidValueException;
+
+import gov.nist.healthcare.iz.darq.parser.exception.InvalidValueException;
 
 public class DqNumeric extends DataUnit<Integer> {
 	
@@ -21,6 +22,11 @@ public class DqNumeric extends DataUnit<Integer> {
 	@Override
 	protected Integer dummy(int n) {
 		return 99;
+	}
+
+	@Override
+	protected Integer empty() {
+		return null;
 	}
 
 	@Override

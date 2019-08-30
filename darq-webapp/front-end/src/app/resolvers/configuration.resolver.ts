@@ -4,7 +4,7 @@
 import {Resolve, ActivatedRouteSnapshot} from "@angular/router";
 import {ConfigurationService} from "../services/configuration.service";
 import {Injectable} from "@angular/core";
-import {Configuration, Field, Metric, ConfigurationDescriptor, CVX} from "../domain/configuration";
+import {Configuration, ConfigurationDescriptor, CVX} from "../domain/configuration";
 import {Detections} from "../domain/adf";
 import {FileDownload, DownloadService} from "../services/download.service";
 

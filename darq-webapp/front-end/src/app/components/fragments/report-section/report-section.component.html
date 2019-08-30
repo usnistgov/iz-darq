@@ -1,14 +1,20 @@
-<div class="card" style="width: 100%; background-color: bisque; margin-bottom: 5px; padding: 10px;" fxLayout="column" fxLayoutAlign="start stretch">
-	<div>
-		<i class="fa fa-times float-right" style="color: red;" (click)="del()"></i>
+<div style="width: 100%; margin-bottom: 5px;" fxLayout="column" fxLayoutAlign="start stretch">
+	<!--<div fxLayout="column" fxLayoutAlign="center end">-->
+		<!--<button class="btn btn-warning" style="cursor: pointer;" (click)="openDialog()">-->
+			<!--<i class="fa fa-plus"></i>-->
+			<!--Add Payload-->
+		<!--</button>-->
+	<!--</div>-->
+	<div fxLayout="column" fxLayoutAlign="start stretch">
+		<mat-form-field>
+			<input  [(ngModel)]="_section.title" matInput (ngModelChanged)="changed()" placeholder="Title"/>
+		</mat-form-field>
 	</div>
 	<div fxLayout="column" fxLayoutAlign="start stretch">
-		<strong style="margin-bottom: 5px;">Title</strong>
-		<input  [(ngModel)]="_section.title" (ngModelChanged)="changed()" placeholder="Name"/>
+		<textarea matInput [(ngModel)]="_section.description" (ngModelChanged)="changed()" rows="5" placeholder="Description"></textarea>
 	</div>
-	<div fxLayout="column" fxLayoutAlign="start stretch">
-		<strong style="margin-bottom: 5px;">Description</strong>
-		<textarea [(ngModel)]="_section.description" (ngModelChanged)="changed()" rows="5" placeholder="Description"></textarea>
+	<div fxLayout="column" fxLayoutAlign="center end">
+		<button mat-raised-button color="primary" (click)="openDialog()">Add Payload</button>
 	</div>
 	<div *ngIf="_section.payloads && _section.payloads.length > 0" fxLayout="row" fxLayoutAlign="start start" style="padding: 10px; background-color: #f2fdff; border : 2px dashed black; margin-top: 5px; margin-bottom: 5px;" >
 		<div *ngFor="let payload of _section.payloads; let i = index" style="margin-right: 5px;">
@@ -70,9 +76,11 @@
 							<table style="width: 100%;">
 								<tr>
 									<th style="text-align: center;" *ngFor="let g of payload.groupBy" > {{g}} </th>
+									<th>Threshold</th>
 								</tr>
 								<tr *ngFor="let groupF of payload.groupFilters">
-									<td style="text-align: center;" *ngFor="let g of payload.groupBy" >{{groupF[g] ? $template.value(groupF[g], g, ageGroups, _detections, _cvx) : '*'}}</td>
+									<td style="text-align: center;" *ngFor="let g of payload.groupBy" >{{groupF.values[g] ? $template.value(groupF.values[g], g, ageGroups, _detections, _cvx) : '*'}}</td>
+									<td>{{groupF.threshold}}%</td>
 								</tr>
 							</table>
 						</td>
@@ -94,11 +102,5 @@
 				</tbody>
 			</table>
 		</div>
-	</div>
-	<div fxLayout="column" fxLayoutAlign="start stretch">
-		<button class="btn btn-warning" style="cursor: pointer;" (click)="openDialog()">
-			<i class="fa fa-plus"></i>
-			Add Payload
-		</button>
 	</div>
 </div>

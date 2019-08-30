@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 
 
 export class FileDownload {
+	id : string;
 	name: string;
 	description: string;
 	size: string;

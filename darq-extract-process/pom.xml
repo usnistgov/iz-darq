@@ -38,7 +38,7 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>4.1</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>1.5.8</version>
@@ -56,8 +56,8 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
-		</dependency>
+			<version>1.2.14</version> -->
+		<!-- </dependency> -->
 		
 
 		<!--Utils -->

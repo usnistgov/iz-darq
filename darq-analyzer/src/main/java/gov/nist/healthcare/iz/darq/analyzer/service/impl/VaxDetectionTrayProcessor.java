@@ -27,11 +27,12 @@ public class VaxDetectionTrayProcessor extends TrayProcessor {
 
 	void provider(Map<String, Map<String, VaccinationPayload>> db, Tray t){
 		for(String provider : db.keySet()){
-			t.add(Field.PROVIDER, provider);
+			t.start(Field.PROVIDER, provider);
 			if(!guard(t)) {
 				ageGroup(db.get(provider), t);
 			}
 		}
+		t.remove(Field.PROVIDER);
 	}
 	
 	void ageGroup(Map<String, VaccinationPayload> db, Tray t){
@@ -39,9 +40,9 @@ public class VaxDetectionTrayProcessor extends TrayProcessor {
 			t.add(Field.AGE_GROUP, ageGroup);
 			if(!guard(t)) {
 				code(db.get(ageGroup), t);
-			}
-				
+			}	
 		}
+		t.remove(Field.AGE_GROUP);
 	}
 	
 	void code(VaccinationPayload db, Tray t){
@@ -52,8 +53,8 @@ public class VaxDetectionTrayProcessor extends TrayProcessor {
 				t.setCount(db.getDetection().get(detCode).getNegative());
 				finalize(t);
 			}
-				
 		}
+		t.remove(Field.DETECTION);
 	}
 	
 	@Override

@@ -35,7 +35,7 @@
 								<i class="fa fa-trash"></i>
 								Delete
 							</button>
-							<button class="btn btn-success" *ngIf="submittable()" (click)="save()">
+							<button class="btn btn-success" [disabled]="!submittable()" (click)="save()">
 								<i class="fa fa-save"></i>
 								Save
 							</button>
@@ -43,22 +43,21 @@
 					</div>
 					<div *ngIf="!control.edit" fxLayout="row" fxLayoutAlign="space-between center">
 						<h4 style="color: white;">Create Configuration</h4>
-						<button class="btn btn-success" *ngIf="submittable()" (click)="save()">
+						<button class="btn btn-success" [disabled]="!submittable()" (click)="save()">
 							<i class="fa fa-save"></i>
 							Save
 						</button>
 					</div>
 					<div fxLayout="column" fxLayoutAlign="start stretch">
 						<strong style="margin-bottom: 5px; color: white;">Configuration Name</strong>
-						<input disabled="{{control.vonly}}" [(ngModel)]="conf.name" placeholder="Name"/>
+						<input disabled="{{control.vonly}}" [formControl]="formFields.controls.name" placeholder="Name"/>
 					</div>
 					<div fxLayout="column" fxLayoutAlign="start stretch">
 						<strong style="margin-bottom: 5px; color: white;">Description</strong>
 						<textarea disabled="{{control.vonly}}" [(ngModel)]="conf.description" rows="5" placeholder="Description"></textarea>
 					</div>
 					<div fxFlex fxLayout="row" fxLayoutAlign="start stretch">
-
-						<div fxFlex="60" fxLayout="row" fxLayoutAligh="center center">
+						<div fxFlex="57" fxLayout="row" fxLayoutAligh="center center">
 							<div fxLayout="column" fxLayoutAlign="start stretch" fxFlex style="padding-top : 10px;">
 								<strong style="margin-bottom: 5px; color: white;">Supported Detections</strong>
 								<p-table #det [value]="detections" [globalFilterFields]="['id','description','target']"
@@ -93,8 +92,12 @@
 								</p-table>
 							</div>
 						</div>
-						<div fxFlex="39" fxLayout="row" fxLayoutAligh="center center">
+						<div fxFlex="42" fxLayout="row" fxLayoutAligh="center center">
 							<div fxLayout="column" fxLayoutAlign="start stretch" fxFlex style="padding : 10px;">
+								<div fxLayout="column" fxLayoutAlign="start stretch">
+									<strong style="margin-bottom: 5px; color: white;">Evaluation Date</strong>
+									<p-calendar [formControl]="formFields.controls.asOf" [dataType]="'string'" dateFormat="mm/dd/yy"></p-calendar>
+								</div>
 								<strong style="margin-bottom: 5px; color: white;">Age Groups</strong>
 								<app-age-group [editable]="!control.vonly" [rangeList]="conf.payload.ageGroups" (change)="ageGroups($event)" ></app-age-group>
 							</div>

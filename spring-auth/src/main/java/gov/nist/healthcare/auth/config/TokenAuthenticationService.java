@@ -26,6 +26,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class TokenAuthenticationService {
+	
+	
 	final int EXPIRATIONTIME = 3600; // 1 hour
 	static final String SECRET = "B2(<Bx@2!(Da@~g@:)y9J]xfukGf=,bFs:Mfrgwz";
 	@Autowired

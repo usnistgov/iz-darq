@@ -9,6 +9,7 @@ export class ADFData {
 	name : string;
 	path : string;
 	owner : string;
+	size : string;
 	analysedOn : Date;
 	uploadedOn : Date;
 	configuration : ConfigurationPayload;
@@ -21,6 +22,7 @@ export class ADFDescriptor {
 	name : string;
 	path : string;
 	owner : string;
+	size : string;
 	analysedOn : Date;
 	uploadedOn : Date;
 	compatibilities : ConfigurationDescriptor[];

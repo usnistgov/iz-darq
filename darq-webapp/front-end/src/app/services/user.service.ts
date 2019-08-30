@@ -40,7 +40,8 @@ export class UserService {
 	}
 
 	clear(){
-		this.authentication.next(null);
+		this.authentication.next(new LoginResponse(null, false, "logout"));
+		this.router.navigate(['home']);
 	}
 
 	logout(){

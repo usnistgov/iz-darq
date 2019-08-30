@@ -11,7 +11,12 @@ import {ADFSummaryComponent} from "./components/content/adf-summary/adf-summary.
 import {ADFResolver, ADFListResolver} from "./resolvers/adf.resolver";
 import {ExtractConfigurationComponent} from "./components/content/extract-configuration/extract-configuration.component";
 import {TemplateComponent} from "./components/content/template/template.component";
-import {TemplateCatalogResolver, TemplateResolver} from "./resolvers/template.resolver";
+import {
+	PatientCodeSetResolver,
+	TemplateCatalogResolver,
+	TemplateResolver,
+	VaccineCodeSetResolver
+} from "./resolvers/template.resolver";
 import {ReportComponent} from "./components/content/report/report.component";
 import {DownloadComponent} from "./components/content/download/download.component";
 
@@ -30,7 +35,7 @@ export const ROUTES = [
 	},
 	{
 		path : "data",
-		// canActivate: [AuthGuard],
+		canActivate: [AuthGuard],
 		children : [
 			{
 				path : "upload",
@@ -72,7 +77,7 @@ export const ROUTES = [
 	},
 	{
 		path : "report/:tId/:fId",
-		// canActivate: [AuthGuard],
+		canActivate: [AuthGuard],
 		component : ReportComponent,
 		resolve: {
 			detections : DetectionsListResolver,
@@ -85,7 +90,7 @@ export const ROUTES = [
 	},
 	{
 		path : "report-templates",
-		// canActivate: [AuthGuard],
+		canActivate: [AuthGuard],
 		children: [
 			{
 				path: "",
@@ -100,6 +105,8 @@ export const ROUTES = [
 					catalog : TemplateCatalogResolver,
 					template : TemplateResolver,
 					detectionList : DetectionsListResolver,
+					pCodeSet : PatientCodeSetResolver,
+					vCodeSet : VaccineCodeSetResolver,
 					cvx : CVXListResolver
 				}
 			}
@@ -107,7 +114,7 @@ export const ROUTES = [
 	},
 	{
 		path: "configuration",
-		// canActivate: [AuthGuard],
+		canActivate: [AuthGuard],
 		children: [
 			{
 				path: "",

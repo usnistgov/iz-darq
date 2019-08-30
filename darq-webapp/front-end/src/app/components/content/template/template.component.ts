@@ -1,10 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {ConfigurationDescriptor, Configuration, CVX} from "../../../domain/configuration";
 import {Router, ActivatedRoute} from "@angular/router";
-import {Section, ReportTemplate, ReportDescriptor} from "../../../domain/report";
+import {Section, ReportTemplate, ReportDescriptor, names} from "../../../domain/report";
 import {ConfigurationService} from "../../../services/configuration.service";
 import {Detections} from "../../../domain/adf";
 import {TemplateService} from "../../../services/template.service";
+import {NotifierService} from "angular-notifier";
+import {AnalysisPayloadDialogComponent} from "../../fragments/analysis-payload-dialog/analysis-payload-dialog.component";
+import {MatDialog} from "@angular/material";
+import {ConfirmDialogComponent} from "../../fragments/confirm-dialog/confirm-dialog.component";
+
 
 @Component({
 	selector: 'app-template',
@@ -26,14 +31,21 @@ export class TemplateComponent implements OnInit {
 	template : ReportTemplate;
 	detections : Detections;
 	baseOn : ConfigurationDescriptor;
+	codeSet : {
+		[index : string] : string[]
+	};
 	cvx : CVX[];
 
-	constructor(private route: ActivatedRoute, private router : Router, private $config : ConfigurationService, private $template : TemplateService) {
+	constructor(private dialog : MatDialog, private route: ActivatedRoute, private router : Router, private $config : ConfigurationService, private $template : TemplateService, private notifierService: NotifierService) {
 		this.configCatalog = [];
 	}
 
 	add(){
 		this.template.sections.push(new Section());
+	}
+
+	test(){
+		console.log("test");
 	}
 
 	same(a : ConfigurationDescriptor, b : ConfigurationDescriptor){
@@ -54,20 +66,38 @@ export class TemplateComponent implements OnInit {
 		this.$template.save(this.template).then(async function (x) {
 			ctrl.catalog = await ctrl.$template.catalog();
 			if(x.status === "SUCCESS"){
+				ctrl.notifierService.notify( 'success', 'Report template saved successfully' );
 				ctrl.router.navigate(["/report-templates/"+x.message]).then(function (y) {
 					ctrl.baseOn = null;
 				});
 			}
+		},
+		function (e) {
+			ctrl.notifierService.notify( 'error', 'Could not save report template due to : ' + e.error );
 		});
 	}
 
 	async deleteTemplate(){
 		let ctrl = this;
-		this.$template.remove(this.template).then(async function (x) {
-			ctrl.catalog = await ctrl.$template.catalog();
-			ctrl.router.navigate(["/report-templates/new"]).then(function (y) {
-				ctrl.baseOn = null;
-			});
+		let dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			data: {
+				action : "delete report template "+ctrl.template.name
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if(result){
+				this.$template.remove(this.template).then(async function (x) {
+					ctrl.catalog = await ctrl.$template.catalog();
+					ctrl.notifierService.notify( 'success', 'Report template deleted successfully' );
+					ctrl.router.navigate(["/report-templates/new"]).then(function (y) {
+						ctrl.baseOn = null;
+					});
+				},
+				function (e) {
+					ctrl.notifierService.notify( 'error', 'Could not delete report template due to : ' + e.error );
+				});
+			}
 		});
 	}
 
@@ -124,6 +154,12 @@ export class TemplateComponent implements OnInit {
 			}
 			else {
 				ctrl.template = data['template'];
+			}
+			if(data['pCodeSet'] && data['vCodeSet']){
+				ctrl.codeSet = {
+					'patient' : data['pCodeSet'],
+					'vaccine' : data['vCodeSet']
+				};
 			}
 		});
 	}

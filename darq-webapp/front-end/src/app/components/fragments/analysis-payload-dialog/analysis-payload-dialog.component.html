@@ -7,8 +7,8 @@
 			<mat-option *ngFor="let group of types" [value]="group">{{group.label}}</mat-option>
 		</mat-select>
 	</div>
-	<mat-divider style="margin-top: 24px;"></mat-divider>
-	<div class="alert bg-info" role="alert" *ngIf="step < 3" fxLayout="row" fxLayoutAlign="center center">
+	<mat-divider [ngStyle]="selected ? {'margin-top' : '24px'} : {}"></mat-divider>
+	<div class="alert bg-info" role="alert" *ngIf="step < 3 && selected" fxLayout="row" fxLayoutAlign="center center">
 		<i class="fa fa-info-circle" style="margin-right: 10px; color: white; font-size: 1.5em;"></i><span fxFlex
 																										   style="text-align: center;">Drag and Drop Criteria from the left panel into the right panel to add {{step === 1 ? 'filters' : 'groups'}}</span>
 	</div>
@@ -22,7 +22,9 @@
 	<div fxLayout="column" fxLayoutAlign="start stretch" *ngIf="selected">
 		<div fxLayout="row" fxLayoutAlign="center center" style="margin-top: 24px;">
 			<span fxFlex *ngFor="let x of plural() ? [1,2,3] : [1,2,3,4]" fxLayout="row" fxLayoutAlign="center center">
-					<span [ngStyle]="{ 'background-color' : x === step ? '#0e5fc9' : 'lightgrey' }" class="badge" style="color: white; width: 20px; height: 20px; border-radius: 40%;">{{x}}</span>&nbsp;-&nbsp;<strong [ngStyle]="{ 'color' : x === step ? 'black' : 'lightgrey' }">{{x === 1 ? 'Select Your Sample' : x === 2 ? 'Group Your Sample Data' : x === 3 ? 'Filter Your Groups' : x === 4 ? 'Options' : ''}}  </strong>
+					<span [ngStyle]="{ 'background-color' : x === step ? '#0e5fc9' : 'lightgrey' }" class="badge"
+						  style="color: white; width: 20px; height: 20px; border-radius: 40%;">{{x}}</span>&nbsp;-&nbsp;<strong
+				[ngStyle]="{ 'color' : x === step ? 'black' : 'lightgrey' }">{{x === 1 ? 'Select Your Sample' : x === 2 ? 'Group Your Sample Data' : x === 3 ? 'Filter Your Groups' : x === 4 ? 'Options' : ''}}  </strong>
 			</span>
 		</div>
 		<div style="min-width: 800px; margin-top : 24px;">
@@ -117,6 +119,9 @@
 												  (change)="enable(group,$event)"></mat-slide-toggle>
 							</div>
 						</th>
+						<th>
+							Threshold %
+						</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -126,8 +131,13 @@
 							<div style="width: 100%; height: 100%;" fxLayout="row" fxLayoutAlign="center center"
 								 *ngIf="enabledFilters[group]">
 								<ng-container
-									*ngTemplateOutlet="template(group); context : {$implicit : group, value : groupF, sug : suggestions(group)}"></ng-container>
+									*ngTemplateOutlet="template(group); context : {$implicit : group, value : groupF.values, sug : suggestions(group)}"></ng-container>
 							</div>
+						</td>
+						<td>
+							<mat-checkbox (ngModelChange)="activateGroupThreshold(groupF)"
+										  [(ngModel)]="groupF.enableT"></mat-checkbox>
+							<input *ngIf="groupF.enableT" type="number" [(ngModel)]="groupF.threshold">
 						</td>
 					</tr>
 					</tbody>
@@ -135,8 +145,9 @@
 			</div>
 			<div fxFlex fxLayout="column" fxLayoutAlign="start stretch"
 				 style="padding-right: 10px; padding-left: 10px;" *ngIf="step === 4">
-				<div fxLayout="row" fxLayoutAlign="space-between start" style="margin-top : 10px;" *ngIf="!plural()">
-					<mat-checkbox [(ngModel)]="threshold">Threshold</mat-checkbox>
+				<div fxLayout="row" fxLayoutAlign="space-between start" style="margin-top : 10px;" *ngIf="needOption()">
+					<mat-checkbox (ngModelChange)="activateThreshold()" [(ngModel)]="threshold">Threshold %
+					</mat-checkbox>
 					<input *ngIf="threshold" style="width: 300px;" min="0" max="100" type="number"
 						   [(ngModel)]="options.threshold">
 				</div>
@@ -144,10 +155,10 @@
 		</div>
 		<div style="padding: 10px;">
 			<button class="btn float-right"
-					[ngClass]="{ 'btn-primary' : !(step === 4 || (step === 3 && plural())), 'btn-success' : (step === 4 || (step === 3 && plural())) }"
+					[ngClass]="{ 'btn-primary' : !(step === 4 || (step === 3 && !needOption())), 'btn-success' : (step === 4 || (step === 3 && !needOption())) }"
 					style="cursor: pointer;" (click)="next()" *ngIf="canStep()">
-				{{ step === 4 || (step === 3 && plural()) ? 'Finish' : 'Next' }}
-				<i [ngClass]="{ 'fa-chevron-right' : !(step === 4 || (step === 3 && plural())), 'fa-check' : (step === 4 || (step === 3 && plural())) }"
+				{{ step === 4 || (step === 3 && !needOption()) ? 'Finish' : 'Next' }}
+				<i [ngClass]="{ 'fa-chevron-right' : !(step === 4 || (step === 3 && !needOption())), 'fa-check' : (step === 4 || (step === 3 && !needOption())) }"
 				   class="fa"></i>
 			</button>
 			<button class="btn btn-primary float-right" style="cursor: pointer; margin-right: 5px;" (click)="back()"
@@ -241,8 +252,30 @@
 <!--</div>-->
 <!--</div>-->
 
+<!--<ng-template #fieldValueSelect let-options="options" let-multiple="multiple" let-display="utils" let-key let-values="value">-->
+	<!--<div *ngIf="multiple">-->
+		<!--<span *ngFor="let value of values[key]; let i = index">-->
+			<!--{{display.stringify(key, value)}}-->
+			<!--<i class="fa fa-times" style="color: red;" (click)="remove(i, values[key])"></i>-->
+		<!--</span>-->
+	<!--</div>-->
+	<!--<p-multiSelect appendTo="body" [filter]="true" [options]="options" [virtualScroll]="true" filterBy="label" [selectionLimit]="multiple ? null : 1" [(ngModel)]="values[key]"></p-multiSelect>-->
+<!--</ng-template>-->
+
+<!--<ng-template #fieldValueList let-options="options" let-display="utils" let-key let-values="value" #local="var" [var]="{ stub : '' }">-->
+	<!--<span *ngFor="let value of values[key]; let i = index">-->
+			<!--{{display.stringify(key, value)}}-->
+			<!--<i class="fa fa-times" style="color: red;" (click)="remove(i, values[key])"></i>-->
+	<!--</span>-->
+	<!--<div fxLayout="row">-->
+		<!--<input type="text" [(ngModel)]="local.var.stub">-->
+		<!--<button (click)="addValue(local.var.stub, values[key])"> Add</button>-->
+	<!--</div>-->
+<!--</ng-template>-->
+
+
 <ng-template #detection let-key let-values="value">
-	<p-dropdown [options]="detectionsList()" [(ngModel)]="values[key]" appendTo="body" [filter]="true"
+	<p-dropdown [options]="detectionList[detectionsList()]" [(ngModel)]="values[key]" appendTo="body" [filter]="true"
 				filterBy="label,value.code"></p-dropdown>
 </ng-template>
 <ng-template #table let-key let-values="value">
@@ -266,6 +299,8 @@
 <ng-template #ageGroup let-key let-values="value">
 	<mat-select [(value)]="values[key]" style="width: 300px;">
 		<mat-option *ngFor="let group of configuration.ageGroups; let i = index" [value]="i+'g'">{{printRange(group)}}
+		</mat-option>
+		<mat-option [value]="configuration.ageGroups.length+'g'">+
 		</mat-option>
 	</mat-select>
 </ng-template>

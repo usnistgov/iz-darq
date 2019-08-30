@@ -2,12 +2,12 @@
 	<thead>
 	<tr *ngIf="edit">
 		<th colspan="3" >
-			<input [(ngModel)]="stub.year" style="text-align: right; width: 70px;" type="number" min="0" placeholder="year"/>
-			<strong>years</strong>
-			<input [(ngModel)]="stub.month" style="text-align: right; width: 70px;" type="number" min="0" placeholder="month"/>
-			<strong>months</strong>
-			<input [(ngModel)]="stub.day" style="text-align: right; width: 70px;" type="number" min="0" placeholder="day"/>
-			<strong>days</strong>
+			<input [(ngModel)]="stub.year" style="text-align: right; width : 70px;" type="number" min="0" placeholder="years"/>
+			<strong>y</strong>
+			<input [(ngModel)]="stub.month" style="text-align: right; width : 70px;" type="number" min="0" placeholder="months"/>
+			<strong>m</strong>
+			<input [(ngModel)]="stub.day" style="text-align: right; width : 70px;" type="number" min="0" placeholder="days"/>
+			<strong>d</strong>
 		</th>
 		<th>
 			<button class="btn btn-success float-right" (click)="add(stub)" >

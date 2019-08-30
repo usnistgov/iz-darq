@@ -27,7 +27,7 @@ public class Exporter implements ExportADChunk {
 	@Override
 	public void export(ConfigurationPayload payload, ADChunk chunk) throws Exception {
 		
-		Summary summary = new Summary(chunk, payload.getVaxCodeAbstraction(), payload.getAgeGroups());
+		Summary summary = new Summary(chunk, payload);
 		ADFile file = new ADFile(chunk.getExtraction(), chunk.getPatientSection(), chunk.getVaccinationSection(), payload, summary, new Vocabulary(chunk.getValues(), chunk.getCodes()));
 		
 		File output = new File("./darq-analysis/");

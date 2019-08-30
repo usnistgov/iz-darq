@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
-import gov.nist.healthcare.iz.darq.parser.model.DataElement;
+import gov.nist.healthcare.iz.darq.parser.service.model.DataElement;
 
 public class CodeCollector {
 	

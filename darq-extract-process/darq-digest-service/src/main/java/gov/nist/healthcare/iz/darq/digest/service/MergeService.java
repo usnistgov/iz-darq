@@ -20,7 +20,7 @@ public interface MergeService {
 
 	VaccinationPayload mergeVxPayload(VaccinationPayload a, VaccinationPayload b);
 
-	Map<String, DetectionSum> mergeDets(Map<String, DetectionSum> a, Map<String, DetectionSum> b);
+	Map<String, DetectionSum> mergeDetections(Map<String, DetectionSum> a, Map<String, DetectionSum> b);
 
 	Map<String, Map<String, Map<String, Map<String, Integer>>>> mergeVxCode(
 			Map<String, Map<String, Map<String, Map<String, Integer>>>> a,
@@ -36,9 +36,9 @@ public interface MergeService {
 
 	Integer merge(Integer a, Integer b);
 
-	Map<String, PatientPayload> mergePatAgeGroup(Map<String, PatientPayload> a, Map<String, PatientPayload> b);
+	Map<String, PatientPayload> mergePatientAgeGroup(Map<String, PatientPayload> a, Map<String, PatientPayload> b);
 
-	PatientPayload mergePat(PatientPayload a, PatientPayload b);
+	PatientPayload mergePatient(PatientPayload a, PatientPayload b);
 
 	Map<String, TablePayload> mergeCodeTable(Map<String, TablePayload> a, Map<String, TablePayload> b);
 

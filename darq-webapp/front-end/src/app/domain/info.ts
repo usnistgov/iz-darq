@@ -9,3 +9,9 @@ export class ServerInfo {
 		this.date = d;
 	}
 }
+
+export class OpRes {
+	status : string;
+	message : string;
+	op : string;
+}

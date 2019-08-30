@@ -31,6 +31,7 @@ public class VaxTrayProcessor extends TrayProcessor {
 				ageGroup(db.get(provider), t);
 			}
 		}
+		t.remove(Field.PROVIDER);
 	}
 	
 	void ageGroup(Map<String, VaccinationPayload> db, Tray t){
@@ -40,6 +41,7 @@ public class VaxTrayProcessor extends TrayProcessor {
 				code(db.get(ageGroup), t);
 			}
 		}
+		t.remove(Field.AGE_GROUP);
 	}
 	
 	void code(VaccinationPayload db, Tray t){
@@ -49,6 +51,7 @@ public class VaxTrayProcessor extends TrayProcessor {
 				year(db.getVaccinations().get(vxCode), t);
 			}
 		}
+		t.remove(Field.VACCINE_CODE);
 	}
 	
 	void year(Map<String, Map<String, Map<String, Integer>>> db, Tray t){
@@ -58,6 +61,7 @@ public class VaxTrayProcessor extends TrayProcessor {
 				gender(db.get(year),t);
 			}
 		}
+		t.remove(Field.VACCINATION_YEAR);
 	}
 	
 	void gender(Map<String, Map<String, Integer>> db, Tray t){
@@ -67,6 +71,7 @@ public class VaxTrayProcessor extends TrayProcessor {
 				source(db.get(gender),t);
 			}
 		}
+		t.remove(Field.GENDER);
 	}
 	
 	void source(Map<String, Integer> db, Tray t){
@@ -78,6 +83,7 @@ public class VaxTrayProcessor extends TrayProcessor {
 				finalize(t);
 			}		
 		}
+		t.remove(Field.EVENT);
 	}
 
 	@Override

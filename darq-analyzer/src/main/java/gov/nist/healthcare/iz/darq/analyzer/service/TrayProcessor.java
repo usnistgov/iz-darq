@@ -7,6 +7,7 @@ import java.util.function.Function;
 import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisQuery.Action;
 import gov.nist.healthcare.iz.darq.analyzer.domain.Tray;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
 
 public abstract class TrayProcessor {
@@ -29,7 +30,6 @@ public abstract class TrayProcessor {
 	public abstract _CG analysisPath();
 	
 	protected void finalize(Tray t){
-//		System.out.println(predicate.apply(t).equals(Action.TAKE));
 		if(predicate.apply(t).equals(Action.TAKE)) work.add(t.cloneTray());
 	}
 	

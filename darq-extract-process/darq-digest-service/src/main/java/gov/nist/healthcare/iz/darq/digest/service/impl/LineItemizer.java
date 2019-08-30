@@ -8,10 +8,10 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import gov.nist.healthcare.iz.darq.parser.model.Address;
-import gov.nist.healthcare.iz.darq.parser.model.Code;
-import gov.nist.healthcare.iz.darq.parser.model.DataElement;
-import gov.nist.healthcare.iz.darq.parser.model.DummyValue;
-import gov.nist.healthcare.iz.darq.parser.model.FieldName;
+import gov.nist.healthcare.iz.darq.parser.annotation.Code;
+import gov.nist.healthcare.iz.darq.parser.service.model.DataElement;
+import gov.nist.healthcare.iz.darq.parser.annotation.DummyValue;
+import gov.nist.healthcare.iz.darq.parser.annotation.FieldName;
 import gov.nist.healthcare.iz.darq.parser.model.Name;
 import gov.nist.healthcare.iz.darq.parser.model.Patient;
 import gov.nist.healthcare.iz.darq.parser.model.ResponsibleParty;
@@ -41,10 +41,11 @@ public class LineItemizer {
 		List<DataElement> _lc = new ArrayList<>();
 		
 		for(Field f : clazz.getFields()){
-			if(SUPPORT.contains(f.getType()) || isDataUnit(f)){
-				
-				String _name_ = f.isAnnotationPresent(FieldName.class) ? f.getAnnotation(FieldName.class).value() : "";
-				String table = f.isAnnotationPresent(Code.class) ? f.getAnnotation(Code.class).value() : "";
+			if(f.isAnnotationPresent(gov.nist.healthcare.iz.darq.parser.annotation.Field.class) || SUPPORT.contains(f.getType()) || isDataUnit(f)){
+
+				gov.nist.healthcare.iz.darq.parser.annotation.Field metadata = f.getAnnotation(gov.nist.healthcare.iz.darq.parser.annotation.Field.class);
+				String _name_ = metadata.name();
+				String table = metadata.table();
 				String dummy = f.isAnnotationPresent(DummyValue.class) ? f.getAnnotation(DummyValue.class).value() : "";
 				String _path = path.isEmpty() ? f.getName() : path+"/"+f.getName();
 				String _name = name.isEmpty() ? _name_ : name + " - " + _name_;
@@ -54,6 +55,28 @@ public class LineItemizer {
 				}
 				else {
 					_lc.add(new DataElement(_path, _name, !table.isEmpty(), table, dummy, (DataUnit<?>) f.get(obj)));
+				}	
+			}
+		}
+		
+		return _lc;
+	}
+	
+	public List<String> codeSets(Class<?> clazz) throws IllegalArgumentException, IllegalAccessException{
+		List<String> _lc = new ArrayList<>();
+		
+		for(Field f : clazz.getFields()){
+			if(f.isAnnotationPresent(gov.nist.healthcare.iz.darq.parser.annotation.Field.class) || SUPPORT.contains(f.getType()) || isDataUnit(f)){
+
+				gov.nist.healthcare.iz.darq.parser.annotation.Field metadata = f.getAnnotation(gov.nist.healthcare.iz.darq.parser.annotation.Field.class);
+				String table = metadata.table();
+
+				if(!isDataUnit(f)){
+					_lc.addAll(codeSets(f.getType()));
+				}
+				else {
+					if(!table.isEmpty())
+						_lc.add(table);
 				}	
 			}
 		}

@@ -38,3 +38,31 @@ export class TemplateResolver implements Resolve<ReportTemplate> {
 		});
 	}
 }
+
+@Injectable()
+export class PatientCodeSetResolver implements Resolve<string[]> {
+
+	constructor(private $template : TemplateService) {}
+
+	resolve(route: ActivatedRouteSnapshot) {
+		let ctrl = this;
+		return new Promise<string[]>(function (resolve, reject) {
+			resolve(ctrl.$template.findCodeSet("patient"));
+		});
+	}
+}
+
+@Injectable()
+export class VaccineCodeSetResolver implements Resolve<string[]> {
+
+	constructor(private $template : TemplateService) {}
+
+	resolve(route: ActivatedRouteSnapshot) {
+		let ctrl = this;
+		return new Promise<string[]>(function (resolve, reject) {
+			resolve(ctrl.$template.findCodeSet("vaccination"));
+		});
+	}
+}
+
+

@@ -9,7 +9,8 @@ import java.util.Set;
 
 public class ADChunk {
 	
-	private int unread = 0;
+	private int unreadPatients = 0;
+	private int unreadVaccinations = 0;
 	private int nbVaccinations = 0;
 	private int nbPatients = 0;
 	private int maxVaccination = 0;
@@ -90,21 +91,6 @@ public class ADChunk {
 	}
 
 
-	public int getUnread() {
-		return unread;
-	}
-
-
-	public void incUnread() {
-		this.unread++;
-	}
-
-
-	public void setUnread(int unread) {
-		this.unread = unread;
-	}
-
-
 	public int getNbVaccinations() {
 		return nbVaccinations;
 	}
@@ -164,4 +150,19 @@ public class ADChunk {
 		this.codes = codes;
 	}
 
+	public int getUnreadPatients() {
+		return unreadPatients;
+	}
+
+	public void setUnreadPatients(int unreadPatients) {
+		this.unreadPatients = unreadPatients;
+	}
+
+	public int getUnreadVaccinations() {
+		return unreadVaccinations;
+	}
+
+	public void setUnreadVaccinations(int unreadVaccinations) {
+		this.unreadVaccinations = unreadVaccinations;
+	}
 }

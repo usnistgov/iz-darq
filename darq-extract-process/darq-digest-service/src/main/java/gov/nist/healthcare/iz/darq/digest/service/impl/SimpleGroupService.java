@@ -16,7 +16,7 @@ public class SimpleGroupService implements GroupService {
 	
 	public Map<String, Map<String, VaccinationPayload>> makeVxSectionProvider(AgeGroupService ageGroupCalculator, Map<String, Map<String, Map<String, Map<String, Map<String, Map<String, Integer>>>>>> vx, Map<String, Map<String, Map<String, DetectionSum>>> dqa, Map<String, Map<String, Map<String, TablePayload>>> codes){
 		Map<String, Map<String, VaccinationPayload>> vxSection = new HashMap<>();
-		
+
 		for(String provider : vx.keySet()){
 			vxSection.put(provider, makeVxSectionAge(ageGroupCalculator, vx.get(provider), dqa.get(provider), codes.get(provider)));
 		}
@@ -33,7 +33,6 @@ public class SimpleGroupService implements GroupService {
 				vxSection.put(grp, makeVxPayload(vx != null ? vx.get(grp) : new HashMap<>(), dqa != null ? dqa.get(grp) : new HashMap<>(), codes != null ? codes.get(grp) : new HashMap<>()));
 			}
 		}
-		
 		return vxSection;
 	}
 	

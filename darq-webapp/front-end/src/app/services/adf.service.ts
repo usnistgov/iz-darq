@@ -19,4 +19,9 @@ export class AdfService {
 		return summary;
 	}
 
+	async deleteADF(id : string) : Promise<boolean> {
+		let summary: boolean = await this.http.delete<boolean>("api/adf/"+id).toPromise();
+		return summary;
+	}
+
 }

@@ -1,17 +1,20 @@
 package gov.nist.healthcare.iz.darq.parser.model;
 
+import gov.nist.healthcare.iz.darq.parser.annotation.DummyValue;
+import gov.nist.healthcare.iz.darq.parser.annotation.Field;
+import gov.nist.healthcare.iz.darq.parser.annotation.FieldName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import gov.nist.healthcare.iz.darq.parser.type.DqString;
 
 public class Name {
-	
-	@FieldName("First Name")
+
+	@Field(name="First Name", index = 0)
 	public DqString first;
-	@FieldName("Middle Name")
+	@Field(name="Middle Name", index = 1)
 	public DqString middle;
-	@FieldName("Last Name")
 	@DummyValue("Smith")
+	@Field(name="Last Name", index = 2)
 	public DqString last;
 	
 	@Override

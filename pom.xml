@@ -1,19 +1,21 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>gov.nist.healthcare.iz</groupId>
-  <artifactId>darq</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>gov.nist.healthcare.iz</groupId>
+	<artifactId>darq</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
 
-  <modules>
-  	<module>file-parser</module>
-  	<module>data-generator</module>
-  	<module>darq-webapp</module>
-  	<module>darq-extract-process</module>
-  	<module>darq-analyzer</module>
-  </modules>
+	<modules>
+		<module>file-parser</module>
+		<!--<module>data-generator</module> -->
+		<module>darq-webapp</module>
+		<module>darq-extract-process</module>
+		<module>darq-analyzer</module>
+        <module>lucene-index</module>
+    </modules>
 </project>

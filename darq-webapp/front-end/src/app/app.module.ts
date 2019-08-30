@@ -11,26 +11,22 @@ import {UserService} from "./services/user.service";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {ServerInfoService} from "./services/server-info.service";
 import {AuthInterceptor} from "./services/auth.interceptor";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AuthGuard} from "./guards/auth.guard";
 import {BsDropdownModule} from "ngx-bootstrap";
 import {FileComponentComponent} from './components/fragments/file-component/file-component.component';
 import {FileDropDirective} from './directives/file-drop.directive';
-import {ExternalDropDirective} from './directives/external-drop.directive';
-import {ToastyModule} from "ng2-toasty";
 import {TreeModule} from "primeng/components/tree/tree";
 import {BlockUIModule} from "ng-block-ui";
 import {MaterialModule} from "./material.module";
 import {PanelMenuModule} from "primeng/components/panelmenu/panelmenu";
 import {SideNavMenuModule} from "mat-sidenav-menu";
 import {NgxChartsModule} from "@swimlane/ngx-charts";
-import {ChartFilterPipe} from "./directives/chart-filter.pipe";
-import {TextPipe} from "./pipes/text.pipe";
+import {ChartFilterPipe} from "./pipes/chart-filter.pipe";
 import {ConfigurationService} from "./services/configuration.service";
 import {TreeTableModule} from "primeng/components/treetable/treetable";
 import {DropdownModule} from "primeng/components/dropdown/dropdown";
 import {TableModule} from "primeng/components/table/table";
-import {MetricPipe} from "./pipes/metrics-filter.pipe";
 import {ROUTES} from "./app.routes";
 import {
 	ConfigurationResolver, ConfigurationCatalogResolver, DetectionsListResolver, CVXListResolver, DownloadResolver
@@ -47,10 +43,15 @@ import {RangesService} from "./services/ranges.service";
 import {TemplateComponent} from "./components/content/template/template.component";
 import {ReportSectionComponent} from "./components/fragments/report-section/report-section.component";
 import {AnalysisPayloadDialogComponent} from "./components/fragments/analysis-payload-dialog/analysis-payload-dialog.component";
-import {MAT_DIALOG_DEFAULT_OPTIONS} from "@angular/material";
+import {MAT_DIALOG_DEFAULT_OPTIONS, MatDatepickerModule} from "@angular/material";
 import {TemplateFilterPipe} from "./pipes/template-filter.pipe";
 import {TemplateService} from "./services/template.service";
-import {TemplateCatalogResolver, TemplateResolver} from "./resolvers/template.resolver";
+import {
+	PatientCodeSetResolver,
+	TemplateCatalogResolver,
+	TemplateResolver,
+	VaccineCodeSetResolver
+} from "./resolvers/template.resolver";
 import {DndListModule} from "ngx-drag-and-drop-lists";
 import {NgSelectModule} from "@ng-select/ng-select";
 import {AnalysisDialogComponent} from "./components/fragments/analysis-dialog/analysis-dialog.component";
@@ -61,6 +62,12 @@ import {Ng2GoogleChartsModule} from "ng2-google-charts";
 import {AutoCompleteModule} from "primeng/components/autocomplete/autocomplete";
 import {DownloadComponent} from "./components/content/download/download.component";
 import {DownloadService} from "./services/download.service";
+import {NotifierModule, NotifierService} from "angular-notifier";
+import {ConfirmDialogComponent} from "./components/fragments/confirm-dialog/confirm-dialog.component";
+import {DataTableComponent} from "./components/fragments/data-table/data-table.component";
+import {AngularResizedEventModule} from "angular-resize-event";
+import {CommonModule, DatePipe} from "@angular/common";
+import {CalendarModule} from "primeng/primeng";
 
 
 @NgModule({
@@ -70,17 +77,15 @@ import {DownloadService} from "./services/download.service";
 		FooterComponent,
 		LoginComponent,
 		HomeComponent,
+		DataTableComponent,
 		ADFSummaryComponent,
 		FileComponentComponent,
 		FileDropDirective,
 		DataComponent,
-		ExternalDropDirective,
 		VarDirective,
 		UploadComponent,
 		ChartFilterPipe,
-		MetricPipe,
 		DownloadComponent,
-		TextPipe,
 		TemplateFilterPipe,
 		AgeGroupComponent,
 		ExtractConfigurationComponent,
@@ -88,12 +93,17 @@ import {DownloadService} from "./services/download.service";
 		ReportSectionComponent,
 		AnalysisPayloadDialogComponent,
 		AnalysisDialogComponent,
-		ReportComponent
+		ReportComponent,
+		ConfirmDialogComponent
 	],
 	imports: [
 		BrowserModule,
-		RouterModule.forRoot(ROUTES, {useHash: true}),
+		RouterModule.forRoot(ROUTES, {useHash: true, onSameUrlNavigation: 'reload'}),
+		FormsModule,
+		ReactiveFormsModule,
+		CommonModule,
 		FlexLayoutModule,
+		CalendarModule,
 		BsDropdownModule.forRoot(),
 		MaterialModule,
 		NgxChartsModule,
@@ -102,16 +112,26 @@ import {DownloadService} from "./services/download.service";
 		SideNavMenuModule,
 		ChartsModule,
 		TreeTableModule,
+		MatDatepickerModule,
 		DropdownModule,
 		TableModule,
-		FormsModule,
 		NgSelectModule,
 		DndListModule,
+		AngularResizedEventModule,
 		BlockUIModule,
 		Ng2GoogleChartsModule,
 		HttpModule,
 		TreeModule,
-		ToastyModule.forRoot(),
+		NotifierModule.withConfig( {
+			position : {
+				horizontal : {
+					position : 'right'
+				},
+				vertical : {
+					position : 'top'
+				}
+			}
+		}),
 		HttpClientModule
 	],
 	providers: [
@@ -119,11 +139,12 @@ import {DownloadService} from "./services/download.service";
 		UserService,
 		TemplateService,
 		TemplateCatalogResolver,
+		PatientCodeSetResolver,
+		VaccineCodeSetResolver,
 		TemplateResolver,
 		AuthGuard,
 		RangesService,
 		ConfigurationService,
-		MetricPipe,
 		ConfigurationResolver,
 		ADFResolver,
 		ADFListResolver,
@@ -132,7 +153,9 @@ import {DownloadService} from "./services/download.service";
 		DownloadService,
 		DownloadResolver,
 		AdfService,
+		NotifierService,
 		ConfigurationCatalogResolver,
+		DatePipe,
 		{
 			provide: HTTP_INTERCEPTORS,
 			useClass: AuthInterceptor,
@@ -141,7 +164,8 @@ import {DownloadService} from "./services/download.service";
 	],
 	entryComponents : [
 		AnalysisPayloadDialogComponent,
-		AnalysisDialogComponent
+		AnalysisDialogComponent,
+		ConfirmDialogComponent
 	],
 	bootstrap: [AppComponent]
 })

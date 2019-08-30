@@ -68,7 +68,7 @@ public class ADFController {
 	
 	@RequestMapping(value="/adf", method=RequestMethod.GET)
 	@ResponseBody
-	public List<ADFDescriptor> list(final HttpServletRequest request) throws Exception{
+	public List<ADFDescriptor> list(final HttpServletRequest request) throws Exception {
 		Account a = this.accountService.getCurrentUser();
 		List<ADFMetaData> adf = repo.findByOwner(a.getUsername());
 		List<ADFDescriptor> result = new ArrayList<>();

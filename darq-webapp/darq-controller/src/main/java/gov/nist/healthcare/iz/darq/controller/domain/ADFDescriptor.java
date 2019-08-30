@@ -14,6 +14,7 @@ public class ADFDescriptor {
 	Date analysedOn;
 	Date uploadedOn;
 	String size;
+	String keyHash;
 	List<ConfigurationDescriptor> compatibilities;
 	
 	
@@ -28,6 +29,7 @@ public class ADFDescriptor {
 		this.owner = md.getOwner();
 		this.analysedOn = md.getAnalysedOn();
 		this.uploadedOn = md.getUploadedOn();
+		this.keyHash = md.getKeyHash();
 		this.size = md.getSize();
 		this.compatibilities = compatibilities;
 	}

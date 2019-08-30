@@ -28,12 +28,12 @@ public class PatCodeTrayProcessor extends TrayProcessor {
 
 	void ageGroup(Map<String, PatientPayload> db, Tray t){
 		for(String ageGroup : db.keySet()){
-			t.add(Field.AGE_GROUP, ageGroup);
+			t.start(Field.AGE_GROUP, ageGroup);
 			if(!guard(t)) {
 				table(db.get(ageGroup), t);
-			}
-				
+			}	
 		}
+		t.remove(Field.AGE_GROUP);
 	}
 	
 	void table(PatientPayload db, Tray t){
@@ -41,9 +41,9 @@ public class PatCodeTrayProcessor extends TrayProcessor {
 			t.add(Field.TABLE, table);
 			if(!guard(t)) {
 				code(db.getCodeTable().get(table), t);
-			}
-				
+			}	
 		}
+		t.remove(Field.TABLE);
 	}
 	
 	void code(TablePayload db, Tray t){
@@ -53,9 +53,9 @@ public class PatCodeTrayProcessor extends TrayProcessor {
 				t.setWeigth(db.getCodes().get(code));
 				t.setCount(db.getCodes().get(code));
 				finalize(t);
-			}
-				
+			}	
 		}
+		t.remove(Field.CODE);
 	}
 	
 	@Override

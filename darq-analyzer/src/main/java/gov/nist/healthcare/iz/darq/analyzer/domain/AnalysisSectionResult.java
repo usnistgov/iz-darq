@@ -13,10 +13,37 @@ import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 
 public class AnalysisSectionResult {
 	
+	public static class Group {
+		private int threshold = -1;
+		private Set<FieldValue> fields;
+		public int getThreshold() {
+			return threshold;
+		}
+		public void setThreshold(int threshold) {
+			this.threshold = threshold;
+		}
+		public Set<FieldValue> getFields() {
+			return fields;
+		}
+		public void setFields(Set<FieldValue> fields) {
+			this.fields = fields;
+		}
+		public Group(int threshold, Set<FieldValue> fields) {
+			super();
+			this.threshold = threshold;
+			this.fields = fields;
+		}
+		public Group() {
+			super();
+		}
+		
+		
+	}
+	
 	public static class AnalysisPayloadResult {
 		private _CG type;
 		private List<FieldValue> filters;
-		private List<Set<FieldValue>> groups;
+		private List<Group> groups;
 		private Map<String, Fraction> values;
 		private boolean distribution;
 		private Options display;
@@ -35,10 +62,10 @@ public class AnalysisSectionResult {
 		public void setFilters(List<FieldValue> filters) {
 			this.filters = filters;
 		}
-		public List<Set<FieldValue>> getGroups() {
+		public List<Group> getGroups() {
 			return groups;
 		}
-		public void setGroups(List<Set<FieldValue>> groups) {
+		public void setGroups(List<Group> groups) {
 			this.groups = groups;
 		}
 

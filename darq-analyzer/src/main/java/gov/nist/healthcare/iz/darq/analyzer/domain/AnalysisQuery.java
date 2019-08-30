@@ -49,6 +49,12 @@ public class AnalysisQuery {
 			this.all = all;
 		}
 		
+		
+		
+		@Override
+		public String toString() {
+			return "QueryField [f=" + f + ", value=" + value + ", all=" + all + "]";
+		}
 		@Override
 		public int compareTo(QueryField o) {
 			return all && o.all ? 0 : all && !o.all ? 1 : !all && o.all ? -1 : 0;
@@ -68,7 +74,6 @@ public class AnalysisQuery {
 	public Action consider(Field f, String value){
 		QueryField queryField = this.get(f);
 		if(queryField != null){
-//			System.out.println(queryField.getValue()+" - "+value);
 			 return (queryField.isAll() || queryField.getValue().equals(value)) ? Action.TAKE : Action.KILL;
 		}
 		else {
@@ -112,6 +117,11 @@ public class AnalysisQuery {
 	public void setCompatibilityGroup(_CG compatibilityGroup) {
 		this.compatibilityGroup = compatibilityGroup;
 	}
+	
+	@Override
+	public String toString() {
+		return "AnalysisQuery [fields=" + fields + ", compatibilityGroup=" + compatibilityGroup + "]";
+	}
 
 	public Action take(Tray t){
 		boolean kill = t.getFields()
@@ -119,8 +129,9 @@ public class AnalysisQuery {
 				.map(x -> consider(x))
 				.filter(y -> y.equals(Action.KILL))
 				.findAny().isPresent();
-//		System.out.println(t.full() + " - " + kill);
-		return kill ? Action.KILL : t.full() ? Action.TAKE : Action.CONTINUE;
+
+		Action act = kill ? Action.KILL : t.full() ? Action.TAKE : Action.CONTINUE;
+		return act;
 	}
 	
 }

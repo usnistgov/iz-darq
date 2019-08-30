@@ -10,16 +10,17 @@ public class ADFMetaData {
 	Date analysedOn;
 	Date uploadedOn;
 	String size;
+	String keyHash;
 	ConfigurationPayload configuration;
 	Summary summary;
 	
 	
-	
 	public ADFMetaData(String name, String path, String owner, Date analysedOn, Date uploadedOn,
-			ConfigurationPayload configuration, Summary summary, String size) {
+			ConfigurationPayload configuration, String keyHash, Summary summary, String size) {
 		super();
 		this.name = name;
 		this.path = path;
+		this.keyHash = keyHash;
 		this.owner = owner;
 		this.analysedOn = analysedOn;
 		this.uploadedOn = uploadedOn;
@@ -31,7 +32,6 @@ public class ADFMetaData {
 	public ADFMetaData() {
 		super();
 	}
-
 	public String getId() {
 		return id;
 	}
@@ -80,14 +80,16 @@ public class ADFMetaData {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 	public String getSize() {
 		return size;
 	}
-
 	public void setSize(String size) {
 		this.size = size;
 	}
-	
-
+	public String getKeyHash() {
+		return keyHash;
+	}
+	public void setKeyHash(String keyHash) {
+		this.keyHash = keyHash;
+	}
 }

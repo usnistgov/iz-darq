@@ -23,6 +23,9 @@ export class ReportSectionComponent implements OnInit {
 	ageGroups : {
 		[index : string] : Range
 	};
+	_codeSet : {
+		[index : string] : string[]
+	};
 	names = names;
 
 	@Output("change") change : EventEmitter<Section> = new EventEmitter();
@@ -56,6 +59,12 @@ export class ReportSectionComponent implements OnInit {
 		}
 	}
 
+	@Input() set codeset(c :  {
+		[index : string] : string[]
+	}){
+		this._codeSet = c;
+	}
+
 	remove(i : number, list : AnalysisPayload[]){
 		list.splice(i,1);
 	}
@@ -79,7 +88,8 @@ export class ReportSectionComponent implements OnInit {
 				names : names,
 				configuration : this._configuration,
 				detections : this._detections,
-				cvx : this._cvxs
+				cvx : this._cvxs,
+				codes : this._codeSet
 			}
 		});
 

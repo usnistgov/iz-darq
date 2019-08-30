@@ -19,7 +19,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -32,10 +31,9 @@ import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 import gov.nist.healthcare.iz.darq.digest.domain.EncryptedADF;
 
 @Service
-@PropertySource("classpath:/configuration.properties")
 public class CryptoUtilsImpl implements CryptoUtils {
 	
-	@Value("${darq.keys}")
+	@Value("#{environment.DARQ_KEY}")
 	private String PRIVATE_KEY;
 	private ObjectMapper mapper = new ObjectMapper(new BsonFactory());
 
@@ -75,7 +73,7 @@ public class CryptoUtilsImpl implements CryptoUtils {
 		return deserialize(ADFile.class, decryptedBytes);
 	}
 	
-	private PublicKey pub() throws FileNotFoundException, IOException, NoSuchAlgorithmException, InvalidKeySpecException{
+	private PublicKey pub() throws FileNotFoundException, IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		byte[] cert_bytes = IOUtils.toByteArray(CryptoUtilsImpl.class.getResourceAsStream("/certificate.pub"));
 	    X509EncodedKeySpec ks = new X509EncodedKeySpec(cert_bytes);
 	    KeyFactory kf = KeyFactory.getInstance("RSA");
@@ -89,20 +87,20 @@ public class CryptoUtilsImpl implements CryptoUtils {
 		return kf.generatePrivate(ks);
 	}
 	
-	private SecretKeySpec password() throws NoSuchAlgorithmException{
+	private SecretKeySpec password() throws NoSuchAlgorithmException {
 		KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 	    keyGen.init(128);
 	    SecretKey skey = keyGen.generateKey();
 		return new SecretKeySpec(skey.getEncoded(), "AES");
 	}
 	
-	private <T> byte[] serialize(Class<T> type, T adf) throws JsonGenerationException, JsonMappingException, IOException{
+	private <T> byte[] serialize(Class<T> type, T adf) throws JsonGenerationException, JsonMappingException, IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		mapper.writeValue(baos, adf);
 		return baos.toByteArray();
 	}
 	
-	private <T> T deserialize(Class<T> type, byte[] bytes) throws JsonGenerationException, JsonMappingException, IOException{
+	private <T> T deserialize(Class<T> type, byte[] bytes) throws JsonGenerationException, JsonMappingException, IOException {
 		return mapper.readValue(bytes, type);
 	}
 

@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.spi.ThrowableInformation;
-
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
 
@@ -260,6 +258,13 @@ public abstract class Tray implements Cloneable {
 			this.fields.remove(tf);
 		this.fields.add(tf);
 	}
+	
+	public void remove(Field f){
+		TrayField tf = new TrayField(f,"");
+		if(this.fields.contains(tf))
+			this.fields.remove(tf);
+	}
+	
 	public Set<TrayField> getFields() {
 		return fields;
 	}

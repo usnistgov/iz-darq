@@ -5,6 +5,7 @@ public class SummaryCounts {
 	public int totalReadVaccinations;
 	public int totalReadPatientRecords;
 	public int totalSkippedPatientRecords;
+	public int totalSkippedVaccinationRecords;
 	public int maxVaccinationsPerRecord;
 	public int minVaccinationsPerRecord;
 	public int numberOfProviders;
@@ -20,6 +21,7 @@ public class SummaryCounts {
 
 
 	public SummaryCounts(int totalReadVaccinations, int totalReadPatientRecords, int totalSkippedPatientRecords,
+						 int totalSkippedVaccinationRecords,
 			int maxVaccinationsPerRecord, int minVaccinationsPerRecord, int numberOfProviders,
 			int avgVaccinationsPerRecord, int maxVaccinationsPerProvider, int minVaccinationsPerProvider,
 			int avgVaccinationsPerProvider) {
@@ -27,6 +29,7 @@ public class SummaryCounts {
 		this.totalReadVaccinations = totalReadVaccinations;
 		this.totalReadPatientRecords = totalReadPatientRecords;
 		this.totalSkippedPatientRecords = totalSkippedPatientRecords;
+		this.totalSkippedVaccinationRecords = totalSkippedVaccinationRecords;
 		this.maxVaccinationsPerRecord = maxVaccinationsPerRecord;
 		this.minVaccinationsPerRecord = minVaccinationsPerRecord;
 		this.numberOfProviders = numberOfProviders;

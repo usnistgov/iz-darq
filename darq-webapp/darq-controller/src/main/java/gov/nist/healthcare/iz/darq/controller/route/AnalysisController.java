@@ -37,16 +37,9 @@ public class AnalysisController {
     	ADFile file = this.storage.getFile(fId, a.getUsername());
     	ReportTemplate template = this.templateRepo.findByIdAndOwner(tId, a.getUsername());
     	if(file != null && template != null){
-    		System.out.println("X");
     		AnalysisReport report =  this.report.analyse(file, template);
     		report.setAdfName(this.storage.get(fId, a.getUsername()).getName());
-//    		System.out.println(report);
     		return report;
-    	}
-    	else {
-    		System.out.println(file);
-    		System.out.println(template);
-    		System.out.println("Y");
     	}
     	return null;
     }
