@@ -59,12 +59,12 @@ public class ExtractFileIndexer {
     private String readId(String line) {
         int size = line.length();
         int i = 0;
-        String ID = "";
-        while(line.charAt(i) != '\t' && size > i) {
-            ID += line.charAt(i);
+        StringBuilder ID = new StringBuilder();
+        while(size > i && line.charAt(i) != '\t') {
+            ID.append(line.charAt(i));
             i++;
         }
-        return ID;
+        return ID.toString();
     }
 
 

@@ -16,24 +16,51 @@
 }
 
 .card {
-	padding : 5px; max-height : 500px; overflow-y : scroll;
-	
+    width: 100%;
+	padding : 5px;
+	max-height : 500px;
+	overflow-y : scroll;
+}
+
+.bold {
+    font-weight: bold;
 }
 
 .space-left {
 	margin-left : 5px;
 }
 
-.space-right {
-	margin-right : 5px;
+.table-head-2 {
+    text-align: center;
+    background-color: #ffe000;
+    font-weight: bold;
 }
 
-.half-width {
-	width : 49%;
+.table-head-1 {
+    text-align: center;
+    background-color: #8cbefd;
+    font-weight: bold;
 }
 
-.full-width {
-	width : 99.3%;
+.age-group {
+    background-color: aliceblue;
+}
+
+.table-cell {
+    background-color: lightgray;
+}
+
+.header-section {
+     text-align: center;
+     font-weight: bold;
+     font-size: larger;
+     background-color: darkblue;
+     color: white;
+}
+
+.header-normal{
+     text-align: center;
+     font-weight: bold;
 }
 
 .nist {

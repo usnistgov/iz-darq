@@ -38,7 +38,8 @@ public class Exporter implements ExportADChunk {
 	    FileUtils.writeByteArrayToFile(new File("./darq-analysis/ADF.data"), fileBytes);
 	    
 	    //---- HTML
-	    summaryGenerator.generateSummary(summary, chunk.getProviders(), "./darq-analysis/summary/");		
+	    summaryGenerator.generateSummary(file, summary, chunk.getProviders(), "./darq-analysis/summary/");
+
 	}
 
 }

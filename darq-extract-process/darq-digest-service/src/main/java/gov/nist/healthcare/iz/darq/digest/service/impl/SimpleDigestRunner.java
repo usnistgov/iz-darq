@@ -25,11 +25,11 @@ public class SimpleDigestRunner implements DigestRunner {
 
 	@Autowired
 	SimpleRecordChewer chewer;
-	final static Logger logger = LoggerFactory.getLogger(SimpleDigestRunner.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(SimpleDigestRunner.class.getName());
 	@Autowired
 	MergeService merge;
-	LucenePatientRecordIterator iterator;
-	int size = 0;
+	private LucenePatientRecordIterator iterator;
+	private int size = 0;
 
 	@Override
 	public ADChunk digest(ConfigurationPayload configuration, String patient, String vaccines) throws Exception {

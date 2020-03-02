@@ -148,13 +148,18 @@ public class CLIApp {
 					int anime_step = 0;
 					Fraction f = new Fraction(0,0);
 					double per;
-					int estimated = 0;
-					
+					long estimated = 0;
+					long stamp = System.currentTimeMillis();
+
 					do{
+						long elapsed = System.currentTimeMillis() - stamp;
 						int save = f.getCount();
 						f = runner.spy();
+						stamp = System.currentTimeMillis();
 						int diff = f.getCount() - save;
-						estimated = (estimated + (f.getTotal() - f.getCount()) * (diff / 200)) / 2;
+						int remaining = f.getTotal() - f.getCount();
+						estimated = diff == 0 ? 0 : (elapsed / diff) * remaining;
+						stamp = System.currentTimeMillis();
 						per = f.percent();
 						if(f.getCount() == 0 && f.getTotal() == 0){
 							System.out.print("\r-- Preparing " + animation[anime_step++ % animation.length]);
@@ -170,7 +175,7 @@ public class CLIApp {
 					    		progressBar += " ";
 					    	}
 					    	progressBar += "] " + animation[anime_step++ % animation.length] + " " + df.format(per) + "% ("+f.getCount()+"/"+f.getTotal()+")";
-					    	progressBar += String.format("(ETA %2d min, %2d sec)", 
+					    	progressBar += String.format("(Estimated Remaining Processing Time %2d min, %2d sec)",
 					    		    TimeUnit.MILLISECONDS.toMinutes(estimated),
 					    		    TimeUnit.MILLISECONDS.toSeconds(estimated) - 
 					    		    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(estimated))

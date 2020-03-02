@@ -11,10 +11,6 @@ public class Fraction {
 		this.total += f.total;
 	}
 	
-	
-	
-	
-	
 	public Fraction() {
 		super();
 	}

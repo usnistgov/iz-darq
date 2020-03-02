@@ -21,7 +21,7 @@
 
 	<div fxLayout="column" fxLayoutAlign="start stretch" *ngIf="selected">
 		<div fxLayout="row" fxLayoutAlign="center center" style="margin-top: 24px;">
-			<span fxFlex *ngFor="let x of plural() ? [1,2,3] : [1,2,3,4]" fxLayout="row" fxLayoutAlign="center center">
+			<span fxFlex *ngFor="let x of [1,2,3,4]" fxLayout="row" fxLayoutAlign="center center">
 					<span [ngStyle]="{ 'background-color' : x === step ? '#0e5fc9' : 'lightgrey' }" class="badge"
 						  style="color: white; width: 20px; height: 20px; border-radius: 40%;">{{x}}</span>&nbsp;-&nbsp;<strong
 				[ngStyle]="{ 'color' : x === step ? 'black' : 'lightgrey' }">{{x === 1 ? 'Select Your Sample' : x === 2 ? 'Group Your Sample Data' : x === 3 ? 'Filter Your Groups' : x === 4 ? 'Options' : ''}}  </strong>

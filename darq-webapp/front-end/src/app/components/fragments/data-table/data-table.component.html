@@ -27,7 +27,7 @@
 	<ng-template pTemplate="body" let-node let-columns="columns">
 		<tr style="word-break: break-all; height: 100%;" class="data-row">
 			<td *ngFor="let h of _table.headers" >{{node[h] ? value(h, node[h]) : '*'}}</td>
-			<td>{{node.value | number:'.'}}% ( {{(node.fraction.count | number:'.') + " / " + (node.fraction.total | number:'.')}} )</td>
+      <td>{{node.value | number:'.'}}% ( {{(node.fraction.count | number:'.') + " / " + (node.fraction.total | number:'.')}} )</td>
 			<td>{{!NaN(node.threshold)? (node.threshold | number:'.') + "%" : "NONE"}}</td>
 			<td [ngStyle]="{'background-color' : node.flag === 'ABOVE' ? 'lightpink' : node.flag === 'BELOW' ?'lightgreen' : 'lightgray'}">{{ node.flag }}</td>
 			<td  class="bars" style="height: 100%;  padding: 0 !important; vertical-align:middle;">

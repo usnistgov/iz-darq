@@ -34,14 +34,14 @@ public class ADFile {
 	
 	
 	private Date analysisDate;
-	private Map<String, Fraction> extraction;
+	private Map<String, ExtractFraction> extraction;
 	private Map<String, PatientPayload> patients;
 	private Map<String, Map<String, VaccinationPayload>> vaccinations;
 	private ConfigurationPayload configuration;
 	private Summary summary;
 	private Vocabulary vocabulary;
 	
-	public ADFile(Map<String, Fraction> extraction, Map<String, PatientPayload> patients,
+	public ADFile(Map<String, ExtractFraction> extraction, Map<String, PatientPayload> patients,
 			Map<String, Map<String, VaccinationPayload>> vaccinations, ConfigurationPayload configuration, Summary summary, Vocabulary vocabulary) {
 		super();
 		this.extraction = extraction;
@@ -59,10 +59,10 @@ public class ADFile {
 	}
 	
 
-	public Map<String, Fraction> getExtraction() {
+	public Map<String, ExtractFraction> getExtraction() {
 		return extraction;
 	}
-	public void setExtraction(Map<String, Fraction> extraction) {
+	public void setExtraction(Map<String, ExtractFraction> extraction) {
 		this.extraction = extraction;
 	}
 	public Map<String, PatientPayload> getPatients() {

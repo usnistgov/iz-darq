@@ -19,12 +19,12 @@ public class ADChunk {
 	private Map<String, String> providers;
 	private Map<String, Map<String, VaccinationPayload>> vaccinationSection;
 	private Map<String, PatientPayload> patientSection;
-	private Map<String, Fraction> extraction;
+	private Map<String, ExtractFraction> extraction;
 	private Map<Field, Set<String>> values;
 	private Map<String, Set<String>> codes;
 	
 	public ADChunk(Map<String, String> providers, Map<String, Map<String, VaccinationPayload>> vaccinationSection,
-			Map<String, PatientPayload> patientSection, Map<String, Fraction> extraction, List<String> issues, int nbVaccinations, int nbPatients, Map<Field, Set<String>> values, Map<String, Set<String>> codes) {
+			Map<String, PatientPayload> patientSection, Map<String, ExtractFraction> extraction, List<String> issues, int nbVaccinations, int nbPatients, Map<Field, Set<String>> values, Map<String, Set<String>> codes) {
 		super();
 		this.providers = providers;
 		this.vaccinationSection = vaccinationSection;
@@ -60,10 +60,10 @@ public class ADChunk {
 	public void setPatientSection(Map<String, PatientPayload> patientSection) {
 		this.patientSection = patientSection;
 	}
-	public Map<String, Fraction> getExtraction() {
+	public Map<String, ExtractFraction> getExtraction() {
 		return extraction;
 	}
-	public void setExtraction(Map<String, Fraction> extraction) {
+	public void setExtraction(Map<String, ExtractFraction> extraction) {
 		this.extraction = extraction;
 	}
 	public Map<String, String> getProviders() {

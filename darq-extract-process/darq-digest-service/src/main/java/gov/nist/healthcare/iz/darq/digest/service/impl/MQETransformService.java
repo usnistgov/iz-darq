@@ -72,11 +72,13 @@ public class MQETransformService {
 		if(mnk != null){
 			recordAsMessageStruct.getNextOfKins().add(mnk);
 		}
+		patient.setResponsibleParty(nk);
 		recordAsMessageStruct.setPatient(patient);
 		
 		int i = 0;
 		for(VaccineRecord vr : record.history){
 			MqeVaccination vax = new MqeVaccination(i+"id");
+			vax.setPositionId(i);
 			i++;
 			vax.setAdminCvxCode(vr.vaccine_type_cvx.getValue());
 			vax.setAdminNdcCode(vr.vaccine_type_ndc.getValue());
@@ -91,7 +93,6 @@ public class MQETransformService {
 			vax.setAmount(vr.volume_unit.getValue());
 			
 			vax.setOrderedByNumber(vr.ordering_provider.getValue());
-			
 			vax.setCompletionCode(vr.complete_status.getValue());
 			
 			// Change 
@@ -111,9 +112,10 @@ public class MQETransformService {
 			vis.setPresentedDateString(formatDate(vr.vis.given_date.getValue()));
 			
 			vax.setVaccinationVis(vis);
-			tr.add(vr.vax_event_id.getValue(), vax.getID(), vr, vax);
+			tr.add(vr.vax_event_id.getValue(), vax.getPositionId() + "", vr, vax);
 			recordAsMessageStruct.getVaccinations().add(vax);
 		}
+
 		transformer.transform(recordAsMessageStruct);
 		tr.setPayload(recordAsMessageStruct);
 		return tr;

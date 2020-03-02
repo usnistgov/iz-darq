@@ -5,15 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import gov.nist.healthcare.iz.darq.digest.domain.ExtractFraction;
 import org.joda.time.LocalDate;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
-import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.VaccinationPayload;
 import gov.nist.healthcare.iz.darq.digest.service.AgeGroupService;
@@ -51,12 +49,13 @@ public class SimpleRecordChewer implements RecordChewer {
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
+
 		Map<String, String> providers = new HashMap<>();
 		
 		
 		Map<String, Map<String, VaccinationPayload>> vaccinationSection = this.groupService.makeVxSectionProvider(configuration.ageGroupService(), validator.getVxInfo(), validator.vaccinationDetections(), collector.getVaccinationCodes());
 		Map<String, PatientPayload> patientSection = this.groupService.makePatSectionAge(configuration.ageGroupService(), validator.patientDetections(), collector.getPatientCodes());
-		Map<String, Fraction> extraction = collector.getExtract();
+		Map<String, ExtractFraction> extraction = collector.getExtract();
 		List<String> issues = new ArrayList<>();
 		
 		

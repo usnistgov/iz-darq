@@ -30,40 +30,7 @@ public abstract class DataUnit<T> {
 
 		// If value is coded extraction descriptor
 		if(payload != null && payload.startsWith("[[") && payload.endsWith("]]")){
-			
-
-			String extCode = payload.replace("[[", "").replace("]]", "");
-
-			// If value length is present
-			if(extCode.contains("VALUE_LENGTH_IS")){	
-				
-				try {
-					code = DescriptorType.VALUE_LENGTH;
-					length = Integer.parseInt(extCode.replace("VALUE_LENGTH_IS {","").replace("}", ""));
-					if(length < 0)
-						throw new InvalidValueException("Invalid length : "+payload);
-					placeholder = new ExtractionData(code, length);
-				}
-				catch(InvalidValueException e){
-					throw e;
-				}
-				catch(Exception e){
-					throw new InvalidValueException("Unrecognized : "+payload);
-				}
-				
-			}
-			else {
-				
-				code = DescriptorType.valueOf(extCode);
-				if(code != null){
-					placeholder = new ExtractionData(code);
-				}
-				else {
-					throw new InvalidValueException("Unrecognized : "+payload);
-				}
-				
-			}
-
+			placeholder = ExtractionData.parse(payload);
 			this.validatePlaceHolder(placeholder.getCode());
 		}
 		else {

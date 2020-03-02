@@ -9,10 +9,13 @@ import java.util.stream.Collectors;
 
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
+import gov.nist.healthcare.iz.darq.digest.domain.ExtractFraction;
 import gov.nist.healthcare.iz.darq.parser.service.model.DataElement;
+import gov.nist.healthcare.iz.darq.parser.type.DataUnit;
+import gov.nist.healthcare.iz.darq.parser.type.DescriptorType;
 
 public class CodeCollector {
-	
+
 	public class Code {
 		String value;
 		String table;
@@ -55,7 +58,7 @@ public class CodeCollector {
 	
 	public List<Code> codes;
 	public Map<String, Integer> counts;
-	public Map<String, Fraction> extract;
+	public Map<String, ExtractFraction> extract;
 	
 	
 	public CodeCollector() {
@@ -67,27 +70,64 @@ public class CodeCollector {
 	
 	
 
-	public Map<String, Fraction> getExtract() {
+	public Map<String, ExtractFraction> getExtract() {
 		return extract;
 	}
 
 
 
-	public void setExtract(Map<String, Fraction> extract) {
+	public void setExtract(Map<String, ExtractFraction> extract) {
 		this.extract = extract;
 	}
 
+	public void placeholder(DescriptorType type, ExtractFraction fr, DataUnit du) {
+		if(du.hasValue()) {
+			fr.incValued();
+		} else {
+			if (type == null) {
+				fr.incEmpty();
+			} else {
+				switch (type) {
+					case VALUE_PRESENT: fr.incValuePresent(); break;
+					case NOT_EXTRACTED: fr.incNotExtracted(); break;
+					case NOT_COLLECTED: fr.incNotCollected(); break;
+					case VALUE_NOT_PRESENT: fr.incValueNotPresent(); break;
+					case VALUE_LENGTH: fr.incValueLength(); break;
+					case EXCLUDED: fr.incExcluded(); break;
+					default: fr.incEmpty();
+				}
+			}
+		}
+	}
 
 
 	public void readExtractionData(DataElement de){
-		if(extract.containsKey(de.getKey())){
-			if(de.getValue().hasValue())
-				extract.get(de.getName()).incCount();
-			else
-				extract.get(de.getName()).incTotal();
+		ExtractFraction fr;
+
+		if(extract.containsKey(de.getName())){
+			fr = extract.get(de.getName());
 		}
 		else {
-			extract.put(de.getName(), de.getValue().hasValue() ? new Fraction(1,1) : new Fraction(0,1));
+			fr = new ExtractFraction();
+			extract.put(de.getName(), fr);
+		}
+
+		if(de.getValue().hasValue()) {
+			fr.incValued();
+		} else {
+			if (de.getValue().placeholder() == null) {
+				fr.incEmpty();
+			} else {
+				switch (de.getValue().placeholder().getCode()) {
+					case VALUE_PRESENT: fr.incValuePresent(); break;
+					case NOT_EXTRACTED: fr.incNotExtracted(); break;
+					case NOT_COLLECTED: fr.incNotCollected(); break;
+					case VALUE_NOT_PRESENT: fr.incValueNotPresent(); break;
+					case VALUE_LENGTH: fr.incValueLength(); break;
+					case EXCLUDED: fr.incExcluded(); break;
+					default: fr.incEmpty();
+				}
+			}
 		}
 	}
 	

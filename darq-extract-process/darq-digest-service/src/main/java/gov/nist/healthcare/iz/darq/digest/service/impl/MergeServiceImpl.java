@@ -5,15 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import gov.nist.healthcare.iz.darq.digest.domain.*;
 import org.springframework.stereotype.Service;
 
-import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
-import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
-import gov.nist.healthcare.iz.darq.digest.domain.Field;
-import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
-import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
-import gov.nist.healthcare.iz.darq.digest.domain.VaccinationPayload;
 import gov.nist.healthcare.iz.darq.digest.service.MergeService;
 
 @Service
@@ -78,11 +72,11 @@ public class MergeServiceImpl implements MergeService {
 		 return x;
 	}
 	
-	public Map<String, Fraction> mergeExtract(Map<String, Fraction> a, Map<String, Fraction> b){
-		Map<String, Fraction> x =  a != null ? new HashMap<>(a) : new HashMap<>();
+	public Map<String, ExtractFraction> mergeExtract(Map<String, ExtractFraction> a, Map<String, ExtractFraction> b){
+		Map<String, ExtractFraction> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
 			b.forEach((k, v) -> {
-				x.merge(k, v, Fraction::merge);
+				x.merge(k, v, ExtractFraction::merge);
 			});
 		}
 		return x;

@@ -81,14 +81,14 @@ public class SimpleTrayAggregator implements TrayAggregator {
 					pr.getValues().put(i+"grp", v);
 				}
 				else {
-					pr.getGroups().add(new Group(0,groupBy));
+					pr.getGroups().add(new Group(payload.getOptions().getThreshold(),groupBy));
 					int i = pr.getGroups().size() - 1;
 					Fraction v = new Fraction(t.getCount(), useTotal(payload.getType()) ? weigth : t.getWeigth());
 					pr.getValues().put(i+"grp", v);
 				}
 			}
 		}
-		if(payload.getGroupFilters() != null && payload.getGroupFilters().size() > 0){
+		if(payload.getGroupBy() != null && payload.getGroupBy().size() > 0 && payload.getGroupFilters() != null && payload.getGroupFilters().size() > 0){
 			return postProcess(this.processFilters(pr,payload.getGroupFilters()));
 		}
 		else
@@ -158,9 +158,11 @@ public class SimpleTrayAggregator implements TrayAggregator {
 	public GroupFilter pass(Set<FieldValue> group, List<GroupFilter> filters){
 		return filters.stream().filter(x -> {
 			boolean ok = true;
-			for(FieldValue v : group){
-				
-				ok = ok && ((x.getValues().containsKey(v.getField()) && x.getValues().get(v.getField()).equals(v.getValue())) || !x.getValues().containsKey(v.getField()));
+			if(x.getValues() != null && x.getValues().size() > 0) {
+				for(FieldValue v : group){
+
+					ok = ok && ((x.getValues().containsKey(v.getField()) && x.getValues().get(v.getField()).equals(v.getValue())) || !x.getValues().containsKey(v.getField()));
+				}
 			}
 			return ok;
 		}).findFirst().orElseGet(() -> null);

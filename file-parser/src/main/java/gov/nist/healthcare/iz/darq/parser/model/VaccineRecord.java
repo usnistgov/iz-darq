@@ -57,7 +57,7 @@ public class VaccineRecord extends gov.nist.healthcare.iz.darq.parser.service.mo
 	public DqDate record_creation_date;
 	@Field(name="Record Update Date",index = 25)
 	public DqDate record_update_date;
-	
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);

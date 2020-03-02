@@ -44,6 +44,7 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 				Files.write(Paths.get(dir.toString(), "/adf.data"), content);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new InvalidFileFormat();
 		}
 	}
