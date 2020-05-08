@@ -36,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
     @Bean
     protected JWTLoginFilter loginFilter(){
-    	return new JWTLoginFilter("/api/login", authManager, tokenService);
+    	return new JWTLoginFilter("/**/api/login", authManager, tokenService);
     }
     
 	@Override
@@ -44,9 +44,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable()
 		
 		.authorizeRequests()
-			.antMatchers("/public/**").permitAll()
-			.antMatchers("/api/login").permitAll()
-			.antMatchers("/api/**").fullyAuthenticated()
+			.antMatchers("/**/public/**").permitAll()
+			.antMatchers("/**/api/login").permitAll()
+			.antMatchers("/**/api/**").fullyAuthenticated()
 		.and()
 		.addFilterBefore(loginFilter(), UsernamePasswordAuthenticationFilter.class)
 		.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);

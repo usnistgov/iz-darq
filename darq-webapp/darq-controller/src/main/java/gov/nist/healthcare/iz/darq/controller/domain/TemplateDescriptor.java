@@ -10,13 +10,15 @@ public class TemplateDescriptor {
 	String name;
 	String owner;
 	List<ConfigurationDescriptor> compatibilities;
+	boolean viewOnly;
 	
-	public TemplateDescriptor(String id, String name, String owner, List<ConfigurationDescriptor> compatibilities) {
+	public TemplateDescriptor(String id, String name, String owner, List<ConfigurationDescriptor> compatibilities, boolean viewOnly) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.owner = owner;
 		this.compatibilities = compatibilities;
+		this.viewOnly = viewOnly;
 	}
 	
 	public TemplateDescriptor() {
@@ -47,6 +49,10 @@ public class TemplateDescriptor {
 	public void setCompatibilities(List<ConfigurationDescriptor> compatibilities) {
 		this.compatibilities = compatibilities;
 	}
-	
-	
+	public boolean isViewOnly() {
+		return viewOnly;
+	}
+	public void setViewOnly(boolean viewOnly) {
+		this.viewOnly = viewOnly;
+	}
 }

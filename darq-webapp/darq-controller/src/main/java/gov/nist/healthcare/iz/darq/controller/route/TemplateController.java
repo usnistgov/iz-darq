@@ -2,8 +2,9 @@ package gov.nist.healthcare.iz.darq.controller.route;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import gov.nist.healthcare.iz.darq.controller.exception.NotFoundException;
+import gov.nist.healthcare.iz.darq.controller.exception.OperationFailureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.auth.service.AccountService;
 import gov.nist.healthcare.iz.darq.analyzer.domain.ReportTemplate;
-import gov.nist.healthcare.iz.darq.controller.domain.OpAck;
-import gov.nist.healthcare.iz.darq.controller.domain.OpAck.AckStatus;
+import gov.nist.healthcare.domain.OpAck;
+import gov.nist.healthcare.domain.OpAck.AckStatus;
 import gov.nist.healthcare.iz.darq.controller.domain.TemplateDescriptor;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
 import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
@@ -27,7 +28,7 @@ import gov.nist.healthcare.iz.darq.service.utils.CodeSetService;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/template")
 public class TemplateController {
 
 	@Autowired
@@ -42,35 +43,116 @@ public class TemplateController {
 	private ADFMetaDataRepository repo;
 	@Autowired
 	private CodeSetService codeSet;
-	
-    @RequestMapping(value = "/template", method = RequestMethod.GET)
+
+	// Get All Accessible Report Templates
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     public List<TemplateDescriptor> all() {
 		Account a = this.accountService.getCurrentUser();
-		List<ReportTemplate> templates = templateRepo.findByOwner(a.getUsername());
+		List<ReportTemplate> templates = templateRepo.findAccessible(a.getUsername());
 		List<TemplateDescriptor> result = new ArrayList<>();
 		List<DigestConfiguration> configurations = this.confRepo.findAccessible(a.getUsername());
 		for(ReportTemplate rt : templates){
-			result.add(new TemplateDescriptor(rt.getId(), rt.getName(), rt.getOwner(), this.configService.compatibilities(rt.getConfiguration(), configurations)));
+			result.add(
+					new TemplateDescriptor(
+							rt.getId(),
+							rt.getName(),
+							rt.getOwner(),
+							this.configService.compatibilities(rt.getConfiguration(), configurations, a.getUsername()),
+							!a.getUsername().equals(rt.getOwner())
+					)
+			);
 		}
 		return result;
     }
-    
-	@RequestMapping(value="/template", method=RequestMethod.POST)
+
+	//  Save Report Template (Owned and not Locked or New)
+	@RequestMapping(value="/", method=RequestMethod.POST)
 	@ResponseBody
-	public OpAck create(@RequestBody ReportTemplate template, final HttpServletRequest request) throws Exception{
+	public OpAck<ReportTemplate> create(@RequestBody ReportTemplate template) throws OperationFailureException {
 		Account a = this.accountService.getCurrentUser();
 		if(template.getId() == null || template.getId().isEmpty()){
 			template.setId(null);
 			template.setOwner(a.getUsername());
+		} else {
+			ReportTemplate existing = this.templateRepo.findByIdAndOwner(template.getId(), a.getUsername());
+			if(existing == null) {
+				throw new OperationFailureException("Can't save report template "+template.getId());
+			}
 		}
-		this.templateRepo.save(template);
-		return new OpAck(AckStatus.SUCCESS, template.getId(), "upload");
+		ReportTemplate saved = this.templateRepo.save(template);
+		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Saved", saved, "report-template-save");
 	}
-	
-	@RequestMapping(value="/template/codesets/{id}", method=RequestMethod.GET)
+
+	//  Get Report Template by Id (Owned or Published [viewOnly])
+	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public List<String> codeset(@PathVariable("id") String id, final HttpServletResponse rsp) throws Exception {
+	public ReportTemplate get(@PathVariable("id") String id) throws NotFoundException {
+		Account a = this.accountService.getCurrentUser();
+		ReportTemplate template = templateRepo.findOne(id);
+		if(template == null || (!(template.getOwner().equals(a.getUsername()) && !template.isPublished()))){
+			throw new NotFoundException("Report Template "+id+" Not Found");
+		}
+		else {
+			template.setViewOnly(!a.getUsername().equals(template.getOwner()));
+			return template;
+		}
+	}
+
+	//  Clone Report Template by Id (Owned or Published)
+	@RequestMapping(value="/{id}/clone", method=RequestMethod.GET)
+	@ResponseBody
+	public OpAck<ReportTemplate> clone(@PathVariable("id") String id) throws NotFoundException {
+		Account a = this.accountService.getCurrentUser();
+		ReportTemplate template = templateRepo.findOne(id);
+		if(template == null || (!(template.getOwner().equals(a.getUsername()) && !template.isPublished()))){
+			throw new NotFoundException("Report Template "+id+" Not Found");
+		}
+		else {
+			template.setId(null);
+			template.setName("[Clone] "+template.getName());
+			template.setOwner(a.getUsername());
+			template.setPublished(false);
+			ReportTemplate saved = this.templateRepo.save(template);
+			return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Cloned", saved, "report-template-clone");
+		}
+	}
+
+	//  Delete Report Template by Id (Owned)
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+	@ResponseBody
+	public OpAck<ReportTemplate> delete(@PathVariable("id") String id) throws NotFoundException {
+		Account a = this.accountService.getCurrentUser();
+		ReportTemplate x = templateRepo.findByIdAndOwner(id, a.getUsername());
+		if(x != null){
+			this.templateRepo.delete(x);
+			return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Deleted", null,"report-template-delete");
+		}
+		else {
+			throw new NotFoundException("Report Template "+id+" Not Found");
+		}
+	}
+
+	//  Publish Report Template Owned
+	@RequestMapping(value="/{id}/publish", method=RequestMethod.GET)
+	@ResponseBody
+	public OpAck<ReportTemplate> publish(@PathVariable("id") String id) throws NotFoundException {
+		Account a = this.accountService.getCurrentUser();
+		ReportTemplate template = this.templateRepo.findByIdAndOwner(id, a.getUsername());
+		if(template != null){
+			template.setPublished(true);
+			ReportTemplate saved = this.templateRepo.save(template);
+			return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Published", saved,"report-template-publish");
+		}
+		else {
+			throw new NotFoundException("Report Template "+id+" Not Found");
+		}
+	}
+
+	// Get Code Set
+	@RequestMapping(value="/codesets/{id}", method=RequestMethod.GET)
+	@ResponseBody
+	public List<String> codeset(@PathVariable("id") String id) throws IllegalAccessException {
 		if(id.equals("patient")){
 			return codeSet.patientCodes();
 		}
@@ -78,39 +160,12 @@ public class TemplateController {
 			return codeSet.vaccinationCodes();
 		}
 	}
-	
-	@RequestMapping(value="/template/{id}", method=RequestMethod.GET)
+
+
+	// Get Accessible Templates Compatible with ADF by Id
+	@RequestMapping(value="/for/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public ReportTemplate get(@PathVariable("id") String id, final HttpServletResponse rsp) throws Exception {
-		Account a = this.accountService.getCurrentUser();
-		ReportTemplate template = templateRepo.findOne(id);
-		if(template == null || !(template.getOwner().equals(a.getUsername()) || template.isPublished())){
-			rsp.sendError(404, "Template "+id+" Not Found");
-			return null;
-		}
-		else {
-			template.setVonly(!a.getUsername().equals(template.getOwner()));
-			return template;
-		}
-	}
-	
-	@RequestMapping(value="/template/{id}", method=RequestMethod.DELETE)
-	@ResponseBody
-	public OpAck delete(@PathVariable("id") String id, final HttpServletRequest request) throws Exception {
-		Account a = this.accountService.getCurrentUser();
-		ReportTemplate x = templateRepo.findByIdAndOwner(id, a.getUsername());
-		if(x != null){
-			this.templateRepo.delete(x);
-			return new OpAck(AckStatus.SUCCESS, "", "config-delete");
-		}
-		else {
-			return new OpAck(AckStatus.FAILURE, "Not Found", "config-delete");
-		}
-	}
-	
-	@RequestMapping(value="/template/for/{id}", method=RequestMethod.GET)
-	@ResponseBody
-	public List<TemplateDescriptor> template(@PathVariable("id") String id, final HttpServletRequest request) throws Exception {
+	public List<TemplateDescriptor> template(@PathVariable("id") String id) {
 		Account a = this.accountService.getCurrentUser();
 		ADFMetaData md = repo.findByIdAndOwner(id, a.getUsername());
 		List<TemplateDescriptor> result = new ArrayList<>();
@@ -118,7 +173,15 @@ public class TemplateController {
 			List<ReportTemplate> templates = this.templateRepo.findAccessible(a.getUsername());
 			for(ReportTemplate template : templates){
 				if(this.configService.compatible(md.getConfiguration(), template.getConfiguration())){
-					result.add(new TemplateDescriptor(template.getId(), template.getName(), template.getName(), null));
+					result.add(
+							new TemplateDescriptor(
+									template.getId(),
+									template.getName(),
+									template.getName(),
+									null,
+									!a.getUsername().equals(template.getOwner())
+							)
+					);
 				}
 			}
 		}

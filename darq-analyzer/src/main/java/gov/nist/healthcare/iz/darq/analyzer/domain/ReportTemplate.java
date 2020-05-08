@@ -19,7 +19,7 @@ public class ReportTemplate {
 	ConfigurationPayload configuration;
 	String owner;
 	@Transient
-	boolean vonly;
+	boolean viewOnly;
 	boolean published;
 	
 	public List<ReportSection> getSections() {
@@ -70,12 +70,12 @@ public class ReportTemplate {
 		this.owner = owner;
 	}
 
-	public boolean isVonly() {
-		return vonly;
+	public boolean isViewOnly() {
+		return viewOnly;
 	}
 
-	public void setVonly(boolean vonly) {
-		this.vonly = vonly;
+	public void setViewOnly(boolean viewOnly) {
+		this.viewOnly = viewOnly;
 	}
 
 	public boolean isPublished() {

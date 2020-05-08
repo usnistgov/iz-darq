@@ -5,6 +5,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import gov.nist.healthcare.auth.domain.User;
+import gov.nist.healthcare.domain.OpAck;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
@@ -27,9 +29,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
 	@Override
 	public final void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws JsonGenerationException, JsonMappingException, IOException {
-		
-        response.setStatus(HttpServletResponse.SC_OK);
-        
+
         String message = "";
         if (e instanceof BadCredentialsException) {
 			message = "Invalid username or password";
@@ -45,9 +45,10 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		} else {
 			message = e.getLocalizedMessage();
 		}
-        LoginResponse payload = new LoginResponse(false, message, null);
+        OpAck<User> payload = new OpAck<User>(OpAck.AckStatus.FAILED, message, null, "login");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setStatus(400);
         mapper.writeValue(response.getWriter(), payload);           
 	}
 

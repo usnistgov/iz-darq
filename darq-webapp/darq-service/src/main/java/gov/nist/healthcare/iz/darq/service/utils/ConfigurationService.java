@@ -8,7 +8,8 @@ import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 
 public interface ConfigurationService {
 
-	public List<ConfigurationDescriptor> compatibilities(ConfigurationPayload payload, List<DigestConfiguration> configurations);
-	public boolean compatible(ConfigurationPayload master, ConfigurationPayload slave);
-	public ConfigurationDescriptor extract(DigestConfiguration config);
+	List<ConfigurationDescriptor> compatibilities(ConfigurationPayload payload, List<DigestConfiguration> configurations, String user);
+	boolean compatible(ConfigurationPayload master, ConfigurationPayload slave);
+	ConfigurationDescriptor extract(DigestConfiguration config, String user);
+	boolean isViewOnlyForUser(DigestConfiguration config, String user);
 }

@@ -1,7 +1,7 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +21,8 @@ import gov.nist.healthcare.auth.service.AccountService;
 import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
 import gov.nist.healthcare.iz.darq.adf.service.ADFStoreUploadHandler;
 import gov.nist.healthcare.iz.darq.controller.domain.ADFDescriptor;
-import gov.nist.healthcare.iz.darq.controller.domain.OpAck;
-import gov.nist.healthcare.iz.darq.controller.domain.OpAck.AckStatus;
+import gov.nist.healthcare.domain.OpAck;
+import gov.nist.healthcare.domain.OpAck.AckStatus;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
 import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
@@ -55,7 +55,7 @@ public class ADFController {
 		long size = 0;
 		for(Part p : request.getParts()){
 			if(p.getName().equals("name")){
-				name = IOUtils.toString(p.getInputStream(), Charset.forName("UTF-8")); 
+				name = IOUtils.toString(p.getInputStream(), StandardCharsets.UTF_8);
 			}
 			if(p.getName().equals("file")){
 				stream = p.getInputStream();
@@ -63,7 +63,7 @@ public class ADFController {
 			}
 		}
 		uploadHandler.handle(name, stream, a.getUsername(), size);
-		return new OpAck(AckStatus.SUCCESS, "ADF Uploaded", "upload");
+		return new OpAck(AckStatus.SUCCESS, "ADF Uploaded", null, "upload");
 	}
 	
 	@RequestMapping(value="/adf", method=RequestMethod.GET)
@@ -74,7 +74,7 @@ public class ADFController {
 		List<ADFDescriptor> result = new ArrayList<>();
 		List<DigestConfiguration> configurations = this.confRepo.findAccessible(a.getUsername());
 		for(ADFMetaData md : adf){
-			result.add(new ADFDescriptor(md, this.configService.compatibilities(md.getConfiguration(), configurations)));
+			result.add(new ADFDescriptor(md, this.configService.compatibilities(md.getConfiguration(), configurations, a.getUsername())));
 		}
 		return result;
 	}
@@ -91,7 +91,7 @@ public class ADFController {
 	public OpAck delete(@PathVariable("id") String id, final HttpServletRequest request) throws Exception {
 		Account a = this.accountService.getCurrentUser();
 		boolean x = storage.delete(id, a.getUsername());
-		return new OpAck(x ? AckStatus.SUCCESS : AckStatus.FAILURE, "", "adf-delete");
+		return new OpAck(x ? AckStatus.SUCCESS : AckStatus.FAILED, "", null, "adf-delete");
 	}
 
 }

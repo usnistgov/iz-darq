@@ -15,7 +15,8 @@
 			<a  *ngIf="logged()" class="nav-item nav-link" [routerLink]="[ 'report-templates' ]"  routerLinkActive="active">Report Templates</a>
 			<a class="nav-item nav-link" [routerLink]="[ 'release-notes' ]"  routerLinkActive="active">Release Note</a>
 			<a class="nav-item nav-link" [routerLink]="[ 'issues' ]"  routerLinkActive="active">Issues</a>
-			<a class="nav-item nav-link" [routerLink]="[ 'about' ]"  routerLinkActive="active">About</a>
+      <a class="nav-item nav-link" [routerLink]="[ 'about' ]"  routerLinkActive="active">About</a>
+      <a class="nav-item nav-link" [routerLink]="[ 'account' ]"  routerLinkActive="active">Account</a>
 		</div>
 		<div fxFlex="20"  fxLayoutAlign="end center">
 			<div *ngIf="!logged()">

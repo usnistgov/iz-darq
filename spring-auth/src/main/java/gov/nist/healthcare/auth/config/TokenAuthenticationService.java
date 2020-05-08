@@ -1,6 +1,8 @@
 package gov.nist.healthcare.auth.config;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -9,7 +11,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import gov.nist.healthcare.auth.domain.Privilege;
+import gov.nist.healthcare.auth.service.CryptoKey;
+import gov.nist.healthcare.domain.OpAck;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
@@ -26,41 +32,40 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class TokenAuthenticationService {
-	
-	
-	final int EXPIRATIONTIME = 3600; // 1 hour
-	static final String SECRET = "B2(<Bx@2!(Da@~g@:)y9J]xfukGf=,bFs:Mfrgwz";
+
+	@Value( "${token.expiration.seconds}" )
+	int DURATION;
+	@Autowired
+	private CryptoKey keys;
 	@Autowired
 	private ObjectMapper objectMapper;
 	@Autowired
 	private AccountService accountService;
 
-	public void addAuthentication(HttpServletResponse res, String username) throws IOException {
+	public void addAuthentication(HttpServletResponse res, String username) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
 		Account account = accountService.getAccountByUsername(username);
 
 		Claims claims = Jwts.claims();
 		claims.put("roles", account
 							.getPrivileges()
 							.stream()
-							.map((x)->{
-								return x.getAuthority();
-							})
+							.map(Privilege::getAuthority)
 							.collect(Collectors.toList()));
+
 		String JWT = Jwts.builder()
 					.setClaims(claims).setSubject(username)
-					.setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME * 1000))
-					.signWith(SignatureAlgorithm.HS256, SECRET).compact();
+					.setExpiration(new Date(System.currentTimeMillis() + DURATION * 1000))
+					.signWith(SignatureAlgorithm.RS256, keys.getPrivateKey()).compact();
 
 		//-- Create Cookie
 		Cookie authCookie = new Cookie("authCookie", JWT);
-		authCookie.setPath("/api");
-		authCookie.setMaxAge(EXPIRATIONTIME);
+		authCookie.setPath("/");
+		authCookie.setMaxAge(DURATION);
 		authCookie.setHttpOnly(true);
 
 		
 		//-- Create Payload
-		LoginResponse loginResponse = new LoginResponse(true, "welcome", new User(account.getId(), account.getUsername(), new ArrayList<>(account.getPrivileges())));
-		
+		OpAck<User> loginResponse = new OpAck<>(OpAck.AckStatus.SUCCESS, "Login Success", new User(account.getId(), account.getUsername(), new ArrayList<>(account.getPrivileges())), "login");
 				
 		//-- Create response
 		res.setContentType("application/json");
@@ -69,10 +74,14 @@ public class TokenAuthenticationService {
 
 	}
 
-	public UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+	public UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
 		Cookie token = WebUtils.getCookie(request,"authCookie");
 		if (token != null && token.getValue() != null && !token.getValue().isEmpty()) {
-			String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token.getValue()).getBody().getSubject();
+			String user = Jwts.parser()
+					.setSigningKey(keys.getPublicKey())
+					.parseClaimsJws(token.getValue())
+					.getBody()
+					.getSubject();
 			Account userDetails = accountService.getAccountByUsername(user);
 			return userDetails != null ? new UsernamePasswordAuthenticationToken(userDetails, token.getValue(), userDetails.getPrivileges()) : null;
 		}

@@ -3,7 +3,9 @@ package gov.nist.healthcare.auth.service.impl;
 import java.util.HashSet;
 import java.util.Set;
 
+import gov.nist.healthcare.auth.domain.PasswordChange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -63,6 +65,21 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
+	public Account changePassword(PasswordChange change) throws BadCredentialsException, UsernameNotFoundException {
+		Account user = this.getAccountByUsername(change.user);
+		if(user != null) {
+			if(this.encoder.matches(change.password, user.getPassword())) {
+				user.setPassword(this.encoder.encode(change.newPassword));
+				return user;
+			} else {
+				throw new BadCredentialsException("Incorrect password");
+			}
+		} else {
+			throw new UsernameNotFoundException("Username not found "+change.user);
+		}
+	}
+
+	@Override
 	public void deleteAll() {
 
 		accountRepository.deleteAll();
@@ -86,6 +103,11 @@ public class AccountServiceImpl implements AccountService {
 			this.createTester(account);
 		}
 		return null;
+	}
+
+	@Override
+	public Account save(Account account) {
+		return this.accountRepository.save(account);
 	}
 
 	@Override

@@ -34,8 +34,8 @@ import gov.nist.healthcare.iz.darq.digest.domain.EncryptedADF;
 public class CryptoUtilsImpl implements CryptoUtils {
 	
 	@Value("#{environment.DARQ_KEY}")
-	private String PRIVATE_KEY;
-	private ObjectMapper mapper = new ObjectMapper(new BsonFactory());
+	private String CERTS;
+	private final ObjectMapper mapper = new ObjectMapper(new BsonFactory());
 
 	@Override
 	public byte[] encrypt(ADFile file) throws Exception {
@@ -49,7 +49,7 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	    
 	    //------------------ ENCRYPT KEY -----------------
 	    final Cipher cipher = Cipher.getInstance("RSA");
-	    cipher.init(Cipher.ENCRYPT_MODE, pub());
+	    cipher.init(Cipher.ENCRYPT_MODE, publicKey());
 	    byte[] encryptedKey = cipher.doFinal(aesKey.getEncoded());
 	    
 	    return serialize(EncryptedADF.class, new EncryptedADF(encryptedKey, encryptedContent));
@@ -61,7 +61,7 @@ public class CryptoUtilsImpl implements CryptoUtils {
 		
 		//----------------- DECRYPT AES ------------------
 		final Cipher cipher = Cipher.getInstance("RSA");
-	    cipher.init(Cipher.DECRYPT_MODE, priv());
+	    cipher.init(Cipher.DECRYPT_MODE, privateKey());
 	    byte[] decryptedKey = cipher.doFinal(encryptedADF.getKey());
 	    
 		//----------------- DECRYPT FILE -----------------
@@ -73,15 +73,15 @@ public class CryptoUtilsImpl implements CryptoUtils {
 		return deserialize(ADFile.class, decryptedBytes);
 	}
 	
-	private PublicKey pub() throws FileNotFoundException, IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+	public PublicKey publicKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		byte[] cert_bytes = IOUtils.toByteArray(CryptoUtilsImpl.class.getResourceAsStream("/certificate.pub"));
 	    X509EncodedKeySpec ks = new X509EncodedKeySpec(cert_bytes);
 	    KeyFactory kf = KeyFactory.getInstance("RSA");
 	    return kf.generatePublic(ks);
 	}
-	
-	private PrivateKey priv() throws FileNotFoundException, IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-		byte[] bytes = IOUtils.toByteArray(new FileInputStream(PRIVATE_KEY+"/certificate.key"));
+
+	public PrivateKey privateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+		byte[] bytes = IOUtils.toByteArray(new FileInputStream(CERTS+"/certificate.key"));
 		PKCS8EncodedKeySpec ks = new PKCS8EncodedKeySpec(bytes);
 		KeyFactory kf = KeyFactory.getInstance("RSA");
 		return kf.generatePrivate(ks);
@@ -94,13 +94,13 @@ public class CryptoUtilsImpl implements CryptoUtils {
 		return new SecretKeySpec(skey.getEncoded(), "AES");
 	}
 	
-	private <T> byte[] serialize(Class<T> type, T adf) throws JsonGenerationException, JsonMappingException, IOException {
+	private <T> byte[] serialize(Class<T> type, T adf) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		mapper.writeValue(baos, adf);
 		return baos.toByteArray();
 	}
 	
-	private <T> T deserialize(Class<T> type, byte[] bytes) throws JsonGenerationException, JsonMappingException, IOException {
+	private <T> T deserialize(Class<T> type, byte[] bytes) throws IOException {
 		return mapper.readValue(bytes, type);
 	}
 

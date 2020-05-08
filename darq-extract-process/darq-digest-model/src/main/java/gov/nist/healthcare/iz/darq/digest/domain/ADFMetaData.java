@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class ADFMetaData {
@@ -92,4 +93,5 @@ public class ADFMetaData {
 	public void setKeyHash(String keyHash) {
 		this.keyHash = keyHash;
 	}
+
 }

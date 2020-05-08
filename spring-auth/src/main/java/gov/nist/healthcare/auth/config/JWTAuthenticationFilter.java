@@ -1,6 +1,8 @@
 package gov.nist.healthcare.auth.config;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -22,7 +24,12 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-		UsernamePasswordAuthenticationToken authentication = tokenService.getAuthentication((HttpServletRequest) request);
+		UsernamePasswordAuthenticationToken authentication = null;
+		try {
+			authentication = tokenService.getAuthentication((HttpServletRequest) request);
+		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		filterChain.doFilter(request, response);
 	}

@@ -1,11 +1,14 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
 
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import gov.nist.healthcare.iz.darq.controller.exception.NotFoundException;
+import gov.nist.healthcare.iz.darq.controller.exception.OperationFailureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,15 +21,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.auth.service.AccountService;
-import gov.nist.healthcare.iz.darq.controller.domain.OpAck;
-import gov.nist.healthcare.iz.darq.controller.domain.OpAck.AckStatus;
+import gov.nist.healthcare.domain.OpAck;
+import gov.nist.healthcare.domain.OpAck.AckStatus;
 import gov.nist.healthcare.iz.darq.model.ConfigurationDescriptor;
 import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/configuration")
 public class ConfigurationController {
 
 	@Autowired
@@ -37,35 +40,104 @@ public class ConfigurationController {
 	private DigestConfigurationRepository confRepo;
 	@Autowired
 	private ObjectMapper mapper;
-	
-    @RequestMapping(value = "/configuration", method = RequestMethod.GET)
+
+	//  Get All Accessible Configuration (Descriptor)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     public List<ConfigurationDescriptor> all() {
     	Account a = this.accountService.getCurrentUser();
     	return confRepo.findAccessible(a.getUsername()).stream()
-    	.map(x -> {
-    		return this.configService.extract(x);
-    	})
+    	.map(x -> this.configService.extract(x, a.getUsername()))
     	.collect(Collectors.toList());
     }
-    
-	@RequestMapping(value="/configuration", method=RequestMethod.POST)
+
+	//  Get Configuration by Id (Owned or Published [viewOnly])
+	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public OpAck create(@RequestBody DigestConfiguration config, final HttpServletRequest request) throws Exception{
+	public DigestConfiguration get(@PathVariable("id") String id) throws NotFoundException {
+		Account a = this.accountService.getCurrentUser();
+		DigestConfiguration conf = confRepo.findOne(id);
+		if(conf == null){
+			throw new NotFoundException("Configuration "+id+" Not Found");
+		}
+		else if(!(conf.getOwner().equals(a.getUsername())) && !conf.isPublished()) {
+			throw new NotFoundException("Configuration "+id+" Not Found");
+		}
+		else {
+			conf.setViewOnly(!a.getUsername().equals(conf.getOwner()) || conf.isLocked());
+			return conf;
+		}
+	}
+
+	//  Clone Report Template by Id (Owned or Published)
+	@RequestMapping(value="/{id}/clone", method=RequestMethod.POST)
+	@ResponseBody
+	public OpAck<DigestConfiguration> clone(@PathVariable("id") String id, final HttpServletResponse rsp) throws Exception {
+		Account a = this.accountService.getCurrentUser();
+		DigestConfiguration conf = confRepo.findOne(id);
+		if(conf == null){
+			throw new NotFoundException("Configuration "+id+" Not Found");
+		}
+		else if(!(conf.getOwner().equals(a.getUsername())) && !conf.isPublished()) {
+			throw new NotFoundException("Configuration "+id+" Not Found");
+		}
+		else {
+			conf.setId(null);
+			conf.setName("[Clone] "+conf.getName());
+			conf.setOwner(a.getUsername());
+			conf.setPublished(false);
+			conf.setLocked(false);
+			DigestConfiguration saved = this.confRepo.save(conf);
+			conf.setViewOnly(!a.getUsername().equals(conf.getOwner()) || conf.isLocked());
+			return new OpAck<>(AckStatus.SUCCESS, "Configuration Successfully Cloned", saved, "config-clone");
+		}
+	}
+
+
+	//  Delete Configuration by Id (Owned)
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+	@ResponseBody
+	public OpAck<DigestConfiguration> delete(@PathVariable("id") String id) throws NotFoundException {
+		Account a = this.accountService.getCurrentUser();
+		DigestConfiguration x = confRepo.findByOwnerAndId(a.getUsername(), id);
+		if(x != null){
+			this.confRepo.delete(x);
+			return new OpAck<>(AckStatus.SUCCESS, "Configuration Successfully Deleted", null,"config-delete");
+		}
+		else {
+			throw new NotFoundException("Configuration "+id+" Not Found");
+		}
+	}
+
+	//  Save Configuration (Owned and not Locked or New)
+	@RequestMapping(value="/", method=RequestMethod.POST)
+	@ResponseBody
+	public OpAck<DigestConfiguration> create(@RequestBody DigestConfiguration config) throws OperationFailureException {
 		Account a = this.accountService.getCurrentUser();
 		if(config.getId() == null || config.getId().isEmpty()){
 			config.setOwner(a.getUsername());
+		} else {
+			DigestConfiguration existing = this.confRepo.findByOwnerAndId(a.getUsername(), config.getId());
+			if(existing == null) {
+				throw new OperationFailureException("Can't save configuration "+config.getId());
+			}
+
+			if(existing.isLocked()) {
+				throw new OperationFailureException("Configuration "+config.getId()+" is locked");
+			}
 		}
-		this.confRepo.save(config);
-		return new OpAck(AckStatus.SUCCESS, config.getId(), "upload");
+		config.setLastUpdated(new Date());
+		DigestConfiguration saved = this.confRepo.save(config);
+		return new OpAck<>(AckStatus.SUCCESS, "Configuration Successfully Saved", saved,"config-save");
 	}
-	
-	@RequestMapping(value="/configuration/{id}/download", method=RequestMethod.GET)
-	public void download(@PathVariable("id") String id, final HttpServletResponse rsp) throws Exception {
+
+	//  Download Configuration Owned or Published
+	@RequestMapping(value="/{id}/download", method=RequestMethod.GET)
+	public void download(@PathVariable("id") String id, final HttpServletResponse rsp) throws NotFoundException, IOException {
 		Account a = this.accountService.getCurrentUser();
 		DigestConfiguration conf = confRepo.findOne(id);
 		if(conf == null || !(conf.getOwner().equals(a.getUsername()) || conf.isPublished())){
-			rsp.sendError(404, "Configuration "+id+" Not Found");
+			throw new NotFoundException("Configuration "+id+" Not Found");
 		}
 		else {
 			rsp.setContentType("application/json");
@@ -73,34 +145,38 @@ public class ConfigurationController {
 			rsp.getOutputStream().write(mapper.writeValueAsBytes(conf.getPayload()));
 		}
 	}
-	
-	@RequestMapping(value="/configuration/{id}", method=RequestMethod.GET)
+
+	//  Lock Configuration Owned
+	@RequestMapping(value="/{id}/lock/{value}", method=RequestMethod.POST)
 	@ResponseBody
-	public DigestConfiguration get(@PathVariable("id") String id, final HttpServletResponse rsp) throws Exception {
+	public OpAck<DigestConfiguration> lock(@PathVariable("id") String id, @PathVariable("value") boolean value) throws NotFoundException {
 		Account a = this.accountService.getCurrentUser();
-		DigestConfiguration conf = confRepo.findOne(id);
-		if(conf == null || !(conf.getOwner().equals(a.getUsername()) || conf.isPublished())){
-			rsp.sendError(404, "Configuration "+id+" Not Found");
-			return null;
+		DigestConfiguration configuration = confRepo.findByOwnerAndId(a.getUsername(), id);
+		if(configuration != null){
+			configuration.setLocked(value);
+			DigestConfiguration saved = this.confRepo.save(configuration);
+			saved.setViewOnly(!a.getUsername().equals(saved.getOwner()) || saved.isLocked());
+			return new OpAck<>(AckStatus.SUCCESS, "Configuration Successfully " + (value ? "Locked" : "Unlocked") , saved,"config-lock");
 		}
 		else {
-			conf.setVonly(!a.getUsername().equals(conf.getOwner()));
-			return conf;
-		}
-	}
-	
-	@RequestMapping(value="/configuration/{id}", method=RequestMethod.DELETE)
-	@ResponseBody
-	public OpAck delete(@PathVariable("id") String id, final HttpServletRequest request) throws Exception {
-		Account a = this.accountService.getCurrentUser();
-		DigestConfiguration x = confRepo.findByOwnerAndId(a.getUsername(), id);
-		if(x != null){
-			this.confRepo.delete(x);
-			return new OpAck(AckStatus.SUCCESS, "", "config-delete");
-		}
-		else {
-			return new OpAck(AckStatus.FAILURE, "Not Found", "config-delete");
+			throw new NotFoundException("Configuration "+id+" Not Found");
 		}
 	}
 
+	//  Publish Configuration Owned
+	@RequestMapping(value="/{id}/publish", method=RequestMethod.POST)
+	@ResponseBody
+	public OpAck<DigestConfiguration> publish(@PathVariable("id") String id) throws NotFoundException {
+		Account a = this.accountService.getCurrentUser();
+		DigestConfiguration configuration = confRepo.findByOwnerAndId(a.getUsername(), id);
+		if(configuration != null){
+			configuration.setPublished(true);
+			DigestConfiguration saved = this.confRepo.save(configuration);
+			saved.setViewOnly(!a.getUsername().equals(saved.getOwner()) || saved.isLocked());
+			return new OpAck<>(AckStatus.SUCCESS, "Configuration Successfully Published", saved,"config-publish");
+		}
+		else {
+			throw new NotFoundException("Configuration "+id+" Not Found");
+		}
+	}
 }

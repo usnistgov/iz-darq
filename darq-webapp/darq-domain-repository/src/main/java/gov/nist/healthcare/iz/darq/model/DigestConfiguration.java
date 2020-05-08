@@ -15,8 +15,9 @@ public class DigestConfiguration {
 	private ConfigurationPayload payload;
 	private String description;
 	private boolean published;
+	private boolean locked;
 	@Transient
-	private boolean vonly;
+	private boolean viewOnly;
 	
 	public String getId() {
 		return id;
@@ -60,11 +61,16 @@ public class DigestConfiguration {
 	public void setLastUpdated(Date lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
-	public boolean isVonly() {
-		return vonly;
+	public boolean isViewOnly() {
+		return viewOnly;
 	}
-	public void setVonly(boolean vonly) {
-		this.vonly = vonly;
+	public void setViewOnly(boolean viewOnly) {
+		this.viewOnly = viewOnly;
 	}
-	
+	public boolean isLocked() {
+		return locked;
+	}
+	public void setLocked(boolean locked) {
+		this.locked = locked;
+	}
 }

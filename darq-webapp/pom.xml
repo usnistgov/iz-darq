@@ -14,7 +14,8 @@
 		<module>darq-service</module>
 		<module>darq-controller</module>
 		<module>darq-app</module>
-	</modules>
+        <module>darq-common</module>
+    </modules>
 	<dependencies>
 		<dependency>
 			<groupId>gov.nist.healthcare.auth</groupId>

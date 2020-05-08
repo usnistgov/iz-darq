@@ -15,11 +15,11 @@ import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 public class SimpleConfigurationService implements ConfigurationService {
 	
 	@Override
-	public List<ConfigurationDescriptor> compatibilities(ConfigurationPayload payload, List<DigestConfiguration> configurations) {
+	public List<ConfigurationDescriptor> compatibilities(ConfigurationPayload payload, List<DigestConfiguration> configurations, String username) {
 		List<ConfigurationDescriptor> descriptors = new ArrayList<>();
 		for(DigestConfiguration c : configurations){
 			if(this.compatible(payload, c.getPayload())){
-				descriptors.add(this.extract(c));
+				descriptors.add(this.extract(c, username));
 			}
 		}
 		return descriptors;
@@ -56,8 +56,21 @@ public class SimpleConfigurationService implements ConfigurationService {
 	}
 	
 	@Override
-	public ConfigurationDescriptor extract(DigestConfiguration config){
-		return new ConfigurationDescriptor(config.getId(), config.getName(), config.getOwner(), config.getLastUpdated());
+	public ConfigurationDescriptor extract(DigestConfiguration config, String user){
+		return new ConfigurationDescriptor(
+				config.getId(),
+				config.getName(),
+				config.getOwner(),
+				config.getLastUpdated(),
+				config.isLocked(),
+				config.isPublished(),
+				config.getOwner().equals(user),
+				this.isViewOnlyForUser(config, user));
+	}
+
+	@Override
+	public boolean isViewOnlyForUser(DigestConfiguration config, String user) {
+		return !user.equals(config.getOwner()) || config.isLocked();
 	}
 
 }

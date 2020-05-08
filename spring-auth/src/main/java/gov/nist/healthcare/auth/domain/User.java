@@ -7,15 +7,15 @@ public class User {
 	
 	private String id;
 	private String username;
-	private List<String> roles;
+	private List<String> authorities;
 	
 	public User(String id, String username, List<Privilege> privileges) {
 		super();
 		this.id = id;
 		this.username = username;
-		this.roles = new ArrayList<>();
+		this.authorities = new ArrayList<>();
 		for(Privilege p : privileges){
-			this.roles.add(p.getRole());
+			this.authorities.add(p.getRole());
 		}
 	}
 	
@@ -35,11 +35,12 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public List<String> getRoles() {
-		return roles;
+
+	public List<String> getAuthorities() {
+		return authorities;
 	}
-	public void setRoles(List<String> roles) {
-		this.roles = roles;
+
+	public void setAuthorities(List<String> authorities) {
+		this.authorities = authorities;
 	}
-	
 }

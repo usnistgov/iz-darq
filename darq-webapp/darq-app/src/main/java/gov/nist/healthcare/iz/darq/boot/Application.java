@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -16,13 +17,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
@@ -40,8 +45,10 @@ import gov.nist.healthcare.iz.darq.model.FileDownload;
 import gov.nist.healthcare.iz.darq.repository.CVXRepository;
 import gov.nist.healthcare.iz.darq.service.impl.SimpleDownloadService;
 import gov.nist.healthcare.iz.darq.service.utils.DownloadService;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-@SpringBootApplication
+@SpringBootApplication(exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@EnableWebMvc
 @ComponentScan(basePackages = { "gov.nist.healthcare.iz.darq", "gov.nist.healthcare.auth" })
 public class Application extends SpringBootServletInitializer{
 
@@ -49,7 +56,8 @@ public class Application extends SpringBootServletInitializer{
 	private AccountService accountService;
 	@Autowired
 	private CVXRepository cvxRepo;
-
+	@Autowired
+	private PasswordEncoder encoder;
 	
 	@Value("#{environment.DARQ_STORE}")
 	private String ADF_FOLDER;
@@ -58,7 +66,9 @@ public class Application extends SpringBootServletInitializer{
 	@Value("${darq.admin.default}") 
 	private String ADMIN_PASSWORD;
 
-	
+	private static final Logger logger = Logger.getLogger(Application.class);
+
+
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
@@ -81,14 +91,19 @@ public class Application extends SpringBootServletInitializer{
 
 	@PostConstruct
 	public void init() throws IOException, Exception {
-		Account test = new Account();
-		test.setUsername("admin");
-		test.setPassword(ADMIN_PASSWORD);
-
-		if (accountService.getAccountByUsername("admin") == null) {
-			accountService.createAdmin(test);
+		if(ADMIN_PASSWORD != null && !ADMIN_PASSWORD.isEmpty()) {
+			Account admin = accountService.getAccountByUsername("admin");
+			if (admin == null) {
+				Account test = new Account();
+				test.setUsername("admin");
+				test.setPassword(ADMIN_PASSWORD);
+				accountService.createAdmin(test);
+			} else {
+				admin.setPassword(encoder.encode(ADMIN_PASSWORD));
+				accountService.save(admin);
+			}
 		}
-		
+
 		this.createCVX();
 		this.setup();
 	}

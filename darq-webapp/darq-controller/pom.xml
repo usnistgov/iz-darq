@@ -7,7 +7,14 @@
   </parent>
   <artifactId>darq-controller</artifactId>
   <dependencies>
-  	<dependency>
+      <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-webmvc</artifactId>
+          <version>4.3.13.RELEASE</version>
+      </dependency>
+
+      <dependency>
   		<groupId>gov.nist.healthcare.iz</groupId>
   		<artifactId>darq-service</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
