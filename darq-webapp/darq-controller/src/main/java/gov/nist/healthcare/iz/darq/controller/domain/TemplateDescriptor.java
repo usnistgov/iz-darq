@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.controller.domain;
 
+import java.util.Date;
 import java.util.List;
 
 import gov.nist.healthcare.iz.darq.model.ConfigurationDescriptor;
@@ -11,12 +12,23 @@ public class TemplateDescriptor {
 	String owner;
 	List<ConfigurationDescriptor> compatibilities;
 	boolean viewOnly;
+	private boolean owned;
+	private boolean published;
 	
-	public TemplateDescriptor(String id, String name, String owner, List<ConfigurationDescriptor> compatibilities, boolean viewOnly) {
+	public TemplateDescriptor(
+			String id,
+			String name,
+			String owner,
+			List<ConfigurationDescriptor> compatibilities,
+			boolean owned,
+			boolean published,
+			boolean viewOnly) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.owner = owner;
+		this.owned = owned;
+		this.published = published;
 		this.compatibilities = compatibilities;
 		this.viewOnly = viewOnly;
 	}
@@ -49,6 +61,23 @@ public class TemplateDescriptor {
 	public void setCompatibilities(List<ConfigurationDescriptor> compatibilities) {
 		this.compatibilities = compatibilities;
 	}
+
+	public boolean isOwned() {
+		return owned;
+	}
+
+	public void setOwned(boolean owned) {
+		this.owned = owned;
+	}
+
+	public boolean isPublished() {
+		return published;
+	}
+
+	public void setPublished(boolean published) {
+		this.published = published;
+	}
+
 	public boolean isViewOnly() {
 		return viewOnly;
 	}

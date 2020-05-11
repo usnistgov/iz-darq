@@ -45,7 +45,7 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new InvalidFileFormat();
+			throw new InvalidFileFormat("Invalid ADF File Format");
 		}
 	}
 	

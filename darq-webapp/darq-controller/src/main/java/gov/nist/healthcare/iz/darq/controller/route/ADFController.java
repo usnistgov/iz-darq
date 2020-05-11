@@ -8,13 +8,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
+import gov.nist.healthcare.iz.darq.controller.exception.NotFoundException;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.method.P;
+import org.springframework.web.bind.annotation.*;
 
 import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.auth.service.AccountService;
@@ -28,6 +26,8 @@ import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @RestController
 @RequestMapping("/api")
@@ -48,20 +48,13 @@ public class ADFController {
     
 	@RequestMapping(value="/adf/upload", method=RequestMethod.POST)
 	@ResponseBody
-	public OpAck create(final HttpServletRequest request) throws Exception{
+	public OpAck create(
+			@RequestParam("file") MultipartFile file,
+			@RequestParam("name") String name
+	) throws Exception{
 		Account a = this.accountService.getCurrentUser();
-		InputStream stream = null;
-		String name = null;
-		long size = 0;
-		for(Part p : request.getParts()){
-			if(p.getName().equals("name")){
-				name = IOUtils.toString(p.getInputStream(), StandardCharsets.UTF_8);
-			}
-			if(p.getName().equals("file")){
-				stream = p.getInputStream();
-				size = p.getSize();
-			}
-		}
+		InputStream stream = file.getInputStream();
+		long size = file.getSize();
 		uploadHandler.handle(name, stream, a.getUsername(), size);
 		return new OpAck(AckStatus.SUCCESS, "ADF Uploaded", null, "upload");
 	}
@@ -83,15 +76,24 @@ public class ADFController {
 	@ResponseBody
 	public ADFMetaData get(@PathVariable("id") String id, final HttpServletRequest request) throws Exception {
 		Account a = this.accountService.getCurrentUser();
-		return repo.findByIdAndOwner(id, a.getUsername());
+		ADFMetaData adf = repo.findByIdAndOwner(id, a.getUsername());
+		if(adf != null) {
+			return adf;
+		} else {
+			throw new NotFoundException("ADF File "+id+" Not Found");
+		}
 	}
 	
 	@RequestMapping(value="/adf/{id}", method=RequestMethod.DELETE)
 	@ResponseBody
-	public OpAck delete(@PathVariable("id") String id, final HttpServletRequest request) throws Exception {
+	public OpAck<ADFMetaData> delete(@PathVariable("id") String id, final HttpServletRequest request) throws Exception {
 		Account a = this.accountService.getCurrentUser();
-		boolean x = storage.delete(id, a.getUsername());
-		return new OpAck(x ? AckStatus.SUCCESS : AckStatus.FAILED, "", null, "adf-delete");
+		boolean deleted = storage.delete(id, a.getUsername());
+		if(deleted) {
+			return new OpAck<ADFMetaData>(AckStatus.SUCCESS, "File Deleted Successfully", null, "adf-delete");
+		} else {
+			throw new NotFoundException("ADF File "+id+" Not Found");
+		}
 	}
 
 }

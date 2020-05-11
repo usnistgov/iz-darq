@@ -59,6 +59,8 @@ public class TemplateController {
 							rt.getName(),
 							rt.getOwner(),
 							this.configService.compatibilities(rt.getConfiguration(), configurations, a.getUsername()),
+							a.getUsername().equals(rt.getOwner()),
+							rt.isPublished(),
 							!a.getUsername().equals(rt.getOwner())
 					)
 			);
@@ -100,7 +102,7 @@ public class TemplateController {
 	}
 
 	//  Clone Report Template by Id (Owned or Published)
-	@RequestMapping(value="/{id}/clone", method=RequestMethod.GET)
+	@RequestMapping(value="/{id}/clone", method=RequestMethod.POST)
 	@ResponseBody
 	public OpAck<ReportTemplate> clone(@PathVariable("id") String id) throws NotFoundException {
 		Account a = this.accountService.getCurrentUser();
@@ -134,7 +136,7 @@ public class TemplateController {
 	}
 
 	//  Publish Report Template Owned
-	@RequestMapping(value="/{id}/publish", method=RequestMethod.GET)
+	@RequestMapping(value="/{id}/publish", method=RequestMethod.POST)
 	@ResponseBody
 	public OpAck<ReportTemplate> publish(@PathVariable("id") String id) throws NotFoundException {
 		Account a = this.accountService.getCurrentUser();
@@ -142,6 +144,7 @@ public class TemplateController {
 		if(template != null){
 			template.setPublished(true);
 			ReportTemplate saved = this.templateRepo.save(template);
+			saved.setViewOnly(!a.getUsername().equals(saved.getOwner()));
 			return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Published", saved,"report-template-publish");
 		}
 		else {
@@ -179,6 +182,8 @@ public class TemplateController {
 									template.getName(),
 									template.getName(),
 									null,
+									a.getUsername().equals(template.getOwner()),
+									template.isPublished(),
 									!a.getUsername().equals(template.getOwner())
 							)
 					);
