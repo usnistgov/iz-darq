@@ -12,7 +12,7 @@ public interface DigestConfigurationRepository extends MongoRepository<DigestCon
 	DigestConfiguration findByOwnerAndId(String owner, String id);
 	@Query("{ '$or' : [ {'owner' : { $eq: ?0 }}, {'published' : {'$eq' : true }}]}")
 	List<DigestConfiguration> findAccessible(String owner);
-	@Query("{ '$and' : [ { $id : ?0 } , {'$or' : [ {'owner' : { $eq: ?1 }}, {'published' : {'$eq' : true }}] } ] }")
+	@Query("{ '$and' : [ { _id : ?0 } , {'$or' : [ {'owner' : { $eq: ?1 }}, {'published' : {'$eq' : true }}] } ] }")
 	DigestConfiguration findMineOrReadOnly(String id, String owner);
 	
 }

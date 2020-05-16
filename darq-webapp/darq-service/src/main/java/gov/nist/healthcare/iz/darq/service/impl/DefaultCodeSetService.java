@@ -40,7 +40,7 @@ public class DefaultCodeSetService implements CodeSetService {
 		for(Field f : clazz.getFields()){
 			if(SUPPORT.contains(f.getType()) || isDataUnit(f)){
 				
-				String table = f.isAnnotationPresent(Code.class) ? f.getAnnotation(Code.class).value() : "";
+				String table = f.isAnnotationPresent(gov.nist.healthcare.iz.darq.parser.annotation.Field.class) ? f.getAnnotation(gov.nist.healthcare.iz.darq.parser.annotation.Field.class).table() : "";
 
 				if(!isDataUnit(f)){
 					_lc.addAll(codeSets(f.getType()));

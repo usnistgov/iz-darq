@@ -126,9 +126,8 @@ public class AnalysisQuery {
 	public Action take(Tray t){
 		boolean kill = t.getFields()
 				.stream()
-				.map(x -> consider(x))
-				.filter(y -> y.equals(Action.KILL))
-				.findAny().isPresent();
+				.map(this::consider)
+				.anyMatch(y -> y.equals(Action.KILL));
 
 		Action act = kill ? Action.KILL : t.full() ? Action.TAKE : Action.CONTINUE;
 		return act;

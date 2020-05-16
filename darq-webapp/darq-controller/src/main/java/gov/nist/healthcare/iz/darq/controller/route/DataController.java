@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import gov.nist.healthcare.iz.darq.service.utils.CodeSetService;
 import org.apache.commons.io.IOUtils;
 import org.immregistries.mqe.validator.detection.Detection;
 import org.immregistries.mqe.validator.engine.MessageValidator;
@@ -32,7 +33,9 @@ public class DataController {
 	private CVXRepository cvx;
 	@Autowired
 	private DownloadService download;
-	
+	@Autowired
+	private CodeSetService codeSet;
+
     @RequestMapping(value = "/detections", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, DetectionDescriptor> detections() {
@@ -42,8 +45,22 @@ public class DataController {
     	}
         return detections;
     }
-    
-    @RequestMapping(value = "/cvx", method = RequestMethod.GET)
+
+	// Get Code Set
+	@RequestMapping(value="/codesets/{id}", method=RequestMethod.GET)
+	@ResponseBody
+	public List<String> codeset(@PathVariable("id") String id) throws IllegalAccessException {
+		if(id.equals("patient")){
+			return codeSet.patientCodes();
+		}
+		else {
+			return codeSet.vaccinationCodes();
+		}
+	}
+
+
+
+	@RequestMapping(value = "/cvx", method = RequestMethod.GET)
     @ResponseBody
     public List<CVXCode> cvx() {
     	return this.cvx.findAll();

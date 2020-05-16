@@ -3,6 +3,8 @@ package gov.nist.healthcare.iz.darq.controller.route;
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportTemplate;
+import gov.nist.healthcare.iz.darq.controller.domain.ReportTemplateCreate;
 import gov.nist.healthcare.iz.darq.controller.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.controller.exception.OperationFailureException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.auth.service.AccountService;
-import gov.nist.healthcare.iz.darq.analyzer.domain.ReportTemplate;
+//import gov.nist.healthcare.iz.darq.analyzer.domain.ReportTemplate;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.domain.OpAck.AckStatus;
 import gov.nist.healthcare.iz.darq.controller.domain.TemplateDescriptor;
@@ -24,7 +26,6 @@ import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
 import gov.nist.healthcare.iz.darq.repository.TemplateRepository;
-import gov.nist.healthcare.iz.darq.service.utils.CodeSetService;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 
 @RestController
@@ -41,8 +42,6 @@ public class TemplateController {
 	private DigestConfigurationRepository confRepo;
 	@Autowired
 	private ADFMetaDataRepository repo;
-	@Autowired
-	private CodeSetService codeSet;
 
 	// Get All Accessible Report Templates
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -68,10 +67,31 @@ public class TemplateController {
 		return result;
     }
 
+	// Get All Accessible Report Templates
+	@RequestMapping(value = "/{id}/descriptor", method = RequestMethod.GET)
+	@ResponseBody
+	public TemplateDescriptor descriptor(@PathVariable("id") String id) throws NotFoundException {
+		Account a = this.accountService.getCurrentUser();
+		ReportTemplate rt = templateRepo.findMineOrReadOnly(id, a.getUsername());
+		if(rt == null) {
+			throw new NotFoundException("Report Template "+id+" Not Found");
+		}
+		List<DigestConfiguration> configurations = this.confRepo.findAccessible(a.getUsername());
+		return new TemplateDescriptor(
+			rt.getId(),
+			rt.getName(),
+			rt.getOwner(),
+			this.configService.compatibilities(rt.getConfiguration(), configurations, a.getUsername()),
+			a.getUsername().equals(rt.getOwner()),
+			rt.isPublished(),
+			!a.getUsername().equals(rt.getOwner())
+		);
+	}
+
 	//  Save Report Template (Owned and not Locked or New)
 	@RequestMapping(value="/", method=RequestMethod.POST)
 	@ResponseBody
-	public OpAck<ReportTemplate> create(@RequestBody ReportTemplate template) throws OperationFailureException {
+	public OpAck<ReportTemplate> save(@RequestBody ReportTemplate template) throws OperationFailureException {
 		Account a = this.accountService.getCurrentUser();
 		if(template.getId() == null || template.getId().isEmpty()){
 			template.setId(null);
@@ -86,13 +106,34 @@ public class TemplateController {
 		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Saved", saved, "report-template-save");
 	}
 
+	//  Create Report Template With Configuration
+	@RequestMapping(value="/create", method=RequestMethod.POST)
+	@ResponseBody
+	public OpAck<ReportTemplate> create(@RequestBody ReportTemplateCreate create) throws OperationFailureException {
+		Account a = this.accountService.getCurrentUser();
+		ReportTemplate template = new ReportTemplate();
+		template.setId(null);
+		template.setOwner(a.getUsername());
+		template.setName(create.getName());
+
+		DigestConfiguration configuration = this.confRepo.findMineOrReadOnly(create.getConfigurationId(), a.getUsername());
+
+		if(configuration == null){
+			throw new OperationFailureException("Can't use configuration "+configuration.getId());
+		} else {
+			template.setConfiguration(configuration.getPayload());
+			ReportTemplate saved = this.templateRepo.save(template);
+			return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Saved", saved, "report-template-save");
+		}
+	}
+
 	//  Get Report Template by Id (Owned or Published [viewOnly])
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	@ResponseBody
 	public ReportTemplate get(@PathVariable("id") String id) throws NotFoundException {
 		Account a = this.accountService.getCurrentUser();
 		ReportTemplate template = templateRepo.findOne(id);
-		if(template == null || (!(template.getOwner().equals(a.getUsername()) && !template.isPublished()))){
+		if(template == null || (!template.getOwner().equals(a.getUsername()) && !template.isPublished())){
 			throw new NotFoundException("Report Template "+id+" Not Found");
 		}
 		else {
@@ -107,7 +148,7 @@ public class TemplateController {
 	public OpAck<ReportTemplate> clone(@PathVariable("id") String id) throws NotFoundException {
 		Account a = this.accountService.getCurrentUser();
 		ReportTemplate template = templateRepo.findOne(id);
-		if(template == null || (!(template.getOwner().equals(a.getUsername()) && !template.isPublished()))){
+		if(template == null || (!template.getOwner().equals(a.getUsername()) && !template.isPublished())){
 			throw new NotFoundException("Report Template "+id+" Not Found");
 		}
 		else {
@@ -151,19 +192,6 @@ public class TemplateController {
 			throw new NotFoundException("Report Template "+id+" Not Found");
 		}
 	}
-
-	// Get Code Set
-	@RequestMapping(value="/codesets/{id}", method=RequestMethod.GET)
-	@ResponseBody
-	public List<String> codeset(@PathVariable("id") String id) throws IllegalAccessException {
-		if(id.equals("patient")){
-			return codeSet.patientCodes();
-		}
-		else {
-			return codeSet.vaccinationCodes();
-		}
-	}
-
 
 	// Get Accessible Templates Compatible with ADF by Id
 	@RequestMapping(value="/for/{id}", method=RequestMethod.GET)

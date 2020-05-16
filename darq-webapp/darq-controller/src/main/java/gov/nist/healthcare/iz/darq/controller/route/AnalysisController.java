@@ -33,14 +33,14 @@ public class AnalysisController {
     @RequestMapping(value = "/analyze/{tId}/{fId}", method = RequestMethod.GET)
     @ResponseBody
     public AnalysisReport analyze(@PathVariable("tId") String tId, @PathVariable("fId") String fId) throws Exception {
-    	Account a = this.accountService.getCurrentUser();
-    	ADFile file = this.storage.getFile(fId, a.getUsername());
-    	ReportTemplate template = this.templateRepo.findByIdAndOwner(tId, a.getUsername());
-    	if(file != null && template != null){
-    		AnalysisReport report =  this.report.analyse(file, template);
-    		report.setAdfName(this.storage.get(fId, a.getUsername()).getName());
-    		return report;
-    	}
+//    	Account a = this.accountService.getCurrentUser();
+//    	ADFile file = this.storage.getFile(fId, a.getUsername());
+//    	ReportTemplate template = this.templateRepo.findByIdAndOwner(tId, a.getUsername());
+//    	if(file != null && template != null){
+//    		AnalysisReport report =  this.report.analyse(file, template);
+//    		report.setAdfName(this.storage.get(fId, a.getUsername()).getName());
+//    		return report;
+//    	}
     	return null;
     }
     

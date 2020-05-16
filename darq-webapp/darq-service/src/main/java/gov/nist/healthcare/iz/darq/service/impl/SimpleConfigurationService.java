@@ -29,7 +29,9 @@ public class SimpleConfigurationService implements ConfigurationService {
 	public boolean compatible(ConfigurationPayload master, ConfigurationPayload slave) {
 		boolean age_groups = true;
 		boolean detections = true;
-		
+		if(master == null) {
+			return false;
+		}
 		//detections
 		if(master.getDetections() != null && slave.getDetections() != null){
 			for(String d : slave.getDetections()){
