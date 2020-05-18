@@ -1,11 +1,10 @@
-package gov.nist.healthcare.iz.darq.analyzer.domain;
+package gov.nist.healthcare.iz.darq.analyzer.model.analysis;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import gov.nist.healthcare.iz.darq.analyzer.domain.Tray.TrayField;
 import gov.nist.healthcare.iz.darq.digest.domain.Analysis;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
@@ -14,53 +13,7 @@ public class AnalysisQuery {
 	public static enum Action {
 		CONTINUE, TAKE, KILL 
 	}
-	public static class QueryField implements Comparable<QueryField>{
-		private Field f;
-		private String value;
-		private boolean all;
-		
-		public QueryField(Field f, String value) {
-			super();
-			this.f = f;
-			this.value = value;
-		}
-		public QueryField(Field f) {
-			super();
-			this.f = f;
-			this.all = true;
-		}
 
-		public Field getF() {
-			return f;
-		}
-		public void setF(Field f) {
-			this.f = f;
-		}
-		public String getValue() {
-			return value;
-		}
-		public void setValue(String value) {
-			this.value = value;
-		}
-		public boolean isAll() {
-			return all;
-		}
-		public void setAll(boolean all) {
-			this.all = all;
-		}
-		
-		
-		
-		@Override
-		public String toString() {
-			return "QueryField [f=" + f + ", value=" + value + ", all=" + all + "]";
-		}
-		@Override
-		public int compareTo(QueryField o) {
-			return all && o.all ? 0 : all && !o.all ? 1 : !all && o.all ? -1 : 0;
-		}
-	}
-	
 	Set<QueryField> fields;
 	_CG compatibilityGroup;
 	
@@ -74,7 +27,7 @@ public class AnalysisQuery {
 	public Action consider(Field f, String value){
 		QueryField queryField = this.get(f);
 		if(queryField != null){
-			 return (queryField.isAll() || queryField.getValue().equals(value)) ? Action.TAKE : Action.KILL;
+			 return (queryField.isAll() || queryField.getValues().contains(value)) ? Action.TAKE : Action.KILL;
 		}
 		else {
 			return Action.CONTINUE;
@@ -86,7 +39,7 @@ public class AnalysisQuery {
 	}
 
 	public QueryField get(Field f){
-		return this.fields.stream().filter(x -> x.getF().equals(f)).findFirst().orElseGet(() -> null);
+		return this.fields.stream().filter(x -> x.getF().equals(f)).findFirst().orElse(null);
 	}
 	
 	public static boolean validateQuery(Set<QueryField> fields,Analysis type){
@@ -129,8 +82,7 @@ public class AnalysisQuery {
 				.map(this::consider)
 				.anyMatch(y -> y.equals(Action.KILL));
 
-		Action act = kill ? Action.KILL : t.full() ? Action.TAKE : Action.CONTINUE;
-		return act;
+		return kill ? Action.KILL : t.full() ? Action.TAKE : Action.CONTINUE;
 	}
 	
 }

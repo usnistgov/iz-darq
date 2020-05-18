@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.analyzer.domain;
+package gov.nist.healthcare.iz.darq.analyzer.model.analysis;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -10,66 +10,15 @@ import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
 
 public abstract class Tray implements Cloneable {
-	public static class TrayField {
-		Field field;
-		String v;
-		
-		public TrayField(Field field, String v) {
-			super();
-			this.field = field;
-			this.v = v;
-		}
-		public Field getField() {
-			return field;
-		}
-		public void setField(Field field) {
-			this.field = field;
-		}
-		public String getV() {
-			return v;
-		}
-		public void setV(String v) {
-			this.v = v;
-		}
-		
 
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((field == null) ? 0 : field.hashCode());
-			return result;
-		}
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			TrayField other = (TrayField) obj;
-			if (field != other.field)
-				return false;
-			return true;
-		}
-		@Override
-		public String toString() {
-			return "TrayField [field=" + field + ", v=" + v + "]";
-		}
-		
-	}
-	
 	public static class VaxTray extends Tray {
 		
 		public VaxTray() {
 			super();
-			// TODO Auto-generated constructor stub
 		}
 
 		public VaxTray(Set<TrayField> fields, int count, int weigth) {
 			super(fields, count, weigth);
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
@@ -92,12 +41,10 @@ public abstract class Tray implements Cloneable {
 		
 		public VaxDetectionTray() {
 			super();
-			// TODO Auto-generated constructor stub
 		}
 
 		public VaxDetectionTray(Set<TrayField> fields, int count, int weigth) {
 			super(fields, count, weigth);
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
@@ -120,12 +67,10 @@ public abstract class Tray implements Cloneable {
 		
 		public VaxCodeTray() {
 			super();
-			// TODO Auto-generated constructor stub
 		}
 
 		public VaxCodeTray(Set<TrayField> fields, int count, int weigth) {
 			super(fields, count, weigth);
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
@@ -148,12 +93,10 @@ public abstract class Tray implements Cloneable {
 		
 		public PatCodeTray() {
 			super();
-			// TODO Auto-generated constructor stub
 		}
 
 		public PatCodeTray(Set<TrayField> fields, int count, int weigth) {
 			super(fields, count, weigth);
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
@@ -176,12 +119,10 @@ public abstract class Tray implements Cloneable {
 		
 		public PatDetectionTray() {
 			super();
-			// TODO Auto-generated constructor stub
 		}
 
 		public PatDetectionTray(Set<TrayField> fields, int count, int weigth) {
 			super(fields, count, weigth);
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
@@ -220,11 +161,8 @@ public abstract class Tray implements Cloneable {
 	public abstract _CG compatibilityGroup();
 	public abstract Tray cloneTray();
 	public boolean has(List<Field> fs){
-		return fields.stream().map(x -> {
-			return x.field;
-		})
+		return fields.stream().map(TrayField::getField)
 		.collect(Collectors.toSet()).containsAll(new HashSet<>(fs));
-		
 	}
 	
 	public void clean(){
@@ -254,15 +192,13 @@ public abstract class Tray implements Cloneable {
 	
 	public void add(Field f, String v){
 		TrayField tf = new TrayField(f,v);
-		if(this.fields.contains(tf))
-			this.fields.remove(tf);
+		this.fields.remove(tf);
 		this.fields.add(tf);
 	}
 	
 	public void remove(Field f){
 		TrayField tf = new TrayField(f,"");
-		if(this.fields.contains(tf))
-			this.fields.remove(tf);
+		this.fields.remove(tf);
 	}
 	
 	public Set<TrayField> getFields() {
@@ -278,8 +214,8 @@ public abstract class Tray implements Cloneable {
 		this.count = count;
 	}
 	public String get(Field f){
-		return fields.stream().filter(tf -> tf.field.equals(f)).findFirst().map(x -> {
-			return x.v;
+		return fields.stream().filter(tf -> tf.getField().equals(f)).findFirst().map(x -> {
+			return x.getV();
 		}).orElseGet(() -> "");
 	}
 	@Override

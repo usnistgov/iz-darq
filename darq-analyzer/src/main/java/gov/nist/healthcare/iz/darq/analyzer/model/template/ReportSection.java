@@ -10,8 +10,8 @@ public class ReportSection {
     int position;
     String header;
     String text;
-    List<DataViewQuery> data;
-    List<ReportSection> children;
+    List<? extends DataViewQuery> data;
+    List<? extends ReportSection> children;
 
     public ReportSection() {
         this.data = new ArrayList<>();
@@ -42,19 +42,19 @@ public class ReportSection {
         this.text = text;
     }
 
-    public List<DataViewQuery> getData() {
+    public List<? extends DataViewQuery> getData() {
         return data;
     }
 
-    public void setData(List<DataViewQuery> data) {
+    public void setData(List<? extends DataViewQuery> data) {
         this.data = data;
     }
 
-    public List<ReportSection> getChildren() {
+    public List<? extends ReportSection> getChildren() {
         return children;
     }
 
-    public void setChildren(List<ReportSection> children) {
+    public void setChildren(List<? extends ReportSection> children) {
         this.children = children;
     }
 

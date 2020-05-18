@@ -21,11 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
 import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
-import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisPayload;
-import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisPayload.FieldValue;
-import gov.nist.healthcare.iz.darq.analyzer.domain.AnalysisReport;
-import gov.nist.healthcare.iz.darq.analyzer.domain.ReportSection;
-import gov.nist.healthcare.iz.darq.analyzer.domain.ReportTemplate;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
@@ -136,29 +131,29 @@ public class Main {
 //		
 //		return template;
 //	}
-	
-	static ReportTemplate template(){
-		ReportTemplate template = new ReportTemplate();
-		template.setName("TEST");
-		
-		ReportSection section = new ReportSection();
-		section.setTitle("PCV17 by Year");
-		
-		AnalysisPayload payload = new AnalysisPayload();
-		payload.setType(_CG.V);
-		List<FieldValue> filters = new ArrayList<>();
-//		filters.add(new FieldValue(Field.DETECTION, "MQE0141"));
-//		filters.add(new FieldValue(Field.C, "M"));
-		payload.setFilters(filters);
-		payload.setGroupBy(Arrays.asList(Field.VACCINE_CODE));
-		
-		section.setPayloads(Arrays.asList(payload));
-		
-		template.setSections(Arrays.asList(section));
-		
-		
-		return template;
-	}
+//
+//	static ReportTemplate template(){
+//		ReportTemplate template = new ReportTemplate();
+//		template.setName("TEST");
+//
+//		ReportSection section = new ReportSection();
+//		section.setTitle("PCV17 by Year");
+//
+//		AnalysisPayload payload = new AnalysisPayload();
+//		payload.setType(_CG.V);
+//		List<FieldValue> filters = new ArrayList<>();
+////		filters.add(new FieldValue(Field.DETECTION, "MQE0141"));
+////		filters.add(new FieldValue(Field.C, "M"));
+//		payload.setFilters(filters);
+//		payload.setGroupBy(Arrays.asList(Field.VACCINE_CODE));
+//
+//		section.setPayloads(Arrays.asList(payload));
+//
+//		template.setSections(Arrays.asList(section));
+//
+//
+//		return template;
+//	}
 	
 	public static class C {
 		public String a;

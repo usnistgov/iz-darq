@@ -14,7 +14,7 @@ public class ReportTemplate {
     String id;
     String name;
     String description;
-    List<ReportSection> sections;
+    List<? extends ReportSection> sections;
     ConfigurationPayload configuration;
     String owner;
     @Transient
@@ -50,11 +50,11 @@ public class ReportTemplate {
         this.description = description;
     }
 
-    public List<ReportSection> getSections() {
+    public List<? extends ReportSection> getSections() {
         return sections;
     }
 
-    public void setSections(List<ReportSection> sections) {
+    public void setSections(List<? extends ReportSection> sections) {
         this.sections = sections;
     }
 
