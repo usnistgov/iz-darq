@@ -1,13 +1,13 @@
 package gov.nist.healthcare.iz.darq.analyzer.model.analysis;
-
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTable;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportSection;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReportSectionResult extends ReportSection {
+public class ReportSectionResult extends Section {
+    boolean thresholdViolation;
     List<DataTable> data;
+    List<ReportSectionResult> children;
     String comment;
 
     public void fromSection(ReportSection sectionTemplate) {
@@ -19,9 +19,20 @@ public class ReportSectionResult extends ReportSection {
         data = new ArrayList<>();
     }
 
-    @Override
     public List<DataTable> getData() {
         return data;
+    }
+
+    public void setData(List<DataTable> data) {
+        this.data = data;
+    }
+
+    public List<ReportSectionResult> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<ReportSectionResult> children) {
+        this.children = children;
     }
 
     public String getComment() {
@@ -30,5 +41,13 @@ public class ReportSectionResult extends ReportSection {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public boolean isThresholdViolation() {
+        return thresholdViolation;
+    }
+
+    public void setThresholdViolation(boolean thresholdViolation) {
+        this.thresholdViolation = thresholdViolation;
     }
 }

@@ -4,6 +4,7 @@ import gov.nist.healthcare.iz.darq.adf.service.exception.InvalidFileFormat;
 import gov.nist.healthcare.iz.darq.controller.domain.FailureWrapper;
 import gov.nist.healthcare.iz.darq.controller.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.controller.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.service.exception.JobRunningException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,13 @@ public class AuthExceptionHandler {
     @ExceptionHandler(InvalidFileFormat.class)
     @ResponseBody
     public OpAck<String> handleOperationFailureException(InvalidFileFormat e) {
+        return new OpAck<>(OpAck.AckStatus.FAILED, e.getMessage(), e.getMessage(), "error");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(JobRunningException.class)
+    @ResponseBody
+    public OpAck<String> handleOperationJobRunningException(JobRunningException e) {
         return new OpAck<>(OpAck.AckStatus.FAILED, e.getMessage(), e.getMessage(), "error");
     }
 

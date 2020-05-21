@@ -21,7 +21,6 @@ public class SimpleDataTableService implements DataTableService {
 
 	@Override
 	public DataTable createTable(List<Tray> trays, DataViewQuery payload) {
-		System.out.println(trays);
 		DataTable table = new DataTable();
 		table.fromQuery(payload);
 		Map<Map<Field, String>, Fraction> rowFields = new HashMap<>();
@@ -91,13 +90,15 @@ public class SimpleDataTableService implements DataTableService {
 			if(threshold.getCustom().isActive()) {
 				ComplexThreshold complexThreshold = this.matchCustomThreshold(row, threshold.getCustom());
 				if(complexThreshold != null) {
-					this.applyThreshold(row, complexThreshold.getGoal());
+					boolean value = this.applyThreshold(row, complexThreshold.getGoal());
+					table.addThreshold(value);
 					continue;
 				}
 			}
 
 			if(threshold.getGlobal().isActive()) {
-				this.applyThreshold(row, threshold.getGlobal().getGoal());
+				boolean value = this.applyThreshold(row, threshold.getGlobal().getGoal());
+				table.addThreshold(value);
 			} else {
 				row.setPass(true);
 			}
@@ -105,9 +106,11 @@ public class SimpleDataTableService implements DataTableService {
 		return table;
 	}
 
-	public void applyThreshold(DataTableRow row, Threshold threshold) {
+	public boolean applyThreshold(DataTableRow row, Threshold threshold) {
+		boolean eval = this.eval(threshold.getComparator(), threshold.getValue(), row.getResult().percent());
 		row.setThreshold(threshold);
-		row.setPass(this.eval(threshold.getComparator(), threshold.getValue(), row.getResult().percent()));
+		row.setPass(eval);
+		return eval;
 	}
 
 	private boolean match(Map<Field, ValueContainer> selector, Map<Field, String> row) {

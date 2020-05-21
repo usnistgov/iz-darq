@@ -13,6 +13,7 @@ public class AnalysisJob {
     private String adfId;
     private String adfName;
     private ReportTemplate template;
+    private Date submitTime;
     private Date startTime;
     private Date endTime;
     private JobStatus status;
@@ -114,6 +115,14 @@ public class AnalysisJob {
 
     public Date getEndTime() {
         return endTime;
+    }
+
+    public Date getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(Date submitTime) {
+        this.submitTime = submitTime;
     }
 
     public void setEndTime(Date endTime) {

@@ -1,26 +1,31 @@
 package gov.nist.healthcare.iz.darq.controller.domain;
 
 public class JobCreation {
-	private boolean status;
-	private String message;
-	
-	
-	public JobCreation(boolean status, String message) {
-		super();
-		this.status = status;
-		this.message = message;
+	String name;
+	String templateId;
+	String adfId;
+
+	public String getName() {
+		return name;
 	}
-	public boolean isStatus() {
-		return status;
+
+	public void setName(String name) {
+		this.name = name;
 	}
-	public void setStatus(boolean status) {
-		this.status = status;
+
+	public String getTemplateId() {
+		return templateId;
 	}
-	public String getMessage() {
-		return message;
+
+	public void setTemplateId(String templateId) {
+		this.templateId = templateId;
 	}
-	public void setMessage(String message) {
-		this.message = message;
+
+	public String getAdfId() {
+		return adfId;
 	}
-	
+
+	public void setAdfId(String adfId) {
+		this.adfId = adfId;
+	}
 }

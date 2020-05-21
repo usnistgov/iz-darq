@@ -10,5 +10,9 @@ import java.util.List;
 @Repository
 public interface AnalysisJobRepository extends MongoRepository<AnalysisJob, String> {
 
-    List<AnalysisJob> findByStatus(JobStatus status);
+    List<AnalysisJob> findByStatusIn(List<JobStatus> status);
+    boolean existsByIdAndOwner(String id, String owner);
+    List<AnalysisJob> findByOwner(String owner);
+    AnalysisJob findByIdAndOwner(String id, String owner);
+
 }

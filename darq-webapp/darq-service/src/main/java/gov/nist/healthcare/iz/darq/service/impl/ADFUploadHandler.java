@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.adf.service.impl;
+package gov.nist.healthcare.iz.darq.service.impl;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.UUID;
 
+import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +32,7 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 	private String PATH;
 	
 	@Override
-	public void handle(String name, InputStream stream, String owner, long size) throws InvalidFileFormat {
+	public void handle(String name, String facility, InputStream stream, String owner, long size) throws InvalidFileFormat {
 		
 		try {
 			byte[] content = IOUtils.toByteArray(stream);
@@ -39,7 +40,18 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 			String uid = UUID.randomUUID().toString();
 			Path dir = Files.createDirectory(Paths.get(PATH+"/"+uid));
 			if (dir.toFile().exists()) {
-				ADFMetaData metadata = new ADFMetaData(name, uid, owner, file.getAnalysisDate(), new Date(), file.getConfiguration(), "", file.getSummary(), humanReadableByteCount(size, true));
+				UserUploadedFile metadata = new UserUploadedFile(
+						name,
+						uid,
+						owner,
+						file.getAnalysisDate(),
+						new Date(),
+						file.getConfiguration(),
+						"",
+						file.getSummary(),
+						humanReadableByteCount(size, true),
+						facility
+				);
 				storage.store(metadata);
 				Files.write(Paths.get(dir.toString(), "/adf.data"), content);
 			}

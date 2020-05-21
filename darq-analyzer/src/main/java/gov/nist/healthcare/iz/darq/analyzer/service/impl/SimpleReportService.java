@@ -53,6 +53,9 @@ public class SimpleReportService implements ReportService {
 				AnalysisQuery query = queryFromPayload(payload);
 				TrayProcessor processor = factory.create(query.getCompatibilityGroup(), query::take);
 				DataTable table = tableService.createTable(processor.process(file), payload);
+				if(table.isThresholdViolation()) {
+					section.setThresholdViolation(true);
+				}
 				section.getData().add(table);
 			}
 

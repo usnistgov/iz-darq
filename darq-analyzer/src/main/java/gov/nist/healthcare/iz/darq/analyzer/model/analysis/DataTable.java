@@ -1,6 +1,4 @@
 package gov.nist.healthcare.iz.darq.analyzer.model.analysis;
-
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTableRow;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.DataViewQuery;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 
@@ -8,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataTable extends DataViewQuery {
+    boolean thresholdViolation;
     List<Field> headers;
     List<DataTableRow> values;
 
@@ -34,6 +33,20 @@ public class DataTable extends DataViewQuery {
 
     public List<DataTableRow> getValues() {
         return values;
+    }
+
+    public boolean isThresholdViolation() {
+        return thresholdViolation;
+    }
+
+    public void setThresholdViolation(boolean thresholdViolation) {
+        this.thresholdViolation = thresholdViolation;
+    }
+
+    public void addThreshold(boolean b) {
+        if(!b) {
+            this.setThresholdViolation(true);
+        }
     }
 
     public void setValues(List<DataTableRow> values) {

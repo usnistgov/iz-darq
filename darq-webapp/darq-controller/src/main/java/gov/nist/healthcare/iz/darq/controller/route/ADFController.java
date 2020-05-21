@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
 import gov.nist.healthcare.iz.darq.controller.exception.NotFoundException;
+import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
+import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
@@ -21,9 +23,7 @@ import gov.nist.healthcare.iz.darq.adf.service.ADFStoreUploadHandler;
 import gov.nist.healthcare.iz.darq.controller.domain.ADFDescriptor;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.domain.OpAck.AckStatus;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
 import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
-import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,12 +50,13 @@ public class ADFController {
 	@ResponseBody
 	public OpAck create(
 			@RequestParam("file") MultipartFile file,
-			@RequestParam("name") String name
+			@RequestParam("name") String name,
+			@RequestParam(value = "facility", required = false) String facility
 	) throws Exception{
 		Account a = this.accountService.getCurrentUser();
 		InputStream stream = file.getInputStream();
 		long size = file.getSize();
-		uploadHandler.handle(name, stream, a.getUsername(), size);
+		uploadHandler.handle(name, facility, stream, a.getUsername(), size);
 		return new OpAck(AckStatus.SUCCESS, "ADF Uploaded", null, "upload");
 	}
 	
@@ -63,10 +64,10 @@ public class ADFController {
 	@ResponseBody
 	public List<ADFDescriptor> list(final HttpServletRequest request) throws Exception {
 		Account a = this.accountService.getCurrentUser();
-		List<ADFMetaData> adf = repo.findByOwner(a.getUsername());
+		List<UserUploadedFile> adf = repo.findByOwner(a.getUsername());
 		List<ADFDescriptor> result = new ArrayList<>();
 		List<DigestConfiguration> configurations = this.confRepo.findAccessible(a.getUsername());
-		for(ADFMetaData md : adf){
+		for(UserUploadedFile md : adf){
 			result.add(new ADFDescriptor(md, this.configService.compatibilities(md.getConfiguration(), configurations, a.getUsername())));
 		}
 		return result;
@@ -74,9 +75,9 @@ public class ADFController {
 	
 	@RequestMapping(value="/adf/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public ADFMetaData get(@PathVariable("id") String id, final HttpServletRequest request) throws Exception {
+	public UserUploadedFile get(@PathVariable("id") String id, final HttpServletRequest request) throws Exception {
 		Account a = this.accountService.getCurrentUser();
-		ADFMetaData adf = repo.findByIdAndOwner(id, a.getUsername());
+		UserUploadedFile adf = repo.findByIdAndOwner(id, a.getUsername());
 		if(adf != null) {
 			return adf;
 		} else {
@@ -86,11 +87,11 @@ public class ADFController {
 	
 	@RequestMapping(value="/adf/{id}", method=RequestMethod.DELETE)
 	@ResponseBody
-	public OpAck<ADFMetaData> delete(@PathVariable("id") String id, final HttpServletRequest request) throws Exception {
+	public OpAck<UserUploadedFile> delete(@PathVariable("id") String id, final HttpServletRequest request) throws Exception {
 		Account a = this.accountService.getCurrentUser();
 		boolean deleted = storage.delete(id, a.getUsername());
 		if(deleted) {
-			return new OpAck<ADFMetaData>(AckStatus.SUCCESS, "File Deleted Successfully", null, "adf-delete");
+			return new OpAck<UserUploadedFile>(AckStatus.SUCCESS, "File Deleted Successfully", null, "adf-delete");
 		} else {
 			throw new NotFoundException("ADF File "+id+" Not Found");
 		}

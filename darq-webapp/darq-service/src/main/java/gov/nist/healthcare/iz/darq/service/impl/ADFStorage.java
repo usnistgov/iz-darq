@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +19,17 @@ import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 
 @Service
 //@PropertySource("classpath:/configuration.properties")
-public class ADFStorage implements ADFStore {
+public class ADFStorage implements ADFStore<UserUploadedFile> {
 
 	@Autowired
 	private ADFMetaDataRepository repo;
 	@Autowired
 	private CryptoUtils crypto;
-//	@Value("${darq.store}")
 	@Value("#{environment.DARQ_STORE}")
 	private String PATH;
 	
 	@Override
-	public String store(ADFMetaData metadata) {
+	public String store(UserUploadedFile metadata) {
 		repo.save(metadata);
 		return metadata.getId();
 	}
@@ -48,7 +48,7 @@ public class ADFStorage implements ADFStore {
 	}
 
 	@Override
-	public ADFMetaData get(String id, String owner) {
+	public UserUploadedFile get(String id, String owner) {
 		return repo.findByIdAndOwner(id, owner);
 	}
 

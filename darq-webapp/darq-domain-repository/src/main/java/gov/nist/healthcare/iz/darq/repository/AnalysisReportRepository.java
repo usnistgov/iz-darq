@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AnalysisReportRepository extends MongoRepository<AnalysisReport, String> {
+
+    AnalysisReport findByIdAndOwner(String id, String owner);
+
 }

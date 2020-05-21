@@ -6,6 +6,6 @@ import gov.nist.healthcare.iz.darq.adf.service.exception.InvalidFileFormat;
 
 public interface ADFStoreUploadHandler {
 	
-	void handle(String name, InputStream stream, String owner, long size) throws InvalidFileFormat;
+	void handle(String name, String facility, InputStream stream, String owner, long size) throws InvalidFileFormat;
 	
 }
