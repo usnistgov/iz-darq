@@ -15,6 +15,8 @@ public interface AnalysisJobRepository extends MongoRepository<AnalysisJob, Stri
     List<AnalysisJob> findByOwner(String owner);
     List<AnalysisJob> findByReportId(String reportId);
     List<AnalysisJob> findByOwnerAndFacilityId(String owner, String facilityId);
+    List<AnalysisJob> findByOwnerAndFacilityIdIsNull(String owner);
+
     AnalysisJob findByIdAndOwner(String id, String owner);
 
 }

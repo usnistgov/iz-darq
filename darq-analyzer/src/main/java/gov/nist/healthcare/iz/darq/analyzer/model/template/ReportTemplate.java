@@ -15,6 +15,10 @@ public class ReportTemplate extends Report {
 
     List<ReportSection> sections;
 
+    public ReportTemplate() {
+        this.sections = new ArrayList<>();
+    }
+
     public List<ReportSection> getSections() {
         return sections;
     }

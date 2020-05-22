@@ -139,7 +139,11 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
 
     @Override
     public List<AnalysisJob> getAllJobsForUserAndFacility(String user, String facilityId) {
-        return this.analysisJobRepository.findByOwnerAndFacilityId(user, facilityId);
+        if (facilityId == null) {
+            return this.analysisJobRepository.findByOwnerAndFacilityIdIsNull(user);
+        } else {
+            return this.analysisJobRepository.findByOwnerAndFacilityId(user, facilityId);
+        }
     }
 
     @Override

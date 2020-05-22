@@ -3,9 +3,11 @@ package gov.nist.healthcare.iz.darq.controller.route;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.model.FacilityDescriptor;
 import gov.nist.healthcare.iz.darq.service.FacilityService;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
@@ -90,7 +92,8 @@ public class ADFController {
 	@ResponseBody
 	public List<ADFDescriptor> list(final HttpServletRequest request) throws Exception {
 		Account a = this.accountService.getCurrentUser();
-		List<UserUploadedFile> adf = repo.findByOwnerAndFacilityId(a.getUsername(), null);
+		System.out.println(a.getUsername());
+		List<UserUploadedFile> adf = repo.findByOwnerAndFacilityIdIsNull(a.getUsername());
 		List<ADFDescriptor> result = new ArrayList<>();
 		List<DigestConfiguration> configurations = this.confRepo.findAccessible(a.getUsername());
 		for(UserUploadedFile md : adf){

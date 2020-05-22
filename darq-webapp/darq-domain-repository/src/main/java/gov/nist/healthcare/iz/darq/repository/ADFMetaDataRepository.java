@@ -11,6 +11,7 @@ public interface ADFMetaDataRepository extends MongoRepository<UserUploadedFile,
 
 	List<UserUploadedFile> findByOwner(String owner);
 	List<UserUploadedFile> findByOwnerAndFacilityId(String owner, String facility);
+	List<UserUploadedFile> findByOwnerAndFacilityIdIsNull(String owner);
 	List<UserUploadedFile> findByFacilityId(String facility);
 	UserUploadedFile findByIdAndOwner(String id, String owner);
 	UserUploadedFile findByIdAndOwnerAndFacilityId(String id, String owner, String facility);
