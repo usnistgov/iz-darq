@@ -13,6 +13,8 @@ public interface AnalysisJobRepository extends MongoRepository<AnalysisJob, Stri
     List<AnalysisJob> findByStatusIn(List<JobStatus> status);
     boolean existsByIdAndOwner(String id, String owner);
     List<AnalysisJob> findByOwner(String owner);
+    List<AnalysisJob> findByReportId(String reportId);
+    List<AnalysisJob> findByOwnerAndFacilityId(String owner, String facilityId);
     AnalysisJob findByIdAndOwner(String id, String owner);
 
 }

@@ -8,8 +8,12 @@ import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.auth.domain.Privilege;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.List;
+
 public interface AccountService extends UserDetailsService {
 
+	public boolean isAdmin(String user);
+	public List<Account> getAllUsersExceptAdmins();
 	public Account getCurrentUser();
 	public Account getAccountByUsername(String username);
 	public Account createAdmin(Account account);

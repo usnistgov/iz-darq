@@ -5,6 +5,7 @@ import java.util.List;
 
 import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
 import gov.nist.healthcare.iz.darq.model.ConfigurationDescriptor;
+import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 
 public class ADFDescriptor {
 
@@ -16,13 +17,13 @@ public class ADFDescriptor {
 	String size;
 	String keyHash;
 	List<ConfigurationDescriptor> compatibilities;
-	
+	String facilityId;
 	
 	public ADFDescriptor() {
 		super();
 	}
 	
-	public ADFDescriptor(ADFMetaData md, List<ConfigurationDescriptor> compatibilities) {
+	public ADFDescriptor(UserUploadedFile md, List<ConfigurationDescriptor> compatibilities) {
 		super();
 		this.id = md.getId();
 		this.name = md.getName();
@@ -32,6 +33,15 @@ public class ADFDescriptor {
 		this.keyHash = md.getKeyHash();
 		this.size = md.getSize();
 		this.compatibilities = compatibilities;
+		this.facilityId = md.getFacilityId();
+	}
+
+	public String getFacilityId() {
+		return facilityId;
+	}
+
+	public void setFacilityId(String facilityId) {
+		this.facilityId = facilityId;
 	}
 
 	public String getId() {

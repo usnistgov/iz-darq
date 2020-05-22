@@ -9,7 +9,10 @@ import java.util.List;
 @Document
 public class AnalysisReport extends Report {
 
-    private String templateId;
+    private ReportTemplate reportTemplate;
+    private String facilityId;
+    private String adfName;
+    private Date publishDate;
     List<ReportSectionResult> sections;
 
     public void fromTemplate(ReportTemplate template) {
@@ -18,16 +21,40 @@ public class AnalysisReport extends Report {
         this.setLastUpdated(new Date());
     }
 
-    public String getTemplateId() {
-        return templateId;
+    public String getAdfName() {
+        return adfName;
     }
 
-    public void setTemplateId(String templateId) {
-        this.templateId = templateId;
+    public void setAdfName(String adfName) {
+        this.adfName = adfName;
+    }
+
+    public Date getPublishDate() {
+        return publishDate;
+    }
+
+    public void setPublishDate(Date publishDate) {
+        this.publishDate = publishDate;
+    }
+
+    public ReportTemplate getReportTemplate() {
+        return reportTemplate;
+    }
+
+    public void setReportTemplate(ReportTemplate reportTemplate) {
+        this.reportTemplate = reportTemplate;
     }
 
     public List<ReportSectionResult> getSections() {
         return sections;
+    }
+
+    public String getFacilityId() {
+        return facilityId;
+    }
+
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
     }
 
     public void setSections(List<ReportSectionResult> sections) {

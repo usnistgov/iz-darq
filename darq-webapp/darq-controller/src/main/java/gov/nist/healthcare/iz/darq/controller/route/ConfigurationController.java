@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
-import gov.nist.healthcare.iz.darq.controller.exception.NotFoundException;
-import gov.nist.healthcare.iz.darq.controller.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
+import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

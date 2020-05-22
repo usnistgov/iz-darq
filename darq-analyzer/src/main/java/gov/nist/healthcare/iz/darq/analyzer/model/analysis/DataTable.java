@@ -2,10 +2,10 @@ package gov.nist.healthcare.iz.darq.analyzer.model.analysis;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.DataViewQuery;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class DataTable extends DataViewQuery {
+    Map<Field, Set<String>> vocabulary;
     boolean thresholdViolation;
     List<Field> headers;
     List<DataTableRow> values;
@@ -21,6 +21,22 @@ public class DataTable extends DataViewQuery {
         this.setThreshold(query.getThreshold());
         this.headers = new ArrayList<>(query.getGroupBy());
         this.values = new ArrayList<>();
+        this.vocabulary = new HashMap<>();
+    }
+
+    public void putFieldValue(Field f, String value) {
+        if(!this.vocabulary.containsKey(f)) {
+            this.vocabulary.put(f, new HashSet<>());
+        }
+        this.vocabulary.get(f).add(value);
+    }
+
+    public Map<Field, Set<String>> getVocabulary() {
+        return vocabulary;
+    }
+
+    public void setVocabulary(Map<Field, Set<String>> vocabulary) {
+        this.vocabulary = vocabulary;
     }
 
     public List<Field> getHeaders() {

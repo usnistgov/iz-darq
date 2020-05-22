@@ -104,6 +104,17 @@ public class Application extends SpringBootServletInitializer{
 			}
 		}
 
+		Account hossam = accountService.getAccountByUsername("hossam");
+		if(hossam == null) {
+			Account tester = new Account();
+			tester.setEmail("hossam.tamri@gmail.com");
+			tester.setFullName("Hossam Tamri");
+			tester.setOrganization("NIST");
+			tester.setPassword("12QWASZx");
+			tester.setUsername("hossam");
+			accountService.createTester(tester);
+		}
+
 		this.createCVX();
 		this.setup();
 	}

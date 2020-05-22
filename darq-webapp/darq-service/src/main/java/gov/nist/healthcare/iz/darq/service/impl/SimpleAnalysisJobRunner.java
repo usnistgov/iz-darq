@@ -8,6 +8,7 @@ import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 import gov.nist.healthcare.iz.darq.model.AnalysisJob;
 import gov.nist.healthcare.iz.darq.model.JobStatus;
+import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.repository.AnalysisJobRepository;
 import gov.nist.healthcare.iz.darq.repository.AnalysisReportRepository;
@@ -15,6 +16,7 @@ import gov.nist.healthcare.iz.darq.repository.TemplateRepository;
 import gov.nist.healthcare.iz.darq.service.analysis.AnalysisJobRunner;
 import gov.nist.healthcare.iz.darq.service.analysis.RunnableJob;
 import gov.nist.healthcare.iz.darq.service.exception.JobRunningException;
+import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,8 +37,8 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
     private final int DEFAULT_THREAD_COUNT = 5;
     @Autowired
     TemplateRepository templateRepository;
-    @Autowired
-    ADFMetaDataRepository adfMetaDataRepository;
+//    @Autowired
+//    ADFMetaDataRepository adfMetaDataRepository;
     @Autowired
     AnalysisJobRepository analysisJobRepository;
     @Autowired
@@ -65,9 +67,9 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
 
 
     @Override
-    public AnalysisJob addJob(String name, String templateId, String adfId, String user) throws JobRunningException {
+    public AnalysisJob addJob(String name, String templateId, String adfId, String user) throws JobRunningException, NotFoundException {
         ReportTemplate template = this.templateRepository.findMineOrReadOnly(templateId, user);
-        ADFMetaData adf = this.adfMetaDataRepository.findByIdAndOwner(adfId, user);
+        UserUploadedFile adf = this.store.getAccessible(adfId, user);
         if(template == null) {
             throw new JobRunningException("Report Template" + templateId + " Not Found");
         }
@@ -76,7 +78,7 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
             throw new JobRunningException("ADF " + adfId + " Not Found");
         }
 
-        AnalysisJob job = new AnalysisJob(name, adfId, adf.getName(), template, user);
+        AnalysisJob job = new AnalysisJob(name, adfId, adf.getName(), template, user, adf.getFacilityId());
         job.setSubmitTime(new Date());
         this.analysisJobRepository.save(job);
         Future<?> future = executor.submit(new RunnableJob(job, this));
@@ -97,6 +99,9 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
         report.fromTemplate(job.getTemplate());
         report.setName(job.getName());
         report.setOwner(job.getOwner());
+        report.setFacilityId(job.getFacilityId());
+        report.setAdfName(job.getAdfName());
+        report.setReportTemplate(job.getTemplate());
         this.reportRepository.save(report);
         job.setReportId(report.getId());
         job.setEndTime(new Date());
@@ -133,8 +138,8 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
     }
 
     @Override
-    public List<AnalysisJob> getAllJobsForUser(String user) {
-        return this.analysisJobRepository.findByOwner(user);
+    public List<AnalysisJob> getAllJobsForUserAndFacility(String user, String facilityId) {
+        return this.analysisJobRepository.findByOwnerAndFacilityId(user, facilityId);
     }
 
     @Override

@@ -36,6 +36,7 @@ public class SimpleDataTableService implements DataTableService {
 			for(Field group : payload.getGroupBy()){
 				String value = t.get(group);
 				groupBy.put(group, value);
+				table.putFieldValue(group, value);
 			}
 
 			// If group exists

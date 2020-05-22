@@ -1,7 +1,10 @@
 package gov.nist.healthcare.auth.service.impl;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import gov.nist.healthcare.auth.domain.PasswordChange;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +86,23 @@ public class AccountServiceImpl implements AccountService {
 	public void deleteAll() {
 
 		accountRepository.deleteAll();
+	}
+
+	@Override
+	public boolean isAdmin(String user) {
+		Account a = this.accountRepository.findByUsername(user);
+		if(a == null) {
+			return false;
+		} else {
+			return a.getPrivileges().stream().anyMatch((p) -> p.getRole().equals("ADMIN"));
+		}
+	}
+
+	@Override
+	public List<Account> getAllUsersExceptAdmins() {
+		return this.accountRepository.findAll().stream().filter((a) -> {
+			return a.getPrivileges().stream().noneMatch((p) -> p.getRole().equals("ADMIN"));
+		}).collect(Collectors.toList());
 	}
 
 	@Override

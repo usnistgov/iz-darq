@@ -6,7 +6,7 @@ import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTable;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.DataViewQuery;
 import gov.nist.healthcare.iz.darq.controller.domain.JobCreation;
-import gov.nist.healthcare.iz.darq.controller.exception.NotFoundException;
+import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 import gov.nist.healthcare.iz.darq.model.AnalysisJob;
 import gov.nist.healthcare.iz.darq.service.analysis.AnalysisJobRunner;
@@ -56,11 +56,18 @@ public class AnalysisController {
 		return new OpAck<>(OpAck.AckStatus.SUCCESS, "Job Submitted Successfully", submitted, "job-submit");
 	}
 
-	@RequestMapping(value = "/jobs", method = RequestMethod.GET)
+	@RequestMapping(value = {"/jobs/{facilityId}"}, method = RequestMethod.GET)
 	@ResponseBody
-	public List<AnalysisJob> getJobs() throws Exception {
+	public List<AnalysisJob> getJobsForFacility(@PathVariable("facilityId") String facilityId) throws Exception {
 		Account a = this.accountService.getCurrentUser();
-		return this.runner.getAllJobsForUser(a.getUsername());
+		return this.runner.getAllJobsForUserAndFacility(a.getUsername(), facilityId);
+	}
+
+	@RequestMapping(value = {"/jobs"}, method = RequestMethod.GET)
+	@ResponseBody
+	public List<AnalysisJob> getJobsForUser() throws Exception {
+		Account a = this.accountService.getCurrentUser();
+		return this.runner.getAllJobsForUserAndFacility(a.getUsername(), null);
 	}
 
 	@RequestMapping(value = "/job/{id}", method = RequestMethod.DELETE)

@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.controller.exception;
+package gov.nist.healthcare.iz.darq.service.exception;
 
 public class NotFoundException extends Exception {
     public NotFoundException(String message) {

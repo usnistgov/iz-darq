@@ -20,16 +20,18 @@ public class AnalysisJob {
     private String owner;
     private String failure;
     private String reportId;
+    private String facilityId;
 
     public AnalysisJob() {
     }
 
-    public AnalysisJob(String name, String adfId, String adfName, ReportTemplate template, String owner) {
+    public AnalysisJob(String name, String adfId, String adfName, ReportTemplate template, String owner, String facilityId) {
         this.name = name;
         this.adfId = adfId;
         this.adfName = adfName;
         this.template = template;
         this.status = JobStatus.QUEUED;
+        this.facilityId = facilityId;
         this.owner = owner;
     }
 
@@ -127,5 +129,13 @@ public class AnalysisJob {
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    public String getFacilityId() {
+        return facilityId;
+    }
+
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
     }
 }

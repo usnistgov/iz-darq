@@ -1,9 +1,8 @@
 package gov.nist.healthcare.iz.darq.controller.advice;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.adf.service.exception.InvalidFileFormat;
-import gov.nist.healthcare.iz.darq.controller.domain.FailureWrapper;
-import gov.nist.healthcare.iz.darq.controller.exception.NotFoundException;
-import gov.nist.healthcare.iz.darq.controller.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
+import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.service.exception.JobRunningException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

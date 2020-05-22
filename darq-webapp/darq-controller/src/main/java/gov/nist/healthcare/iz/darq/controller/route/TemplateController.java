@@ -5,8 +5,10 @@ import java.util.List;
 
 import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportTemplate;
 import gov.nist.healthcare.iz.darq.controller.domain.ReportTemplateCreate;
-import gov.nist.healthcare.iz.darq.controller.exception.NotFoundException;
-import gov.nist.healthcare.iz.darq.controller.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
+import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
+import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.service.impl.ADFStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +44,8 @@ public class TemplateController {
 	private DigestConfigurationRepository confRepo;
 	@Autowired
 	private ADFMetaDataRepository repo;
+	@Autowired
+	private ADFStorage adfStorage;
 
 	// Get All Accessible Report Templates
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -196,9 +200,9 @@ public class TemplateController {
 	// Get Accessible Templates Compatible with ADF by Id
 	@RequestMapping(value="/for/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public List<TemplateDescriptor> template(@PathVariable("id") String id) {
+	public List<TemplateDescriptor> template(@PathVariable("id") String id) throws NotFoundException {
 		Account a = this.accountService.getCurrentUser();
-		ADFMetaData md = repo.findByIdAndOwner(id, a.getUsername());
+		UserUploadedFile md = adfStorage.getAccessible(id, a.getUsername());
 		List<TemplateDescriptor> result = new ArrayList<>();
 		if(md != null){
 			List<ReportTemplate> templates = this.templateRepo.findAccessible(a.getUsername());
