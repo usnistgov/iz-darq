@@ -45,10 +45,8 @@ import gov.nist.healthcare.iz.darq.model.FileDownload;
 import gov.nist.healthcare.iz.darq.repository.CVXRepository;
 import gov.nist.healthcare.iz.darq.service.impl.SimpleDownloadService;
 import gov.nist.healthcare.iz.darq.service.utils.DownloadService;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-@EnableWebMvc
 @ComponentScan(basePackages = { "gov.nist.healthcare.iz.darq", "gov.nist.healthcare.auth" })
 public class Application extends SpringBootServletInitializer{
 
@@ -102,17 +100,6 @@ public class Application extends SpringBootServletInitializer{
 				admin.setPassword(encoder.encode(ADMIN_PASSWORD));
 				accountService.save(admin);
 			}
-		}
-
-		Account hossam = accountService.getAccountByUsername("hossam");
-		if(hossam == null) {
-			Account tester = new Account();
-			tester.setEmail("hossam.tamri@gmail.com");
-			tester.setFullName("Hossam Tamri");
-			tester.setOrganization("NIST");
-			tester.setPassword("12QWASZx");
-			tester.setUsername("hossam");
-			accountService.createTester(tester);
 		}
 
 		this.createCVX();

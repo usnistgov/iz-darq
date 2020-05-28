@@ -74,7 +74,7 @@ public class ADFStorage implements ADFStore<UserUploadedFile> {
 
 		boolean hasFacility = !Strings.isNullOrEmpty(md.getFacilityId());
 
-		if((md.getOwner().equals(owner) || this.accountService.isAdmin(owner) || hasFacility) && this.facilityService.canSeeFacility(md.getFacilityId(), user)){
+		if((md.getOwner().equals(owner) || this.accountService.isAdmin(owner)) || (hasFacility && this.facilityService.canSeeFacility(md.getFacilityId(), user))){
 			return md;
 		} else {
 			throw new NotFoundException("ADF "+id+" Not Found");
