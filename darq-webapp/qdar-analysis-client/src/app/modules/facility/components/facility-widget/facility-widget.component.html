@@ -1,0 +1,43 @@
+<dam-layout>
+
+  <ng-template #alerts>
+    <dam-alerts-container></dam-alerts-container>
+  </ng-template>
+
+  <ng-template #titleBar>
+    <div style="width: 100%; display: flex;">
+      <dam-fullscreen-button></dam-fullscreen-button>
+      <div style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
+        <h4 class="title-text"><i style="color: #795548;" class="fa fa-building" aria-hidden="true"></i> Facilities </h4>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #activeTitleBar *ngIf="active$ | async as active">
+    <div style="display: flex; width: 100%; align-items: center; justify-content: space-between;">
+      <div *ngIf="active && active.name" style="display: flex;">
+        <h5 class="title-text">
+          {{active.name}}
+        </h5>
+      </div>
+    </div>
+
+  </ng-template>
+
+  <ng-template #toolbar>
+    <div>
+    </div>
+    <div>
+      <dam-reset-button></dam-reset-button>
+      <dam-save-button></dam-save-button>
+    </div>
+  </ng-template>
+
+  <ng-template #editorContent>
+    <dam-editor-outlet></dam-editor-outlet>
+  </ng-template>
+
+  <ng-template #sideBar>
+    <app-facility-list [facilities]="facilities$ | async"></app-facility-list>
+  </ng-template>
+</dam-layout>

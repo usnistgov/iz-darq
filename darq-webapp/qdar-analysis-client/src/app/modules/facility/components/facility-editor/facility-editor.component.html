@@ -1,0 +1,34 @@
+<form>
+  <div class="form-group">
+    <label for="name"><strong>Facility Name</strong></label>
+    <input type="text" placeholder="Name" class="form-control" name="name" id="name" [ngModel]="facility.name" (ngModelChange)="nameChange($event)" required>
+  </div>
+
+  <div class="form-group" >
+    <table class="table table-sm table-stripped">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>
+            <button class="btn btn-sm btn-primary pull-right" (click)="addUsers()">
+              <i class="fa fa-plus"></i>
+              Add User
+            </button>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of facility.members; let i = index;">
+          <td>
+            <i class="fa fa-user" style="color: blue; margin-right: 5px;"></i> <span>{{ item }}</span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-danger pull-right" (click)="removeUser(i)">
+              <i class="fa fa-minus"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</form>

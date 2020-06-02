@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<div [innerHTML]="content"></div>
+<form>
+  <div class="form-group">
+    <label for="name"><strong>Name</strong></label>
+    <input type="text" placeholder="Name" class="form-control" name="name" id="name" [(ngModel)]="name" required>
+  </div>
+</form>
+
+<mat-dialog-actions style="justify-content: flex-end;">
+  <button [mat-dialog-close]="" class="btn btn-sm btn-secondary" style="margin-right: 5px;">Cancel</button>
+  <button [disabled]="!name || name === ''" [mat-dialog-close]="name" class="btn btn-sm btn-success">Create</button>
+</mat-dialog-actions>

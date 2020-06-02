@@ -1,0 +1,16 @@
+// Theme Colors
+$nist_dark_blue: #021a4c;
+$nist_light_blue: #739fff;
+$nist_dark_yellow: #F3C60D;
+$nist_light_yellow: #ffec9d;
+$invalid_color: rgb(255, 221, 226);
+// Application Background
+%app-background {
+  @extend %blue-bg;
+}
+
+%blue-bg {
+  background: #1488CC; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #2B32B2, #1488CC); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #2B32B2, #1488CC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}

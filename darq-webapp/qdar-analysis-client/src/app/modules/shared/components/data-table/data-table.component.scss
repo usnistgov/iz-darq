@@ -1,0 +1,25 @@
+.filter-icon {
+  font-size: 1.5em;
+  margin-right: 10px;
+  color: lightgray;
+}
+
+.filter-active {
+  color: green;
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.threshold-fail {
+  background-color: rgb(247, 210, 215) !important;
+}
+
+.threshold-pass {
+  background-color: rgb(204, 253, 204) !important;
+}
+
+p-dropdown {
+  flex-grow: 1;
+}

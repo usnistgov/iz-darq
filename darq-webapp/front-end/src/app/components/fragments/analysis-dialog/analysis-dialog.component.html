@@ -1,9 +1,0 @@
-<strong *ngIf="templates && templates.length > 0">Select Report Template</strong>
-<mat-select [(value)]="template" style="background-color: lightgrey;" *ngIf="templates && templates.length > 0">
-	<mat-option *ngFor="let t of templates" [value]="t">{{t.name}}</mat-option>
-</mat-select>
-<strong *ngIf="!templates || templates.length === 0">No Template Available</strong>
-<button class="btn btn-primary float-right" *ngIf="template" (click)="go()" style="margin-top: 5px;">
-	<i class="fa fa-search"></i>
-	Analyse
-</button>

@@ -1,0 +1,14 @@
+<div style="display: flex; justify-content: flex-start; align-items: stretch; width: 100%; height: 40px;">
+  <div class="zone" [ngClass]="{ 'danger-zone' : start.danger && hasThreshold, 'ok-zone' : !start.danger && hasThreshold, 'threshold' : hasThreshold, 'neutral-zone' : !hasThreshold  }" [ngStyle]="{ 'width' : start.width + '%' }">
+    <span class="value"  *ngIf="showValue && start.value"> {{start.value ? (start.value | number:'.1') + '%' : '' }}</span>
+    <div class="bar" [ngClass]="{ 'danger-bar' : start.danger, 'ok-bar' : !start.danger }" [ngStyle]="{ 'width' : start.barWidth + '%' }">
+
+    </div>
+  </div>
+  <div class="zone" [ngClass]="{ 'danger-zone' : end.danger && hasThreshold, 'ok-zone' : !end.danger && hasThreshold, 'neutral-zone' : !hasThreshold  }" [ngStyle]="{ 'width' : end.width + '%' }">
+    <span class="value" *ngIf="showValue && end.value" >{{end.value ? (end.value | number:'.1') + '%' : '' }}</span>
+    <div class="bar"  [ngClass]="{ 'danger-bar' : end.danger, 'ok-bar' : !end.danger }" [ngStyle]="{ 'width' : end.barWidth + '%' }">
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<div class="page-container">
+  <div class="page-alerts">
+    <dam-alerts-container></dam-alerts-container>
+  </div>
+  <div class="page-title rt-list-page-title">
+    <h4 class="title-text"><i class="fa fa-object-group" style="color: rgb(2, 224, 121);"></i> Report Templates </h4>
+  </div>
+
+  <div class="page-content rt-list-page-content">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; margin-top: 20px;">
+      <h5 class="title-text"> Report Templates List </h5>
+      <div>
+        <div class="btn-group btn-group-toggle" ngbRadioGroup name="listType" [(ngModel)]="listType" style="border: 1px solid #dee2e6; border-radius: 3px;">
+          <label ngbButtonLabel class="btn-light btn-sm">
+            <input ngbButton type="radio" [value]="filterType.OWNED"> Owned
+          </label>
+          <label ngbButtonLabel class="btn-light btn-sm">
+            <input ngbButton type="radio" [value]="filterType.PUBLIC"> Public
+          </label>
+          <label ngbButtonLabel class="btn-light btn-sm">
+            <input ngbButton type="radio" [value]="filterType.ALL"> All
+          </label>
+        </div>
+      </div>
+    </div>
+
+
+  <p-table
+    [value]="templates$ | async"
+    [paginator]="true"
+    [rows]="10"
+    class="ui-table-dash"
+    sortMode="multiple"
+    [styleClass]="'table table-sm table-striped'">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="vertical-align: middle;" pSortableColumn="name">
+            Name
+            <p-sortIcon field="name"></p-sortIcon>
+          </th>
+          <th style="vertical-align: middle;">Compatible With</th>
+          <th style="vertical-align: middle; width: 400px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span>Actions</span>
+              <button class="btn btn-secondary btn-sm" (click)="create()">
+                <i class="fa fa-plus"></i>
+                Create Report Template
+              </button>
+            </div>
+
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData>
+        <tr>
+          <td>
+            <app-descriptor-display [descriptor]="rowData"></app-descriptor-display>
+          </td>
+          <td style="display: flex; flex-direction: column; align-items: flex-start;">
+            <ng-container *ngFor="let conf of rowData.compatibilities || []">
+              <div class="badge cursor-pointer" style="background-color: rgb(235, 235, 235); font-size: initial; margin-top: 2px;" [routerLink]="['/', 'configurations', conf.id ]">
+                <i class="fa fa-cog" style="color: blueviolet; margin-right: 5px;"></i>
+                <app-descriptor-display [descriptor]="conf"></app-descriptor-display>
+              </div>
+            </ng-container>
+            <div *ngIf="!rowData.compatibilities || rowData.compatibilities.length === 0 " class="badge" style="background-color: rgb(235, 235, 235); font-size: initial; margin-top: 2px;" >
+              <i class="fa fa-cog" style="color: blueviolet; margin-right: 5px;"></i>
+              Custom
+            </div>
+          </td>
+          <td>
+            <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;">
+              <button class="btn btn-sm btn-success"  style="margin-right: 5px;" [routerLink]="['/', 'report-templates', rowData.id ]">
+                <i class="fa fa-arrow-up"></i>
+                Open
+              </button>
+              <button class="btn btn-sm btn-dark" style="margin-right: 5px;" (click)="clone(rowData)">
+                <i class="fa fa-clone"></i>
+                Clone
+              </button>
+              <button class="btn btn-sm btn-primary" style="margin-right: 5px;" (click)="publish(rowData)" [disabled]="rowData.published || !rowData.owned || (isAdmin$ | async) === false">
+                <i class="fa fa-globe"></i>
+                Publish
+              </button>
+              <button class="btn btn-sm btn-danger" [disabled]="!rowData.owned" (click)="remove(rowData)">
+                <i class="fa fa-trash"></i>
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+</div>

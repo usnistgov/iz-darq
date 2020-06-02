@@ -1,0 +1,62 @@
+<h4 mat-dialog-title> Select Users </h4>
+<div mat-dialog-content style="display: flex;">
+  <p-table #dt
+    [value]="pickList"
+    [(selection)]="picked"
+    dataKey="id"
+    [rowHover]="true"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50, users.length]"
+    [paginatorDropdownAppendTo]="'body'"
+    [paginator]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [filterDelay]="0"
+    [globalFilterFields]="[ 'username','fullName', 'organization', 'email']">
+      <ng-template pTemplate="caption">
+        <div class="input-group" style="margin-left: 5px; min-width: 300px;">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fa fa-search"></i></span>
+          </div>
+          <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search">
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 100px;"></th>
+            <th pSortableColumn="username"> Username <p-sortIcon field="username"></p-sortIcon></th>
+            <th pSortableColumn="fullName"> Fullname <p-sortIcon field="fullName"></p-sortIcon></th>
+            <th pSortableColumn="email"> Email <p-sortIcon field="email"></p-sortIcon></th>
+            <th pSortableColumn="organization"> Organization <p-sortIcon field="organization"></p-sortIcon></th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-value>
+        <tr class="ui-selectable-row">
+          <td>
+            <p-tableCheckbox [value]="value"></p-tableCheckbox>
+          </td>
+          <td>
+            {{value.username}}
+          </td>
+          <td>
+            {{value.fullName}}
+          </td>
+          <td>
+            {{value.email}}
+          </td>
+          <td>
+            {{value.organization}}
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="4" style="text-align:left"> No User Found </td>
+        </tr>
+      </ng-template>
+  </p-table>
+</div>
+<div mat-dialog-actions style="display: flex; justify-content: flex-end;">
+  <button class="btn btn-sm btn-danger" (click)="dismiss()" style="margin-right: 5px;">Cancel</button>
+  <button class="btn btn-sm btn-success" (click)="select()">Select</button>
+</div>

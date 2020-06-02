@@ -1,0 +1,120 @@
+<h4 mat-dialog-title> Select Detections </h4>
+<div mat-dialog-content style="display: flex;">
+  <div style="margin-right: 10px;">
+    <strong> Detections List </strong>
+    <p-table #dt
+      [value]="pickList"
+      [(selection)]="picked"
+      dataKey="id"
+      [rowHover]="true"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10, 25, 50, detections.length]"
+      [paginatorDropdownAppendTo]="'body'"
+      [paginator]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [filterDelay]="0"
+      [globalFilterFields]="['id','description','target']">
+        <ng-template pTemplate="caption">
+          <div class="input-group" style="margin-left: 5px; min-width: 300px;">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fa fa-search"></i></span>
+            </div>
+            <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search">
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 100px;"></th>
+              <th style="width: 100px;" pSortableColumn="name"> Code <p-sortIcon field="id"></p-sortIcon></th>
+              <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+              <th pSortableColumn="target">Target <p-sortIcon field="target"></p-sortIcon></th>
+              <th pSortableColumn="active" style="width: 100px;">Active <p-sortIcon field="active"></p-sortIcon></th>
+            </tr>
+            <tr>
+              <th>
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+              <th>
+                  <input type="text" (input)="dt.filter($event.target.value, 'id', 'contains')" placeholder="Code" class="form-control">
+              </th>
+              <th>
+                  <input pInputText type="text" (input)="dt.filter($event.target.value, 'description', 'contains')" placeholder="Description" class="form-control">
+              </th>
+              <th>
+                <input pInputText type="text" (input)="dt.filter($event.target.value, 'target', 'contains')" placeholder="Target" class="form-control">
+              </th>
+              <th>
+              </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-value>
+          <tr class="ui-selectable-row">
+            <td>
+              <p-tableCheckbox [value]="value"></p-tableCheckbox>
+            </td>
+            <td>
+                {{value.id}}
+            </td>
+            <td>
+              {{value.description}}
+            </td>
+            <td>
+              {{value.target}}
+            </td>
+            <td style="vertical-align: middle;"> <div style="width: 15px; height: 15px; border-radius: 15px;" [ngClass]="{ 'active' : value.active, 'inactive' : !value.active }"></div> </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+              <td colspan="4" style="text-align:left">{{ pickList.length === 0 ? 'All Available Detections Already Selected' : 'No Detection Found'}}</td>
+          </tr>
+        </ng-template>
+    </p-table>
+  </div>
+  <div>
+    <strong> Selected Detections To Add </strong>
+    <p-table
+      [value]="picked"
+      dataKey="id"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10, 25, 50, detections.length]"
+      [paginatorDropdownAppendTo]="'body'"
+      [paginator]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [filterDelay]="0">
+      <ng-template pTemplate="header">
+        <tr>
+          <th> Code </th>
+          <th>Description </th>
+          <th>Target</th>
+          <th>Active</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-value>
+        <tr class="ui-selectable-row">
+          <td>
+              {{value.id}}
+          </td>
+          <td>
+            {{value.description}}
+          </td>
+          <td>
+            {{value.target}}
+          </td>
+          <td style="vertical-align: middle;"> <div style="width: 15px; height: 15px; border-radius: 15px;" [ngClass]="{ 'active' : value.active, 'inactive' : !value.active }"></div> </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="3" style="text-align:left">No Detections Selected.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+<div mat-dialog-actions style="display: flex; justify-content: flex-end;">
+  <button class="btn btn-sm btn-danger" (click)="dismiss()" style="margin-right: 5px;">Cancel</button>
+  <button class="btn btn-sm btn-success" (click)="select()">Select</button>
+</div>

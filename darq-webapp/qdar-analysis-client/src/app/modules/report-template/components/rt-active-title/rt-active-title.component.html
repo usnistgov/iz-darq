@@ -1,0 +1,17 @@
+<div style="display: flex; justify-content: space-between; width: 100%;" *ngIf="active">
+  <div style="display: flex; align-items: center;">
+    <h5 class="title-text">
+      <span>
+        <span *ngIf="active.display.path"> {{active.display.path}}. </span>
+        <span>&nbsp;{{active.display.name}}</span>
+      </span>
+    </h5>
+    <ng-container *ngIf="active.editor.title">
+      <i class="fa fa-chevron-right" style="font-size: 1em; margin-right: 20px; margin-left: 20px;"></i>
+      <h5 class="title-text"> {{active.editor.title}} </h5>
+    </ng-container>
+  </div>
+  <ng-container *ngIf="controls">
+    <ng-container *ngTemplateOutlet="controls"></ng-container>
+  </ng-container>
+</div>

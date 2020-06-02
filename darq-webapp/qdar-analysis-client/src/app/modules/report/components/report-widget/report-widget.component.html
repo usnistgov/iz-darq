@@ -1,0 +1,44 @@
+<dam-layout [custom]="{ toolbar : true, titlebar: false }" [contentClass]="'no-pad'">
+
+  <ng-template #alerts>
+    <dam-alerts-container></dam-alerts-container>
+  </ng-template>
+
+  <ng-template #titleBar>
+    <div style="width: 100%; display: flex; justify-content: space-between;" *ngIf="report$ | async as report">
+
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <h4 class="title-text">
+          <i class="fa fa-pie-chart" style="color: darkgreen; margin-right: 10px;"></i>
+          {{report.name}}
+        </h4>
+        <span class="badge badge" style="margin-right: 5px; font-weight: 300; color: #afafaf;">Updated On {{ report.lastUpdated | date:'MM-dd-yyyy HH:mm' }}</span>
+      </div>
+      <dam-fullscreen-button></dam-fullscreen-button>
+    </div>
+  </ng-template>
+
+  <ng-template #toolbar>
+    <button class="btn btn-sm btn-light" style="margin-right: 5px;" (click)="filterReport()">
+      <i class="fa fa-filter" [ngClass]="{ 'filter-active' : filterIsActive$ | async }" ></i>
+      Report Filter
+    </button>
+    <div *ngIf="(isViewOnly$ | async) === false">
+      <button class="btn btn-sm btn-primary" style="margin-right: 5px;" *ngIf="(isAdmin$ | async)" [disabled]="containsUnsavedChanges$() | async" (click)="publish()" >
+        <i class="fa fa-share"></i>
+        Publish To Facility
+      </button>
+      <dam-reset-button></dam-reset-button>
+      <dam-save-button></dam-save-button>
+    </div>
+
+  </ng-template>
+
+  <ng-template #editorContent>
+    <dam-editor-outlet></dam-editor-outlet>
+  </ng-template>
+
+  <ng-template #sideBar>
+    <app-report-toc [nodes]="nodes$ | async" ></app-report-toc>
+  </ng-template>
+</dam-layout>

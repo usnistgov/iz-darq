@@ -1,0 +1,58 @@
+<div style="margin-bottom: 15px;" [id]="value.id" class="scroll-to">
+  <div style="position: sticky; position: -webkit-sticky; z-index: 999; top: 0; background-color: white; padding: 5px; border-bottom: 2px solid #d6d6d6;">
+    <h5>{{value.path}}. {{value.header}} <i *ngIf="value.thresholdViolation" class="fa fa-warning" style="color: red;" pTooltip="Some values violate threshold" ></i> </h5>
+  </div>
+
+  <div style="padding: 10px;" [innerHTML]="value.text"></div>
+  <p-tabView *ngFor="let data of filtered ? filtered.data : value.data">
+    <p-tabPanel header="Data Analysis" headerStyleClass="valid-tab">
+      <app-data-table [table]="data" [labelizer]="labelizer"></app-data-table>
+    </p-tabPanel>
+    <p-tabPanel header="Query" headerStyleClass="valid-tab">
+      <app-query-display [query]="data" [labelizer]="labelizer"></app-query-display>
+    </p-tabPanel>
+    <p-tabPanel *ngIf="data.issues" header="Query Issues" headerStyleClass="invalid-tab">
+      <table *ngIf="data.issues.inactiveDetections && data.issues.inactiveDetections.length > 0" class="table table-sm table-striped">
+        <thead>
+          <tr>
+            <th> Inactive Detections </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of data.issues.inactiveDetections">
+            <td>{{ labelizer.for(fields.DETECTION, item) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </p-tabPanel>
+  </p-tabView>
+  <div style="margin : 3.5px;">
+    <div *ngIf="!editMode || viewOnly">
+      <div style="display: flex; justify-content: center; width: 100%; margin-top: 5px;" *ngIf="!value.comment && !viewOnly">
+        <button class="btn btn-sm btn-secondary" (click)="comment()" >
+          <i class="fa fa-plus"></i> Comment
+        </button>
+      </div>
+      <div *ngIf="value.comment">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 10px;">
+          <h5 class="title-text">Comments <i class="fa fa-comment-o"></i></h5>
+          <button class="btn btn-sm btn-primary" (click)="comment()" *ngIf="!viewOnly" >
+            <i class="fa fa-pencil"></i> Edit Comment
+          </button>
+        </div>
+
+        <div style="margin-top: 10px; background-color: #f7fbff; padding: 10px; border: 1px solid #eeeeee;"  [innerHTML]="value.comment"></div>
+      </div>
+    </div>
+    <div *ngIf="editMode && !viewOnly">
+      <p-editor name="comments" id="comments" [(ngModel)]="value.comment" (ngModelChange)="commentChange()" [style]="{'height':'130px'}"></p-editor>
+      <div style="display: flex; justify-content: flex-end; width: 100%; margin-top: 5px;">
+        <button class="btn btn-sm btn-success" (click)="comment()" >
+          <i class="fa fa-eye"></i> Preview
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-report-section  [filtered]="filtered?.children[i]" [viewOnly]="viewOnly" *ngFor="let section of value.children; let i = index" [value]="section" [labelizer]="labelizer" (valueChange)="childChange($event, i)" ></app-report-section>

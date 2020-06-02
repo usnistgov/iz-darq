@@ -1,0 +1,11 @@
+<div>
+</div>
+<div>
+  <ng-container *ngIf="controls">
+    <ng-container *ngTemplateOutlet="controls"></ng-container>
+  </ng-container>
+  <ng-container *ngIf="(isViewOnly$ | async) === false">
+    <dam-reset-button></dam-reset-button>
+    <dam-save-button></dam-save-button>
+  </ng-container>
+</div>

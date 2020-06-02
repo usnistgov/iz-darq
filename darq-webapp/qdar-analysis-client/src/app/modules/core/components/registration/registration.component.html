@@ -1,0 +1,59 @@
+<div class="page-container">
+  <div class="page-alerts">
+    <dam-alerts-container></dam-alerts-container>
+  </div>
+  <div class="page-title upload-page-title">
+    <h4 class="title-text title-heading" ><i class="fa fa-user" style="color: blue;"></i> Application Form </h4>
+  </div>
+  <div class="page-content upload-page-content">
+    <form class="upload-form" [formGroup]="form">
+      <div class="form-group">
+        <label for="name"><strong>Full-name</strong></label>
+        <input type="text" placeholder="Full-name" class="form-control" formControlName="fullName" name="fullname" id="fullname">
+        <div class="invalid-feedback">
+          Please provide a valid city.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="name"><strong>Email</strong></label>
+        <input type="email" placeholder="Email" class="form-control" formControlName="email" name="email" id="email" required>
+      </div>
+      <div class="form-group">
+        <label for="name"><strong>Username</strong></label>
+        <input type="text" placeholder="Username" class="form-control" formControlName="username" name="username" id="username" required>
+        <small class="form-text text-muted">
+          Your username must be 8-10 characters long, might contain letters and numbers and underscore, and must not contain spaces, special characters, or emoji.
+        </small>
+      </div>
+      <div class="form-group">
+        <label for="name"><strong>Organization</strong></label>
+        <input type="text" placeholder="Organization" class="form-control" formControlName="organization" name="organization" id="organization" required>
+      </div>
+      <div class="form-group">
+        <label for="name"><strong>Password</strong></label>
+        <input type="password" placeholder="Password" class="form-control" formControlName="password" name="password" id="password" required>
+        <small class="form-text text-muted">
+          Your password must be 8-20 characters long, might contain upper and lower case letters and numbers and a special character (@*#!'&).
+        </small>
+      </div>
+      <div class="form-group">
+        <label for="name"><strong>Confirm Password</strong></label>
+        <input type="password" placeholder="Confirm Password" class="form-control" formControlName="confirmPassword" name="confirmPassword" id="confirmPassword" required>
+      </div>
+      <div class="form-group">
+        <label for="tac"><strong>Terms & Conditions</strong></label>
+        <textarea style="resize: none;" class="form-control" disabled rows="10">
+        </textarea>
+      </div>
+      <div class="form-group form-check">
+        <input required formControlName="signedConfidentialityAgreement" type="checkbox" class="form-check-input" id="accept-check">
+        <label class="form-check-label" for="accept-check">I have read and accept the terms & conditions of use</label>
+      </div>
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+        <button class="btn btn-sm btn-primary" [disabled]="form.invalid" (click)="submit()">
+          Submit Application
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

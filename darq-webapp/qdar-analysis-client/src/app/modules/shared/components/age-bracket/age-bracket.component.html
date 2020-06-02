@@ -1,0 +1,4 @@
+<span *ngIf="bracket.year"><strong>{{bracket.year}}</strong> {{ageGroupService.plural(bracket.year, 'year')}}</span>
+<span *ngIf="bracket.month"><strong>{{bracket.month}}</strong> {{ageGroupService.plural(bracket.year, 'month')}}</span>
+<span *ngIf="bracket.day"><strong>{{bracket.day}}</strong> {{ageGroupService.plural(bracket.year, 'day')}}</span>
+<span *ngIf="(bracket.month + bracket.day + bracket.year) === 0" ><strong>Birth</strong></span>

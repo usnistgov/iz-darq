@@ -1,0 +1,63 @@
+<div class="ui-table-dash" *ngIf="userInfo$ | async as userInfo" style="margin-top: 40px;" >
+  <p-table
+  [value]="reports$ | async"
+  [paginator]="true"
+  [rows]="10"
+  [tableStyleClass]="'table table-sm table-striped'">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="vertical-align: middle;" pSortableColumn="name">
+          Name
+          <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle;" pSortableColumn="file">
+          File
+          <p-sortIcon field="file"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle;" pSortableColumn="owner">
+          Published By
+          <p-sortIcon field="owner"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle; width: 150px;" pSortableColumn="publishDate">
+          Published On
+          <p-sortIcon field="submitTime"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle;">
+          Template
+        </th>
+        <th style="vertical-align: middle; width: 300px;">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+      <tr>
+        <td>
+          <i class="fa fa-pie-chart" style="color: darkgreen; margin-right: 10px;"></i>
+          {{rowData.name}}
+        </td>
+        <td>
+          <i class="fa fa-file" style="color: crimson; margin-right: 10px;"></i>
+          {{rowData.adfName}}
+        </td>
+        <td><i class="fa fa-user" style="color: blue;"></i> {{rowData.owner}}</td>
+        <td>{{rowData.publishDate | date:'MM-dd-yyyy HH:mm' }}</td>
+        <td>
+          <div class="badge cursor-pointer" style="background-color: rgb(235, 235, 235); font-size: initial; margin-top: 2px; width: 100%;" [routerLink]="['/', 'report-templates', rowData.template.id ]">
+            <i class="fa fa-object-group" style="color: rgb(2, 224, 121); margin-right: 5px;"></i>
+            <app-descriptor-display [descriptor]="rowData.template"></app-descriptor-display>
+          </div>
+        <td>
+          <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;">
+            <button class="btn btn-sm btn-primary"  style="margin-right: 5px;" *ngIf="rowData.id" [routerLink]="['/', 'report', rowData.id ]">
+              <i class="fa fa-eye"></i>
+              View Report
+            </button>
+            <button class="btn btn-sm btn-danger" *ngIf="userInfo.isAdmin" (click)="remove(rowData)" >
+              <i class="fa fa-trash"></i>
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

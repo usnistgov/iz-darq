@@ -1,0 +1,114 @@
+<mat-dialog-content>
+  <form #form="ngForm">
+    <div>
+      <div class="form-group" style="border-bottom: 1px solid #cecece;">
+        <input type="checkbox" style="margin-right: 10px;" id="global" name="global" [(ngModel)]="value.threshold.global.active" (ngModelChange)="triggerChange()">
+        <label class="form-check-label" for="global">Global Threshold</label>
+      </div>
+      <div>
+        <div *ngIf="value.threshold.global.active" class="form-group" style="display: flex; width: 100%; align-items: center; justify-content: center;">
+          <strong style="width: 250px;" > Values (%) should be </strong>
+          <p-dropdown
+          [options]="comparatorOptions"
+          [autoDisplayFirst]="false"
+          id="globalc"
+          name="globalc"
+          appendTo="body"
+          required
+          placeholder="Comparator"
+          [(ngModel)]="value.threshold.global.goal.comparator"
+          (ngModelChange)="triggerChange()"
+          [style]="{ 'width' : '100%' }">
+          </p-dropdown>
+          <input
+            style="margin-left: 10px;"
+            [(ngModel)]="value.threshold.global.goal.value"
+            (ngModelChange)="triggerChange()"
+            required type="number" placeholder="Value (%)" class="form-control" name="globalv" id="globalv">
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="form-group" style="border-bottom: 1px solid #cecece;">
+        <input type="checkbox" style="margin-right: 10px;" id="indiv" name="indiv" [(ngModel)]="value.threshold.custom.active" (ngModelChange)="triggerChange()">
+        <label class="form-check-label" for="indiv">Individual Threshold</label>
+      </div>
+      <div class="form-group" style="display: flex; flex-direction: column; width: 100%;align-items: flex-start; overflow: scroll;" *ngIf="value.threshold.custom.active">
+        <table class="table table-sm table-striped table-bordered">
+          <thead>
+            <tr>
+              <th style="width: 40px; text-align: center; vertical-align: middle;">
+                <button class="btn btn-sm btn-primary pull-left" (click)="addCustomThreshold(value.threshold.custom.thresholds)" [disabled]="value.groupBy.length === 0">
+                  <i class="fa fa-plus"></i>
+                </button>
+              </th>
+              <th style="width: 50px; text-align: center; vertical-align: middle;">
+                Priority
+              </th>
+              <th *ngFor="let field of value.groupBy" style="text-align: center; vertical-align: middle;">{{field}}</th>
+              <th style="min-width: 300px; text-align: center; vertical-align: middle;"> Threshold (Values (%) should be) </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let threshold of value.threshold.custom.thresholds; let j = index">
+              <td>
+                <button class="btn btn-sm btn-danger pull-left" (click)="removeCustomThreshold(value.threshold.custom.thresholds, j)">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </td>
+              <td style="text-align: center; vertical-align: middle;">
+                {{ j + 1 }}
+              </td>
+              <td *ngFor="let field of value.groupBy; let i = index" style="vertical-align: middle;">
+                <div style="display: flex; align-items: center;" *ngIf="!threshold.values[field]">
+                  <strong style="flex-grow: 1; text-align: center; min-width: 120px !important;"> * (ANY VALUE) </strong>
+                  <button  class="btn btn-sm btn-light pull-right" style="border: 1px solid; min-width: 100px !important;" (click)="addFieldValue(threshold.values, field)">
+                    Set Value
+                  </button>
+                </div>
+                <div *ngIf="threshold.values[field]" style="display: flex; align-items: center; padding-right: 4.8px;">
+                  <app-field-input
+                    [analysis]="analysis"
+                    [options]="options"
+                    [field]="field"
+                    [id]="'indiv' + field + '-' + j + '-' + i"
+                    [name]="'indiv' + field + '-' + j + '-' + i"
+                    [(ngModel)]="threshold.values[field].value"
+                    (ngModelChange)="triggerChange()"
+                    required
+                    style="flex-grow: 1; min-width: 180px !important;"
+                  ></app-field-input>
+                  <button class="btn btn-sm btn-danger" (click)="clearFieldValue(threshold.values, field)">
+                    <i class="fa fa-times"></i>
+                  </button>
+                </div>
+              </td>
+              <td style="vertical-align: middle;">
+                <div style="display: flex; width: 100%; align-items: center; justify-content: center;">
+                  <p-dropdown
+                    [options]="comparatorOptions"
+                    [autoDisplayFirst]="false"
+                    [id]="'indiv-t-' + j"
+                    [name]="'indiv-t-' + j"
+                    appendTo="body"
+                    required
+                    placeholder="Comparator"
+                    [(ngModel)]="threshold.goal.comparator"
+                    (ngModelChange)="triggerChange()">
+                  </p-dropdown>
+                  <input
+                    style="margin-left: 10px;"
+                    [(ngModel)]="threshold.goal.value"
+                    (ngModelChange)="triggerChange()"
+                    required type="number" placeholder="Value (%)" class="form-control"
+                    [id]="'indiv-t-v' + j"
+                    [name]="'indiv-t-v' + j">
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>

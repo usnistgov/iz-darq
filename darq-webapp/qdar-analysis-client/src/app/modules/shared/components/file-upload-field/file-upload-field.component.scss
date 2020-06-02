@@ -1,0 +1,30 @@
+.upload {
+	position: absolute;
+	width: 100%;
+}
+
+.file-upload {
+	cursor: pointer;
+	height: 100%;
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
+
+.sleep {
+	border: 2px dashed #000000;
+}
+
+.wake {
+  border: 3px dashed darkblue;
+  background-color: rgb(242, 250, 253);
+}
+
+div {
+	position: relative;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.text {
+  color: gray;
+}

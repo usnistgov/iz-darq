@@ -1,0 +1,45 @@
+<nav class="navbar navbar-light nav-title">
+  <img height="45px" src="assets/nist_logo.png">
+  <a class="navbar-brand toolbar-name">
+    Data At Rest Quality Analysis Tool
+    <span class="toolname-abbrv">(qDAR)</span>
+    <span class="toolname-version">v{{info?.version}}</span>
+  </a>
+</nav>
+<nav class="navbar navbar-expand-sm nav-links">
+  <ul class="navbar-nav">
+    <li class="nav-item" routerLink="home" routerLinkActive="active">
+      <a class="nav-link">Home</a>
+    </li>
+    <li class="nav-item" [ngClass]="{'active': isAdf | async }" ngbDropdown>
+      <a class="nav-link"  routerLink="/adf"  ngbDropdownToggle>Data</a>
+        <div ngbDropdownMenu>
+          <button [routerLink]="['/', 'adf', 'dashboard']" ngbDropdownItem routerLinkActive="active-dropdown">
+            Dashboard
+          </button>
+          <button [routerLink]="['/', 'adf', 'upload']" ngbDropdownItem routerLinkActive="active-dropdown">
+            Upload File
+          </button>
+        </div>
+    </li>
+    <li class="nav-item" routerLink="configurations" routerLinkActive="active">
+      <a class="nav-link">Configurations</a>
+    </li>
+    <li class="nav-item" routerLink="report-templates" routerLinkActive="active">
+      <a class="nav-link">Report Templates</a>
+    </li>
+    <li class="nav-item" routerLink="facility" routerLinkActive="active" *ngIf="(isAdmin$ | async) === true">
+      <a class="nav-link">Facilities</a>
+    </li>
+    <li class="nav-item" routerLink="documentation" routerLinkActive="active">
+      <a class="nav-link">Documentation</a>
+    </li>
+    <li class="nav-item" routerLink="release-notes" routerLinkActive="active">
+      <a class="nav-link">Release Notes</a>
+    </li>
+    <li class="nav-item" routerLink="issues" routerLinkActive="active">
+      <a class="nav-link">Issues</a>
+    </li>
+  </ul>
+  <dam-user-management-header></dam-user-management-header>
+</nav>

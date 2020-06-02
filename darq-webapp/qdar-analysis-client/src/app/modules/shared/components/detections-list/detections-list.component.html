@@ -1,0 +1,52 @@
+<div class="alert alert-warning" role="alert" *ngIf="unrecognizedCodes && unrecognizedCodes.length > 0">
+  Unrecognized MQE Detection codes {{ unrecognizedCodes | json }}
+</div>
+<div style="display: flex; width: 100%; margin-bottom: 5px;">
+  <div style="flex-grow: 1; margin-right: 5px;">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa fa-search"></i></span>
+      </div>
+      <input class="form-control" type="text" placeholder="Search By Code, Description, Target" (input)="filter($event.target.value)">
+    </div>
+  </div>
+  <button class="btn btn-sm btn-primary" (click)="pick()" *ngIf="!viewOnly">
+    <i class="fa fa-plus"></i>
+    Add Detections
+  </button>
+</div>
+
+<table class="table table-sm table-striped" *ngIf="value">
+  <thead>
+    <tr>
+      <th> MQE Code </th>
+      <th> Description </th>
+      <th> Target </th>
+      <th> Active </th>
+      <th *ngIf="!viewOnly"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of filtered; let i = index">
+      <td>{{item}}</td>
+      <td>{{detectionsMap[item].description}}</td>
+      <td>{{detectionsMap[item].target}}</td>
+      <td style="vertical-align: middle;"> <div style="width: 15px; height: 15px; border-radius: 15px;" [ngClass]="{ 'active' : detectionsMap[item].active, 'inactive' : !detectionsMap[item].active }"></div> </td>
+      <td *ngIf="!viewOnly">
+        <button class="btn btn-sm btn-danger float-right" (click)="remove(i)">
+          <i class="fa fa-minus"></i>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+  <tbody *ngIf="!value || value.length === 0">
+    <tr>
+      <td [attr.colspan]="!viewOnly ? 5 : 4"> No Detections Managed.</td>
+    </tr>
+  </tbody>
+  <tbody *ngIf="(!filtered || filtered.length === 0) && (value && value.length > 0)">
+    <tr>
+      <td [attr.colspan]="!viewOnly ? 5 : 4"> No Search Results.</td>
+    </tr>
+  </tbody>
+</table>

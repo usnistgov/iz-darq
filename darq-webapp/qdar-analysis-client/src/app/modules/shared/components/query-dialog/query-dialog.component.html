@@ -1,0 +1,56 @@
+<h2 mat-dialog-title>Data Table Query Builder [type : {{nameOf(value.type)}}]</h2>
+<dam-alerts [messages]="messages"></dam-alerts>
+
+  <p-tabView>
+    <p-tabPanel header="General Query Data" [headerStyleClass]="!tabsValid.general.valid ? 'invalid-tab' : 'valid-tab'">
+      <app-general-query-data
+        [(value)]="value"
+        (valid)="setValidStatus('general', $event)"
+        [paths]="paths"
+      ></app-general-query-data>
+    </p-tabPanel>
+    <p-tabPanel header="Data Selection"  [headerStyleClass]="!tabsValid.selectors.valid ? 'invalid-tab' : 'valid-tab'">
+      <app-query-selector
+        [(value)]="value.selectors"
+        (valid)="setValidStatus('selectors', $event)"
+        (messages)="setMessages('selectors', $event)"
+        [options]="options"
+        [analysis]="value.type"
+      ></app-query-selector>
+    </p-tabPanel>
+    <p-tabPanel header="Group By"  [headerStyleClass]="!tabsValid.groupBy.valid ? 'invalid-tab' : 'valid-tab'">
+      <app-query-group
+        [(value)]="value.groupBy"
+        [filterGoup]="value.filter.groups.values"
+        [thresholds]="value.threshold.custom.thresholds"
+        (valid)="setValidStatus('groupBy', $event)"
+        (messages)="setMessages('groupBy', $event)"
+        [analysis]="value.type"
+      ></app-query-group>
+    </p-tabPanel>
+    <p-tabPanel header="Post Process Row Filters"  [headerStyleClass]="!tabsValid.filters.valid ? 'invalid-tab' : 'valid-tab'">
+      <app-post-filters
+        [(value)]="value.filter"
+        [groupBy]="value.groupBy"
+        (valid)="setValidStatus('filters', $event)"
+        (messages)="setMessages('filters', $event)"
+        [options]="options"
+        [analysis]="value.type"
+      ></app-post-filters>
+    </p-tabPanel>
+    <p-tabPanel header="Thresholds" [headerStyleClass]="!tabsValid.thresholds.valid ? 'invalid-tab' : 'valid-tab'">
+      <app-query-threshold
+        [(value)]="value"
+        (valid)="setValidStatus('thresholds', $event)"
+        (messages)="setMessages('thresholds', $event)"
+        [options]="options"
+        [analysis]="value.type"
+      ></app-query-threshold>
+    </p-tabPanel>
+  </p-tabView>
+
+<mat-dialog-actions style="justify-content: flex-end;">
+  <button class="btn btn-sm btn-secondary" style="margin-right: 5px;" [mat-dialog-close]="" >Cancel</button>
+  <button class="btn btn-sm btn-danger" style="margin-right: 5px;" (click)="reset()" >Reset</button>
+  <button class="btn btn-sm btn-success" [disabled]="!valid" [mat-dialog-close]="value" >Done</button>
+</mat-dialog-actions>

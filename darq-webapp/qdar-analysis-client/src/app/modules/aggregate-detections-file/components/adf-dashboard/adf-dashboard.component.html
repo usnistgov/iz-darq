@@ -1,0 +1,63 @@
+<div class="page-container-adf" *ngIf="facilities$ | async as facilities">
+  <div class="facilities" >
+
+    <div class="facility-title">
+      <h4 class="title-text">
+        <i style="color: #795548;" class="fa fa-building" aria-hidden="true"></i> Facility
+      </h4>
+    </div>
+    <div class="facility-filter">
+      <div class="input-group" style="min-width: 300px;">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fa fa-filter"></i></span>
+        </div>
+        <input type="text" class="form-control" placeholder="filter" aria-label="filter">
+      </div>
+    </div>
+    <div class="facility-content">
+      <ul class="list-group">
+        <li class="list-group-item cursor-pointer" style="text-align: center;" [routerLink]="[ '/', 'adf', 'dashboard', 'local' ]" routerLinkActive="active">
+          <i class="fa fa-user" style="color: blue;"></i> Private
+        </li>
+        <li class="list-group-item cursor-pointer" style="text-align: center;" *ngFor="let facility of facilities"  [routerLink]="[ '/', 'adf', 'dashboard', facility.id ]" routerLinkActive="active">
+          {{ facility.name }}
+        </li>
+      </ul>
+    </div>
+
+  </div>
+  <div class="page-container">
+    <div class="page-alerts">
+      <dam-alerts-container></dam-alerts-container>
+    </div>
+    <div class="page-title dash-page-title">
+      <h4 class="title-text"><i class="fa fa-database" style="color: crimson;"></i> Dashboard </h4>
+    </div>
+
+    <div class="page-content dash-page-content">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="files" routerLinkActive="active" >
+            <h5 class="title-text"><i class="fa fa-file-text-o" style="color:crimson; margin-right: 5px;"></i> Aggregate Detections Files</h5>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="jobs" routerLinkActive="active">
+            <h5 class="title-text"><i class="fa fa-area-chart" style="color:crimson; margin-right: 5px;"></i> Analysis Jobs</h5>
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="(facility$ | async) !== 'local'">
+          <a class="nav-link" routerLink="reports" routerLinkActive="active">
+            <h5 class="title-text"><i class="fa fa-pie-chart" style="color:crimson; margin-right: 5px;"></i> Published Reports
+            <span class="badge badge-danger">{{ reportNumbers$ | async}}</span>
+            </h5>
+          </a>
+        </li>
+      </ul>
+
+      <div style="flex-grow: 1;">
+        <router-outlet></router-outlet>
+      </div>
+  </div>
+</div>
+

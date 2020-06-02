@@ -1,0 +1,18 @@
+<form #form="ngForm" >
+  <div class="form-group">
+    <label for="type"><strong> Query Type </strong></label>
+    <p-dropdown required id="type" name="type" [options]="paths" [style]="{ 'width' : '100%' }" [(ngModel)]="value.type"></p-dropdown>
+  </div>
+  <div class="form-group">
+    <label for="caption"><strong> Table Caption </strong></label>
+    <input type="text" placeholder="Caption" class="form-control" name="caption" id="caption" [(ngModel)]="value.caption">
+  </div>
+  <div class="form-group form-check">
+    <input type="checkbox" class="form-check-input" id="paginator" name="paginator" [(ngModel)]="value.paginate">
+    <label class="form-check-label" for="paginator">Paginator</label>
+  </div>
+  <div class="form-group" *ngIf="value.paginate">
+    <label for="rows"><strong> Rows Per Page </strong></label>
+    <input required type="number" placeholder="Rows Per Page" class="form-control" name="rows" id="rows" [(ngModel)]="value.rows" [min]="1">
+  </div>
+</form>

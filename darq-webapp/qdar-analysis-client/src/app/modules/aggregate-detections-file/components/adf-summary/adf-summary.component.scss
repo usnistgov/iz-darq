@@ -1,0 +1,23 @@
+.summary-page-title {
+  background-color: white;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.summary-page-content {
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  overflow: scroll;
+  padding: 20px;
+}
+
+.content {
+  width: 100%;
+}
+
+ul {
+  position: absolute;
+}

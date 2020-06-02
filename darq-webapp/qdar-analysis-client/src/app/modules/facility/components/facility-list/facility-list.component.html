@@ -1,0 +1,46 @@
+<div class="side-bar">
+  <div class="buttons">
+    <dam-side-bar-toggle></dam-side-bar-toggle>
+    <button class="btn btn-sm btn-primary" (click)="createFacility()" >
+      <i class="fa fa-plus"></i>
+      Create Facility
+    </button>
+  </div>
+  <div class="filter">
+    <div class="input-group" style="margin-left: 5px; min-width: 400px;">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa fa-filter"></i></span>
+      </div>
+      <input type="text" class="form-control" placeholder="filter" aria-label="filter" [(ngModel)]="filterText">
+    </div>
+  </div>
+  <div class="list">
+    <ul class="list-group">
+      <li
+        *ngFor="let facility of filtered$ | async"
+        [routerLink]="facility.id"
+        routerLinkActive="active"
+        #rla="routerLinkActive"
+        class="list-group-item cursor-pointer"
+        [contextMenu]="cm"
+        [contextMenuSubject]="facility">
+
+        <div style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
+          <span>{{facility.name}}</span>
+          <span class="badge badge-primary">
+            <i class="fa fa-user" style="color: black;"></i>
+            {{facility.size}}
+          </span>
+        </div>
+
+        <context-menu #cm>
+          <ng-template contextMenuItem let-configuration [enabled]="!rla.isActive || (rla.isActive && !(widget.containsUnsavedChanges$() | async))">
+            <i class="fa fa-trash"></i>
+            Delete Configuration
+          </ng-template>
+        </context-menu>
+      </li>
+    </ul>
+  </div>
+</div>
+

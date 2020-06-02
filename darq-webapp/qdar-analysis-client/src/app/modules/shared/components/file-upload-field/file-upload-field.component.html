@@ -1,0 +1,17 @@
+<div
+  fileDrop
+  (hover)="onHover($event)"
+  (dropped)="drop($event)"
+  style="height: 100%; display: flex; flex-direction: row; justify-content: center; align-items: center;"
+  [ngClass]="{ 'wake': hover, 'sleep' : !hover, 'ng-invalid' : required && !current && !hover }">
+
+  <span *ngIf="!current && !hover" style="color: gray;">No File Selected (Drop Or Click Here)</span>
+  <span *ngIf="hover" style="color: lightgray; font-weight: bold;">DROP HERE</span>
+  <div *ngIf="current" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+    <i class="fa fa-file" style="color: blue; font-size: 2.5em; margin-right: 20px;"></i>
+    <span style="word-wrap:break-word; color: black; margin-right: 20px;">{{current.name}}</span>
+    <i (click)="clear()" class="fa fa-times" style="color: darkred; z-index: 999; cursor: pointer; font-size: 1.5em;"></i>
+  </div>
+
+  <input #input name="up2" type="file" (change)="change($event)" class="upload file-upload" />
+</div>

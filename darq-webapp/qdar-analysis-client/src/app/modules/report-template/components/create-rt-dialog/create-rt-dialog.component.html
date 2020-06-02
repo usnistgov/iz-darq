@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Create Report Template</h2>
+<form>
+  <div class="form-group">
+    <label for="name"><strong>Report Template Name</strong></label>
+    <input type="text" placeholder="Name" class="form-control" name="name" id="name" [(ngModel)]="reportTemplateName" required>
+  </div>
+  <div class="form-group" >
+    <label for="configuration"><strong>Configuration</strong></label>
+    <p-dropdown
+      name="configuration"
+      [options]="configurations"
+      [autoDisplayFirst]="false"
+      [(ngModel)]="configurationId"
+      [style]="{ 'width' : '100%' }"
+      appendTo="body">
+    <ng-template let-configuration pTemplate="selectedItem">
+      <app-descriptor-display [descriptor]="configuration.label"></app-descriptor-display>
+    </ng-template>
+    <ng-template let-configuration pTemplate="item">
+      <app-descriptor-display [descriptor]="configuration.label"></app-descriptor-display>
+    </ng-template>
+    </p-dropdown>
+  </div>
+</form>
+
+<mat-dialog-actions style="justify-content: flex-end;">
+  <button (click)="cancel()" class="btn btn-sm btn-secondary" style="margin-right: 5px;">Cancel</button>
+  <button [disabled]="!valid()" (click)="create()" class="btn btn-sm btn-success">Create</button>
+</mat-dialog-actions>

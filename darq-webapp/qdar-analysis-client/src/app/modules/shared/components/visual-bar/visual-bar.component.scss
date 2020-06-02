@@ -1,0 +1,43 @@
+.danger-zone {
+  background-color: pink !important;
+}
+
+.ok-zone {
+  background-color: #ccfdcc !important;
+}
+
+.neutral-zone {
+  background-color: aliceblue !important;
+}
+
+.danger-bar {
+  background-color: red !important;
+}
+
+.ok-bar {
+  background-color: blue !important;
+}
+
+.threshold {
+  border-right: 2px solid brown;
+}
+
+.value {
+  text-align: center;
+  font-weight: bold;
+  position: relative;
+}
+
+.bar {
+  height: 20px;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+}
+
+.zone {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}

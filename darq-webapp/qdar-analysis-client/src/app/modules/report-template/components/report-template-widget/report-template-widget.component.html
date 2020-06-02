@@ -1,0 +1,37 @@
+<dam-layout>
+
+  <ng-template #alerts>
+    <dam-alerts-container></dam-alerts-container>
+  </ng-template>
+
+  <ng-template #titleBar>
+    <div style="width: 100%; display: flex; justify-content: space-between;" *ngIf="template$ | async as template">
+
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <h4 class="title-text">
+          <i class="fa fa-globe" style="color:brown; margin-right: 5px;" *ngIf="template.published"></i>
+          <i class="fa fa-object-group" style="color: rgb(2, 224, 121);"></i>
+          {{template.name}}
+        </h4>
+        <!-- <span class="badge badge" style="margin-right: 5px; font-weight: 300; color: #afafaf;">Updated On {{ template.lastUpdated | date:'MM-dd-yyyy HH:mm' }}</span> -->
+      </div>
+      <dam-fullscreen-button></dam-fullscreen-button>
+    </div>
+  </ng-template>
+
+  <ng-template #toolbar>
+    <app-rt-toolbar></app-rt-toolbar>
+  </ng-template>
+
+  <ng-template #activeTitleBar>
+    <app-rt-active-title [controls]="activeComponent?.controls" [active]="active$ | async"></app-rt-active-title>
+  </ng-template>
+
+  <ng-template #editorContent>
+    <dam-editor-outlet></dam-editor-outlet>
+  </ng-template>
+
+  <ng-template #sideBar>
+    <app-rt-side-bar [viewOnly]="viewOnly$ | async" [sections]="sections$ | async" ></app-rt-side-bar>
+  </ng-template>
+</dam-layout>

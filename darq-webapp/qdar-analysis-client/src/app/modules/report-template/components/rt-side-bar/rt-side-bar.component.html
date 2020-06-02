@@ -1,0 +1,63 @@
+<div class="side-bar">
+  <div class="buttons">
+    <dam-side-bar-toggle></dam-side-bar-toggle>
+  </div>
+  <ul class="list-group editors">
+    <li class="list-group-item cursor-pointer" routerLink="metadata" routerLinkActive="active" >Report Template Metadata</li>
+    <li class="list-group-item cursor-pointer">Global Filters & Thresholds</li>
+    <li class="list-group-item" style="background-color: #f3f3f3; display: flex; justify-content: space-between; align-items: center;">
+      Sections
+      <button class="btn btn-sm btn-primary" (click)="createNewSection()">
+        <i class="fa fa-plus"></i>
+        Add Section
+      </button>
+    </li>
+  </ul>
+  <div class="filter">
+    <div class="input-group" style="margin-left: 5px; min-width: 400px;">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa fa-filter"></i></span>
+      </div>
+      <input type="text" class="form-control" placeholder="filter" aria-label="filter">
+    </div>
+  </div>
+  <div class="list">
+    <div style="background-color: white; flex-grow: 1;">
+      <tree-root [nodes]="sections" [options]="options">
+        <ng-template #treeNodeTemplate let-node let-index="index">
+          <span
+            [routerLink]="['section', node.data.id ]"
+            routerLinkActive
+            [contextMenu]="cm"
+            #rla="routerLinkActive"
+            [contextMenuSubject]="node.data">{{ node.data.path }}. {{ node.data.header }}</span>
+          <context-menu #cm>
+            <ng-template contextMenuItem (execute)="createNewSection($event.item.path)">
+              <i class="fa fa-plus" ></i>
+              Add Child Section
+            </ng-template>
+            <ng-template contextMenuItem divider="true"></ng-template>
+            <ng-template contextMenuItem>
+              <i class="fa fa-files-o"></i>
+              Clone Section
+            </ng-template>
+            <ng-template contextMenuItem divider="true"></ng-template>
+            <ng-template contextMenuItem (execute)="deleteSection($event.item.path, node.parent)">
+              <i class="fa fa-trash"></i>
+              Delete Section
+            </ng-template>
+          </context-menu>
+          <ul style="list-style-type: none; margin-bottom: 0px;" *ngIf="rla.isActive">
+            <li [routerLink]="[ 'section', node.data.id, 'narrative' ]" [routerLinkActive]="'section-node-active'">
+              <span><i class="fa fa-file-text"></i><a> Narrative</a></span>
+            </li>
+            <li [routerLink]="[ 'section', node.data.id, 'data-tables' ]" [routerLinkActive]="'section-node-active'">
+              <span><i class="fa fa-table"></i><a> Data Tables</a></span>
+            </li>
+          </ul>
+        </ng-template>
+      </tree-root>
+    </div>
+  </div>
+</div>
+

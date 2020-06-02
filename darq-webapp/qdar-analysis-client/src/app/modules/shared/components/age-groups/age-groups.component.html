@@ -1,0 +1,64 @@
+<form [formGroup]="form">
+  <table class="table table-sm table-striped table-bordered">
+    <tbody *ngIf="!viewOnly">
+      <tr>
+        <th>Years</th>
+        <th>Months</th>
+        <th>Days</th>
+        <th></th>
+      </tr>
+      <tr>
+        <th>
+          <input type="number" class="form-control" formControlName="year" id="years">
+        </th>
+        <th>
+          <input type="number" class="form-control" formControlName="month" id="months">
+        </th>
+        <th>
+          <input type="number" class="form-control" formControlName="day" id="days">
+        </th>
+        <th style="vertical-align: middle;">
+          <button class="btn btn-sm btn-primary float-right" (click)="addBracket()" [disabled]="form.invalid">
+            <i class="fa fa-plus"></i> Add Bracket
+          </button>
+        </th>
+      </tr>
+    </tbody>
+    <tr>
+      <th>From</th>
+      <th></th>
+      <th>To</th>
+      <th *ngIf="!viewOnly"></th>
+    </tr>
+    <tbody>
+      <tr *ngFor="let group of ranges; let i = index">
+        <td>
+          <app-age-bracket [bracket]="group.min" ></app-age-bracket>
+        </td>
+        <td>
+          <i class="fa fa-arrow-right"></i>
+        </td>
+        <td>
+          <app-age-bracket [bracket]="group.max" ></app-age-bracket>
+        </td>
+        <td *ngIf="!viewOnly">
+          <button class="btn btn-sm btn-danger float-right" (click)="remove(i)">
+            <i class="fa fa-minus"></i>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <app-age-bracket [bracket]="openBracket" ></app-age-bracket>
+        </td>
+        <td>
+          <i class="fa fa-arrow-right"></i>
+        </td>
+        <td>
+          <i class="fa fa-plus-circle"></i> Infinity
+        </td>
+        <td *ngIf="!viewOnly"></td>
+      </tr>
+    </tbody>
+  </table>
+</form>

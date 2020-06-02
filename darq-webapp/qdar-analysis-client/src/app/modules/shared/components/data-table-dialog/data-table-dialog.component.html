@@ -1,0 +1,22 @@
+<p-tabView>
+  <p-tabPanel header="Data Analysis" headerStyleClass="valid-tab">
+    <app-data-table [table]="table" [labelizer]="labelizer"></app-data-table>
+  </p-tabPanel>
+  <p-tabPanel header="Query" headerStyleClass="valid-tab">
+    <app-query-display [query]="table" [labelizer]="labelizer"></app-query-display>
+  </p-tabPanel>
+  <p-tabPanel *ngIf="table.issues" header="Issues" headerStyleClass="invalid-tab">
+    <table *ngIf="table.issues.inactiveDetections && table.issues.inactiveDetections.length > 0" class="table table-sm table-striped table-bordered">
+      <thead>
+        <tr>
+          <th style="text-align: center;"> MQE Inactive Detections </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of table.issues.inactiveDetections">
+          <td>{{ labelizer.for(fields.DETECTION, item) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </p-tabPanel>
+</p-tabView>

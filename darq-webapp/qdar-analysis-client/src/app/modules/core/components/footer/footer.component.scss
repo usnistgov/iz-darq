@@ -1,0 +1,16 @@
+@import 'src/assets/_variables.scss';
+
+.footer-layout {
+  width: 100%;
+  padding : 10px;
+  border-top: 1px solid darkgrey;
+  background-color: $nist_light_yellow;
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}

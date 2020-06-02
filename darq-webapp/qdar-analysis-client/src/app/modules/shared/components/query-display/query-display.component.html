@@ -1,0 +1,123 @@
+<table class="table table-sm table-bordered" style="margin-bottom: 0;">
+  <tbody>
+    <tr>
+      <th colspan="2" class="title" >General</th>
+    </tr>
+    <tr>
+      <th class="field field-title">Caption</th>
+      <td>{{query.caption}}</td>
+    </tr>
+    <tr *ngIf="query.paginate">
+      <th class="field field-title">Rows Per Page</th>
+      <td>{{query.rows}}</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <th colspan="2" class="title">Selection</th>
+    </tr>
+    <tr *ngFor="let selector of query.selectors">
+      <th class="field field-title">{{selector.field}}</th>
+      <td>
+        <ul class="list-group" class="list-group">
+          <li
+            style="text-align: center;"
+            *ngFor="let value of selector.values"
+            class="list-group-item">
+            {{ labelizer.for(selector.field, value.value) }}
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <th colspan="2" class="title">Group By</th>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <ul class="list-group" class="list-group">
+          <li
+            style="text-align: center;"
+            *ngFor="let group of query.groupBy"
+            class="list-group-item">
+            {{group}}
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <th colspan="2" class="title">Thresholds</th>
+    </tr>
+    <tr *ngIf="query.threshold.global.active">
+      <th class="field field-title">Global Threshold</th>
+      <td>
+        {{  labelizer.comparator(query.threshold.global.goal.comparator) }} {{ query.threshold.global.goal.value }}%
+      </td>
+    </tr>
+    <tr *ngIf="query.threshold.custom.active">
+      <th class="field field-title">Individual Threshold</th>
+      <td>
+        <table class="table table-sm">
+          <tr>
+            <th class="field">Priority</th>
+            <th class="field" *ngFor="let group of query.groupBy">{{group}}</th>
+            <th class="field">Threshold (Goal %)</th>
+          </tr>
+          <tr *ngFor="let threshold of query.threshold.custom.thresholds; let i = index">
+            <td class="field">{{i}}</td>
+            <td class="field" *ngFor="let group of query.groupBy"> {{
+              threshold.values[group] ?  labelizer.for(group, threshold.values[group].value) :  '*'
+            }}</td>
+            <td>
+              {{ labelizer.comparator(threshold.goal.comparator) }} {{ threshold.goal.value }}%
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <th colspan="2" class="title">Post Process Filters</th>
+    </tr>
+    <tr *ngIf="query.filter.percentage.active">
+      <th class="field field-title">Percentage</th>
+      <td>
+        {{  labelizer.comparator(query.filter.percentage.comparator) }} {{ query.filter.percentage.value }} %
+      </td>
+    </tr>
+    <tr *ngIf="query.filter.denominator.active">
+      <th class="field field-title">Denominator</th>
+      <td>
+        {{  labelizer.comparator(query.filter.denominator.comparator) }} {{ query.filter.denominator.value }}
+      </td>
+    </tr>
+    <tr *ngIf="query.filter.threshold.active">
+      <th class="field field-title">Threshold</th>
+      <td>
+        {{ query.filter.threshold.pass ? 'Only Passed' : 'Only Failed' }}
+      </td>
+    </tr>
+    <tr *ngIf="query.filter.groups.active">
+      <th class="field field-title">Groups Filter</th>
+      <td>
+        <strong>Type : </strong>{{ query.filter.groups.keep ? 'Keep Only' : 'Filter Out' }}
+        <table class="table table-sm">
+          <tr>
+            <th class="field">Priority</th>
+            <th class="field" *ngFor="let group of query.groupBy">{{group}}</th>
+          </tr>
+          <tr *ngFor="let valueMap of query.filter.groups.values; let i = index">
+            <td class="field">{{i}}</td>
+            <td class="field" *ngFor="let group of query.groupBy"> {{
+              valueMap[group] ? labelizer.for(group, valueMap[group].value): '*'
+            }}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,12 @@
+<form *ngIf="{viewOnly: viewOnly$ | async } as context" class="form-narrative">
+  <div class="form-group">
+    <label for="name"><strong>Section Header</strong></label>
+    <input type="text" placeholder="Name" class="form-control" name="name" id="name" [ngModel]="value.header" (input)="headerChange($event.target.value)" [disabled]="context.viewOnly" required>
+  </div>
+  <div class="form-group form-group-text" >
+    <label for="description"><strong>Content</strong></label>
+    <p-editor *ngIf="!context.viewOnly" name="description" id="description" [ngModel]="value.text" (ngModelChange)="textChange($event)" class="section-editor">
+    </p-editor>
+    <div *ngIf="context.viewOnly" [innerHTML]="value.text"></div>
+  </div>
+</form>

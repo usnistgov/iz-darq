@@ -1,0 +1,19 @@
+@import '../../../../../assets/variables';
+
+.title-color {
+  color: $nist_light_blue;
+}
+
+.error-layout {
+  display: flex;
+  background-color: white;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.oops {
+  font-size: 100px;
+  font-weight: 600;
+  color: $nist_dark_blue;
+}

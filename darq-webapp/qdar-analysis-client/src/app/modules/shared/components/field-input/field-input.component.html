@@ -1,0 +1,38 @@
+<ng-container
+  *ngTemplateOutlet="fieldInputInfo[field] && fieldInputInfo[field].inputType === 'DROPDOWN' ? dropdownInput : textInput;
+  context: {
+    discrimator: id,
+    fieldInfo: fieldInputInfo[field],
+    field: field
+  }"
+></ng-container>
+<ng-template #textInput let-list let-field="field" let-fieldInfo="fieldInfo" let-discrimator="discrimator">
+  <div class="value-container">
+    <input
+      [id]="field + '-' + discrimator"
+      [name]="field+ '-' + discrimator"
+      type="text"
+      [placeholder]="placeholder || ''"
+      class="form-control"
+      [value]="value || ''"
+      (input)="valueChange($event.target.value)"
+    >
+  </div>
+</ng-template>
+<ng-template #dropdownInput let-fieldInfo="fieldInfo" let-discrimator="discrimator">
+  <div class="value-container">
+    <p-dropdown
+      [options]="fieldInfo.options[analysis] || fieldInfo.options.default || []"
+      [autoDisplayFirst]="false"
+      [filter]="true"
+      [id]="fieldInfo.id + '-' + discrimator"
+      [name]="fieldInfo.id + '-' + discrimator"
+      appendTo="body"
+      [showClear]="showClear"
+      [ngModel]="value"
+      [placeholder]="placeholder"
+      [style]="{ 'width' : '100%' }"
+      (onChange)="valueChange($event.value)">
+    </p-dropdown>
+  </div>
+</ng-template>

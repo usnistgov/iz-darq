@@ -1,0 +1,77 @@
+<mat-dialog-content>
+  <div style="display: flex; flex-direction: column;">
+    <div style="text-align: center;"><strong>Click on Field to select data based on Field values</strong></div>
+    <div style="display: flex; margin-top: 10px;">
+      <div style="flex-grow: 0.3; margin-right: 10px;">
+        <table class="table table-sm table-bordered">
+          <thead>
+            <tr>
+              <th style="text-align: center;">Fields</th>
+            </tr>
+          </thead>
+          <tbody >
+            <tr>
+              <td style="background-color: #f4f4f4;">
+                <ul class="list-group" style="min-height: 100px; text-align: center;">
+                  <li
+                    (click)="addSelector(field)"
+                    *ngFor="let field of fieldsList"
+                    class="list-group-item cursor-pointer">
+                    <strong>{{field}}</strong>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="flex-grow: 0.7">
+        <div style="text-align: center; padding: .3rem; border: 1px solid #dee2e6;">
+          <strong>Selection</strong>
+        </div>
+        <form #form="ngForm">
+          <ul class="list-group" style="min-height: 100px;">
+            <li
+              style="padding: 0 !important;"
+              *ngFor="let selector of value; let is = index"
+              class="list-group-item">
+              <table class="table table-sm" style="margin: 0 !important;">
+                <thead>
+                  <tr>
+                    <th style="text-align: center; vertical-align: middle;">
+                      <span>{{selector.field}}</span>
+                      <button class="btn btn-sm btn-danger pull-right" (click)="removeSelector(is)">
+                        <i class="fa fa-times"></i>
+                      </button>
+                      <button class="btn btn-sm btn-primary pull-right"  style="margin-right: 5px;" *ngIf="selector.field !== 'TABLE'" (click)="addValue(selector)">
+                        <i class="fa fa-plus"></i>
+                        Add Value
+                      </button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody style="background-color: #f4f4f4;">
+                  <tr *ngFor="let item of selector.values; let iv = index" style="display: flex; align-items: center; padding-right: 4.8px;">
+                    <app-field-input
+                      [analysis]="analysis"
+                      [options]="options"
+                      [field]="selector.field"
+                      [id]="iv + '-' + is"
+                      [name]="selector.field + '-' + iv + '-' + is"
+                      [(ngModel)]="selector.values[iv].value"
+                      required
+                      style="flex-grow: 1;"
+                    ></app-field-input>
+                    <button *ngIf="iv !== 0" class="btn btn-sm btn-danger"  (click)="removeValue(selector.values, iv)">
+                      <i class="fa fa-minus"></i>
+                    </button>
+                  </tr>
+                </tbody>
+              </table>
+            </li>
+          </ul>
+        </form>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>

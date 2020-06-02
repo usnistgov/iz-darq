@@ -1,0 +1,48 @@
+<div style="display: flex; flex-direction: column;">
+  <div style="text-align: center;"><strong>Click on Field to add to the fields combination on which to calculate percentages</strong></div>
+  <div style="display: flex; margin-top: 10px;">
+    <div style="flex-grow: 0.3; margin-right: 10px;">
+      <table class="table table-sm table-bordered">
+        <thead>
+          <tr>
+            <th style="text-align: center;">Fields</th>
+          </tr>
+        </thead>
+        <tbody >
+          <tr>
+            <td style="background-color: #f4f4f4;">
+              <ul class="list-group" style="min-height: 100px; text-align: center;">
+                <li
+                  (click)="addGroup(field)"
+                  *ngFor="let field of fieldsList"
+                  class="list-group-item cursor-pointer">
+                  <strong>{{field}}</strong>
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="flex-grow: 0.7">
+      <div style="text-align: center; padding: .3rem; border: 1px solid #dee2e6;">
+        <strong>Group By</strong>
+      </div>
+      <form #form="ngForm">
+        <ul class="list-group" class="list-group" style="min-height: 100px; max-height: 70vh; overflow: scroll;">
+          <li
+            style="display: flex;
+            align-items: center;
+            justify-content: space-between;"
+            *ngFor="let field of value; let i = index"
+            class="list-group-item">
+            <strong>{{field}}</strong>
+            <button class="btn btn-sm btn-danger pull-right" (click)="removeGroup(i)">
+              <i class="fa fa-times"></i>
+            </button>
+          </li>
+        </ul>
+      </form>
+    </div>
+  </div>
+</div>

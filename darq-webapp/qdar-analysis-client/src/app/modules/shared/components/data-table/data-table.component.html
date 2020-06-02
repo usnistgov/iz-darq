@@ -1,0 +1,149 @@
+<p-table
+  #dt
+  *ngIf="initialized"
+  [value]="rows"
+  [rowHover]="true"
+  [rows]="table.rows"
+  [showCurrentPageReport]="true"
+  [paginatorDropdownAppendTo]="'body'"
+  [paginator]="table.paginate"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [globalFilterFields]="searchFields"
+  [resizableColumns]="true"
+  [filterDelay]="0">
+  <ng-template pTemplate="caption">
+    <div style="width: 100%; text-align: center; margin-bottom: 5px;">
+      {{table.caption}}
+    </div>
+    <div class="input-group" style="margin-left: 5px; min-width: 300px;">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa fa-search"></i></span>
+      </div>
+      <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search">
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <ng-container  *ngFor="let header of columns">
+        <ng-container [ngSwitch]="header.type">
+          <th style="width: 180px;" [pSortableColumn]="header.key" pResizableColumn *ngSwitchCase="ColumnType.THRESHOLD">
+            {{ header.label }}
+            <p-sortIcon [field]="header.key"></p-sortIcon>
+          </th>
+          <th *ngSwitchCase="ColumnType.BAR" style="width: 340px;">
+            {{ header.label }}
+          </th>
+          <th [pSortableColumn]="header.key" pResizableColumn *ngSwitchCase="ColumnType.VALUE" style="width: 250px;">
+            {{ header.label }}
+          </th>
+          <th [pSortableColumn]="header.key" pResizableColumn *ngSwitchDefault>
+            {{ header.label }}
+            <p-sortIcon [field]="header.key"></p-sortIcon>
+          </th>
+        </ng-container >
+      </ng-container>
+    </tr>
+    <tr>
+      <th *ngFor="let header of columns">
+        <div [ngSwitch]="header.type">
+          <div *ngSwitchCase="ColumnType.FIELD" style="display: flex; align-items: center;">
+            <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active' : search.fields[header.key] }" ></i>
+            <app-field-input
+              [analysis]="table.type"
+              [options]="searchOptions"
+              [field]="header.key"
+              [showClear]="true"
+              [id]="header.key"
+              [placeholder]="'Search Filter'"
+              style="flex-grow: 1;"
+              [(ngModel)]="search.fields[header.key]"
+              (ngModelChange)="dt.filter($event, header.key, 'contains')"
+            ></app-field-input>
+          </div>
+          <div *ngSwitchCase="ColumnType.VALUE" style="display: flex; align-items: center;">
+            <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active' : valueFilterIsSet() }" ></i>
+            <p-dropdown
+              [options]="comparatorOptions"
+              [autoDisplayFirst]="false"
+              id="globalc"
+              name="globalc"
+              appendTo="body"
+              [(ngModel)]="search.value.comparator"
+              (ngModelChange)="filterValue(dt)"
+              [style]="{'min-width' : '90px'}"
+              placeholder="CMP">
+            </p-dropdown>
+            <input pInputText
+              class="form-control"
+              style="margin-left: 5px; width: 70px;"
+              type="number"
+              [placeholder]="'%'"
+              [(ngModel)]="search.value.value"
+              (ngModelChange)="filterValue(dt)"
+              placeholder="Percentage">
+            <button class="btn btn-sm btn-danger" style="margin-left: 5px;" (click)="clearValue(dt)" >
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+          <div *ngSwitchCase="ColumnType.THRESHOLD" style="display: flex; align-items: center;">
+            <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active' : thresholdFilterIsSet() }" ></i>
+            <p-dropdown
+              [options]="thresholdOptions"
+              [autoDisplayFirst]="false"
+              id="thresholdf"
+              name="thresholdf"
+              appendTo="body"
+              [showClear]="true"
+              [style]="{ 'flex-grow' : '1', 'min-width' : 'unset', 'width' : '100%' }"
+              [(ngModel)]="search.threshold"
+              (ngModelChange)="filterThreshold(dt)"
+              placeholder="Value">
+            </p-dropdown>
+          </div>
+          <div *ngSwitchCase="ColumnType.BAR">
+            <input type="checkbox" style="margin-right: 10px;" id="pc" name="pc" [(ngModel)]="search.showValue">
+            <label class="form-check-label" style="font-weight: normal;" for="pc">Show Percentages</label>
+          </div>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-value>
+    <tr class="ui-selectable-row">
+      <td *ngFor="let header of columns" [ngClass]="{
+        'no-padding':  header.type === ColumnType.BAR,
+        'threshold-fail' : header.type === ColumnType.THRESHOLD && value.threshold && !value.pass,
+        'threshold-pass' : header.type === ColumnType.THRESHOLD && value.threshold && value.pass
+      }">
+        <div [ngSwitch]="header.type">
+          <div *ngSwitchCase="ColumnType.FIELD" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            {{ value[header.key] }}
+          </div>
+          <div *ngSwitchCase="ColumnType.THRESHOLD">
+            {{ value.threshold ? labelizer.comparator(value.threshold.comparator) + ' ' + value.threshold.value + '% ' + (value.pass ? '(PASS)' : "(FAIL)") : 'No Threshold'}}
+          </div>
+          <div *ngSwitchCase="ColumnType.VALUE">
+            {{ value.percentage | number:'.'}}% ( {{( value.count | number:'.1') + " / " + ( value.total | number:'.')}} )
+          </div>
+          <div *ngSwitchCase="ColumnType.BAR" style="height: 100%;  padding: 0 !important; vertical-align:middle;">
+            <app-visual-bar
+              [showValue]="search.showValue"
+              [value]="{
+                value: value.fraction,
+                threshold: value.threshold
+              }"
+            >
+            </app-visual-bar>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td [attr.colspan]="columns.length" style="text-align:left">
+        No data found for query
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

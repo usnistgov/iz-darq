@@ -1,0 +1,37 @@
+<dam-layout>
+
+  <ng-template #alerts>
+    <dam-alerts-container></dam-alerts-container>
+  </ng-template>
+
+  <ng-template #titleBar>
+    <div style="width: 100%; display: flex;">
+      <dam-fullscreen-button></dam-fullscreen-button>
+      <div style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
+        <h4 class="title-text"><i style="color: blueviolet;" class="fa fa-cogs"></i> Extract Analysis Configurations </h4>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #toolbar>
+    <app-configuration-toolbar
+    [controls]="activeComponent?.controls"
+    ></app-configuration-toolbar>
+  </ng-template>
+
+  <ng-template #activeTitleBar>
+    <app-configuration-title
+    [configuration]="active$ | async"
+    ></app-configuration-title>
+  </ng-template>
+
+  <ng-template #editorContent>
+    <dam-editor-outlet></dam-editor-outlet>
+  </ng-template>
+
+  <ng-template #sideBar>
+    <app-configuration-side-bar
+      [configurations]="configurations$ | async"
+    ></app-configuration-side-bar>
+  </ng-template>
+</dam-layout>
