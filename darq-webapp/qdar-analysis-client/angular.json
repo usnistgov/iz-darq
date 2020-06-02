@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "../iz-darq/darq-webapp/darq-app/src/main/resources/public",
+            "outputPath": "../darq-app/src/main/resources/public",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
