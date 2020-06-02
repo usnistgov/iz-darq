@@ -12,7 +12,7 @@
   	<dependency>
   		<groupId>gov.nist.healthcare.iz</groupId>
   		<artifactId>darq-digest-model</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+		<version>${qdar.cli.version}</version>
   	</dependency>
   	<dependency>
 			<groupId>com.google.guava</groupId>

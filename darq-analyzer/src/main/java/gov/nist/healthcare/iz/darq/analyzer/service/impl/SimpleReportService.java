@@ -75,8 +75,10 @@ public class SimpleReportService implements ReportService {
 
 			for (DataViewQuery payload : sectionTemplate.getData()) {
 				AnalysisQuery query = queryFromPayload(payload);
+				QueryIssues issues = sanitizeQuery(file, query);
 				TrayProcessor processor = factory.create(query.getCompatibilityGroup(), query::take);
 				DataTable table = tableService.createTable(processor.process(file), payload);
+				table.setIssues(issues);
 				if(table.isThresholdViolation()) {
 					section.setThresholdViolation(true);
 				}

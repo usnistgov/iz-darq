@@ -17,6 +17,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	
 	@Value("#{environment.DARQ_KEY}")
 	private String CERTS;
-	private final ObjectMapper mapper = new ObjectMapper(new BsonFactory());
+	private final ObjectMapper mapper = new ObjectMapper(new BsonFactory()).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	@Override
 	public byte[] encrypt(ADFile file) throws Exception {

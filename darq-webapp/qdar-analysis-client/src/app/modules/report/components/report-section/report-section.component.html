@@ -11,11 +11,11 @@
     <p-tabPanel header="Query" headerStyleClass="valid-tab">
       <app-query-display [query]="data" [labelizer]="labelizer"></app-query-display>
     </p-tabPanel>
-    <p-tabPanel *ngIf="data.issues" header="Query Issues" headerStyleClass="invalid-tab">
-      <table *ngIf="data.issues.inactiveDetections && data.issues.inactiveDetections.length > 0" class="table table-sm table-striped">
+    <p-tabPanel *ngIf="data.issues" header="Issues" headerStyleClass="invalid-tab">
+      <table *ngIf="data.issues.inactiveDetections && data.issues.inactiveDetections.length > 0" class="table table-sm table-striped table-bordered">
         <thead>
           <tr>
-            <th> Inactive Detections </th>
+            <th style="text-align: center;"> Inactive Detections </th>
           </tr>
         </thead>
         <tbody>
