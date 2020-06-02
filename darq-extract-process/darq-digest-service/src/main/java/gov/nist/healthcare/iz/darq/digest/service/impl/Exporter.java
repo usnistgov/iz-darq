@@ -2,7 +2,15 @@ package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.commons.io.FileUtils;
+import org.immregistries.mqe.validator.detection.Detection;
+import org.immregistries.mqe.validator.engine.MessageValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
@@ -22,13 +30,28 @@ public class Exporter implements ExportADChunk {
 	private CryptoUtils cryptoUtils;
 	@Autowired
 	private HTMLSummaryGenerator summaryGenerator;
+
+	Set<String> getInactiveDetections(List<String> fromConfig) {
+		Set<String> active = MessageValidator.activeDetections().stream().map(Detection::getMqeMqeCode).collect(Collectors.toSet());
+		return fromConfig.stream().filter((code) -> !active.contains(code)).collect(Collectors.toSet());
+	}
 	
 	
 	@Override
-	public void export(ConfigurationPayload payload, ADChunk chunk) throws Exception {
+	public void export(ConfigurationPayload payload, ADChunk chunk, String version, String build, String mqeVersion, boolean printAdf) throws Exception {
 		
 		Summary summary = new Summary(chunk, payload);
-		ADFile file = new ADFile(chunk.getExtraction(), chunk.getPatientSection(), chunk.getVaccinationSection(), payload, summary, new Vocabulary(chunk.getValues(), chunk.getCodes()));
+		ADFile file = new ADFile(
+				chunk.getPatientSection(),
+				chunk.getVaccinationSection(),
+				payload,
+				summary,
+				new Vocabulary(chunk.getValues(), chunk.getCodes()),
+				version,
+				build,
+				mqeVersion,
+				this.getInactiveDetections(payload.getDetections())
+		);
 		
 		File output = new File("./darq-analysis/");
 	    output.mkdirs();
@@ -38,7 +61,7 @@ public class Exporter implements ExportADChunk {
 	    FileUtils.writeByteArrayToFile(new File("./darq-analysis/ADF.data"), fileBytes);
 	    
 	    //---- HTML
-	    summaryGenerator.generateSummary(file, summary, chunk.getProviders(), "./darq-analysis/summary/");
+	    summaryGenerator.generateSummary(file, summary, chunk.getProviders(), "./darq-analysis/summary/", printAdf);
 
 	}
 

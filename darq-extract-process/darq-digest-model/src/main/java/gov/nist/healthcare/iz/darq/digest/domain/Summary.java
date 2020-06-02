@@ -121,7 +121,7 @@ public class Summary {
 		Map<String, String> cvxAbstraction = payload.getVaxCodeAbstraction();
 		List<Range> groups = payload.getAgeGroups();
 		this.asOfDate = payload.getAsOf();
-		this.issues = chunk.getIssues();
+		this.issues = chunk.issueList();
 		this.countByAgeGroup = new ArrayList<>();
 		Map<String, Integer> ageCounts = new HashMap<>();
 		for(String ageGroup : chunk.getPatientSection().keySet()){

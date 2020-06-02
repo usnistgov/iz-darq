@@ -10,6 +10,6 @@ import gov.nist.healthcare.iz.darq.digest.domain.VaccinationPayload;
 
 public interface HTMLSummaryGenerator {
 
-	void generateSummary(ADFile file, Summary summary, Map<String, String> providers, String path) throws IOException;
-//	void generateADFView(Map<String, Map<String, VaccinationPayload>> vaccinationSection, Map<String, PatientPayload> patientSection, String path) throws IOException;
+	void generateSummary(ADFile file, Summary summary, Map<String, String> providers, String path, boolean printAdf) throws IOException;
+
 }

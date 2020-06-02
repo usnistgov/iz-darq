@@ -1,7 +1,10 @@
 package gov.nist.healthcare.iz.darq.digest.app;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
@@ -11,8 +14,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -29,10 +30,8 @@ import gov.nist.healthcare.iz.darq.digest.service.impl.Exporter;
 @Configuration
 @ComponentScan("gov.nist.healthcare")
 public class CLIApp {
-	
-	private static DecimalFormat df = new DecimalFormat(".##");
-	final static Logger logger = LoggerFactory.getLogger(CLIApp.class.getName());
 
+	private static final DecimalFormat df = new DecimalFormat(".##");
 	
 	private static boolean exists(CommandLine cmd, String opt, String name){
 		if(!cmd.hasOption(opt)){
@@ -53,20 +52,30 @@ public class CLIApp {
     }
 	
 	@SuppressWarnings("resource")
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws IOException {
 		ApplicationContext context = new AnnotationConfigApplicationContext(CLIApp.class);
+		Properties properties = new Properties();
+		properties.load(CLIApp.class.getResourceAsStream("/application.properties"));
+		String version = properties.getProperty("app.version");
+		String build = properties.getProperty("app.date");
+		String mqeVersion = properties.getProperty("mqe.version");
+		String tag = String.format("v%s (%s) [MQE v%s]", version, build, mqeVersion);
+
 		//--- OPTIONS
 		Options options = new Options();
 		options.addOption("help", false, "print help");
 		options.addOption("p", "patients", true, "Patients Extract File");
 		options.addOption("v", "vaccinations", true, "Vaccinations Extract File");
 		options.addOption("c", "configuration", true, "Analysis Configuration");
+		options.addOption("tmpDir", "temporaryDirectory", true, "Location where to create temporary directory");
+		options.addOption("pa", "printAdf", false, "print ADF content");
+
 		CommandLineParser parser = new DefaultParser();
 		try {
 			CommandLine cmd = parser.parse(options, args);
 			if(cmd.hasOption("help")){
 				HelpFormatter formater = new HelpFormatter();
-				formater.printHelp("Data At Rest Quality Analysis Command Line Tool", options);
+				formater.printHelp("Data At Rest Quality Analysis Command Line Tool "+ tag, options);
 				System.exit(0);
 			}
 			else {
@@ -78,11 +87,12 @@ public class CLIApp {
 					String pFilePath = cmd.getOptionValue("p");
 					String vFilePath = cmd.getOptionValue("v");
 					String cFilePath = cmd.getOptionValue("c");
-					
-					
-					System.out.println(ConsoleColors.BLUE_BRIGHT + "========================================================================" + ConsoleColors.RESET);
-			    	System.out.println(ConsoleColors.WHITE_BOLD + "** [NIST] Welcome to Data At Rest Quality Analysis Command Line Tool **" + ConsoleColors.RESET);
-			    	System.out.println(ConsoleColors.YELLOW_BRIGHT + "========================================================================" + ConsoleColors.RESET);
+					String tmpDirLocation = cmd.getOptionValue("tmpDir");
+					boolean printAdf = cmd.hasOption("pa");
+
+					System.out.println(ConsoleColors.BLUE_BRIGHT + "===================================================================================================" + ConsoleColors.RESET);
+			    	System.out.println(ConsoleColors.WHITE_BOLD + " [NIST] Welcome to Data At Rest Quality Analysis Command Line Tool " + tag + " " + ConsoleColors.RESET);
+			    	System.out.println(ConsoleColors.YELLOW_BRIGHT + "===================================================================================================" + ConsoleColors.RESET);
 		    		
 			    	File patients = new File(pFilePath);
 			    	File vaccines = new File(vFilePath);
@@ -105,19 +115,19 @@ public class CLIApp {
 			    	System.out.println("Patients File @ "+ pFilePath + " " + (pFile ? success("[FOUND]") : failure("[ERROR]")));
 		        	System.out.println("Vaccinations File @ "+ vFilePath + " " + (vFile ? success("[FOUND]") : failure("[ERROR]")));
 		        	System.out.println("Configuration File @ "+ cFilePath + " " + (cFile ? cFileValid ? success("[FOUND]") : failure("[INVALID]") : failure("[ERROR]")));
-		        	System.out.println("========================================================================");
-		        	
-		        	if(pFile && vFile && cFile && cFileValid){
-		        		SimpleDigestRunner runner = (SimpleDigestRunner) context.getBean(SimpleDigestRunner.class);
-		        		Exporter export = (Exporter) context.getBean(Exporter.class);
-		        		Long start = System.currentTimeMillis();
+		        	System.out.println("===================================================================================================");
+					System.out.println(ConsoleColors.YELLOW_BRIGHT + "Analysis Progress => " + ConsoleColors.RESET);
+
+					if(pFile && vFile && cFile && cFileValid){
+		        		SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
+		        		Exporter export = context.getBean(Exporter.class);
 		        		running = true;
-		        		Thread t = progress(runner, start);
+		        		Thread t = progress(runner);
 		        		t.start();
-		            	ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath);
+		            	ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath, Optional.ofNullable(tmpDirLocation));
 		            	t.join();
 		            	System.out.println(ConsoleColors.GREEN_BRIGHT + "Analysis Finished" + ConsoleColors.RESET);
-		            	export.export(configurationPayload, chunk);
+		            	export.export(configurationPayload, chunk, version, build, mqeVersion, printAdf);
 		            
 		        	}
 				}
@@ -138,61 +148,56 @@ public class CLIApp {
 		}
 	}
 	
-	public static Thread progress(DigestRunner runner, long start){
+	public static Thread progress(DigestRunner runner){
 	    
-	    	return new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					String[] animation = { "|", "/", "—", "\\" };
-					int anime_step = 0;
-					Fraction f = new Fraction(0,0);
-					double per;
-					long estimated = 0;
-					long stamp = System.currentTimeMillis();
+	    	return new Thread(() -> {
+				String[] animation = { "|", "/", "—", "\\" };
+				int anime_step = 0;
+				Fraction f = new Fraction(0,0);
+				double per;
+				long estimated;
+				long stamp = System.currentTimeMillis();
 
-					do{
-						long elapsed = System.currentTimeMillis() - stamp;
-						int save = f.getCount();
-						f = runner.spy();
-						stamp = System.currentTimeMillis();
-						int diff = f.getCount() - save;
-						int remaining = f.getTotal() - f.getCount();
-						estimated = diff == 0 ? 0 : (elapsed / diff) * remaining;
-						stamp = System.currentTimeMillis();
-						per = f.percent();
-						if(f.getCount() == 0 && f.getTotal() == 0){
-							System.out.print("\r-- Preparing " + animation[anime_step++ % animation.length]);
+				do{
+					long elapsed = System.currentTimeMillis() - stamp;
+					int save = f.getCount();
+					f = runner.spy();
+					stamp = System.currentTimeMillis();
+					int diff = f.getCount() - save;
+					int remaining = f.getTotal() - f.getCount();
+					estimated = diff == 0 ? 0 : (elapsed / diff) * remaining;
+					per = f.percent();
+					if(f.getCount() == 0 && f.getTotal() == 0){
+						System.out.print("\r-- Preparing " + animation[anime_step++ % animation.length]);
+					}
+					else {
+						String progressBar = "\r[";
+						int plain = (int) (70 * (f.percent() / 100));
+						int empty = 70 - plain;
+						for(int i = 0; i < plain; i++){
+							progressBar += "=";
 						}
-						else {
-							String progressBar = "\r[";
-							int plain = (int) (70 * (f.percent() / 100));
-					    	int empty = 70 - plain;
-					    	for(int i = 0; i < plain; i++){
-					    		progressBar += "=";
-					    	}
-					    	for(int i = 0; i < empty; i++){
-					    		progressBar += " ";
-					    	}
-					    	progressBar += "] " + animation[anime_step++ % animation.length] + " " + df.format(per) + "% ("+f.getCount()+"/"+f.getTotal()+")";
-					    	progressBar += String.format("(Estimated Remaining Processing Time %2d min, %2d sec)",
-					    		    TimeUnit.MILLISECONDS.toMinutes(estimated),
-					    		    TimeUnit.MILLISECONDS.toSeconds(estimated) - 
-					    		    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(estimated))
-					    		);
-					    	System.out.print(progressBar);
+						for(int i = 0; i < empty; i++){
+							progressBar += " ";
 						}
-						
-				    	try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-			
-					} while(f.percent() != 100 && running);
-					System.out.println();
-					
-				}
+						progressBar += "] " + animation[anime_step++ % animation.length] + " " + df.format(per) + "% ("+f.getCount()+"/"+f.getTotal()+")";
+						progressBar += String.format("(Estimated Remaining Processing Time %2d min, %2d sec)",
+								TimeUnit.MILLISECONDS.toMinutes(estimated),
+								TimeUnit.MILLISECONDS.toSeconds(estimated) -
+								TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(estimated))
+							);
+						System.out.print(progressBar);
+					}
+
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+				} while(f.percent() != 100 && running);
+				System.out.println();
+
 			});
 	}
 	

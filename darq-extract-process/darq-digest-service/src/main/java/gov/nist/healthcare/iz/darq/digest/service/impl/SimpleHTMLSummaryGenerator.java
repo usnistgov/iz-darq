@@ -1,15 +1,13 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import gov.nist.healthcare.iz.darq.digest.domain.*;
-import j2html.tags.DomContent;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
@@ -22,10 +20,11 @@ import static j2html.TagCreator.*;
 public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 
 	@Override
-	public void generateSummary(ADFile file, Summary summary, Map<String, String> providers, String path) throws IOException {
+	public void generateSummary(ADFile file, Summary summary, Map<String, String> providers, String path, boolean printAdf) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-	    String html = html(
+
+	    ContainerTag html = html(
 	    		head(
 	    				link().withRel("stylesheet").withHref("./css/bootstrap.min.css"),
 	    				link().withRel("stylesheet").withHref("./css/custom.css")
@@ -58,7 +57,7 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 	    			    	    ),
     		    	    		card(
     		    	    				"",
-	    		    	    			"Issues",
+	    		    	    			"Issues (maximum output " + ADChunk.MAX_ISSUES + ")",
 	    		    	    			table(
 	    		    	    					attrs(".table.table-sm.table-striped"),
 	    			    	    				thead(
@@ -142,33 +141,34 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 														))
 												)
 										)
-								),
-								card("", "Aggregate Detections File Content", pre(mapper.writeValueAsString(file)))
-	    	    		)		
+								)
+	    	    		)
 	    	    )
-	    ).render();
-	    
-	    File summaryDir = new File(path+"css");
-	    summaryDir.mkdirs();
-	    
-	    FileUtils.writeStringToFile(new File(path+"/index.html"), html);
+	    );
+
+	    // Create CSS Directory
+		File summaryDir = new File(path+"css");
+		summaryDir.mkdirs();
+
+		// HTML File Writer
+		FileWriter htmlFileWriter = new FileWriter(new File(path+"/index.html"));
+		html.render(htmlFileWriter);
+		htmlFileWriter.flush();
+		htmlFileWriter.close();
+
+		if(printAdf) {
+			// ADF File Writer
+			FileWriter adfFileWriter = new FileWriter(new File(path+"/plain_adf_content.json"));
+			mapper.writeValue(adfFileWriter, file);
+			adfFileWriter.close();
+		}
+
+
+		// Write CSS
 	    FileUtils.copyInputStreamToFile(Exporter.class.getResourceAsStream("/bootstrap.min.css"), new File(path+"css/bootstrap.min.css"));
 	    FileUtils.copyInputStreamToFile(Exporter.class.getResourceAsStream("/custom.css"), new File(path+"css/custom.css"));
 	}
 
-//	@Override
-//	public void generateADFView(Map<String, Map<String, VaccinationPayload>> vaccinationSection, Map<String, PatientPayload> patientSection, String path) throws IOException {
-//		String html = html(
-//				head(
-//						link().withRel("stylesheet").withHref("./css/bootstrap.min.css"),
-//						link().withRel("stylesheet").withHref("./css/custom.css")
-//				),
-//				body(
-//						adfTable(vaccinationSection, patientSection)
-//				)
-//		).render();
-//		FileUtils.writeStringToFile(new File(path+"/adf.html"), html);
-//	}
 
 	private ContainerTag navBar(String date, LocalDate d){
 		String today = d.toString("MM/dd/yyyy");
@@ -200,7 +200,7 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 	
 	private ContainerTag card(String att, String title, ContainerTag content){
 		return div(
-				attrs(".card.space"+att),
+				attrs(".card.space"+ att),
 				div(
 						attrs(".card-block.card-content-custom"),
 						h4(
@@ -212,160 +212,5 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 		);
 	}
 
-	ContainerTag card(ContainerTag top, ContainerTag content){
-		return div(
-				attrs(".card.space"),
-				div(
-						attrs(".card-block.card-content-custom"),
-						top,
-						content
-				)
-		);
-	}
-
-	private ContainerTag adfTable(Map<String, Map<String, VaccinationPayload>> vaccinationSection, Map<String, PatientPayload> patientSection) {
-		return div(
-				table(
-						attrs(".table.table-sm.table-bordered"),
-						tbody(
-								tr(
-										td("Patient Section").withClass("header-section").attr("colspan", 4)
-								),
-								tr(
-										td("Age Group").withClass("header-normal"),
-										td("Values").withClass("header-normal").attr("colspan", 3)
-								),
-								each(patientSection.entrySet(), entry -> patientTable(entry.getKey(), entry.getValue()))
-						)
-				),
-				table(
-						attrs(".table.table-sm.table-bordered"),
-						tbody(
-								tr(
-										td("Vaccination Section").withClass("header-section").attr("colspan", 7)
-								),
-								tr(
-										td("Provider").withClass("header-normal"),
-										td("Age Groups").withClass("header-normal"),
-										td("Values").withClass("header-normal").attr("colspan", 5)
-								),
-								each(vaccinationSection.entrySet(), entry -> vaccinationTableProvider(entry.getKey(), entry.getValue()))
-						)
-				)
-		);
-	}
-
-	private ContainerTag vaccinationTableProvider(String provider, Map<String, VaccinationPayload> vaxAgeGroups) {
-		int ageGroups = vaxAgeGroups.size();
-		int providerSize = vaxAgeGroups.values().stream().mapToInt((entry) -> {
-			int vxSize = entry.getVaccinations().values().stream().mapToInt((vx) -> {
-				return vx.values().stream().mapToInt((year) -> {
-					return year.values().stream().mapToInt((gender) -> {
-						return gender.values().size() + 1;
-					}).sum();
-				}).sum();
-			}).sum();
-			return entry.getDetection().size() + (2 * ageGroups) + entry.getCodeTable().values().stream().mapToInt(x -> x.getCodes().size()).sum() + (2 * ageGroups) + vxSize + (2 * ageGroups);
-		}).sum();
-
-		return tbody(
-				tr(
-						td(provider).withClass("age-group").attr("rowspan", providerSize + 6)
-				),
-				each(vaxAgeGroups.entrySet(), entry ->
-						each(vaccinationTableAgeGrp(entry.getKey(), entry.getValue()), (x) -> x)
-				)
-		);
-	}
-
-	private List<DomContent> vaccinationTableAgeGrp(String ageGroup, VaccinationPayload payload) {
-		int ageGroupSize = payload.getVaccinations().values().stream().mapToInt((vx) -> {
-			return vx.values().stream().mapToInt((year) -> {
-				return year.values().stream().mapToInt((gender) -> {
-					return gender.values().size() + 1;
-				}).sum();
-			}).sum();
-		}).sum() + payload.getDetection().size() + 1 + payload.getCodeTable().values().stream().mapToInt(x -> x.getCodes().size() + 1).sum();
-
-		return Arrays.asList(
-				tr(
-						td(ageGroup).withClass("age-group").attr("rowspan", ageGroupSize + 4)
-				),
-				tr(
-						td("Detections").withClass("table-head-1").attr("colspan", 5)
-				),
-				tr(
-						attrs(".table-head-2"),
-						td("MQE Code").attr("colspan", 3),
-						td("Positive"),
-						td("Negative")
-				),
-				each(payload.getDetection().entrySet(), entry -> tr(
-						td(entry.getKey()).attr("colspan", 3),
-						td(entry.getValue().getPositive()+""),
-						td(entry.getValue().getNegative()+"")
-				)),
-				tr(
-						td("Codes").withClass("table-head-1").attr("colspan", 5)
-				),
-				tr(
-						attrs(".table-head-2"),
-						td("Table").attr("colspan", 3),
-						td("Code"),
-						td("Count")
-				),
-				each(payload.getCodeTable().entrySet(), entry -> {
-					return each(codeTable(entry.getKey(), entry.getValue(), 3), elm -> elm);
-				})
-		);
-	}
-
-	private ContainerTag patientTable(String ageGroup, PatientPayload payload) {
-		int ageGroupSize = payload.getDetection().size() + 1 + payload.getCodeTable().values().stream().mapToInt(x -> x.getCodes().size() + 1).sum();
-		return tbody(
-			tr(
-					td(ageGroup).withClass("age-group").attr("rowspan", ageGroupSize + 4)
-			),
-			tr(
-					td("Detections").withClass("table-head-1").attr("colspan", 3)
-			),
-			tr(
-					attrs(".table-head-2"),
-					td("MQE Code"),
-					td("Positive"),
-					td("Negative")
-			),
-			each(payload.getDetection().entrySet(), entry -> tr(
-					td(entry.getKey()),
-					td(entry.getValue().getPositive()+""),
-					td(entry.getValue().getNegative()+"")
-			)),
-			tr(
-					td("Codes").withClass("table-head-1").attr("colspan", 3)
-			),
-			tr(
-					attrs(".table-head-2"),
-					td("Table"),
-					td("Code"),
-					td("Count")
-			),
-			each(payload.getCodeTable().entrySet(), entry -> {
-				return each(codeTable(entry.getKey(), entry.getValue(), 1), elm -> elm);
-			})
-		);
-	}
-
-	private List<DomContent> codeTable(String table, TablePayload payload, int col) {
-		int tablePayloadSize = payload.getCodes().size() + 1;
-		return Arrays.asList(
-			tr(
-					td(table).withClass("table-cell").attr("rowspan", tablePayloadSize).attr("colspan", col)
-			),
-			each(payload.getCodes().entrySet(), entry -> tr(
-					td(entry.getKey()),
-					td(entry.getValue()+"")
-			))
-		);
-	}
 
 }

@@ -3,7 +3,8 @@
   <parent>
     <groupId>gov.nist.healthcare.iz</groupId>
     <artifactId>darq-webapp</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+    <version>${qdar.webtool.version}</version>
   </parent>
   <artifactId>darq-configuration</artifactId>
 </project>

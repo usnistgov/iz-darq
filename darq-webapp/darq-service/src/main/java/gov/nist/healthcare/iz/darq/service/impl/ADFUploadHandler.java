@@ -50,6 +50,10 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 						"",
 						file.getSummary(),
 						humanReadableByteCount(size, true),
+						file.getVersion(),
+						file.getBuild(),
+						file.getMqeVersion(),
+						file.getInactiveDetections(),
 						facility
 				);
 				storage.store(metadata);

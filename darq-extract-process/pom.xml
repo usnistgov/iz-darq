@@ -2,11 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>gov.nist.healthcare.iz</groupId>
-    <artifactId>darq</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+	  <groupId>gov.nist.healthcare.iz</groupId>
+	  <artifactId>darq</artifactId>
+	  <relativePath>../pom.xml</relativePath>
+	  <version>${qdar.api.version}</version>
   </parent>
   <artifactId>darq-extract-process</artifactId>
+	<version>${qdar.cli.version}</version>
   <packaging>pom</packaging>
   <modules>
   	<module>darq-digest-model</module>
@@ -15,7 +17,6 @@
     <module>darq-cli-app</module>
   </modules>
   <dependencies>
-  
 		<dependency>
 			<groupId>de.undercouch</groupId>
 			<artifactId>bson4jackson</artifactId>
@@ -32,33 +33,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 			<version>4.1</version>
 		</dependency>
-<!-- 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.5.8</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.5.8</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.5.8</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.14</version> -->
-		<!-- </dependency> -->
-		
 
 		<!--Utils -->
 		<dependency>
@@ -67,7 +46,6 @@
 			<version>2.4</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>

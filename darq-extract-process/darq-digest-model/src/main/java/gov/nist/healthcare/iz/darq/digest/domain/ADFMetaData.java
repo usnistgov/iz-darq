@@ -1,7 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
 
 public class ADFMetaData {
 	String id;
@@ -14,10 +14,25 @@ public class ADFMetaData {
 	String keyHash;
 	ConfigurationPayload configuration;
 	Summary summary;
-	
-	
-	public ADFMetaData(String name, String path, String owner, Date analysedOn, Date uploadedOn,
-			ConfigurationPayload configuration, String keyHash, Summary summary, String size) {
+	String version;
+	String build;
+	String mqeVersion;
+	Set<String> inactiveDetections;
+
+	public ADFMetaData(
+			String name,
+			String path,
+			String owner,
+			Date analysedOn,
+			Date uploadedOn,
+			ConfigurationPayload configuration,
+			String keyHash,
+			Summary summary,
+			String size,
+			String version,
+			String build,
+			String mqeVersion,
+			Set<String> inactiveDetections) {
 		super();
 		this.name = name;
 		this.path = path;
@@ -28,6 +43,10 @@ public class ADFMetaData {
 		this.configuration = configuration;
 		this.summary = summary;
 		this.size = size;
+		this.version = version;
+		this.build = build;
+		this.mqeVersion = mqeVersion;
+		this.inactiveDetections = inactiveDetections;
 	}
 	
 	public ADFMetaData() {
@@ -93,5 +112,39 @@ public class ADFMetaData {
 	public void setKeyHash(String keyHash) {
 		this.keyHash = keyHash;
 	}
+	public boolean getHasCLIInfo() {
+		return this.version != null && !this.version.isEmpty();
+	}
 
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getBuild() {
+		return build;
+	}
+
+	public void setBuild(String build) {
+		this.build = build;
+	}
+
+	public String getMqeVersion() {
+		return mqeVersion;
+	}
+
+	public void setMqeVersion(String mqeVersion) {
+		this.mqeVersion = mqeVersion;
+	}
+
+	public Set<String> getInactiveDetections() {
+		return inactiveDetections;
+	}
+
+	public void setInactiveDetections(Set<String> inactiveDetections) {
+		this.inactiveDetections = inactiveDetections;
+	}
 }

@@ -1,31 +1,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>gov.nist.healthcare.iz</groupId>
-    <artifactId>darq-webapp</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+	  <groupId>gov.nist.healthcare.iz</groupId>
+	  <artifactId>darq-webapp</artifactId>
+	  <relativePath>../pom.xml</relativePath>
+	  <version>${qdar.webtool.version}</version>
   </parent>
   <artifactId>darq-service</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>gov.nist.healthcare.iz</groupId>
   		<artifactId>darq-domain-repository</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+		<version>${qdar.webtool.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>gov.nist.healthcare.iz</groupId>
   		<artifactId>darq-adf-utils</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+		<version>${qdar.api.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>gov.nist.healthcare.iz</groupId>
   		<artifactId>file-parser</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+		<version>${qdar.api.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.immregistries</groupId>
   		<artifactId>mqe-validator</artifactId>
-  		<version>2018.9-BETA</version>
+  		<version>${mqe.version}</version>
   	</dependency>
   </dependencies>
 </project>

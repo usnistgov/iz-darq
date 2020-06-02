@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,13 +33,13 @@ public class SimpleDigestRunner implements DigestRunner {
 	private int size = 0;
 
 	@Override
-	public ADChunk digest(ConfigurationPayload configuration, String patient, String vaccines) throws Exception {
+	public ADChunk digest(ConfigurationPayload configuration, String patient, String vaccines, Optional<String> directory) throws Exception {
 		logger.info("[START] Processing Extract");
 		size = (int) Files.lines(Paths.get(patient)).parallel().count();
 		logger.info("Number of patient records : "+size);
 
 		ConfigurationProvider config = new SimpleConfigurationProvider(configuration);
-		iterator = new LucenePatientRecordIterator(Paths.get(patient), Paths.get(vaccines));
+		iterator = new LucenePatientRecordIterator(Paths.get(patient), Paths.get(vaccines), directory);
 		final ADChunk file = new ADChunk();
 		LocalDate date = new LocalDate(configuration.getAsOfDate());
 		while(iterator.hasNext()) {
@@ -57,7 +58,7 @@ public class SimpleDigestRunner implements DigestRunner {
 						logger.error("[RECORD PROCESSING ISSUE][ ID "+parsed.getPatient().getID()+"]", e);
 						file.setUnreadPatients(file.getUnreadPatients() + 1);
 						file.setUnreadVaccinations(file.getUnreadVaccinations() + parsed.getVaccinations().size());
-						file.getIssues().add(new ParseError(parsed.getPatient().getID(), "", "", "Encountered critical issue while processing record : "+e.getMessage()+" see logs for stacktrace", true, parsed.getPatient().getLine()).toString());
+						file.addIssue(new ParseError(parsed.getPatient().getID(), "", "", "Encountered critical issue while processing record : "+e.getMessage()+" see logs for stacktrace", true, parsed.getPatient().getLine()).toString());
 					}
 
 				} else {
@@ -66,14 +67,14 @@ public class SimpleDigestRunner implements DigestRunner {
 
 				file.setUnreadPatients(file.getUnreadPatients() + parsed.getSkippedPatient());
 				file.setUnreadVaccinations(file.getUnreadVaccinations() + parsed.getSkippedVaccination());
-				file.getIssues().addAll(parsed.getIssues().stream().map(ParseError::toString).collect(Collectors.toList()));
+				file.addIssues(parsed.getIssues().stream().map(ParseError::toString).collect(Collectors.toList()));
 
 			}
 			catch(InvalidPatientRecord e) {
 				logger.info("[INVALID RECORD] Record can't be processed (record ID not populated)");
 				file.setUnreadPatients(file.getUnreadPatients() + 1);
-				file.getIssues().addAll(e.getIssues().stream().map(ParseError::toString).collect(Collectors.toList()));
-				file.getIssues().add("[WARNING] A patient record was not parsed or ID not found which means that the according vaccinations were not read and not taken into account in summary count skipped vaccinations");
+				file.addIssues(e.getIssues().stream().map(ParseError::toString).collect(Collectors.toList()));
+				file.addIssue("[WARNING] A patient record was not parsed or ID not found which means that the according vaccinations were not read and not taken into account in summary count skipped vaccinations");
 			}
 			catch (Exception e) {
 				logger.error("[UNEXPECTED ISSUE]", e);

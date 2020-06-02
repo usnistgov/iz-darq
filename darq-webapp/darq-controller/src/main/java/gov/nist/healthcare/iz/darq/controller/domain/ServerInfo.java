@@ -12,8 +12,8 @@ public class ServerInfo {
 	private String version;
 	@Value("${app.qualifier}")
 	private String qualifier;
-	@Value("#{new java.text.SimpleDateFormat(\"yyyyMMdd\").parse(\"${app.date}\")}")
-	private Date date;
+	@Value("${app.date}")
+	private String date;
 	
 	public String getVersion() {
 		return version;
@@ -27,11 +27,12 @@ public class ServerInfo {
 	public void setQualifier(String qualifier) {
 		this.qualifier = qualifier;
 	}
-	public Date getDate() {
+
+	public String getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+
+	public void setDate(String date) {
 		this.date = date;
 	}
-	
 }

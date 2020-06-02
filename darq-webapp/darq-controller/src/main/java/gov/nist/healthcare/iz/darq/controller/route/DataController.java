@@ -2,9 +2,7 @@ package gov.nist.healthcare.iz.darq.controller.route;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,8 +38,10 @@ public class DataController {
     @ResponseBody
     public Map<String, DetectionDescriptor> detections() {
     	Map<String, DetectionDescriptor> detections = new HashMap<>();
-    	for(Detection d : MessageValidator.activeDetections()) {
-    		detections.put(d.getMqeMqeCode(), new DetectionDescriptor(d.getDisplayText(),d.getTargetObject().toString()));
+    	Set<Detection> all = new HashSet<>(Arrays.asList(Detection.values()));
+		Set<Detection> active = MessageValidator.activeDetections();
+    	for(Detection d : all) {
+    		detections.put(d.getMqeMqeCode(), new DetectionDescriptor(d.getDisplayText(),d.getTargetObject().toString(), active.contains(d)));
     	}
         return detections;
     }

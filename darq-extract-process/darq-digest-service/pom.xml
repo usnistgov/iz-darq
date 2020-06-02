@@ -6,7 +6,8 @@
 	<parent>
 		<groupId>gov.nist.healthcare.iz</groupId>
 		<artifactId>darq-extract-process</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+		<version>${qdar.cli.version}</version>
 	</parent>
 	<artifactId>darq-digest-service</artifactId>
 	<name>darq-digest-service</name>
@@ -18,7 +19,7 @@
 		<dependency>
 			<groupId>gov.nist.healthcare.iz</groupId>
 			<artifactId>darq-digest-model</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${qdar.cli.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.j2html</groupId>
@@ -33,22 +34,22 @@
 		<dependency>
 			<groupId>gov.nist.healthcare.iz</groupId>
 			<artifactId>file-parser</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${qdar.api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>gov.nist.healthcare.iz</groupId>
 			<artifactId>darq-adf-utils</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${qdar.api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>gov.nist.healthcare.iz</groupId>
 			<artifactId>lucene-index</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${qdar.api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.immregistries</groupId>
 			<artifactId>mqe-validator</artifactId>
-			<version>2020.02-BETA</version>
+			<version>${mqe.version}</version>
 		</dependency>
 	</dependencies>
 </project>

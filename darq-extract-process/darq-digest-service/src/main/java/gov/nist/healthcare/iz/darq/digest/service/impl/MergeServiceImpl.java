@@ -12,8 +12,6 @@ import gov.nist.healthcare.iz.darq.digest.service.MergeService;
 
 @Service
 public class MergeServiceImpl implements MergeService {
-	
-	
 
 	@Override
 	public synchronized ADChunk mergeChunk(ADChunk a, ADChunk b){
@@ -21,7 +19,6 @@ public class MergeServiceImpl implements MergeService {
 		a.setPatientSection(mergePatientAgeGroup(a.getPatientSection(), b.getPatientSection()));
 		a.setExtraction(mergeExtract(a.getExtraction(), b.getExtraction()));
 		a.setProviders(mergeProvider(a.getProviders(), b.getProviders()));
-		a.getIssues().addAll(b.getIssues());
 		a.setUnreadVaccinations(a.getUnreadVaccinations() + b.getUnreadVaccinations());
 		a.setUnreadPatients(a.getUnreadPatients() + b.getUnreadPatients());
 		a.setNbPatients(a.getNbPatients() + b.getNbPatients());
@@ -37,9 +34,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<String, String> mergeProvider(Map<String, String> a, Map<String, String> b){
 		Map<String, String> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, this::mergeProvider);
-			});
+			b.forEach((k, v) -> x.merge(k, v, this::mergeProvider));
 		}
 		return x;
 	}
@@ -47,9 +42,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<String, Set<String>> mergeCodeValues(Map<String, Set<String>> a, Map<String, Set<String>> b){
 		Map<String, Set<String>> x =   a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, this::mergeSet);
-			});
+			b.forEach((k, v) -> x.merge(k, v, this::mergeSet));
 		}
 		return x;
 	}
@@ -57,9 +50,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<Field, Set<String>> mergeFieldValues(Map<Field, Set<String>> a, Map<Field, Set<String>> b){
 		Map<Field, Set<String>> x =   a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, this::mergeSet);
-			});
+			b.forEach((k, v) -> x.merge(k, v, this::mergeSet));
 		}
 		return x;
 	}
@@ -75,9 +66,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<String, ExtractFraction> mergeExtract(Map<String, ExtractFraction> a, Map<String, ExtractFraction> b){
 		Map<String, ExtractFraction> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, ExtractFraction::merge);
-			});
+			b.forEach((k, v) -> x.merge(k, v, ExtractFraction::merge));
 		}
 		return x;
 	}
@@ -93,9 +82,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<String, Map<String, VaccinationPayload>> mergeVxProvider(Map<String, Map<String, VaccinationPayload>> a, Map<String, Map<String, VaccinationPayload>> b){
 		Map<String, Map<String, VaccinationPayload>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, this::mergeVxAgeGroup);
-			});
+			b.forEach((k, v) -> x.merge(k, v, this::mergeVxAgeGroup));
 		}
 		return x;
 	}
@@ -104,9 +91,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<String, VaccinationPayload> mergeVxAgeGroup(Map<String, VaccinationPayload> a, Map<String, VaccinationPayload> b){
 		Map<String, VaccinationPayload> x = a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, this::mergeVxPayload);
-			});
+			b.forEach((k, v) -> x.merge(k, v, this::mergeVxPayload));
 		}
 		return x;
 	}
@@ -126,9 +111,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<String, DetectionSum> mergeDetections(Map<String, DetectionSum> a, Map<String, DetectionSum> b){
 		Map<String, DetectionSum> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, DetectionSum::merge);
-			});
+			b.forEach((k, v) -> x.merge(k, v, DetectionSum::merge));
 		}
 		return x;
 	}
@@ -137,9 +120,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<String, TablePayload> mergeCodeTable(Map<String, TablePayload> a, Map<String, TablePayload> b){
 		Map<String, TablePayload> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, this::mergeCode);
-			});
+			b.forEach((k, v) -> x.merge(k, v, this::mergeCode));
 		}
 		return x;
 	}
@@ -151,11 +132,7 @@ public class MergeServiceImpl implements MergeService {
 		TablePayload t =  new TablePayload();
 		t.setTotal(a.getTotal() + b.getTotal());
 		Map<String, Integer> codes = new HashMap<>(a.getCodes());
-		b.getCodes().forEach((k, v) -> {
-			codes.merge(k, v, (x, y) -> {
-				return x + y;
-			});
-		});
+		b.getCodes().forEach((k, v) -> codes.merge(k, v, Integer::sum));
 		t.setCodes(codes);
 		return t;
 	}
@@ -164,9 +141,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<String, Map<String, Map<String, Map<String, Integer>>>> mergeVxCode(Map<String, Map<String, Map<String, Map<String, Integer>>>> a, Map<String, Map<String, Map<String, Map<String, Integer>>>> b){
 		Map<String, Map<String, Map<String, Map<String, Integer>>>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, this::mergeVxYear);
-			});
+			b.forEach((k, v) -> x.merge(k, v, this::mergeVxYear));
 		}
 		return x;
 	}
@@ -175,9 +150,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<String, Map<String, Map<String, Integer>>> mergeVxYear(Map<String, Map<String, Map<String, Integer>>> a, Map<String, Map<String, Map<String, Integer>>> b){
 		Map<String, Map<String, Map<String, Integer>>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, this::mergeVxSource);
-			});
+			b.forEach((k, v) -> x.merge(k, v, this::mergeVxSource));
 		}
 		return x;
 	}
@@ -186,9 +159,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<String, Map<String, Integer>> mergeVxSource(Map<String, Map<String, Integer>> a, Map<String, Map<String, Integer>> b){
 		Map<String, Map<String, Integer>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, this::mergeVxSex);
-			});
+			b.forEach((k, v) -> x.merge(k, v, this::mergeVxSex));
 		}
 		return x;
 	}
@@ -197,9 +168,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<String, Integer> mergeVxSex(Map<String, Integer> a, Map<String, Integer> b){
 		Map<String, Integer> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, this::merge);
-			});
+			b.forEach((k, v) -> x.merge(k, v, this::merge));
 		}
 		return x;
 	}
@@ -213,9 +182,7 @@ public class MergeServiceImpl implements MergeService {
 	public Map<String, PatientPayload> mergePatientAgeGroup(Map<String, PatientPayload> a, Map<String, PatientPayload> b){
 		Map<String, PatientPayload> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> {
-				x.merge(k, v, this::mergePatient);
-			});
+			b.forEach((k, v) -> x.merge(k, v, this::mergePatient));
 		}
 		return x;
 	}

@@ -1,21 +1,18 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public class ADChunk {
-	
+
+	public static final int MAX_ISSUES = 50;
 	private int unreadPatients = 0;
 	private int unreadVaccinations = 0;
 	private int nbVaccinations = 0;
 	private int nbPatients = 0;
 	private int maxVaccination = 0;
 	private int minVaccination = 99999;
-	private List<String> issues;
+	private IssueList issues;
 	private Map<String, String> providers;
 	private Map<String, Map<String, VaccinationPayload>> vaccinationSection;
 	private Map<String, PatientPayload> patientSection;
@@ -24,13 +21,12 @@ public class ADChunk {
 	private Map<String, Set<String>> codes;
 	
 	public ADChunk(Map<String, String> providers, Map<String, Map<String, VaccinationPayload>> vaccinationSection,
-			Map<String, PatientPayload> patientSection, Map<String, ExtractFraction> extraction, List<String> issues, int nbVaccinations, int nbPatients, Map<Field, Set<String>> values, Map<String, Set<String>> codes) {
+			Map<String, PatientPayload> patientSection, Map<String, ExtractFraction> extraction, int nbVaccinations, int nbPatients, Map<Field, Set<String>> values, Map<String, Set<String>> codes) {
 		super();
 		this.providers = providers;
 		this.vaccinationSection = vaccinationSection;
 		this.patientSection = patientSection;
 		this.extraction = extraction;
-		this.issues = issues;
 		this.nbVaccinations = nbVaccinations;
 		this.nbPatients = nbPatients;
 		this.values = values;
@@ -44,7 +40,7 @@ public class ADChunk {
 		patientSection = new HashMap<>();
 		extraction = new HashMap<>();
 		providers = new HashMap<>();
-		this.issues = new ArrayList<>();
+		this.issues = new IssueList(MAX_ISSUES);
 	}
 
 
@@ -74,15 +70,21 @@ public class ADChunk {
 	}
 
 
-	public List<String> getIssues() {
-		return issues;
+	public void addIssue(String issue) {
+		this.issues.add(issue);
 	}
 
-
-	public void setIssues(List<String> issues) {
-		this.issues = issues;
+	public void addIssues(ADChunk chunk) {
+		this.issues.addAllPossible(chunk.issues);
 	}
 
+	public void addIssues(List<String> issues) {
+		this.issues.addAllPossible(issues);
+	}
+
+	public List<String> issueList() {
+		return this.issues.toList();
+	}
 
 	@Override
 	public String toString() {
@@ -117,7 +119,7 @@ public class ADChunk {
 
 
 	public void setMaxVaccination(int v) {
-		this.maxVaccination = v > maxVaccination ? v : maxVaccination;
+		this.maxVaccination = Math.max(v, maxVaccination);
 	}
 
 
@@ -127,7 +129,7 @@ public class ADChunk {
 
 
 	public void setMinVaccination(int v) {
-		this.minVaccination = v < minVaccination ? v : minVaccination;
+		this.minVaccination = Math.min(v, minVaccination);
 	}
 
 

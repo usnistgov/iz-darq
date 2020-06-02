@@ -34,37 +34,45 @@ public class ADFile {
 	
 	
 	private Date analysisDate;
-	private Map<String, ExtractFraction> extraction;
 	private Map<String, PatientPayload> patients;
 	private Map<String, Map<String, VaccinationPayload>> vaccinations;
 	private ConfigurationPayload configuration;
 	private Summary summary;
 	private Vocabulary vocabulary;
-	
-	public ADFile(Map<String, ExtractFraction> extraction, Map<String, PatientPayload> patients,
-			Map<String, Map<String, VaccinationPayload>> vaccinations, ConfigurationPayload configuration, Summary summary, Vocabulary vocabulary) {
+	private String version;
+	private String build;
+	private String mqeVersion;
+	private Set<String> inactiveDetections;
+
+	public ADFile(
+			Map<String, PatientPayload> patients,
+			Map<String, Map<String, VaccinationPayload>> vaccinations,
+			ConfigurationPayload configuration,
+			Summary summary,
+			Vocabulary vocabulary,
+			String version,
+			String build,
+			String mqeVersion,
+			Set<String> inactiveDetections
+	) {
 		super();
-		this.extraction = extraction;
 		this.patients = patients;
 		this.vaccinations = vaccinations;
 		this.configuration = configuration;
 		this.analysisDate = new Date();
 		this.summary = summary;
 		this.vocabulary = vocabulary;
+		this.version = version;
+		this.build = build;
+		this.mqeVersion = mqeVersion;
+		this.inactiveDetections = inactiveDetections;
 	}
 	
 	
 	public ADFile() {
 		super();
 	}
-	
 
-	public Map<String, ExtractFraction> getExtraction() {
-		return extraction;
-	}
-	public void setExtraction(Map<String, ExtractFraction> extraction) {
-		this.extraction = extraction;
-	}
 	public Map<String, PatientPayload> getPatients() {
 		return patients;
 	}
@@ -101,5 +109,37 @@ public class ADFile {
 	}
 	public void setVocabulary(Vocabulary vocabulary) {
 		this.vocabulary = vocabulary;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getBuild() {
+		return build;
+	}
+
+	public void setBuild(String build) {
+		this.build = build;
+	}
+
+	public Set<String> getInactiveDetections() {
+		return inactiveDetections;
+	}
+
+	public void setInactiveDetections(Set<String> inactiveDetections) {
+		this.inactiveDetections = inactiveDetections;
+	}
+
+	public String getMqeVersion() {
+		return mqeVersion;
+	}
+
+	public void setMqeVersion(String mqeVersion) {
+		this.mqeVersion = mqeVersion;
 	}
 }

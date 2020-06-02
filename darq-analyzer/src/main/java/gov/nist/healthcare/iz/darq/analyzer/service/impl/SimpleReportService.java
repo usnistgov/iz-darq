@@ -28,8 +28,32 @@ public class SimpleReportService implements ReportService {
 	@Override
 	public DataTable singleQuery(ADFile file, DataViewQuery payload) {
 		AnalysisQuery query = queryFromPayload(payload);
+		QueryIssues issues = sanitizeQuery(file, query);
 		TrayProcessor processor = factory.create(query.getCompatibilityGroup(), query::take);
-		return tableService.createTable(processor.process(file), payload);
+		DataTable table = tableService.createTable(processor.process(file), payload);
+		table.setIssues(issues);
+		return table;
+	}
+
+	QueryIssues sanitizeQuery(ADFile file, AnalysisQuery query) {
+		Set<String> inactive = null;
+
+		// Check for inative detections
+		if(file.getInactiveDetections() != null && file.getInactiveDetections().size() > 0) {
+			QueryField f = query.get(Field.DETECTION);
+			if(f != null) {
+				inactive = f.getValues().stream().filter((d) -> file.getInactiveDetections().contains(d)).collect(Collectors.toSet());
+				f.getValues().removeAll(inactive);
+			}
+		}
+
+		if(inactive != null && inactive.size() > 0) {
+			QueryIssues issues = new QueryIssues();
+			issues.setInactiveDetections(inactive);
+			return issues;
+		}
+
+		return null;
 	}
 	
 	@Override

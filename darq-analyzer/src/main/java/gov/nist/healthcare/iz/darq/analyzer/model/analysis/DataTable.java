@@ -6,6 +6,7 @@ import java.util.*;
 
 public class DataTable extends DataViewQuery {
     Map<Field, Set<String>> vocabulary;
+    QueryIssues issues;
     boolean thresholdViolation;
     List<Field> headers;
     List<DataTableRow> values;
@@ -22,6 +23,14 @@ public class DataTable extends DataViewQuery {
         this.headers = new ArrayList<>(query.getGroupBy());
         this.values = new ArrayList<>();
         this.vocabulary = new HashMap<>();
+    }
+
+    public QueryIssues getIssues() {
+        return issues;
+    }
+
+    public void setIssues(QueryIssues issues) {
+        this.issues = issues;
     }
 
     public void putFieldValue(Field f, String value) {

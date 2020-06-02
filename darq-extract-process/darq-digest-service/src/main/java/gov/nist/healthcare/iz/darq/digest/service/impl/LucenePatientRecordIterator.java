@@ -1,6 +1,5 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
-import com.google.common.io.Files;
 import gov.nist.extract.lucene.index.ExtractFileIndexer;
 import gov.nist.extract.lucene.index.ExtractFileSearcher;
 import gov.nist.healthcare.iz.darq.digest.service.PatientRecordIterator;
@@ -11,18 +10,22 @@ import gov.nist.healthcare.iz.darq.parser.service.RecordParser;
 import gov.nist.healthcare.iz.darq.parser.service.model.AggregateParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParseError;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParsedRecord;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.FSDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,15 +40,29 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
     private Stream<String> lines;
     private String tmpDir;
 
-    public LucenePatientRecordIterator(Path patientFile, Path vaccinationFile) throws IOException {
+    public LucenePatientRecordIterator(Path patientFile, Path vaccinationFile, Optional<String> directory) throws IOException {
         super(patientFile, vaccinationFile);
         logger.info("[RECORD ITERATOR] Initialization");
-
+        tmpDir = null;
         // Index Vaccination File
         ExtractFileIndexer luceneIndexer = new ExtractFileIndexer();
         logger.info("Creating Temporary directory");
-        tmpDir = Files.createTempDir().getAbsolutePath();
-        logger.info("Directory created");
+        if(directory.isPresent()) {
+            logger.info("Directory location provided");
+            File location = new File(directory.get());
+            if(!location.exists()) {
+                logger.error("[LUCENE TMP DIRECTORY] provided location'" + directory.get() + "' does not exist");
+                throw new FileNotFoundException("provided location'" + directory.get() + "' does not exist");
+            }
+
+            if(!location.isDirectory()) {
+                logger.error("[LUCENE TMP DIRECTORY] provided location'" + directory.get() + "' is not directory");
+                throw new FileNotFoundException("provided location'" + directory.get() + "' is not directory");
+            }
+        }
+
+        tmpDir = this.createDirectory(directory).toString();
+        logger.info("Directory created at " + tmpDir);
         logger.info("[LUCENE] Indexing Vaccination File");
         luceneIndexer.index(vaccinationFile.toString(), tmpDir);
         logger.info("[LUCENE] Vaccination File Indexed");
@@ -61,6 +78,13 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
         lines = java.nio.file.Files.lines(patientFile);
         linesIterator = lines.iterator();
         logger.info("[RECORD ITERATOR] Initialized");
+    }
+
+    private Path createDirectory(Optional<String> location) {
+        String name = RandomStringUtils.random(10, true, true);
+        Path path = location.map(s -> Paths.get(s, name)).orElseGet(() -> Paths.get(name));
+        path.toFile().mkdir();
+        return path.toAbsolutePath();
     }
 
     @Override
