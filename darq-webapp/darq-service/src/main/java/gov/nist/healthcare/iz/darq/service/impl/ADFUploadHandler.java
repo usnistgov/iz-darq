@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.service.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,7 +37,7 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 		
 		try {
 			byte[] content = IOUtils.toByteArray(stream);
-			ADFile file = crypto.decrypt(content);
+			ADFile file = crypto.decryptFile(new ByteArrayInputStream(content));
 			String uid = UUID.randomUUID().toString();
 			Path dir = Files.createDirectory(Paths.get(PATH+"/"+uid));
 			if (dir.toFile().exists()) {

@@ -1,9 +1,6 @@
 package gov.nist.healthcare.iz.darq.adf.utils.crypto.impl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -21,9 +18,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.undercouch.bson4jackson.BsonFactory;
@@ -39,7 +33,7 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	private final ObjectMapper mapper = new ObjectMapper(new BsonFactory()).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	@Override
-	public byte[] encrypt(ADFile file) throws Exception {
+	public void encryptContentToFile(ADFile file, OutputStream outputStream) throws Exception {
 		
 		//----------------- AES ENCRYPT ------------------
 		SecretKeySpec aesKey = password();
@@ -52,13 +46,13 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	    final Cipher cipher = Cipher.getInstance("RSA");
 	    cipher.init(Cipher.ENCRYPT_MODE, publicKey());
 	    byte[] encryptedKey = cipher.doFinal(aesKey.getEncoded());
-	    
-	    return serialize(EncryptedADF.class, new EncryptedADF(encryptedKey, encryptedContent));
+
+		mapper.writeValue(outputStream, new EncryptedADF(encryptedKey, encryptedContent));
 	}
 
 	@Override
-	public ADFile decrypt(byte[] bytes) throws Exception {
-		EncryptedADF encryptedADF = deserialize(EncryptedADF.class, bytes);
+	public ADFile decryptFile(InputStream inputStream) throws Exception {
+		EncryptedADF encryptedADF = mapper.readValue(inputStream, EncryptedADF.class);
 		
 		//----------------- DECRYPT AES ------------------
 		final Cipher cipher = Cipher.getInstance("RSA");
