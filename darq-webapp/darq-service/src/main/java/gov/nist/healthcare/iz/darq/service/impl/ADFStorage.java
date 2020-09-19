@@ -12,7 +12,6 @@ import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 import gov.nist.healthcare.iz.darq.service.FacilityService;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -85,9 +84,7 @@ public class ADFStorage implements ADFStore<UserUploadedFile> {
 	public ADFile getFile(String id, String owner) throws Exception {
 		UserUploadedFile md = this.getAccessible(id, owner);
 		if(md != null){
-			FileInputStream fis = new FileInputStream(Paths.get(PATH+"/"+md.getPath()+"/adf.data").toFile());
-			byte[] content = IOUtils.toByteArray(fis);
-			return crypto.decrypt(content);
+			return crypto.decryptFile(new FileInputStream(Paths.get(PATH+"/"+md.getPath()+"/adf.data").toFile()));
 		}
 		return null;
 	}

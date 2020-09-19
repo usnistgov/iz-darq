@@ -2,13 +2,11 @@ package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.apache.commons.io.FileUtils;
 import org.immregistries.mqe.validator.detection.Detection;
 import org.immregistries.mqe.validator.engine.MessageValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,9 +55,8 @@ public class Exporter implements ExportADChunk {
 	    output.mkdirs();
 	    
 	    //---- ENCRYPT
-	    byte[] fileBytes = this.cryptoUtils.encrypt(file);
-	    FileUtils.writeByteArrayToFile(new File("./darq-analysis/ADF.data"), fileBytes);
-	    
+	    this.cryptoUtils.encryptContentToFile(file, new FileOutputStream(new File("./darq-analysis/ADF.data")));
+
 	    //---- HTML
 	    summaryGenerator.generateSummary(file, summary, chunk.getProviders(), "./darq-analysis/summary/", printAdf);
 
