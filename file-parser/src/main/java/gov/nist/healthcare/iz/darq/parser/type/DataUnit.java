@@ -24,8 +24,6 @@ public abstract class DataUnit<T> {
 	private ExtractionData placeholder;
 
 	public DataUnit(String payload) throws InvalidValueException {
-		int length = -1;
-		DescriptorType code;
 		extracted = false;
 
 		// If value is coded extraction descriptor
@@ -78,10 +76,10 @@ public abstract class DataUnit<T> {
 			return value;
 		}
 	}
-	
+
 	protected abstract T dummy(int n);
 	protected abstract T empty();
 	protected abstract void validatePlaceHolder(DescriptorType placeholder) throws InvalidValueException;
-	protected abstract T validate(String payload) throws InvalidValueException;
+	public abstract T validate(String payload) throws InvalidValueException;
 	
 }

@@ -12,8 +12,8 @@ import gov.nist.healthcare.iz.darq.parser.model.VaccineRecord;
 
 public class MQETransformService {
 	
-	private MessageTransformer transformer = MessageTransformer.INSTANCE;
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+	private final MessageTransformer transformer = MessageTransformer.INSTANCE;
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
 	
 	public MQETransformService() {

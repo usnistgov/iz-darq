@@ -5,8 +5,11 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 public class DqString extends DataUnit<String> {
 
-	public DqString(String payload) throws InvalidValueException {
+	private final String dummyValue;
+
+	public DqString(String payload, String dummy) throws InvalidValueException {
 		super(payload);
+		this.dummyValue = dummy;
 	}
 
 	@Override
@@ -17,7 +20,7 @@ public class DqString extends DataUnit<String> {
 	@Override
 	protected String dummy(int n) {
 		if(n == -1)
-			return "PlaceholderData";
+			return this.dummyValue;
 		else {
 			return RandomStringUtils.random(n);
 		}

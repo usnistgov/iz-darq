@@ -17,12 +17,10 @@
     "activityBarBadge.background": "#a54e1a",
     "activityBarBadge.foreground": "#e7e7e7",
     "statusBar.background": "#210b46",
-    "statusBar.border": "#210b46",
     "statusBar.foreground": "#e7e7e7",
     "statusBarItem.hoverBackground": "#361272",
     "titleBar.activeBackground": "#210b46",
     "titleBar.activeForeground": "#e7e7e7",
-    "titleBar.border": "#210b46",
     "titleBar.inactiveBackground": "#210b4699",
     "titleBar.inactiveForeground": "#e7e7e799"
   },

@@ -73,7 +73,7 @@ public class RecordParser {
             DataUnit<?> dataUnit;
             try {
 
-                dataUnit = instantiateValue(field.getType(), value);
+                dataUnit = instantiateValue(field.getType(), value, metadata);
                 if(!dataUnit.hasValue() && metadata.required()) {
                     issues.add(new Issue(metadata.name(), name, "Field is required but was not valued", true));
                 }
@@ -107,10 +107,10 @@ public class RecordParser {
         }
     }
 
-    private DataUnit<?> instantiateValue(Class<?> clazz, String value) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, InvalidValueException {
+    private DataUnit<?> instantiateValue(Class<?> clazz, String value, Field metadata) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, InvalidValueException {
         if(clazz.isAssignableFrom(DqString.class)) {
-            Constructor<DqString> constructor = DqString.class.getConstructor(String.class);
-            return constructor.newInstance(value);
+            Constructor<DqString> constructor = DqString.class.getConstructor(String.class, String.class);
+            return constructor.newInstance(value, metadata.dummyStringValue());
         } else if(clazz.isAssignableFrom(DqNumeric.class)) {
             Constructor<DqNumeric> constructor = DqNumeric.class.getConstructor(String.class);
             return constructor.newInstance(value);
