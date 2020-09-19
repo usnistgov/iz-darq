@@ -32,12 +32,12 @@ import java.util.stream.Stream;
 public class LucenePatientRecordIterator extends PatientRecordIterator {
 
     final static Logger logger = LoggerFactory.getLogger(LucenePatientRecordIterator.class.getName());
-    private IndexSearcher vaccinations;
-    private Iterator<String> linesIterator;
-    private RecordParser parser;
-    private ExtractFileSearcher searcher;
+    private final IndexSearcher vaccinations;
+    private final Iterator<String> linesIterator;
+    private final RecordParser parser;
+    private final ExtractFileSearcher searcher;
     private int lineNumber;
-    private Stream<String> lines;
+    private final Stream<String> lines;
     private String tmpDir;
 
     public LucenePatientRecordIterator(Path patientFile, Path vaccinationFile, Optional<String> directory) throws IOException {
