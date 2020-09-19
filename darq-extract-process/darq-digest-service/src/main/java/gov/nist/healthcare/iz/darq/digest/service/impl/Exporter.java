@@ -4,7 +4,9 @@ package gov.nist.healthcare.iz.darq.digest.service.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.immregistries.mqe.validator.detection.Detection;
@@ -54,12 +56,30 @@ public class Exporter implements ExportADChunk {
 		File output = new File("./darq-analysis/");
 	    output.mkdirs();
 	    
-	    //---- ENCRYPT
+	    //---- ENCRYPT and write ADF
 	    this.cryptoUtils.encryptContentToFile(file, new FileOutputStream(new File("./darq-analysis/ADF.data")));
 
 	    //---- HTML
 	    summaryGenerator.generateSummary(file, summary, chunk.getProviders(), "./darq-analysis/summary/", printAdf);
 
+	    //--- Reporting Group Spreadsheet
+		writeProvidersToCSV(chunk.getProviders(), new FileWriter(new File("./darq-analysis/reporting-groups.csv")));
+	}
+
+	void writeProvidersToCSV(Map<String, String> providers, FileWriter writer) throws IOException {
+		writer.write("Reporting Group, Coded Value (MD5 HASH)\n");
+		providers.forEach((key, value) -> {
+			try {
+				writer.append(key);
+				writer.append(", ");
+				writer.append(value);
+				writer.append('\n');
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+		writer.flush();
+		writer.close();
 	}
 
 }
