@@ -133,26 +133,26 @@
 					<tr>
 						<th [pSortableColumn]="'label'" style="width: 400px;">Element <p-sortIcon field="label"></p-sortIcon></th>
             <th [pSortableColumn]="'valued'">Valued <p-sortIcon field="valued"></p-sortIcon></th>
+            <th [pSortableColumn]="'empty'">Empty <p-sortIcon field="empty"></p-sortIcon></th>
+            <th [pSortableColumn]="'valueLength'">Value Length <p-sortIcon field="valueLength"></p-sortIcon></th>
+            <th [pSortableColumn]="'valuePresent'">Present <p-sortIcon field="valuePresent"></p-sortIcon></th>
+            <th [pSortableColumn]="'valueNotPresent'">Not Present <p-sortIcon field="valueNotPresent"></p-sortIcon></th>
             <th [pSortableColumn]="'excluded'">Excluded <p-sortIcon field="excluded"></p-sortIcon></th>
             <th [pSortableColumn]="'notCollected'">Not Collected <p-sortIcon field="notCollected"></p-sortIcon></th>
             <th [pSortableColumn]="'notExtracted'">Not Extracted <p-sortIcon field="notExtracted"></p-sortIcon></th>
-            <th [pSortableColumn]="'valuePresent'">Present <p-sortIcon field="valuePresent"></p-sortIcon></th>
-            <th [pSortableColumn]="'valueNotPresent'">Not Present <p-sortIcon field="valueNotPresent"></p-sortIcon></th>
-            <th [pSortableColumn]="'valueLength'">Value Length <p-sortIcon field="valueLength"></p-sortIcon></th>
-            <th [pSortableColumn]="'empty'">Empty <p-sortIcon field="empty"></p-sortIcon></th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-node>
 					<tr>
 						<td style="width: 350px;">{{node.label}}</td>
-            <td>{{node.valued}}%</td>
-            <td>{{node.excluded}}%</td>
-            <td>{{node.notCollected}}%</td>
-            <td>{{node.notExtracted}}%</td>
-            <td>{{node.valuePresent}}%</td>
-            <td>{{node.valueNotPresent}}%</td>
-            <td>{{node.valueLength}}%</td>
-            <td>{{node.empty}}%</td>
+            <td>{{node.valued | number:'.1'}}%</td>
+            <td>{{node.empty | number:'.1'}}%</td>
+            <td>{{node.valueLength | number:'.1'}}%</td>
+            <td>{{node.valuePresent | number:'.1'}}%</td>
+            <td>{{node.valueNotPresent | number:'.1'}}%</td>
+            <td>{{node.excluded | number:'.1'}}%</td>
+            <td>{{node.notCollected | number:'.1'}}%</td>
+            <td>{{node.notExtracted | number:'.1'}}%</td>
 					</tr>
 				</ng-template>
       </p-table>

@@ -127,7 +127,7 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 								),
 								card(
 										"",
-										"Providers",
+										"Reporting Groups",
 										table(
 												attrs(".table.table-sm.table-striped"),
 												thead(

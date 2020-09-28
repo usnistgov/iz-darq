@@ -26,7 +26,7 @@
     <div *ngIf="(isViewOnly$ | async) === false">
       <button class="btn btn-sm btn-primary" style="margin-right: 5px;" *ngIf="(isAdmin$ | async)" [disabled]="containsUnsavedChanges$() | async" (click)="publish()" >
         <i class="fa fa-share"></i>
-        Publish To Facility
+        Publish To IIS
       </button>
       <dam-reset-button></dam-reset-button>
       <dam-save-button></dam-save-button>

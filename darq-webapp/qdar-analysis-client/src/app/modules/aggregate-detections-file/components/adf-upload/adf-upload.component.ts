@@ -38,6 +38,10 @@ export class AdfUploadComponent implements OnInit {
             label: f.name,
             value: f.id,
           };
+        }).sort((a, b) => {
+          if (a.label < b.label) { return -1; }
+          if (a.label > b.label) { return 1; }
+          return 0;
         });
       }),
     );
