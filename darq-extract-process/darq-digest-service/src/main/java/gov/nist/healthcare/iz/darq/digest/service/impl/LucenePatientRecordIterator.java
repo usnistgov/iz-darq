@@ -10,6 +10,7 @@ import gov.nist.healthcare.iz.darq.parser.service.RecordParser;
 import gov.nist.healthcare.iz.darq.parser.service.model.AggregateParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParseError;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParsedRecord;
+import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.search.IndexSearcher;
@@ -40,7 +41,7 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
     private final Stream<String> lines;
     private String tmpDir;
 
-    public LucenePatientRecordIterator(Path patientFile, Path vaccinationFile, Optional<String> directory) throws IOException {
+    public LucenePatientRecordIterator(Path patientFile, Path vaccinationFile, Optional<String> directory, DqDateFormat dateFormat) throws IOException {
         super(patientFile, vaccinationFile);
         logger.info("[RECORD ITERATOR] Initialization");
         tmpDir = null;
@@ -70,7 +71,7 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
 
         // Init Attributes
         this.lineNumber = 1;
-        parser = new RecordParser();
+        parser = new RecordParser(dateFormat);
         searcher = new ExtractFileSearcher();
 
         // Get patients file iterator

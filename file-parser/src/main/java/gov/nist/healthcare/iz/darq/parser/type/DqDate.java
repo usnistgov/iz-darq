@@ -1,37 +1,37 @@
 package gov.nist.healthcare.iz.darq.parser.type;
 
 import gov.nist.healthcare.iz.darq.parser.exception.InvalidValueException;
+import org.joda.time.LocalDate;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-public class DqDate extends DataUnit<Date> {
-	 
-	
-	public DqDate(String payload) throws InvalidValueException {
-		super(payload);
+public class DqDate extends DataUnit<LocalDate> {
+
+	private final DqDateFormat dateFormat;
+
+	public DqDate(String payload, DqDateFormat dateFormat) throws InvalidValueException {
+		super();
+		this.dateFormat = dateFormat;
+		this.set(payload);
 	}
 
 	@Override
-	public Date validate(String payload) throws InvalidValueException {
+	public LocalDate validate(String payload) throws InvalidValueException {
 		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			format.setLenient(false);
-			return format.parse(payload);
+			return dateFormat.getDate(payload);
 		}
-		catch(ParseException e){
-			throw new InvalidValueException("'"+payload+"' is invalid date format must be yyyy-MM-dd");
+		catch(Exception e){
+
+			throw new InvalidValueException("'"+payload+"' is invalid date format must be " + dateFormat.getPattern());
 		}
 	}
 
 	@Override
-	protected Date dummy(int n) {
+	protected LocalDate dummy(int n) {
 		return null;
 	}
 
 	@Override
-	protected Date empty() {
+	protected LocalDate empty() {
 		return null;
 	}
 

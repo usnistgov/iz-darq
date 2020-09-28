@@ -10,7 +10,9 @@ import gov.nist.healthcare.iz.darq.digest.service.exception.InvalidPatientRecord
 import gov.nist.healthcare.iz.darq.parser.service.model.AggregateParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParseError;
 
+import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +35,13 @@ public class SimpleDigestRunner implements DigestRunner {
 	private int size = 0;
 
 	@Override
-	public ADChunk digest(ConfigurationPayload configuration, String patient, String vaccines, Optional<String> directory) throws Exception {
+	public ADChunk digest(ConfigurationPayload configuration, String patient, String vaccines, DqDateFormat dateFormat, Optional<String> directory) throws Exception {
 		logger.info("[START] Processing Extract");
 		size = (int) Files.lines(Paths.get(patient)).parallel().count();
 		logger.info("Number of patient records : "+size);
 
 		ConfigurationProvider config = new SimpleConfigurationProvider(configuration);
-		iterator = new LucenePatientRecordIterator(Paths.get(patient), Paths.get(vaccines), directory);
+		iterator = new LucenePatientRecordIterator(Paths.get(patient), Paths.get(vaccines), directory, dateFormat);
 		final ADChunk file = new ADChunk();
 		LocalDate date = new LocalDate(configuration.getAsOfDate());
 		while(iterator.hasNext()) {

@@ -5,10 +5,8 @@ import gov.nist.healthcare.iz.darq.parser.annotation.Record;
 import gov.nist.healthcare.iz.darq.parser.exception.InvalidValueException;
 import gov.nist.healthcare.iz.darq.parser.model.Issue;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParsedRecord;
-import gov.nist.healthcare.iz.darq.parser.type.DataUnit;
-import gov.nist.healthcare.iz.darq.parser.type.DqDate;
-import gov.nist.healthcare.iz.darq.parser.type.DqNumeric;
-import gov.nist.healthcare.iz.darq.parser.type.DqString;
+import gov.nist.healthcare.iz.darq.parser.type.*;
+
 import static org.reflections.ReflectionUtils.getAllFields;
 import static org.reflections.ReflectionUtils.withAnnotation;
 
@@ -19,6 +17,13 @@ import java.util.List;
 import java.util.Set;
 
 public class RecordParser {
+
+    private final DqDateFormat dateFormat;
+
+    public RecordParser(DqDateFormat dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
 
     public <T extends gov.nist.healthcare.iz.darq.parser.service.model.Record> ParsedRecord<T> parse(Class<T> clazz, String line, int lineNumber) {
         ParsedRecord<T> parsed = new ParsedRecord<>();
@@ -115,8 +120,8 @@ public class RecordParser {
             Constructor<DqNumeric> constructor = DqNumeric.class.getConstructor(String.class);
             return constructor.newInstance(value);
         } else if(clazz.isAssignableFrom(DqDate.class)) {
-            Constructor<DqDate> constructor = DqDate.class.getConstructor(String.class);
-            return constructor.newInstance(value);
+            Constructor<DqDate> constructor = DqDate.class.getConstructor(String.class, DqDateFormat.class);
+            return constructor.newInstance(value, this.dateFormat);
         }
 
         throw new IllegalArgumentException("Not a primitive field");
