@@ -7,7 +7,9 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
+import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -32,6 +34,7 @@ import gov.nist.healthcare.iz.darq.digest.service.impl.Exporter;
 public class CLIApp {
 
 	private static final DecimalFormat df = new DecimalFormat(".##");
+	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 	
 	private static boolean exists(CommandLine cmd, String opt, String name){
 		if(!cmd.hasOption(opt)){
@@ -69,6 +72,7 @@ public class CLIApp {
 		options.addOption("c", "configuration", true, "Analysis Configuration");
 		options.addOption("tmpDir", "temporaryDirectory", true, "Location where to create temporary directory");
 		options.addOption("pa", "printAdf", false, "print ADF content");
+		options.addOption("d", "dateFormat", true, "Date Format");
 
 		CommandLineParser parser = new DefaultParser();
 		try {
@@ -89,6 +93,7 @@ public class CLIApp {
 					String cFilePath = cmd.getOptionValue("c");
 					String tmpDirLocation = cmd.getOptionValue("tmpDir");
 					boolean printAdf = cmd.hasOption("pa");
+					String dateFormat = cmd.getOptionValue("d");
 
 					System.out.println(ConsoleColors.BLUE_BRIGHT + "===================================================================================================" + ConsoleColors.RESET);
 			    	System.out.println(ConsoleColors.WHITE_BOLD + " [NIST] Welcome to Data At Rest Quality Analysis Command Line Tool " + tag + " " + ConsoleColors.RESET);
@@ -118,13 +123,24 @@ public class CLIApp {
 		        	System.out.println("===================================================================================================");
 					System.out.println(ConsoleColors.YELLOW_BRIGHT + "Analysis Progress => " + ConsoleColors.RESET);
 
+					// Read Date Format
+					DqDateFormat simpleDateFormat = DqDateFormat.forPattern(DEFAULT_DATE_FORMAT);
+					if(!Strings.isNullOrEmpty(dateFormat)) {
+						try{
+							simpleDateFormat = DqDateFormat.forPattern(dateFormat);
+						} catch (Exception e) {
+							System.out.println("Date Format " + dateFormat + " is Invalid ");
+							throw e;
+						}
+					}
+
 					if(pFile && vFile && cFile && cFileValid){
 		        		SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
 		        		Exporter export = context.getBean(Exporter.class);
 		        		running = true;
 		        		Thread t = progress(runner);
 		        		t.start();
-		            	ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath, Optional.ofNullable(tmpDirLocation));
+		            	ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, Optional.ofNullable(tmpDirLocation));
 		            	t.join();
 		            	System.out.println(ConsoleColors.GREEN_BRIGHT + "Analysis Finished" + ConsoleColors.RESET);
 		            	export.export(configurationPayload, chunk, version, build, mqeVersion, printAdf);

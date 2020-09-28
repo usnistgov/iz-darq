@@ -58,7 +58,7 @@ public class DQAValidator {
 		MqeMessageReceived msg = tresult.getPayload();
 
 		// DOB and Patient AgeGroup
-		LocalDate DOB = LocalDate.parse(msg.getPatient().getBirthDateString(), dateFormat);
+		LocalDate DOB = apr.patient.date_of_birth.getValue();
 		String currentAgeGroup = this.ageGroupCalculator.getGroup(DOB, date);
 
 		// For each Vaccination

@@ -23,7 +23,12 @@ public abstract class DataUnit<T> {
 	// Extraction descriptor about the value when no value is provided
 	private ExtractionData placeholder;
 
+	public DataUnit() {}
 	public DataUnit(String payload) throws InvalidValueException {
+		this.set(payload);
+	}
+
+	protected void set(String payload) throws InvalidValueException {
 		extracted = false;
 
 		// If value is coded extraction descriptor
