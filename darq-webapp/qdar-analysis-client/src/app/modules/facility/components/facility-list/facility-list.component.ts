@@ -47,6 +47,10 @@ export class FacilityListComponent implements OnInit {
       map(([facilities, text]) => {
         return facilities.filter((conf) => {
           return conf.name.includes(text);
+        }).sort((a, b) => {
+          if (a.name < b.name) { return -1; }
+          if (a.name > b.name) { return 1; }
+          return 0;
         });
       }),
     );
@@ -63,7 +67,7 @@ export class FacilityListComponent implements OnInit {
   createFacility() {
     this.dialog.open(NameDialogComponent, {
       data: {
-        title: 'Create Facility'
+        title: 'Create IIS'
       },
     }).afterClosed().pipe(
       flatMap((name) => {
