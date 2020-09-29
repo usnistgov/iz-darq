@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as _ from 'lodash';
 import { IFieldInputOptions } from '../../../shared/components/field-input/field-input.component';
 import { IQueryResultFilter, Comparator, IReportFilter, IValueContainer } from '../../../report-template/model/report-template.model';
-import { AnalysisType, Field } from '../../../report-template/model/analysis.values';
+import { AnalysisType, Field, fieldDisplayName } from '../../../report-template/model/analysis.values';
 
 @Component({
   selector: 'app-report-filter-dialog',
@@ -17,14 +17,15 @@ export class ReportFilterDialogComponent implements OnInit {
   analysis: AnalysisType;
   groupBy: Field[];
   fields = [
-    'PROVIDER',
-    'AGE_GROUP',
-    'CODE',
-    'EVENT',
-    'GENDER',
-    'VACCINE_CODE',
-    'VACCINATION_YEAR',
+    Field.PROVIDER,
+    Field.AGE_GROUP,
+    Field.CODE,
+    Field.EVENT,
+    Field.GENDER,
+    Field.VACCINE_CODE,
+    Field.VACCINATION_YEAR,
   ];
+  fieldDisplayName = fieldDisplayName;
 
   constructor(
     public dialogRef: MatDialogRef<ReportFilterDialogComponent>,

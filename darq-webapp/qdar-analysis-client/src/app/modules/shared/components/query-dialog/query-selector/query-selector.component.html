@@ -17,7 +17,7 @@
                     (click)="addSelector(field)"
                     *ngFor="let field of fieldsList"
                     class="list-group-item cursor-pointer">
-                    <strong>{{field}}</strong>
+                    <strong>{{fieldDisplayName[field]}}</strong>
                   </li>
                 </ul>
               </td>
@@ -39,7 +39,7 @@
                 <thead>
                   <tr>
                     <th style="text-align: center; vertical-align: middle;">
-                      <span>{{selector.field}}</span>
+                      <span>{{fieldDisplayName[selector.field]}}</span>
                       <button class="btn btn-sm btn-danger pull-right" (click)="removeSelector(is)">
                         <i class="fa fa-times"></i>
                       </button>
