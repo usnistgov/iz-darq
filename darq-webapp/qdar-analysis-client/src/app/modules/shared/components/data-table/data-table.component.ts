@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Inject } from '@angular/core';
 import { IDataTable, IFraction } from '../../../report/model/report.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Labelizer } from '../../services/values.service';
-import { Field, AnalysisType } from '../../../report-template/model/analysis.values';
+import { Field, AnalysisType, fieldDisplayName } from '../../../report-template/model/analysis.values';
 import { SelectItem } from 'primeng/api/selectitem';
 import { IFieldInputOptions } from '../field-input/field-input.component';
 import { Comparator, IThreshold } from '../../../report-template/model/report-template.model';
@@ -41,13 +41,11 @@ export type Row = IDataTableRowDisplay | IFieldValue;
 export class DataTableComponent implements OnInit {
 
   ColumnType = ColumnType;
-
   @Input()
   table: IDataTable;
-
   @Input()
   labelizer: Labelizer;
-
+  fieldDisplayName = fieldDisplayName;
   columns: IColumn[];
   searchFields: string[];
   rows: Row[] = [];

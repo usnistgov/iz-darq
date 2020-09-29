@@ -89,7 +89,7 @@
           </label>
         </div>
         <p-tabView>
-          <p-tabPanel *ngFor="let field of fields" [header]="field" [headerStyleClass]="!isValid(value.fields.fields[field]) ? 'invalid-tab' : 'valid-tab'">
+          <p-tabPanel *ngFor="let field of fields" [header]="fieldDisplayName[field]" [headerStyleClass]="!isValid(value.fields.fields[field]) ? 'invalid-tab' : 'valid-tab'">
             <table class="table table-sm" style="margin: 0 !important;">
               <thead>
                 <tr>
@@ -110,7 +110,7 @@
                     [field]="field"
                     [id]="iv + '-' + field"
                     [name]="iv + '-' + field"
-                    [placeholder]="field"
+                    [placeholder]="fieldDisplayName[field]"
                     [(ngModel)]="container.value"
                     required
                     style="flex-grow: 1;"

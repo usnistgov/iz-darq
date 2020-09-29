@@ -37,7 +37,7 @@
             {{ header.label }}
           </th>
           <th [pSortableColumn]="header.key" pResizableColumn *ngSwitchDefault>
-            {{ header.label }}
+            {{ fieldDisplayName[header.label] }}
             <p-sortIcon [field]="header.key"></p-sortIcon>
           </th>
         </ng-container >
