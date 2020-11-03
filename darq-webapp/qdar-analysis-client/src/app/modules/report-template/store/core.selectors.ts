@@ -1,4 +1,4 @@
-import { selectFromCollection, selectPayloadData, selectValue, selectUsername } from 'ngx-dam-framework';
+import { selectFromCollection, selectPayloadData, selectValue } from 'ngx-dam-framework';
 import { createEntityAdapter, Dictionary } from '@ngrx/entity';
 import { createSelector } from '@ngrx/store';
 import { IReportTemplateDescriptor, IReportTemplate, IReportSection } from '../model/report-template.model';
@@ -76,10 +76,4 @@ export const selectRtIsPublished = createSelector(
     return rt.published;
   }
 );
-export const selectRtIsOwned = createSelector(
-  selectReportTemplate,
-  selectUsername,
-  (rt: IReportTemplate, username: string) => {
-    return rt.owner === username;
-  }
-);
+

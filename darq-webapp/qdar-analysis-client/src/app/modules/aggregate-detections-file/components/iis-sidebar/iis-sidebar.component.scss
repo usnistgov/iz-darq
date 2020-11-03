@@ -1,0 +1,35 @@
+.facilities {
+  grid-gap: 2px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: [facility-title] minmax(min-content, 55px)  [facility-filter] minmax(min-content, 40px) [facility-content] auto;
+  color: #444;
+  height: 100%;
+  background-color: #d6d6d6e3;
+  border-bottom: 1px solid #d6d6d6e3;
+}
+
+.facility-title {
+  grid-column: 1;
+  grid-row: facility-title;
+  background-color: white;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.facility-filter {
+  grid-column: 1;
+  background-color: white;
+  grid-row: facility-filter;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.facility-content {
+  grid-column: 1;
+  background-color: #fff6e9;
+  grid-row: facility-content;
+}

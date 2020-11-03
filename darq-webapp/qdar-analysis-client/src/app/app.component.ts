@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IServerInfo, ServerInfoService } from './modules/core/services/app-info.service';
 
@@ -7,15 +7,19 @@ import { IServerInfo, ServerInfoService } from './modules/core/services/app-info
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
-  title = 'qdar-analysis-client';
   info: Observable<IServerInfo>;
 
-  constructor(private serverInfo: ServerInfoService) { }
+  constructor(
+    private serverInfo: ServerInfoService
+  ) { }
 
   ngOnInit(): void {
     this.info = this.serverInfo.getServerInfo();
+  }
+
+  ngOnDestroy() {
   }
 
 }

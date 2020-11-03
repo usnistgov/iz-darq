@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of, Subject, combineLatest, BehaviorSubject } from 'rxjs';
+import { Observable, of, Subject, combineLatest, BehaviorSubject, from } from 'rxjs';
 import { IReportTemplateDescriptor, IReportTemplate } from '../../model/report-template.model';
 import { Store } from '@ngrx/store';
 import { selectReportTemplates } from '../../store/core.selectors';
@@ -21,6 +21,7 @@ import { EntityType } from '../../../shared/model/entity.model';
 import { CreateRtDialogComponent } from '../create-rt-dialog/create-rt-dialog.component';
 import { IConfigurationDescriptor } from '../../../configuration/model/configuration.model';
 import { selectConfigurations } from '../../../configuration/store/core.selectors';
+import { selectCurrentUserId } from 'src/app/modules/core/store/core.selectors';
 
 @Component({
   selector: 'app-templates-list',
@@ -34,6 +35,7 @@ export class TemplatesListComponent implements OnInit {
   isAdmin$: Observable<boolean>;
   listTypeSubject: BehaviorSubject<FilterType>;
   filterType = FilterType;
+  userId$: Observable<string>;
 
   constructor(
     private store: Store<any>,
@@ -42,12 +44,15 @@ export class TemplatesListComponent implements OnInit {
     private dialog: MatDialog) {
     this.listTypeSubject = new BehaviorSubject(FilterType.ALL);
     this.configurations$ = this.store.select(selectConfigurations);
+    this.userId$ = this.store.select(selectCurrentUserId);
+
     this.templates$ = combineLatest([
       this.listTypeSubject,
       this.store.select(selectReportTemplates),
+      this.userId$,
     ]).pipe(
-      map(([filter, list]) => {
-        return filterDescriptorByType(list, filter);
+      map(([filter, list, userId]) => {
+        return filterDescriptorByType([...list.map((v) => ({ ...v }))], filter, userId);
       })
     );
     this.isAdmin$ = this.store.select(selectIsAdmin);
@@ -77,12 +82,12 @@ export class TemplatesListComponent implements OnInit {
               return this.templateService.delete(template.id);
             },
             (message) => {
-              return message.status === MessageType.SUCCESS ? [new DeleteResourcesFromRepository({
+              return from(message.status === MessageType.SUCCESS ? [new DeleteResourcesFromRepository({
                 collections: [{
                   key: 'templates',
                   values: [template.id],
                 }],
-              })] : [];
+              })] : []);
             }
           );
         }
@@ -92,17 +97,23 @@ export class TemplatesListComponent implements OnInit {
   }
 
   readonly addAndOpenHandler = (message) => {
-    return message.status === MessageType.SUCCESS ? [new InsertResourcesInCollection({
-      key: 'templates',
-      values: [
-        this.templateService.getDescriptor(message.data, true),
-      ],
-    }),
-    new GoToEntity({
-      type: EntityType.TEMPLATE,
-      id: message.data.id,
-    }),
-    ] : [];
+    return message.status === MessageType.SUCCESS ?
+      this.templateService.getDescriptorById(message.data.id).pipe(
+        flatMap((descriptor) => {
+          return from([
+            new InsertResourcesInCollection({
+              key: 'templates',
+              values: [
+                descriptor,
+              ],
+            }),
+            new GoToEntity({
+              type: EntityType.TEMPLATE,
+              id: message.data.id,
+            }),
+          ]);
+        })
+      ) : from([]);
   }
 
   clone(template: IReportTemplateDescriptor) {

@@ -4,16 +4,20 @@ import {
   IEditorMetadata,
   MessageService,
   EditorSave,
-  selectIsAdmin,
   LoadPayloadData,
   InsertResourcesInCollection
 } from 'ngx-dam-framework';
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { ReportTemplateService } from '../../services/report-template.service';
-import { Observable, Subscription, throwError, of, combineLatest } from 'rxjs';
+import { Observable, Subscription, throwError, combineLatest } from 'rxjs';
 import { IReportSectionDisplay } from '../../model/state.model';
-import { selectSectionById, selectRtIsViewOnly, selectRtIsPublished, selectRtIsOwned, selectReportTemplateConfiguration } from '../../store/core.selectors';
+import {
+  selectSectionById,
+  selectRtIsPublished,
+  selectReportTemplateConfiguration,
+  selectReportTemplate,
+} from '../../store/core.selectors';
 import { switchMap, map, take, concatMap, catchError, flatMap } from 'rxjs/operators';
 import { IReportSection, IDataViewQuery } from '../../model/report-template.model';
 import { EntityType } from '../../../shared/model/entity.model';
@@ -23,8 +27,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { QueryDialogComponent } from '../../../shared/components/query-dialog/query-dialog.component';
 import { AnalysisType, names } from '../../model/analysis.values';
 import { IFieldInputOptions } from 'src/app/modules/shared/components/field-input/field-input.component';
-import { ValuesService, IValueLabelMap, Labelizer } from '../../../shared/services/values.service';
+import { ValuesService, Labelizer } from '../../../shared/services/values.service';
 import { ConfirmDialogComponent } from 'ngx-dam-framework';
+import { ResourceType } from '../../../core/model/resouce-type.enum';
+import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
+import { PermissionService } from '../../../core/services/permission.service';
 
 export const RT_SECTION_PAYLOAD_EDITOR_METADATA: IEditorMetadata = {
   id: 'RT_SECTION_PAYLOAD_EDITOR_ID',
@@ -40,8 +47,6 @@ export class RtSectionPayloadEditorComponent extends DamAbstractEditorComponent 
 
   viewOnly$: Observable<boolean>;
   isPublished$: Observable<boolean>;
-  isOwned$: Observable<boolean>;
-  isAdmin$: Observable<boolean>;
   detections$: Observable<IDetectionResource[]>;
   cvxs$: Observable<ICvxResource[]>;
   value: IReportSection;
@@ -53,6 +58,7 @@ export class RtSectionPayloadEditorComponent extends DamAbstractEditorComponent 
   constructor(
     store: Store<any>,
     actions$: Actions,
+    private permissionService: PermissionService,
     private dialog: MatDialog,
     private valueService: ValuesService,
     private reportTemplateService: ReportTemplateService,
@@ -64,13 +70,18 @@ export class RtSectionPayloadEditorComponent extends DamAbstractEditorComponent 
       store,
     );
 
-
     this.detections$ = this.store.select(selectAllDetections);
     this.cvxs$ = this.store.select(selectAllCvx);
-    this.viewOnly$ = this.store.select(selectRtIsViewOnly);
+    this.viewOnly$ = combineLatest([
+      this.store.select(selectReportTemplate),
+      this.permissionService.abilities$,
+    ]).pipe(
+      map(([rt, abilities]) => {
+        return abilities.onResourceCant(ResourceAction.EDIT, ResourceType.REPORT_TEMPLATE, rt);
+      })
+    );
+
     this.isPublished$ = this.store.select(selectRtIsPublished);
-    this.isOwned$ = this.store.select(selectRtIsOwned);
-    this.isAdmin$ = this.store.select(selectIsAdmin);
 
     this.options$ = combineLatest([
       this.detections$,

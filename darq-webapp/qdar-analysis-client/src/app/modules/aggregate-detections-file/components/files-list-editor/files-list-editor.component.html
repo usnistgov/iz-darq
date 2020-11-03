@@ -1,0 +1,86 @@
+<p-table
+  *ngIf="facilityId$ | async as facilityId"
+  [value]="files$ | async"
+  [paginator]="true"
+  [rows]="10"
+  [frozenColumns]
+  class="ui-table-dash"
+  sortMode="multiple"
+  [styleClass]="'table table-sm table-striped'">
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="vertical-align: middle; width: 240px;" pSortableColumn="name">
+        Name
+        <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th style="vertical-align: middle; width: 150px;" pSortableColumn="owner">
+        Uploaded By
+        <p-sortIcon field="owner"></p-sortIcon>
+      </th>
+      <th style="vertical-align: middle; width: 150px;" pSortableColumn="uploadedOn">
+        Uploaded On
+        <p-sortIcon field="uploadedOn"></p-sortIcon>
+      </th>
+      <th style="vertical-align: middle; width: 150px;" pSortableColumn="analysedOn">
+        Analysed On
+        <p-sortIcon field="analysedOn"></p-sortIcon>
+      </th>
+      <th style="vertical-align: middle; width: 130px;">
+        Age
+      </th>
+      <th style="vertical-align: middle; width: 100px;">
+        Size
+      </th>
+      <th style="vertical-align: middle; width: 380px;">
+        Actions
+        <button class="btn btn-sm btn-secondary pull-right" [routerLink]="[ '/', 'adf', 'upload' ]" [queryParams]="{ 'facilityId': facilityId }">
+          <i class="fa fa-upload"></i>
+          Upload File
+        </button>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData>
+    <tr>
+      <td>
+        <i class="fa fa-file" style="color: blue; margin-right: 10px;"></i>
+        <strong>{{ rowData.name }}</strong>
+      </td>
+      <td><i class="fa fa-user" style="color: rgb(255, 0, 119);"></i> {{ rowData.ownerDisplayName }}</td>
+      <td>{{ rowData.uploadedOn | date:'MM-dd-yyyy HH:mm' }}</td>
+      <td>{{ rowData.analysedOn | date:'MM-dd-yyyy HH:mm'  }}</td>
+      <td>{{ age(rowData.analysedOn) }}</td>
+      <td>
+        {{rowData.size }}
+      </td>
+      <td>
+        <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;">
+          <button class="btn btn-sm btn-dark" style="margin-right: 5px;"
+            [routerLink]="['/', 'adf', rowData.id, 'summary']" [queryParams]="{ 'facilityId': facilityId }">
+            <i class="fa fa-file"></i>
+            Summary
+          </button>
+          <button class="btn btn-sm btn-success"  style="margin-right: 5px;" (click)="query(rowData.id)">
+            <i class="fa fa-table"></i>
+            Query
+          </button>
+          <button
+            *ngIf="'ANALYSE' | accessOnResource: rowData:'ADF' | async"
+            class="btn btn-sm btn-primary"
+            style="margin-right: 5px;"
+            (click)="analyse(rowData)">
+            <i class="fa fa-bar-chart"></i>
+            Analyse
+          </button>
+          <button
+            *ngIf="'DELETE' | accessOnResource: rowData:'ADF' | async"
+            class="btn btn-sm btn-danger"
+            (click)="remove(rowData)">
+            <i class="fa fa-trash"></i>
+            Delete
+          </button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

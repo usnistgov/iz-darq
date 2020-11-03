@@ -25,6 +25,7 @@ export interface IReportTemplate {
   type: EntityType.TEMPLATE;
   viewOnly: boolean;
   sections: IReportSection[];
+  public: boolean;
   configuration: IConfigurationPayload;
 }
 

@@ -1,0 +1,50 @@
+<form [formGroup]="form" >
+  <h5> Home Page Content </h5>
+  <div class="form-group" formGroupName="homePage">
+    <label for="name"><strong>Title</strong></label>
+    <input type="text" formControlName="title" placeholder="Home Page Title" class="form-control" name="title" id="title">
+  </div>
+  <div style="background-color: #fffaf4; padding: 10px; border-radius: 5px; border: 1px solid lightgray;" formGroupName="homePage" >
+    <div style="width: 100%; display: flex; justify-content: flex-end; margin-bottom: 5px;">
+      <button class="btn btn-sm btn-primary" (click)="addSection()">
+        <i class="fa fa-plus"></i>
+        Add Section
+      </button>
+    </div>
+    <ng-container *ngFor="let section of sections?.controls; let i = index" formArrayName="sections" >
+      <div style="display: flex;" >
+        <button class="btn btn-sm btn-danger" style="margin-right: 2px;" (click)="deleteSection(sections, i)">
+          <i class="fa fa-trash"></i>
+        </button>
+        <button class="btn btn-sm btn-secondary" style="margin-right: 2px;" *ngIf="i > 0" (click)="pullUpSection(sections, i)">
+          <i class="fa fa-arrow-up"></i>
+        </button>
+        <button class="btn btn-sm btn-secondary" style="margin-right: 2px;" *ngIf="i < sections.length - 1" (click)="pullDownSection(sections, i)">
+          <i class="fa fa-arrow-down"></i>
+        </button>
+      </div>
+      <div [formGroupName]="i" class="form-group">
+        <label [for]="'section-title-' + i"><strong>Section Title</strong></label>
+        <input formControlName="title" type="text" class="form-control" [name]="'section-title-' + i" [id]="'section-title-' + i" required>
+      </div>
+      <div [formGroupName]="i" class="form-group">
+        <label [for]="'section-content-' + i"><strong>Section Content</strong></label>
+        <div style="height: 300px">
+          <p-editor [p-editor-model]="$any(section).controls.content" formControlName="content"  [id]="'section-content-'+ i" class="home-section-editor"></p-editor>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <hr>
+  <h5> Terms & Conditions </h5>
+  <div class="form-group">
+    <label for="registration"><strong>Registration</strong></label>
+    <div style="height: 300px">
+      <textarea formControlName="registerTermsAndConditions" name="registration" id="registration" class="form-control" style="height: 300px"></textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="registration"><strong>File Upload</strong></label>
+    <textarea formControlName="uploadTermsAndConditions" name="upload" id="upload" class="form-control" style="height: 300px"></textarea>
+  </div>
+</form>

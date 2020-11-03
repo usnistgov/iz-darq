@@ -1,0 +1,55 @@
+<dam-layout [custom]="{
+  titlebar: false,
+  toolbar: true
+}">
+
+  <ng-template #alerts>
+    <dam-alerts-container></dam-alerts-container>
+  </ng-template>
+
+  <ng-template #titleBar>
+    <div style="width: 100%; display: flex;">
+      <dam-fullscreen-button></dam-fullscreen-button>
+      <div style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
+        <h4 class="title-text"><i class="fa fa-database" style="color: crimson;"></i> Dashboard </h4>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #toolbar *ngIf="currentEditorFacility$ | async as facility">
+    <div style="align-items: center; justify-content: center; display: flex; padding: 20px;">
+      <div style="display: flex; align-items: baseline;">
+        <i class="fa fa-user" style="color: rgb(255, 0, 119); font-size: 1.3em; margin-right: 10px;" *ngIf="facility._private"></i>
+        <h4 style="margin: 0;"> {{ facility.name }} </h4>
+        <i class="fa fa-chevron-right" style="font-size: 1.3em; margin-right: 20px; margin-left: 20px;"></i>
+      </div>
+      <ul class="nav nav-pills" *ngIf="facilityIdFromURL$ | async as facilityId">
+        <li class="nav-item">
+          <a id="adf" class="nav-link" #rla="routerLinkActive" [routerLink]="[ facilityId, 'files']" routerLinkActive="active" >
+            <h5 class="title-text"><i class="fa fa-file-text-o" style="color:crimson; margin-right: 5px;"></i> Aggregate Detections Files </h5>
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="'VIEW' | accessOnScope : 'ANALYSIS_JOB': (facility._private ? { scope: 'GLOBAL' }: { scope: 'FACILITY', facilityId: facility.id}):'OWNER'  | async">
+          <a class="nav-link" [routerLink]="facilityId + '/jobs'" routerLinkActive="active">
+            <h5 class="title-text"><i class="fa fa-area-chart" style="color:crimson; margin-right: 5px;"></i> Your Analysis Jobs</h5>
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="!facility._private">
+          <a class="nav-link" [routerLink]="facilityId + '/reports'" routerLinkActive="active">
+            <h5 class="title-text"><i class="fa fa-pie-chart" style="color:crimson; margin-right: 5px;"></i> Published Reports
+            <span class="badge badge-danger">{{ facility.reports }}</span>
+            </h5>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </ng-template>
+
+  <ng-template #editorContent>
+    <dam-editor-outlet></dam-editor-outlet>
+  </ng-template>
+
+  <ng-template #sideBar>
+    <app-iis-sidebar [facilities]="facilities$ | async" ></app-iis-sidebar>
+  </ng-template>
+</dam-layout>

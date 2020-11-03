@@ -6,13 +6,10 @@
     <h4 class="title-text title-heading" ><i class="fa fa-user" style="color: blue;"></i> Application Form </h4>
   </div>
   <div class="page-content upload-page-content">
-    <form class="upload-form" [formGroup]="form">
+    <form class="upload-form" [formGroup]="form" [appMustMatch]="['password', 'confirmPassword']">
       <div class="form-group">
         <label for="name"><strong>Full-name</strong></label>
         <input type="text" placeholder="Full-name" class="form-control" formControlName="fullName" name="fullname" id="fullname">
-        <div class="invalid-feedback">
-          Please provide a valid city.
-        </div>
       </div>
       <div class="form-group">
         <label for="name"><strong>Email</strong></label>

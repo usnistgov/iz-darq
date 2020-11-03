@@ -1,13 +1,20 @@
-<dam-layout [custom]="{ toolbar : true, titlebar: false }" [contentClass]="'no-pad'">
+<dam-layout [custom]="{ toolbar : true, titlebar: false }" [contentClass]="'no-pad'" *ngIf="report$ | async as report">
 
   <ng-template #alerts>
     <dam-alerts-container></dam-alerts-container>
   </ng-template>
 
   <ng-template #titleBar>
-    <div style="width: 100%; display: flex; justify-content: space-between;" *ngIf="report$ | async as report">
-
+    <div style="width: 100%; display: flex; justify-content: space-between;">
       <div style="display: flex; justify-content: center; align-items: center;">
+        <div *ngIf="facility$ | async as facility" style="display: flex; align-items: baseline;">
+          <i *ngIf="!facility._private" style="color: #795548; font-size: 1.5em; margin-right: 10px;" class="fa fa-building" aria-hidden="true"></i>
+          <i *ngIf="facility._private" class="fa fa-user" style="color: rgb(255, 0, 119); font-size: 1.3em; margin-right: 10px;" ></i>
+          <h4 style="margin: 0;"> {{ facility.name }} </h4>
+          <i class="fa fa-chevron-right" style="font-size: 1.3em; margin-right: 20px; margin-left: 20px;"></i>
+        </div>
+        <span class="badge badge-primary" *ngIf="report.public"> PUBLISHED </span>
+        <span class="badge badge-danger" *ngIf="!report.public"> PRIVATE </span>
         <h4 class="title-text">
           <i class="fa fa-pie-chart" style="color: darkgreen; margin-right: 10px;"></i>
           {{report.name}}
@@ -24,7 +31,7 @@
       Report Filter
     </button>
     <div *ngIf="(isViewOnly$ | async) === false">
-      <button class="btn btn-sm btn-primary" style="margin-right: 5px;" *ngIf="(isAdmin$ | async)" [disabled]="containsUnsavedChanges$() | async" (click)="publish()" >
+      <button class="btn btn-sm btn-primary" style="margin-right: 5px;" *ngIf="'PUBLISH' | accessOnResource : report:'REPORT' | async" [disabled]="containsUnsavedChanges$() | async" (click)="publish()" >
         <i class="fa fa-share"></i>
         Publish To IIS
       </button>

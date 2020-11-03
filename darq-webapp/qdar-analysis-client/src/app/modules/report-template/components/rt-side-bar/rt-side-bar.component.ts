@@ -19,6 +19,7 @@ export class RtSideBarComponent implements OnInit, OnDestroy {
   sections: IReportSection[];
   @Input()
   set viewOnly(vo: boolean) {
+    this.vOnly = vo;
     this.options = {
       allowDrag: !vo,
       actionMapping: {
@@ -45,6 +46,7 @@ export class RtSideBarComponent implements OnInit, OnDestroy {
       }
     };
   }
+  vOnly: boolean;
   options: ITreeOptions;
 
   constructor(

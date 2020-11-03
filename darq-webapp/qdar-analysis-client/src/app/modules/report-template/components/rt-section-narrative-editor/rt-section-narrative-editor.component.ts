@@ -11,12 +11,15 @@ import {
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { ReportTemplateService } from '../../services/report-template.service';
-import { Observable, Subscription, throwError, of, combineLatest } from 'rxjs';
+import { Observable, Subscription, throwError, combineLatest } from 'rxjs';
 import { IReportSectionDisplay } from '../../model/state.model';
-import { selectSectionById, selectRtIsViewOnly, selectRtIsPublished, selectRtIsOwned } from '../../store/core.selectors';
+import { selectSectionById, selectRtIsPublished, selectReportTemplate } from '../../store/core.selectors';
 import { switchMap, map, take, concatMap, catchError, flatMap } from 'rxjs/operators';
 import { IReportSection } from '../../model/report-template.model';
 import { EntityType } from '../../../shared/model/entity.model';
+import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
+import { ResourceType } from '../../../core/model/resouce-type.enum';
+import { PermissionService } from '../../../core/services/permission.service';
 
 export const RT_SECTION_NARRATIVE_EDITOR_METADATA: IEditorMetadata = {
   id: 'RT_SECTION_NARRATIVE_EDITOR_ID',
@@ -32,7 +35,6 @@ export class RtSectionNarrativeEditorComponent extends DamAbstractEditorComponen
 
   viewOnly$: Observable<boolean>;
   isPublished$: Observable<boolean>;
-  isOwned$: Observable<boolean>;
   isAdmin$: Observable<boolean>;
   value: IReportSection;
   wSub: Subscription;
@@ -40,6 +42,7 @@ export class RtSectionNarrativeEditorComponent extends DamAbstractEditorComponen
   constructor(
     store: Store<any>,
     actions$: Actions,
+    private permissionService: PermissionService,
     private reportTemplateService: ReportTemplateService,
     private messageService: MessageService,
   ) {
@@ -49,9 +52,15 @@ export class RtSectionNarrativeEditorComponent extends DamAbstractEditorComponen
       store,
     );
 
-    this.viewOnly$ = this.store.select(selectRtIsViewOnly);
+    this.viewOnly$ = combineLatest([
+      this.store.select(selectReportTemplate),
+      this.permissionService.abilities$,
+    ]).pipe(
+      map(([rt, abilities]) => {
+        return abilities.onResourceCant(ResourceAction.EDIT, ResourceType.REPORT_TEMPLATE, rt);
+      })
+    );
     this.isPublished$ = this.store.select(selectRtIsPublished);
-    this.isOwned$ = this.store.select(selectRtIsOwned);
     this.isAdmin$ = this.store.select(selectIsAdmin);
 
     this.wSub = this.currentSynchronized$.pipe(

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { IFacilityDescriptor } from '../../model/facility.model';
-import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, of, from } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
 import { DamWidgetComponent, RxjsStoreHelperService, MessageType, InsertResourcesInCollection } from 'ngx-dam-framework';
 import { FacilityService } from '../../services/facility.service';
@@ -83,7 +83,7 @@ export class FacilityListComponent implements OnInit {
               });
             },
             (message) => {
-              return message.status === MessageType.SUCCESS ? [new InsertResourcesInCollection({
+              return from(message.status === MessageType.SUCCESS ? [new InsertResourcesInCollection({
                 key: 'facilities',
                 values: [
                   message.data,
@@ -92,7 +92,7 @@ export class FacilityListComponent implements OnInit {
               new GoToEntity({
                 type: EntityType.FACILITY,
                 id: message.data.id,
-              })] : [];
+              })] : []);
             },
           );
         }

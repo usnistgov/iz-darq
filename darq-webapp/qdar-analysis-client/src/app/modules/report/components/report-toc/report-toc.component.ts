@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, AfterViewInit, ViewChild } from '@angular/core';
 import { TREE_ACTIONS, TreeComponent, TreeNode } from 'angular-tree-component';
 import { fromEvent } from 'rxjs';
-import { debounce, tap, debounceTime } from 'rxjs/operators';
+import { tap, debounceTime } from 'rxjs/operators';
 
 export interface ITocNode {
   id: string;
@@ -40,7 +40,7 @@ export class ReportTocComponent implements OnInit, AfterViewInit {
 
   constructor() {
     this.options = {
-      allowDrag: true,
+      allowDrag: false,
       actionMapping: {
         mouse: {
           click: (elm, node, event) => {

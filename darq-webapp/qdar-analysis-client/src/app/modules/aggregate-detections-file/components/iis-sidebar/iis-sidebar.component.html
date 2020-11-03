@@ -1,0 +1,32 @@
+<div class="facilities">
+  <div class="facility-title">
+    <h4 class="title-text">
+      <i style="color: #795548;" class="fa fa-building" aria-hidden="true"></i> IIS
+    </h4>
+  </div>
+  <div class="facility-filter">
+    <div class="input-group" style="min-width: 300px;">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa fa-filter"></i></span>
+      </div>
+      <input type="text" class="form-control" placeholder="filter" aria-label="filter" [ngModel]="filterText" (ngModelChange)="filter($event)">
+    </div>
+  </div>
+  <div class="facility-content">
+    <ul class="list-group">
+      <li class="list-group-item cursor-pointer" style="display: flex; justify-content: space-between; align-items: center; padding: 10px;" *ngFor="let facility of filtered$ | async"  [routerLink]="[ facility.id ]" routerLinkActive="active">
+        <span>
+          <i class="fa fa-user" style="color: rgb(255, 0, 119);" *ngIf="facility._private"></i> {{ facility.name }}
+        </span>
+        <div>
+          <span class="badge" style="background-color: #d2e4ff; color: black; margin-right: 5px;">
+            <i class="fa fa-file" style="color: blue;"></i> {{ facility.files }}
+          </span>
+          <span class="badge" style="background-color: #deffde; color: black;" *ngIf="!facility._private">
+            <i class="fa fa-pie-chart" style="color: green;"></i> {{ facility.reports }}
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="page-container" *ngIf="user$ | async as user">
+  <div class="page-alerts">
+    <dam-alerts-container></dam-alerts-container>
+  </div>
+  <div class="page-title upload-page-title">
+    <h4 class="title-text title-heading" ><i class="fa fa-user" style="color: blue;"></i> Update profile {{ user.screenName }}  </h4>
+  </div>
+  <div class="page-content upload-page-content">
+    <div>
+      <app-user-profile [user]="user" (profileUpdate)="update($event)" [admin]="false" ></app-user-profile>
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+        <button class="btn btn-sm btn-primary" [disabled]="!valid" (click)="submit()">
+          Update Profile
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

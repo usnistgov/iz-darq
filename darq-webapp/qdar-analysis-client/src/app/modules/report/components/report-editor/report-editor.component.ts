@@ -2,16 +2,17 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DamAbstractEditorComponent, MessageService, IEditorMetadata, EditorSave, LoadPayloadData } from 'ngx-dam-framework';
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
-import { MatDialog } from '@angular/material/dialog';
 import { ValuesService, Labelizer } from '../../../shared/services/values.service';
-import { ReportTemplateService } from '../../../report-template/services/report-template.service';
 import { Observable, combineLatest, Subscription, throwError, BehaviorSubject } from 'rxjs';
 import { IReport, IReportSectionResult } from '../../model/report.model';
 import { selectAllDetections, selectAllCvx, selectPatientTables, selectVaccinationTables } from '../../../shared/store/core.selectors';
-import { map, tap, concatMap, take, flatMap, catchError, filter, skipUntil } from 'rxjs/operators';
-import { selectReport, selectReportIsViewOnly, selectReportGeneralFilter } from '../../store/core.selectors';
+import { map, tap, concatMap, take, flatMap, catchError, skipUntil } from 'rxjs/operators';
+import { selectReportPayload, selectReportGeneralFilter } from '../../store/core.selectors';
 import { ReportService } from '../../services/report.service';
 import { IReportFilter } from '../../../report-template/model/report-template.model';
+import { PermissionService } from '../../../core/services/permission.service';
+import { ResourceType } from '../../../core/model/resouce-type.enum';
+import { Action as _Action } from '../../../core/model/action.enum';
 
 export const REPORT_EDITOR_METADATA: IEditorMetadata = {
   id: 'REPORT_EDITOR',
@@ -37,6 +38,7 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
   constructor(
     store: Store<any>,
     actions$: Actions,
+    private permission: PermissionService,
     private valueService: ValuesService,
     private reportService: ReportService,
     private messageService: MessageService,
@@ -47,9 +49,16 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
       store,
     );
     this.report$ = new BehaviorSubject(undefined);
-    this.viewOnly$ = this.store.select(selectReportIsViewOnly);
+    this.viewOnly$ = combineLatest([
+      this.permission.abilities$,
+      this.store.select(selectReportPayload),
+    ]).pipe(
+      map(([ability, report]) => {
+        return ability.onResourceCant(_Action.COMMENT, ResourceType.REPORT, report);
+      })
+    );
     this.labelizer$ = combineLatest([
-      this.store.select(selectReport),
+      this.store.select(selectReportPayload),
       this.store.select(selectAllDetections),
       this.store.select(selectAllCvx),
       this.store.select(selectPatientTables),
@@ -131,7 +140,6 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
     return this.current$.pipe(
       take(1),
       concatMap((current) => {
-        console.log(current.data);
         return this.reportService.save(current.data).pipe(
           flatMap((message) => {
             return [
@@ -148,7 +156,7 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
   }
 
   editorDisplayNode(): Observable<any> {
-    return this.store.select(selectReport).pipe(
+    return this.store.select(selectReportPayload).pipe(
       map((report) => {
         return { name: report.name };
       }),

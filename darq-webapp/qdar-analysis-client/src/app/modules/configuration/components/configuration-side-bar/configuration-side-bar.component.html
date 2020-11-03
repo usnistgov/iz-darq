@@ -12,7 +12,7 @@
         <input ngbButton type="radio" [value]="filterType.ALL"> All
       </label>
     </div>
-    <button class="btn btn-sm btn-primary" (click)="createConfiguration()" >
+    <button class="btn btn-sm btn-primary" (click)="createConfiguration()" *ngIf="'CREATE' | accessOnScope: 'CONFIGURATION':{ scope:'GLOBAL' }| async" >
       <i class="fa fa-plus"></i>
       Create Configuration
     </button>
@@ -36,15 +36,15 @@
         [contextMenu]="cm"
         [contextMenuSubject]="configuration">
 
-        <app-descriptor-display [descriptor]="configuration"></app-descriptor-display>
+        <app-descriptor-display [descriptor]="configuration" [userId]="userId$ | async"></app-descriptor-display>
 
-        <context-menu #cm>
-          <ng-template contextMenuItem let-configuration (execute)="cloneConfiguration($event.item)" [enabled]="!rla.isActive || (rla.isActive && !(widget.containsUnsavedChanges$() | async))">
+        <context-menu #cm [disabled]="!('CLONE' | accessOnResource:configuration:'CONFIGURATION'| async) && !('DELETE' | accessOnResource: configuration: 'CONFIGURATION' | async)">
+          <ng-template *ngIf="'CLONE' | accessOnResource:configuration:'CONFIGURATION'| async" contextMenuItem let-configuration (execute)="cloneConfiguration($event.item)" [enabled]="!rla.isActive || (rla.isActive && !(widget.containsUnsavedChanges$() | async))">
             <i class="fa fa-files-o"></i>
             Clone Configuration
           </ng-template>
-          <ng-template contextMenuItem divider="true" *ngIf="configuration.owned"></ng-template>
-          <ng-template contextMenuItem let-configuration (execute)="deleteConfiguration($event.item, rla.isActive)" *ngIf="configuration.owned" [enabled]="!rla.isActive || (rla.isActive && !(widget.containsUnsavedChanges$() | async))">
+          <ng-template contextMenuItem divider="true" *ngIf="'DELETE' | accessOnResource: configuration:'CONFIGURATION' | async"></ng-template>
+          <ng-template contextMenuItem let-configuration (execute)="deleteConfiguration($event.item, rla.isActive)" *ngIf="'DELETE' | accessOnResource: configuration:'CONFIGURATION' | async" [enabled]="!rla.isActive || (rla.isActive && !(widget.containsUnsavedChanges$() | async))">
             <i class="fa fa-trash"></i>
             Delete Configuration
           </ng-template>

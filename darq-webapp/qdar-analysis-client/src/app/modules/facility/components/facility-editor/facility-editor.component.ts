@@ -2,15 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { IEditorMetadata, DamAbstractEditorComponent, EditorSave, IWorkspaceCurrent, InsertResourcesInCollection, MessageService } from 'ngx-dam-framework';
-import { Observable, Subscription, of, throwError } from 'rxjs';
-import { IFacility } from '../../model/facility.model';
+import { Observable, Subscription, throwError, combineLatest } from 'rxjs';
+import { IFacilityContent } from '../../model/facility.model';
 import { map, take, flatMap, concatMap, catchError } from 'rxjs/operators';
 import { selectFacility } from '../../store/core.selectors';
 import { MatDialog } from '@angular/material/dialog';
 import { UserListComponent } from '../user-list/user-list.component';
-import { IUserResource } from 'src/app/modules/core/model/user.model';
-import { selectUsers } from '../../../core/store/core.selectors';
 import { FacilityService } from '../../services/facility.service';
+import { IUser } from '../../../core/model/user.model';
+import { selectUsers, selectUserById } from '../../../shared/store/core.selectors';
 
 export const FACILITY_EDITOR_METADATA: IEditorMetadata = {
   id: 'FACILITY_EDITOR',
@@ -24,8 +24,8 @@ export const FACILITY_EDITOR_METADATA: IEditorMetadata = {
 })
 export class FacilityEditorComponent extends DamAbstractEditorComponent implements OnInit, OnDestroy {
 
-  facility: IFacility;
-  users$: Observable<IUserResource[]>;
+  facility: IFacilityContent;
+  users$: Observable<IUser[]>;
 
   sub: Subscription;
   constructor(
@@ -42,10 +42,21 @@ export class FacilityEditorComponent extends DamAbstractEditorComponent implemen
     );
     this.users$ = this.store.select(selectUsers);
     this.sub = this.currentSynchronized$.pipe(
-      map((value) => {
+      flatMap((value) => {
         this.facility = {
           ...value,
+          members: [],
         };
+        return combineLatest(
+          value.members ? [...value.members.map((id) => this.store.select(selectUserById, { id }).pipe(take(1)))] : []
+        ).pipe(
+          map((members: IUser[]) => {
+            this.facility = {
+              ...this.facility,
+              members,
+            };
+          })
+        );
       })
     ).subscribe();
   }
@@ -62,10 +73,16 @@ export class FacilityEditorComponent extends DamAbstractEditorComponent implemen
         }).afterClosed().pipe(
           map((selection) => {
             if (selection) {
-              this.userChange([
-                ...this.facility.members,
-                ...selection
-              ]);
+              combineLatest([
+                ...selection.map((id) => this.store.select(selectUserById, { id }).pipe(take(1)))
+              ]).pipe(
+                map((members) => {
+                  this.userChange([
+                    ...this.facility.members,
+                    ...(members as any),
+                  ]);
+                })
+              ).subscribe();
             }
           })
         );
@@ -88,12 +105,15 @@ export class FacilityEditorComponent extends DamAbstractEditorComponent implemen
     this.editorChange(this.facility, this.facility.name && this.facility.name !== '');
   }
 
-  userChange(list: string[]) {
+  userChange(list: IUser[]) {
     this.facility = {
       ...this.facility,
       members: [...list],
     };
-    this.editorChange(this.facility, this.facility.name && this.facility.name !== '');
+    this.editorChange({
+      ...this.facility,
+      members: this.facility.members.map((v) => v.id),
+    }, this.facility.name && this.facility.name !== '');
   }
 
   ngOnDestroy(): void {

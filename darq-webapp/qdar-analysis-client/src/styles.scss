@@ -142,7 +142,7 @@ dam-fullscreen-button button {
   border-bottom: 2px solid rgb(114, 196, 118); /* green */
 }
 
-.ng-invalid:not(form)  {
+.ng-invalid:not(form):not(div)  {
   background-color: $invalid_color !important;
   border-bottom: 2px solid #d6403d; /* red */
 }
@@ -223,6 +223,7 @@ dam-fullscreen-button button {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background-color: white;
 }
 
 .section-editor .ui-editor-content {

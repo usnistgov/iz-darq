@@ -43,7 +43,7 @@
           <th style="vertical-align: middle; width: 400px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span>Actions</span>
-              <button class="btn btn-secondary btn-sm" (click)="create()">
+              <button class="btn btn-secondary btn-sm" (click)="create()" *ngIf="'CREATE' | accessOnScope: 'REPORT_TEMPLATE':{ scope:'GLOBAL' } | async">
                 <i class="fa fa-plus"></i>
                 Create Report Template
               </button>
@@ -55,9 +55,9 @@
       <ng-template pTemplate="body" let-rowData>
         <tr>
           <td>
-            <app-descriptor-display [descriptor]="rowData"></app-descriptor-display>
+            <app-descriptor-display [descriptor]="rowData" [userId]="userId$ | async" ></app-descriptor-display>
           </td>
-          <td style="display: flex; flex-direction: column; align-items: flex-start;">
+          <td>
             <ng-container *ngFor="let conf of rowData.compatibilities || []">
               <div class="badge cursor-pointer" style="background-color: rgb(235, 235, 235); font-size: initial; margin-top: 2px;" [routerLink]="['/', 'configurations', conf.id ]">
                 <i class="fa fa-cog" style="color: blueviolet; margin-right: 5px;"></i>
@@ -71,19 +71,19 @@
           </td>
           <td>
             <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;">
-              <button class="btn btn-sm btn-success"  style="margin-right: 5px;" [routerLink]="['/', 'report-templates', rowData.id ]">
+              <button class="btn btn-sm btn-success" *ngIf="'VIEW' | accessOnResource: rowData:'REPORT_TEMPLATE' | async"  style="margin-right: 5px;" [routerLink]="['/', 'report-templates', rowData.id ]">
                 <i class="fa fa-arrow-up"></i>
                 Open
               </button>
-              <button class="btn btn-sm btn-dark" style="margin-right: 5px;" (click)="clone(rowData)">
+              <button class="btn btn-sm btn-dark" *ngIf="'CLONE' |  accessOnResource: rowData:'REPORT_TEMPLATE' | async" style="margin-right: 5px;" (click)="clone(rowData)">
                 <i class="fa fa-clone"></i>
                 Clone
               </button>
-              <button class="btn btn-sm btn-primary" style="margin-right: 5px;" (click)="publish(rowData)" [disabled]="rowData.published || !rowData.owned || (isAdmin$ | async) === false">
+              <button class="btn btn-sm btn-primary" *ngIf="'PUBLISH' | accessOnResource: rowData:'REPORT_TEMPLATE' | async" style="margin-right: 5px;" (click)="publish(rowData)" [disabled]="rowData.published">
                 <i class="fa fa-globe"></i>
                 Publish
               </button>
-              <button class="btn btn-sm btn-danger" [disabled]="!rowData.owned" (click)="remove(rowData)">
+              <button class="btn btn-sm btn-danger" *ngIf="'DELETE' | accessOnResource: rowData:'REPORT_TEMPLATE' | async" (click)="remove(rowData)">
                 <i class="fa fa-trash"></i>
                 Delete
               </button>

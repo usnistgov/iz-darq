@@ -8,7 +8,10 @@
     <table class="table table-sm table-stripped">
       <thead>
         <tr>
+          <th>User Id</th>
           <th>Username</th>
+          <th>Email</th>
+          <th>Name</th>
           <th>
             <button class="btn btn-sm btn-primary pull-right" (click)="addUsers()">
               <i class="fa fa-plus"></i>
@@ -20,7 +23,21 @@
       <tbody>
         <tr *ngFor="let item of facility.members; let i = index;">
           <td>
-            <i class="fa fa-user" style="color: blue; margin-right: 5px;"></i> <span>{{ item }}</span>
+            <span style="font-size: 14px; margin-right: 5px;" class="badge badge-primary">
+              qDAR ({{ item.id }})
+            </span>
+            <span *ngFor="let id of item.issuerIdList" style="font-size: 14px; margin-right: 5px;" class="badge badge-dark">
+              {{ id.issuer }} ({{ id.userId }})
+            </span>
+          </td>
+          <td>
+            {{ item.username }}
+          </td>
+          <td>
+            {{ item.email }}
+          </td>
+          <td>
+            {{ item.name }}
           </td>
           <td>
             <button class="btn btn-sm btn-danger pull-right" (click)="removeUser(i)">

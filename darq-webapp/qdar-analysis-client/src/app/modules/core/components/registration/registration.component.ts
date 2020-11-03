@@ -4,6 +4,7 @@ import { IUserAccountRegister } from '../../model/user.model';
 import { UserService } from '../../services/user.service';
 import { RxjsStoreHelperService, MessageType } from 'ngx-dam-framework';
 import { Store } from '@ngrx/store';
+import { of, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-registration',
@@ -38,7 +39,7 @@ export class RegistrationComponent implements OnInit {
         return this.userService.register(registration);
       },
       (message) => {
-        return [];
+        return of();
       }
     ).subscribe();
   }

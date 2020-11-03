@@ -1,0 +1,47 @@
+<dam-layout [custom]="{
+  titlebar: false,
+  toolbar: true
+}">
+
+  <ng-template #alerts>
+    <dam-alerts-container></dam-alerts-container>
+  </ng-template>
+
+  <ng-template #titleBar>
+    <div style="width: 100%; display: flex;">
+      <dam-fullscreen-button></dam-fullscreen-button>
+      <div style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
+        <h4 class="title-text"><i class="fa fa-key" style="color: goldenrod;"></i> Administration Panel </h4>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #toolbar *ngIf="activeTab$ | async as activeTab">
+    <div [ngSwitch]="activeTab" style="padding: 10px;">
+      <div *ngSwitchCase="'USERS'">
+        <h4 class="title-text title-heading" ><i class="fa fa-user-circle" style="color: #08a2ff;"></i> Manage Users </h4>
+      </div>
+      <div *ngSwitchCase="'EMAILS'">
+        <h4 class="title-text title-heading" ><i class="fa fa-envelope" style="color: darkcyan;"></i> Email Templates </h4>
+      </div>
+      <div *ngSwitchCase="'NARRATIVES'">
+        <h4 class="title-text title-heading" ><i class="fa fa-file-text" style="color: chocolate;"></i> Web Content </h4>
+      </div>
+      <div *ngSwitchCase="'CONFIG'">
+        <h4 class="title-text title-heading" ><i class="fa fa-wrench" style="color: gray;"></i> Configuration </h4>
+      </div>
+    </div>
+    <div *ngIf="activeTab !== 'USERS'">
+      <dam-reset-button></dam-reset-button>
+      <dam-save-button></dam-save-button>
+    </div>
+  </ng-template>
+
+  <ng-template #editorContent>
+    <dam-editor-outlet></dam-editor-outlet>
+  </ng-template>
+
+  <ng-template #sideBar>
+    <app-admin-sidebar></app-admin-sidebar>
+  </ng-template>
+</dam-layout>

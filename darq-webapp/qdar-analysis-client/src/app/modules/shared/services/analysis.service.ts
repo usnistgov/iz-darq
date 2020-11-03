@@ -4,6 +4,7 @@ import { IDataViewQuery } from '../../report-template/model/report-template.mode
 import { Observable } from 'rxjs';
 import { IDataTable, IAnalysisJobRequest, IAnalysisJob } from '../../report/model/report.model';
 import { Message } from 'ngx-dam-framework';
+import { PRIVATE_FACILITY_ID } from '../../aggregate-detections-file/services/file.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,11 @@ export class AnalysisService {
   }
 
   getJobsByFacility(facility: string): Observable<IAnalysisJob[]> {
-    return this.http.get<IAnalysisJob[]>(this.PUBLIC + 'jobs' + '/' + facility);
+    if (facility === PRIVATE_FACILITY_ID) {
+      return this.http.get<IAnalysisJob[]>(this.PUBLIC + 'jobs');
+    } else {
+      return this.http.get<IAnalysisJob[]>(this.PUBLIC + 'jobs' + '/' + facility);
+    }
   }
 
   removeJob(id: string): Observable<Message<IAnalysisJob>> {

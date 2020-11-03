@@ -1,8 +1,11 @@
 import { Component, OnInit, Input, TemplateRef } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { selectPayloadData } from 'ngx-dam-framework';
-import { pluck } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { selectReportTemplate } from '../../store/core.selectors';
+import { ResourceType } from '../../../core/model/resouce-type.enum';
+import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
+import { PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-rt-toolbar',
@@ -17,8 +20,16 @@ export class RtToolbarComponent implements OnInit {
 
   constructor(
     private store: Store<any>,
+    private permissionService: PermissionService,
   ) {
-    this.isViewOnly$ = this.store.select(selectPayloadData).pipe(pluck('viewOnly'));
+    this.isViewOnly$ = combineLatest([
+      this.store.select(selectReportTemplate),
+      this.permissionService.abilities$,
+    ]).pipe(
+      map(([rt, abilities]) => {
+        return abilities.onResourceCant(ResourceAction.EDIT, ResourceType.REPORT_TEMPLATE, rt);
+      })
+    );
   }
 
   ngOnInit(): void {

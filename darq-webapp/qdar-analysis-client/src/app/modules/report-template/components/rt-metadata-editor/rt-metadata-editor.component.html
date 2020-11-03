@@ -1,13 +1,13 @@
 <form>
   <div class="form-group">
     <label for="name"><strong>Report Template Name</strong></label>
-    <input type="text" placeholder="Name" class="form-control" name="name" id="name" [ngModel]="value.name" (input)="nameChange($event.target.value)" [disabled]="viewOnly" required>
+    <input type="text" placeholder="Name" class="form-control" name="name" id="name" [ngModel]="value.name" (input)="nameChange($event.target.value)" [disabled]="(viewOnly$ | async)" required>
   </div>
   <div class="form-group" >
     <label for="description"><strong>Description</strong></label>
-    <p-editor *ngIf="!viewOnly" name="description" id="description" [ngModel]="value.description" (ngModelChange)="descriptionChange($event)" [style]="{'height':'130px'}">
+    <p-editor *ngIf="!(viewOnly$ | async)" name="description" id="description" [ngModel]="value.description" (ngModelChange)="descriptionChange($event)" [style]="{'height':'130px'}">
     </p-editor>
-    <div *ngIf="viewOnly" [innerHTML]="value.description"></div>
+    <div *ngIf="viewOnly$ | async" [innerHTML]="value.description"></div>
   </div>
   <div class="form-group" *ngIf="compatibilities$ | async as compatibilities" >
     <label for="configuration"><strong>Configuration Compatibilities</strong></label>

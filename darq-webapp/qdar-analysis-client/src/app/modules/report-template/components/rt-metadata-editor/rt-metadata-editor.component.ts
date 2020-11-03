@@ -4,7 +4,6 @@ import {
   IEditorMetadata,
   EditorSave,
   selectPayloadData,
-  selectUsername,
   IWorkspaceCurrent,
   LoadPayloadData,
   MessageService,
@@ -12,10 +11,13 @@ import {
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { Observable, Subscription, throwError } from 'rxjs';
-import { map, take, tap, concatMap, flatMap, catchError, withLatestFrom } from 'rxjs/operators';
+import { map, take, concatMap, flatMap, catchError, withLatestFrom } from 'rxjs/operators';
 import { IReportTemplate } from '../../model/report-template.model';
 import { IConfigurationDescriptor } from 'src/app/modules/configuration/model/configuration.model';
 import { ReportTemplateService } from '../../services/report-template.service';
+import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
+import { ResourceType } from '../../../core/model/resouce-type.enum';
+import { PermissionService } from '../../../core/services/permission.service';
 
 export const RT_METADATA_EDITOR_METADATA: IEditorMetadata = {
   id: 'RT_METADATA_EDITOR_ID',
@@ -29,10 +31,8 @@ export const RT_METADATA_EDITOR_METADATA: IEditorMetadata = {
 })
 export class RtMetadataEditorComponent extends DamAbstractEditorComponent implements OnInit, OnDestroy {
 
-  viewOnly: boolean;
+  viewOnly$: Observable<boolean>;
   isPublished: boolean;
-  isOwned: boolean;
-  isAdmin$: Observable<boolean>;
   value: IReportTemplate;
   wSub: Subscription;
   compatibilities$: Observable<IConfigurationDescriptor[]>;
@@ -40,6 +40,7 @@ export class RtMetadataEditorComponent extends DamAbstractEditorComponent implem
   constructor(
     store: Store<any>,
     actions$: Actions,
+    private permissionService: PermissionService,
     private reportTemplateService: ReportTemplateService,
     private messageService: MessageService,
   ) {
@@ -57,16 +58,15 @@ export class RtMetadataEditorComponent extends DamAbstractEditorComponent implem
     this.wSub = this.currentSynchronized$.pipe(
       map((template: IReportTemplate) => {
         this.isPublished = template.published;
-        this.viewOnly = template.viewOnly;
+        this.viewOnly$ = this.permissionService.abilities$.pipe(
+          map((abilities) => {
+            return abilities.onResourceCant(ResourceAction.EDIT, ResourceType.REPORT_TEMPLATE, template);
+          })
+        );
+
         this.value = {
           ...template,
         };
-        this.store.select(selectUsername).pipe(
-          take(1),
-          tap((username) => {
-            this.isOwned = username === template.owner;
-          })
-        ).subscribe();
       }),
     ).subscribe();
   }

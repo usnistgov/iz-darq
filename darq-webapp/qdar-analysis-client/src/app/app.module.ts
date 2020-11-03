@@ -21,6 +21,7 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { TreeModule } from 'angular-tree-component';
+import { USER_TRANSFORM } from './modules/core/services/user.service';
 
 @NgModule({
   declarations: [
@@ -39,16 +40,16 @@ import { TreeModule } from 'angular-tree-component';
     DamAuthenticationModule.forRootUsingUrl({
       api: {
         login: 'api/login',
-        resetPassword: '',
-        validateToken: '',
-        updatePassword: '',
-        checkAuthStatus: 'api/me',
-        logout: 'api/logout',
+        checkAuthStatus: 'api/profile/me',
+        logout: 'api/profile/logout',
+        checkLinkToken: 'api/user/validate-token',
       },
+      forgotPasswordUrl: '/forgotten-password',
       loginPageRedirectUrl: '/login',
       unprotectedRedirectUrl: '/home',
       loginSuccessRedirectUrl: '/home',
-    }),
+      sessionTimeoutStatusCodes: [401],
+    }, USER_TRANSFORM),
     DamRoutingModule,
     EffectsModule.forRoot([]),
     StoreModule.forRoot({}),
@@ -61,7 +62,6 @@ import { TreeModule } from 'angular-tree-component';
     ContextMenuModule.forRoot(),
     CoreModule,
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

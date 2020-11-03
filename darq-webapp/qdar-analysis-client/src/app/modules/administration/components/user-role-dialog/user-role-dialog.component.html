@@ -1,0 +1,6 @@
+<h2 mat-dialog-title>Set role for user {{ user.username }}</h2>
+<p-dropdown required id="type" name="type" [options]="roles" [style]="{ 'width' : '100%' }" [(ngModel)]="role" appendTo="body"></p-dropdown>
+<mat-dialog-actions style="justify-content: flex-end;">
+  <button [mat-dialog-close]="" class="btn btn-sm btn-secondary" style="margin-right: 5px;">Cancel</button>
+  <button [disabled]="!role" [mat-dialog-close]="role" class="btn btn-sm btn-success">Update</button>
+</mat-dialog-actions>

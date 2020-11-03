@@ -1,0 +1,37 @@
+<form [formGroup]="$any(form)" *ngFor="let entry of form.controls; let i = index" class="email-template" [ngClass]="{
+  'enabled' : $any(entry).controls.enabled.value,
+  'disabled': !$any(entry).controls.enabled.value
+}">
+
+  <ng-container [formArrayName]="i">
+    <div style="display: flex; align-items: center;">
+      <i (click)="toggle($any(entry).controls.type.value)" *ngIf="!visible[$any(entry).controls.type.value]" class="fa fa-chevron-right" style="margin-right: 10px; cursor: pointer;"></i>
+      <i (click)="toggle($any(entry).controls.type.value)" *ngIf="visible[$any(entry).controls.type.value]"  class="fa fa-chevron-down" style="margin-right: 10px; cursor: pointer;"></i>
+
+      <span *ngIf="$any(entry).controls.enabled.value"  style="margin-right: 10px;" class="badge badge-success">ENABLED</span>
+      <span *ngIf="!$any(entry).controls.enabled.value" style="margin-right: 10px;" class="badge badge-danger">DISABLED</span>
+
+      <h5 class="title-text">{{ $any(entry).controls.type.value }}</h5>
+    </div>
+    <ng-container *ngIf="visible[$any(entry).controls.type.value]">
+      <div class="form-group form-check" style="margin-top: 10px;">
+        <input formControlName="enabled" type="checkbox" class="form-check-input" [id]="'enable-' + i">
+        <label class="form-check-label" [for]="'enable-' + i">Enable email notification</label>
+      </div>
+      <div class="form-group">
+        <label [for]="'subject-' + i"><strong>Subject</strong></label><br>
+        <input type="text" formControlName="subject" class="form-control" [name]="'subject-' + i" [id]="'subject-' + i">
+      </div>
+      <div class="form-group">
+        <label><strong>Parameters</strong></label><br>
+        <span *ngFor="let item of $any(entry).controls.params.value">{{ '${' + item + '} ' }}</span>
+      </div>
+      <div class="form-group">
+        <label [for]="'template-' + i"><strong>Template</strong></label>
+        <div style="height: 300px">
+          <p-editor formControlName="template" [p-editor-model]="$any(entry).controls.template"  [id]="'template-'+ i" class="home-section-editor"></p-editor>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</form>

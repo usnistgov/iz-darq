@@ -1,13 +1,22 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AdfDashboardComponent } from './components/adf-dashboard/adf-dashboard.component';
 import { AdfUploadComponent } from './components/adf-upload/adf-upload.component';
-import { DataLoaderGuard } from 'ngx-dam-framework';
-import { LoadADFiles, CoreActionTypes, LoadADFile, LoadUserFacilities } from './store/core.actions';
-import { AdfListComponent } from './components/adf-list/adf-list.component';
-import { JobListComponent } from './components/job-list/job-list.component';
+import { DataLoaderGuard, DamWidgetRoute, EditorActivateGuard, EditorDeactivateGuard } from 'ngx-dam-framework';
+import {
+  CoreActionTypes,
+  LoadADFile,
+  LoadUserFacilities,
+  LoadADFDashboard,
+  OpenADFListEditor,
+  OpenAnalysisJobEditor,
+  OpenReportsEditor
+} from './store/core.actions';
 import { AdfSummaryComponent } from './components/adf-summary/adf-summary.component';
-import { ReportListComponent } from './components/report-list/report-list.component';
+import { ADF_WIDGET, AdfWidgetComponent } from './components/adf-widget/adf-widget.component';
+import { FilesListEditorComponent, ADF_FILE_LIST_EDITOR_METADATA } from './components/files-list-editor/files-list-editor.component';
+import { JobListEditorComponent, ANALYSIS_JOB_LIST_EDITOR_METADATA } from './components/job-list-editor/job-list-editor.component';
+import { ReportListEditorComponent, REPORT_LIST_EDITOR_METADATA } from './components/report-list-editor/report-list-editor.component';
+import { LoaderGuard } from '../shared/guards/loader.guard';
 
 
 const routes: Routes = [
@@ -30,17 +39,21 @@ const routes: Routes = [
   },
   {
     path: 'dashboard',
+    ...DamWidgetRoute({
+      widgetId: ADF_WIDGET,
+      loadAction: LoadADFDashboard,
+      successAction: CoreActionTypes.LoadADFDashboardSuccess,
+      failureAction: CoreActionTypes.LoadADFDashboardFailure,
+      redirectTo: ['error'],
+      component: AdfWidgetComponent,
+    }, {
+      canActivate: [
+        LoaderGuard,
+      ],
+      canDeactivate: [],
+    }),
     children: [{
-      path: ':forFacility',
-      component: AdfDashboardComponent,
-      data: {
-        routeParam: 'forFacility',
-        loadAction: LoadADFiles,
-        successAction: CoreActionTypes.LoadADFilesSuccess,
-        failureAction: CoreActionTypes.LoadADFilesFailure,
-        redirectTo: ['/', 'error'],
-      },
-      canActivate: [DataLoaderGuard],
+      path: ':facility',
       children: [
         {
           path: '',
@@ -49,22 +62,53 @@ const routes: Routes = [
         },
         {
           path: 'files',
-          component: AdfListComponent,
+          component: FilesListEditorComponent,
+          canActivate: [EditorActivateGuard],
+          canDeactivate: [EditorDeactivateGuard],
+          data: {
+            editorMetadata: ADF_FILE_LIST_EDITOR_METADATA,
+            onLeave: {
+              saveEditor: true,
+              saveTableOfContent: true,
+            },
+            action: OpenADFListEditor,
+            idKey: 'facility',
+            redirectTo: ['/', 'error'],
+          },
         },
         {
           path: 'jobs',
-          component: JobListComponent
+          component: JobListEditorComponent,
+          canActivate: [EditorActivateGuard],
+          canDeactivate: [EditorDeactivateGuard],
+          data: {
+            editorMetadata: ANALYSIS_JOB_LIST_EDITOR_METADATA,
+            onLeave: {
+              saveEditor: true,
+              saveTableOfContent: true,
+            },
+            action: OpenAnalysisJobEditor,
+            idKey: 'facility',
+            redirectTo: ['/', 'error'],
+          },
         },
         {
           path: 'reports',
-          component: ReportListComponent,
-        }
+          component: ReportListEditorComponent,
+          canActivate: [EditorActivateGuard],
+          canDeactivate: [EditorDeactivateGuard],
+          data: {
+            editorMetadata: REPORT_LIST_EDITOR_METADATA,
+            onLeave: {
+              saveEditor: true,
+              saveTableOfContent: true,
+            },
+            action: OpenReportsEditor,
+            idKey: 'facility',
+            redirectTo: ['/', 'error'],
+          },
+        },
       ]
-    },
-    {
-      path: '',
-      pathMatch: 'full',
-      redirectTo: 'local',
     }],
   },
   {

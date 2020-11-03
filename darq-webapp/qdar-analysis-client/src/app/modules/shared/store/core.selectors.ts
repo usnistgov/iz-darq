@@ -2,6 +2,7 @@ import { createEntityAdapter, Dictionary } from '@ngrx/entity';
 import { IDetectionResource, ICvxResource } from '../model/public.model';
 import { selectFromCollection, selectValue } from 'ngx-dam-framework';
 import { createSelector } from '@ngrx/store';
+import { IUser } from '../../core/model/user.model';
 
 const detectionsAdapter = createEntityAdapter<IDetectionResource>();
 const detectionsSelectors = detectionsAdapter.getSelectors();
@@ -49,4 +50,26 @@ export const selectCvxById = createSelector(
 );
 export const selectPatientTables = selectValue<string[]>('patientTables');
 export const selectVaccinationTables = selectValue<string[]>('vaccinationTables');
+
+const UsersAdapter = createEntityAdapter<IUser>();
+const UsersSelectors = UsersAdapter.getSelectors();
+export const selectUsersRepo = selectFromCollection('users');
+export const selectUsersEntities = createSelector(
+  selectUsersRepo,
+  UsersSelectors.selectEntities,
+);
+export const selectUsers = createSelector(
+  selectUsersRepo,
+  UsersSelectors.selectAll,
+);
+export const selectUserById = createSelector(
+  selectUsersEntities,
+  (dict: Dictionary<IUser>, props: any): IUser => {
+    if (dict[props.id]) {
+      return dict[props.id];
+    } else {
+      return undefined;
+    }
+  }
+);
 

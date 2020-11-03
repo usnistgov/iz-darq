@@ -5,7 +5,7 @@
   <div class="page-title upload-page-title">
     <ul class="nav nav-pills">
       <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/', 'adf', 'dashboard' ]" >
+        <a class="nav-link" [routerLink]="dashboardRoute$ | async" >
           <h5 class="title-text">
             <i class="fa fa-chevron-left" style="margin-right: 15px;"></i>
             <i class="fa fa-database" style="color: crimson;"></i>

@@ -22,7 +22,9 @@ import { REPORT_WIDGET } from '../components/report-widget/report-widget.compone
 import { IDetectionResource, ICvxResource } from '../../shared/model/public.model';
 import { IReportSection, Comparator } from '../../report-template/model/report-template.model';
 import { handleError } from '../../shared/services/helper.functions';
-import { selectReport } from './core.selectors';
+import { selectReportPayload } from './core.selectors';
+import { FileService } from '../../aggregate-detections-file/services/file.service';
+import { IUserFacilityDescriptor } from '../../facility/model/facility.model';
 
 
 @Injectable()
@@ -40,7 +42,7 @@ export class CoreEffects extends DamWidgetEffect {
   openReportEditor$ = this.actions$.pipe(
     ofType(CoreActionTypes.OpenReportEditor),
     concatMap((action: OpenReportEditor) => {
-      return this.store.select(selectReport).pipe(
+      return this.store.select(selectReportPayload).pipe(
         take(1),
         flatMap((report) => {
           return [
@@ -88,17 +90,18 @@ export class CoreEffects extends DamWidgetEffect {
   );
 
   @Effect()
-  loadReportTemplate$ = this.actions$.pipe(
+  loadReport$ = this.actions$.pipe(
     ofType(CoreActionTypes.LoadReport),
     concatMap((action: LoadReport) => {
       return combineLatest([
         this.reportService.getById(action.id),
+        this.files.getFacilitiesForUser(),
         this.supportDataService.getCvxCodes(),
         this.supportDataService.getDetections(),
         this.supportDataService.getPatientTables(),
         this.supportDataService.getVaccinationTables(),
       ]).pipe(
-        flatMap(([report, cvx, detections, patientTables, vaccinationTables]) => {
+        flatMap(([report, facilities, cvx, detections, patientTables, vaccinationTables]) => {
           this.reportTemplateService.sortList(report.sections, undefined, false);
           return [
             new LoadPayloadData(report),
@@ -106,7 +109,7 @@ export class CoreEffects extends DamWidgetEffect {
               patientTables,
               vaccinationTables,
             }),
-            new LoadResourcesInRepository<IDetectionResource | ICvxResource | IReportSection>({
+            new LoadResourcesInRepository<IDetectionResource | ICvxResource | IReportSection | IUserFacilityDescriptor>({
               collections: [{
                 key: 'detections',
                 values: detections,
@@ -114,6 +117,10 @@ export class CoreEffects extends DamWidgetEffect {
               {
                 key: 'cvx',
                 values: cvx,
+              },
+              {
+                key: 'user-facilities',
+                values: facilities,
               },
               {
                 key: 'sections',
@@ -133,6 +140,7 @@ export class CoreEffects extends DamWidgetEffect {
   constructor(
     actions$: Actions,
     private store: Store<any>,
+    private files: FileService,
     private reportService: ReportService,
     private reportTemplateService: ReportTemplateService,
     private supportDataService: SupportDataService,

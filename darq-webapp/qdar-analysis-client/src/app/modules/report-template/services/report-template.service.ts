@@ -27,6 +27,7 @@ export class ReportTemplateService {
       owner: undefined,
       lastUpdated: undefined,
       published: false,
+      public: false,
       type: EntityType.TEMPLATE,
       viewOnly: undefined,
       configuration: undefined,
@@ -361,20 +362,6 @@ export class ReportTemplateService {
 
   getDescriptorById(id: string): Observable<IReportTemplateDescriptor> {
     return this.http.get<IReportTemplateDescriptor>(this.URL_PREFIX + id + '/descriptor');
-  }
-
-  getDescriptor(configuration: IReportTemplate, owned: boolean): IDescriptor {
-    return {
-      id: configuration.id,
-      type: EntityType.TEMPLATE,
-      name: configuration.name,
-      owner: configuration.owner,
-      lastUpdated: configuration.lastUpdated,
-      viewOnly: configuration.viewOnly,
-      locked: false,
-      published: configuration.published,
-      owned,
-    };
   }
 
 }

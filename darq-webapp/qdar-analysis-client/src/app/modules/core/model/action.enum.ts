@@ -1,0 +1,14 @@
+export enum Action {
+  VIEW = 'VIEW',
+  CREATE = 'CREATE',
+  EDIT = 'EDIT',
+  DELETE = 'DELETE',
+  PUBLISH = 'PUBLISH',
+  UPLOAD = 'UPLOAD',
+  START = 'START',
+  STOP = 'STOP',
+  CLONE = 'CLONE',
+  ANALYSE = 'ANALYSE',
+  COMMENT = 'COMMENT',
+  WILDCARD = 'WILDCARD',
+}

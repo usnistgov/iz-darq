@@ -10,6 +10,8 @@ export class DescriptorDisplayComponent implements OnInit {
 
   @Input()
   descriptor: IDescriptor;
+  @Input()
+  userId: string;
 
   constructor() { }
 
