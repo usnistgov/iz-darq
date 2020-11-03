@@ -1,9 +1,18 @@
 package gov.nist.healthcare.iz.darq.model;
 
-public class ToolConfigurationKey {
+public class ToolConfigurationProperty {
     private String key;
     private String value;
     private boolean required;
+
+    public ToolConfigurationProperty(String key, String value, boolean required) {
+        this.key = key;
+        this.value = value;
+        this.required = required;
+    }
+
+    public ToolConfigurationProperty() {
+    }
 
     public String getKey() {
         return key;

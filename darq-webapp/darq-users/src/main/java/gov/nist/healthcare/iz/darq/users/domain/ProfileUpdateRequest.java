@@ -1,6 +1,6 @@
 package gov.nist.healthcare.iz.darq.users.domain;
 
-public class AdminProfileUpdateRequest {
+public class ProfileUpdateRequest {
     private String id;
     private String email;
     private String fullName;

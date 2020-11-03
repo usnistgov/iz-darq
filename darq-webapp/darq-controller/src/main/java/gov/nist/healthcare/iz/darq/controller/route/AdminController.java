@@ -1,26 +1,31 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+
+import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.access.service.EmailService;
-import gov.nist.healthcare.iz.darq.controller.domain.FreeMarkerEvalRequest;
+import gov.nist.healthcare.iz.darq.model.ToolConfigurationKeyValue;
 import gov.nist.healthcare.iz.darq.model.*;
+import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.service.exception.PropertyException;
+import gov.nist.healthcare.iz.darq.service.impl.ToolConfigurationService;
+import gov.nist.healthcare.iz.darq.service.impl.WebContentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
 @RequestMapping("/api/admin")
-public class EmailTemplateController {
+public class AdminController {
 
 	@Autowired
 	private EmailService emailService;
+	@Autowired
+	private WebContentService webContentService;
+	@Autowired
+	private ToolConfigurationService toolConfigurationService;
 
 	@RequestMapping(value = "/email/templates", method = RequestMethod.GET)
 	@ResponseBody
@@ -37,11 +42,38 @@ public class EmailTemplateController {
 		return this.emailService.findAll();
 	}
 
-	@RequestMapping(value = "/email/freemarker", method = RequestMethod.POST)
+	@RequestMapping(value = "/web-content", method = RequestMethod.GET)
 	@ResponseBody
-	public String evaluateBody(@RequestBody FreeMarkerEvalRequest request) throws IOException, TemplateException {
-		Template template = new Template("name", new StringReader(request.getBody()), new Configuration());
-		return FreeMarkerTemplateUtils.processTemplateIntoString(template, request.getParams());
+	public WebContent getWebContent() {
+		return this.webContentService.getWebContent();
 	}
 
+	@RequestMapping(value = "/web-content", method = RequestMethod.POST)
+	@ResponseBody
+	public WebContent saveWebContent(@RequestBody WebContent webContent) {
+		return this.webContentService.save(webContent);
+	}
+
+	@RequestMapping(value = "/tool-configuration", method = RequestMethod.GET)
+	@ResponseBody
+	public ToolConfiguration getToolConfiguration() {
+		return this.toolConfigurationService.getToolConfiguration();
+	}
+
+	@RequestMapping(value = "/tool-configuration", method = RequestMethod.POST)
+	@ResponseBody
+	public OpAck<Set<OpAck<Void>>> saveToolConfigKeys(@RequestBody Set<ToolConfigurationKeyValue> properties) throws OperationFailureException {
+		try {
+			Set<OpAck<Void>> status = this.toolConfigurationService.updateProperties(properties);
+			return new OpAck<>(OpAck.AckStatus.SUCCESS, "Configuration Updated Successfully", status, "UPDATE_TOOL_CONFIG");
+		} catch (PropertyException e) {
+			throw new OperationFailureException(e.getMessage());
+		}
+	}
+
+	@RequestMapping(value = "/tool-configuration/status", method = RequestMethod.GET)
+	@ResponseBody
+	public Set<OpAck<Void>> checkConfigurationStatus() {
+		return this.toolConfigurationService.checkConfigurationStatus();
+	}
 }

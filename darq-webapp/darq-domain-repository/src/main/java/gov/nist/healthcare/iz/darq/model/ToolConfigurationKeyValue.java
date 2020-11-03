@@ -1,8 +1,16 @@
-package gov.nist.healthcare.iz.darq.controller.domain;
+package gov.nist.healthcare.iz.darq.model;
 
 public class ToolConfigurationKeyValue {
     private String key;
     private String value;
+
+    public ToolConfigurationKeyValue(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public ToolConfigurationKeyValue() {
+    }
 
     public String getKey() {
         return key;

@@ -1,5 +1,4 @@
-package gov.nist.healthcare.auth.domain;
-
+package gov.nist.healthcare.iz.darq.users.domain;
 
 public class LoginResponse {
 	

@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface FacilityRepository extends MongoRepository<Facility, String> {
 
-    @Query("{ '$and' : [ { _id : ?0 } , {'members' : { $in: ?1 }} ] }")
-    boolean userExistsIn(String user, String facility);
-    List<Facility> findByMembersContaining(String user);
+//    @Query("{ '$and' : [ { _id : ?0 } , {'members' : { $in: ?1 }} ] }")
+//    boolean userExistsIn(String userId, String facility);
+    List<Facility> findByMembersContaining(String userId);
+    Facility findByName(String facility);
 }

@@ -1,25 +1,23 @@
-package gov.nist.healthcare.iz.darq.service.impl;
+package gov.nist.healthcare.iz.darq.users.facility.service;
 import gov.nist.healthcare.iz.darq.model.Facility;
 import gov.nist.healthcare.iz.darq.model.FacilityDescriptor;
 import gov.nist.healthcare.iz.darq.repository.FacilityRepository;
-import gov.nist.healthcare.iz.darq.service.FacilityService;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
 public class FacilityServiceImpl implements FacilityService {
 
-    @Autowired
-    FacilityRepository facilityRepository;
-    @Autowired
-    UserManagementService userManagementService;
+    private final FacilityRepository facilityRepository;
+    private final UserManagementService userManagementService;
+
+    public FacilityServiceImpl(FacilityRepository facilityRepository, UserManagementService userManagementService) {
+        this.facilityRepository = facilityRepository;
+        this.userManagementService = userManagementService;
+    }
 
     @Override
     public List<FacilityDescriptor> getFacilities() {
@@ -38,7 +36,7 @@ public class FacilityServiceImpl implements FacilityService {
     @Override
     public Facility save(Facility f) throws NotFoundException, OperationFailureException {
         this.getFacilityById(f.getId());
-        boolean all = f.getMembers().stream().allMatch((m) -> this.userManagementService.exists(m));
+        boolean all = f.getMembers().stream().allMatch(this.userManagementService::existsById);
         if(all) {
             return this.facilityRepository.save(f);
         } else {
@@ -47,27 +45,32 @@ public class FacilityServiceImpl implements FacilityService {
     }
 
     @Override
-    public Facility addMember(String id, String username) throws NotFoundException, OperationFailureException {
-        this.userManagementService.findUserByUsernameOrFail(username);
+    public Facility findByName(String facility) {
+        return this.facilityRepository.findByName(facility);
+    }
+
+    @Override
+    public Facility addMember(String id, String userId) throws NotFoundException, OperationFailureException {
+        User u = this.userManagementService.findUserByIdOrFail(userId);
         Facility facility = this.getFacilityById(id);
 
-        if(facility.getMembers().contains(username)) {
-            throw new OperationFailureException("User "+username+" already member of facility");
+        if(facility.getMembers().contains(userId)) {
+            throw new OperationFailureException("User "+u.getUsername()+" (" + userId + ") already member of facility");
         } else {
-            facility.getMembers().add(username);
+            facility.getMembers().add(userId);
             return this.facilityRepository.save(facility);
         }
     }
 
     @Override
-    public Facility removeMember(String id, String username) throws NotFoundException, OperationFailureException {
-        this.userManagementService.findUserByUsernameOrFail(username);
+    public Facility removeMember(String id, String userId) throws NotFoundException, OperationFailureException {
+        User u = this.userManagementService.findUserByIdOrFail(userId);
         Facility facility = this.getFacilityById(id);
 
-        if(!facility.getMembers().contains(username)) {
-            throw new OperationFailureException("User "+username+" not member of facility");
+        if(!facility.getMembers().contains(userId)) {
+            throw new OperationFailureException("User "+u.getUsername()+" (" + userId + ") not member of facility");
         } else {
-            facility.getMembers().remove(username);
+            facility.getMembers().remove(userId);
             return this.facilityRepository.save(facility);
         }
     }
@@ -76,15 +79,8 @@ public class FacilityServiceImpl implements FacilityService {
     public List<FacilityDescriptor> getUserFacilities(User user) {
         return (user.isAdministrator() ?
                 this.facilityRepository.findAll() :
-                this.facilityRepository.findByMembersContaining(user.getUsername()))
+                this.facilityRepository.findByMembersContaining(user.getId()))
         .stream().map((a) -> new FacilityDescriptor(a.getId(), a.getName(), a.getDescription(), a.getMembers().size())).collect(Collectors.toList());
     }
-
-    @Override
-    public boolean canSeeFacility(String facilityId, User user) throws NotFoundException {
-        Facility f = this.getFacilityById(facilityId);
-        return user.isAdministrator() || f.getMembers().stream().anyMatch((member) -> user.getUsername().equals(member));
-    }
-
 
 }

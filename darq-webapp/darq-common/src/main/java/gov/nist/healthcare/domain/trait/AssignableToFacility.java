@@ -1,2 +1,5 @@
-package gov.nist.healthcare.domain.trait;public interface AssignableToFacility {
+package gov.nist.healthcare.domain.trait;
+
+public interface AssignableToFacility {
+    String getFacilityId();
 }

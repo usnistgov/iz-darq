@@ -3,13 +3,15 @@ package gov.nist.healthcare.iz.darq.boot;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.PostConstruct;
+import javax.mail.MessagingException;
 
-import org.apache.log4j.Logger;
+import gov.nist.healthcare.iz.darq.model.*;
+import gov.nist.healthcare.iz.darq.repository.EmailTemplateRepository;
+import gov.nist.healthcare.iz.darq.service.impl.SimpleEmailService;
+import gov.nist.healthcare.iz.darq.service.impl.WebContentService;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -18,28 +20,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.env.Environment;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import gov.nist.healthcare.auth.domain.Account;
-import gov.nist.healthcare.auth.service.AccountService;
-
-import gov.nist.healthcare.iz.darq.model.CVXCode;
-import gov.nist.healthcare.iz.darq.model.FileDownload;
 
 import gov.nist.healthcare.iz.darq.repository.CVXRepository;
 import gov.nist.healthcare.iz.darq.service.impl.SimpleDownloadService;
@@ -47,32 +41,33 @@ import gov.nist.healthcare.iz.darq.service.utils.DownloadService;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-@SpringBootApplication(exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@SpringBootApplication(exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, FreeMarkerAutoConfiguration.class})
 @EnableWebMvc
 @ComponentScan(basePackages = { "gov.nist.healthcare.iz.darq", "gov.nist.healthcare.auth" })
 public class Application extends SpringBootServletInitializer{
 
 	@Autowired
-	private AccountService accountService;
+	private Environment env;
+	@Autowired
+	EmailTemplateRepository emailTemplateRepository;
+	@Autowired
+	WebContentService webContentService;
 	@Autowired
 	private CVXRepository cvxRepo;
-	@Autowired
-	private PasswordEncoder encoder;
-	
 	@Value("#{environment.DARQ_STORE}")
 	private String ADF_FOLDER;
 	@Value("#{environment.DARQ_KEY}")
 	private String KEY_FOLDER;
-	@Value("${darq.admin.default}") 
-	private String ADMIN_PASSWORD;
-
-	private static final Logger logger = Logger.getLogger(Application.class);
 
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
-	
+
+	//---------------------------------------------------
+	//---------------------- BEANS ----------------------
+	//---------------------------------------------------
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(Application.class);
@@ -85,50 +80,51 @@ public class Application extends SpringBootServletInitializer{
 
 	@Bean
 	public Jackson2ObjectMapperBuilder jacksonBuilder() {
-		Jackson2ObjectMapperBuilder b = new Jackson2ObjectMapperBuilder();
-		return b;
-	}
-	
-	@Bean
-	public BCryptPasswordEncoder encoder() {
-		return new BCryptPasswordEncoder();
+		return new Jackson2ObjectMapperBuilder();
 	}
 
-	@PostConstruct
-	public void init() throws IOException, Exception {
-		if(ADMIN_PASSWORD != null && !ADMIN_PASSWORD.isEmpty()) {
-			Account admin = accountService.getAccountByUsername("admin");
-			if (admin == null) {
-				Account test = new Account();
-				test.setUsername("admin");
-				test.setPassword(ADMIN_PASSWORD);
-				accountService.createAdmin(test);
-			} else {
-				admin.setPassword(encoder.encode(ADMIN_PASSWORD));
-				accountService.save(admin);
-			}
-		}
-
-		this.createCVX();
-		this.setup();
-	}
-	
 	@Bean
 	public MultipartResolver multipartResolver() {
-	    CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-	    return multipartResolver;
+		return new CommonsMultipartResolver();
 	}
-	
-	@Value("${auth.roles}")
-	public void createPrivileges(String roles){
-		if(roles != null && !roles.isEmpty()){
-			String[] privs = roles.split(",");
-			for(String priv : privs){
-				this.accountService.createPrivilegeByRole(priv);
-			}
+
+	@Bean
+	public DownloadService downloadService() throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		TypeReference<HashMap<String,FileDownload>> typeRef = new TypeReference<HashMap<String,FileDownload>>() {};
+		Map<String, FileDownload> map = mapper.readValue(Application.class.getResourceAsStream("/docs.json"), typeRef);
+		return new SimpleDownloadService(map);
+	}
+
+
+	@Bean
+	public SimpleEmailService emailService() throws MessagingException, IOException {
+		SimpleEmailService emailService = new SimpleEmailService(this.emailTemplateRepository, this.env);
+		ObjectMapper mapper = new ObjectMapper();
+		TypeReference<List<EmailTemplate>> typeRef = new TypeReference<List<EmailTemplate>>() {};
+		List<EmailTemplate> templates = mapper.readValue(Application.class.getResourceAsStream("/email-templates.json"), typeRef);
+		for(EmailTemplate template: templates) {
+			emailService.setEmailTemplateIfAbsent(template);
+		}
+		return emailService;
+	}
+
+	//-----------------------------------------------------
+	//---------------------- STARTUP ----------------------
+	//-----------------------------------------------------
+
+	@PostConstruct()
+	public void setWebContent() throws IOException {
+		boolean exist = this.webContentService.exists();
+		if(!exist) {
+			ObjectMapper mapper = new ObjectMapper();
+			TypeReference<WebContent> typeRef = new TypeReference<WebContent>() {};
+			WebContent webcontent = mapper.readValue(Application.class.getResourceAsStream("/web-content.json"), typeRef);
+			this.webContentService.save(webcontent);
 		}
 	}
-	
+
+	@PostConstruct()
 	public void createCVX() throws IOException{
 		if(this.cvxRepo.count() > 0) return;
 		
@@ -147,24 +143,7 @@ public class Application extends SpringBootServletInitializer{
 		workbook.close();
 	}
 	
-	@Bean
-	public DownloadService downloadService() throws JsonParseException, JsonMappingException, IOException{
-		ObjectMapper mapper = new ObjectMapper();
-		TypeReference<HashMap<String,FileDownload>> typeRef = new TypeReference<HashMap<String,FileDownload>>() {};
-		Map<String, FileDownload> map = mapper.readValue(Application.class.getResourceAsStream("/docs.json"), typeRef);
-		return new SimpleDownloadService(map);
-	}
-	
-	
-	public void createCliJAR() {
-		
-	}
-	
-	public void checkStoreIntegrity() {
-		
-	}
-	
-    
+    @PostConstruct
     public void setup() throws Exception {
     	
     	//-- Verify ENV

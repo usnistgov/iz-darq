@@ -1,2 +1,16 @@
-package gov.nist.healthcare.iz.darq.model;public enum EmailType {
+package gov.nist.healthcare.iz.darq.model;
+
+public enum EmailType {
+    ACCOUNT_APPROVED,
+    ACCOUNT_LOCKED,
+    ACCOUNT_UNLOCKED,
+    ACCOUNT_PASSWORD_CHANGE,
+    ACCOUNT_UPDATED,
+    ACCOUNT_DELETED,
+    ADMIN_ACCOUNT_CREATED,
+    USER_ACCOUNT_CREATED,
+    ACCOUNT_ROLE_CHANGE,
+    REPORT_PUBLISHED,
+    ADF_UPLOADED,
+    USER_VERIFY_EMAIL,
 }

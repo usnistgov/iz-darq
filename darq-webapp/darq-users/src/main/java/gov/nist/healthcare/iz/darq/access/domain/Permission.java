@@ -1,16 +1,15 @@
 package gov.nist.healthcare.iz.darq.access.domain;
 
 
-import gov.nist.healthcare.iz.darq.access.domain.permission.*;
-
-
 public enum Permission {
+    SUPER(),
     CONFIG_PUBLIC_VIEW(
         Scope(
-                gov.nist.healthcare.iz.darq.access.domain.permission.Scope.GLOBAL,
+                Scope.GLOBAL,
                 ActionOn(
                         ResourceType.CONFIGURATION,
-                        PUBLIC(Action.VIEW)
+                        PUBLIC(Action.VIEW),
+                        OWNED(Action.VIEW)
                 )
         )
     ),
@@ -24,9 +23,12 @@ public enum Permission {
                                     Action.CREATE
                             ),
                             OWNED(
-                                    Action.VIEW,
                                     Action.EDIT,
+                                    Action.CLONE,
                                     Action.DELETE
+                            ),
+                            PUBLIC(
+                                    Action.CLONE
                             )
                     )
             )
@@ -62,7 +64,8 @@ public enum Permission {
                     Scope.GLOBAL,
                     ActionOn(
                             ResourceType.REPORT_TEMPLATE,
-                            PUBLIC(Action.VIEW)
+                            PUBLIC(Action.VIEW),
+                            OWNED(Action.VIEW)
                     )
             )
     ),
@@ -76,9 +79,12 @@ public enum Permission {
                                     Action.CREATE
                             ),
                             OWNED(
-                                    Action.VIEW,
                                     Action.EDIT,
+                                    Action.CLONE,
                                     Action.DELETE
+                            ),
+                            PUBLIC(
+                                    Action.CLONE
                             )
                     )
             )
@@ -229,7 +235,7 @@ public enum Permission {
         this(null, scopes);
     }
 
-    private static ScopeResourceTokenAction Scope(gov.nist.healthcare.iz.darq.access.domain.permission.Scope scope, ResourceTokenAction... resourceTokenActions) {
+    private static ScopeResourceTokenAction Scope(Scope scope, ResourceTokenAction... resourceTokenActions) {
         return new ScopeResourceTokenAction(scope, resourceTokenActions);
     }
 

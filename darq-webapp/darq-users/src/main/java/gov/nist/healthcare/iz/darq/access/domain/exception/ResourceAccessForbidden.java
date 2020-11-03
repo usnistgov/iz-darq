@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.access.domain.permission;
+package gov.nist.healthcare.iz.darq.access.domain.exception;
 
 import gov.nist.healthcare.iz.darq.access.domain.Action;
 import gov.nist.healthcare.iz.darq.access.domain.ResourceType;

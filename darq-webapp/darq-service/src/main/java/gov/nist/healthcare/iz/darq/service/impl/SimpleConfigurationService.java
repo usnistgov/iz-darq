@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Range;
-import gov.nist.healthcare.iz.darq.model.ConfigurationDescriptor;
 import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 
@@ -15,11 +14,13 @@ import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 public class SimpleConfigurationService implements ConfigurationService {
 	
 	@Override
-	public List<ConfigurationDescriptor> compatibilities(ConfigurationPayload payload, List<DigestConfiguration> configurations, String username) {
-		List<ConfigurationDescriptor> descriptors = new ArrayList<>();
-		for(DigestConfiguration c : configurations){
-			if(this.compatible(payload, c.getPayload())){
-				descriptors.add(this.extract(c, username));
+	public List<DigestConfiguration> compatibilities(ConfigurationPayload payload, List<DigestConfiguration> configurations) {
+		List<DigestConfiguration> descriptors = new ArrayList<>();
+		if(configurations != null) {
+			for(DigestConfiguration c : configurations){
+				if(this.compatible(payload, c.getPayload())){
+					descriptors.add(c);
+				}
 			}
 		}
 		return descriptors;
@@ -56,23 +57,6 @@ public class SimpleConfigurationService implements ConfigurationService {
 		
 		return age_groups && slave.getAgeGroups().size() == master.getAgeGroups().size() && detections;
 	}
-	
-	@Override
-	public ConfigurationDescriptor extract(DigestConfiguration config, String user){
-		return new ConfigurationDescriptor(
-				config.getId(),
-				config.getName(),
-				config.getOwner(),
-				config.getLastUpdated(),
-				config.isLocked(),
-				config.isPublished(),
-				config.getOwner().equals(user),
-				this.isViewOnlyForUser(config, user));
-	}
 
-	@Override
-	public boolean isViewOnlyForUser(DigestConfiguration config, String user) {
-		return !user.equals(config.getOwner()) || config.isLocked();
-	}
 
 }

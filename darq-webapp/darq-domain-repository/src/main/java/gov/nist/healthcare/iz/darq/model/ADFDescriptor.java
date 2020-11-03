@@ -1,13 +1,11 @@
-package gov.nist.healthcare.iz.darq.controller.domain;
+package gov.nist.healthcare.iz.darq.model;
 
 import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
-import gov.nist.healthcare.iz.darq.model.ConfigurationDescriptor;
-import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
+
 
 public class ADFDescriptor {
 
@@ -27,20 +25,18 @@ public class ADFDescriptor {
 	public ADFDescriptor() {
 		super();
 	}
-	
-	public ADFDescriptor(UserUploadedFile md, String ownerDisplayName, List<ConfigurationDescriptor> compatibilities) {
-		super();
-		this.id = md.getId();
-		this.name = md.getName();
-		this.owner = md.getOwner();
-		this.ownerId = md.getOwnerId();
-		this.analysedOn = md.getAnalysedOn();
-		this.uploadedOn = md.getUploadedOn();
+
+	public ADFDescriptor(String id, String name, String owner, String ownerDisplayName, String ownerId, Date analysedOn, Date uploadedOn, String size, List<ConfigurationDescriptor> compatibilities, String facilityId) {
+		this.id = id;
+		this.name = name;
+		this.owner = owner;
 		this.ownerDisplayName = ownerDisplayName;
-		this.keyHash = md.getKeyHash();
-		this.size = md.getSize();
+		this.ownerId = ownerId;
+		this.analysedOn = analysedOn;
+		this.uploadedOn = uploadedOn;
+		this.size = size;
 		this.compatibilities = compatibilities;
-		this.facilityId = md.getFacilityId();
+		this.facilityId = facilityId;
 	}
 
 	public String getFacilityId() {

@@ -8,6 +8,11 @@
   </parent>
   <artifactId>darq-analyzer</artifactId>
   <dependencies>
+  <dependency>
+	  <groupId>gov.nist.healthcare.iz</groupId>
+	  <artifactId>darq-common</artifactId>
+	  <version>${qdar.webtool.version}</version>
+  </dependency>
   	<dependency>
   		<groupId>gov.nist.healthcare.iz</groupId>
   		<artifactId>darq-digest-model</artifactId>

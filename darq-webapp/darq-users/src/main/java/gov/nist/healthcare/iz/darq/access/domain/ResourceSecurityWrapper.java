@@ -1,6 +1,4 @@
-package gov.nist.healthcare.iz.darq.access.domain.permission;
-
-import gov.nist.healthcare.iz.darq.access.domain.ResourceType;
+package gov.nist.healthcare.iz.darq.access.domain;
 
 public class ResourceSecurityWrapper {
     private final ResourceType type;

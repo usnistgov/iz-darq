@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.access.domain.permission;
+package gov.nist.healthcare.iz.darq.access.domain;
 
 import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.users.domain.User;
@@ -26,7 +26,7 @@ public class QualifiedAccessToken {
         switch (token) {
             case OWNER:
             case PARTICIPANT:
-                this.qualifier = user.getUsername();
+                this.qualifier = user.getId();
                 break;
             case ANY:
             case PUBLIC:

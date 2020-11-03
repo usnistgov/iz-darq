@@ -7,7 +7,9 @@ public class ADFMetaData {
 	String id;
 	String name;
 	String path;
+	@Deprecated
 	String owner;
+	String ownerId;
 	Date analysedOn;
 	Date uploadedOn;
 	String size;
@@ -23,6 +25,7 @@ public class ADFMetaData {
 			String name,
 			String path,
 			String owner,
+			String ownerId,
 			Date analysedOn,
 			Date uploadedOn,
 			ConfigurationPayload configuration,
@@ -38,6 +41,7 @@ public class ADFMetaData {
 		this.path = path;
 		this.keyHash = keyHash;
 		this.owner = owner;
+		this.ownerId = ownerId;
 		this.analysedOn = analysedOn;
 		this.uploadedOn = uploadedOn;
 		this.configuration = configuration;
@@ -64,12 +68,23 @@ public class ADFMetaData {
 	public void setPath(String path) {
 		this.path = path;
 	}
+
+	@Deprecated
 	public String getOwner() {
 		return owner;
 	}
+	@Deprecated
 	public void setOwner(String owner) {
 		this.owner = owner;
 	}
+
+	public String getOwnerId() {
+		return ownerId;
+	}
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
+	}
+
 	public Date getAnalysedOn() {
 		return analysedOn;
 	}

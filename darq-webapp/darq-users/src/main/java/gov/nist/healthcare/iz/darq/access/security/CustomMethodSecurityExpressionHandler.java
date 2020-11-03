@@ -1,6 +1,5 @@
-package gov.nist.healthcare.iz.darq.access.method.security;
+package gov.nist.healthcare.iz.darq.access.security;
 
-import gov.nist.healthcare.iz.darq.access.service.AccessControlService;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
@@ -10,15 +9,15 @@ import org.springframework.security.core.Authentication;
 
 public class CustomMethodSecurityExpressionHandler extends DefaultMethodSecurityExpressionHandler {
     private final AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
-    private final AccessControlService accessControlService;
+    private final SimpleResourceQualifier resourceQualifier;
 
-    public CustomMethodSecurityExpressionHandler(AccessControlService accessControlService) {
-        this.accessControlService = accessControlService;
+    public CustomMethodSecurityExpressionHandler(SimpleResourceQualifier resourceQualifier){
+        this.resourceQualifier = resourceQualifier;
     }
 
     @Override
     protected MethodSecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, MethodInvocation invocation) {
-        CustomMethodSecurityExpressionRoot root = new CustomMethodSecurityExpressionRoot(authentication, accessControlService);
+        CustomMethodSecurityExpressionRoot root = new CustomMethodSecurityExpressionRoot(authentication, resourceQualifier);
         root.setPermissionEvaluator(getPermissionEvaluator());
         root.setTrustResolver(this.trustResolver);
         root.setRoleHierarchy(getRoleHierarchy());

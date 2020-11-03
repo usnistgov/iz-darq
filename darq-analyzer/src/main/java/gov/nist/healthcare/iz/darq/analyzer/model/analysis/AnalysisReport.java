@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.analyzer.model.analysis;
 
+import gov.nist.healthcare.domain.trait.AssignableToFacility;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportTemplate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 @Document
-public class AnalysisReport extends Report {
+public class AnalysisReport extends Report implements AssignableToFacility {
 
     private ReportTemplate reportTemplate;
     private String facilityId;

@@ -1,0 +1,20 @@
+{
+  "homePage": {
+    "title": "Welcome to Data At Rest Quality Analysis Tool !",
+    "sections": [
+    {
+      "title" : "What is qDAR ?",
+      "content" : ""
+    },
+    {
+      "title" : "Note to Users",
+      "content" : ""
+    },
+    {
+      "title" : "Have a question ?",
+      "content" : ""
+    }
+  ]},
+  "registerTermsAndConditions": "",
+  "uploadTermsAndConditions" : ""
+}

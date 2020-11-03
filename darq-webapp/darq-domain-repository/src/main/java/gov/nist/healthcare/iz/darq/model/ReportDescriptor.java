@@ -1,13 +1,9 @@
-package gov.nist.healthcare.iz.darq.controller.domain;
+package gov.nist.healthcare.iz.darq.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.nist.healthcare.domain.trait.Owned;
 import gov.nist.healthcare.domain.trait.Publishable;
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisReport;
-import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportTemplate;
-import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
-import gov.nist.healthcare.iz.darq.model.ConfigurationDescriptor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 
@@ -32,17 +28,19 @@ public class ReportDescriptor implements Owned, Publishable {
     public ReportDescriptor() {
     }
 
-    public ReportDescriptor(AnalysisReport report, String ownerDisplayName, TemplateDescriptor template) {
-        this.id = report.getId();
-        this.name = report.getName();
-        this.description = report.getDescription();
+    public ReportDescriptor(String id, String name, String description, TemplateDescriptor template, String owner, String ownerId, String ownerDisplayName, boolean published, Date lastUpdated, String facilityId, String adfName, Date publishDate) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
         this.template = template;
+        this.owner = owner;
+        this.ownerId = ownerId;
         this.ownerDisplayName = ownerDisplayName;
-        this.adfName = report.getAdfName();
-        this.publishDate = report.getPublishDate();
-        this.owner = report.getOwner();
-        this.lastUpdated = report.getLastUpdated();
-        this.facilityId = report.getFacilityId();
+        this.published = published;
+        this.lastUpdated = lastUpdated;
+        this.facilityId = facilityId;
+        this.adfName = adfName;
+        this.publishDate = publishDate;
     }
 
     public String getId() {

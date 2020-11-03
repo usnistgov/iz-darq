@@ -1,8 +1,9 @@
 package gov.nist.healthcare.iz.darq.users.domain;
 
-import gov.nist.healthcare.auth.domain.Account;
+import java.util.Collections;
+import java.util.HashSet;
 
-public class UserRegistration {
+public class RegistrationRequest {
 
     private String username;
     private String password;
@@ -11,14 +12,23 @@ public class UserRegistration {
     private String organization;
     private Boolean signedConfidentialityAgreement = false;
 
-    public Account toAccount() {
-        Account account = new Account();
-        account.setUsername(username);
+    String trim(String str) {
+        if(str != null) {
+            return str.trim();
+        }
+        return null;
+    }
+    
+    public UserAccount toAccount() {
+        UserAccount account = new UserAccount();
+        account.setUsername(trim(username));
         account.setPassword(password);
-        account.setEmail(email);
-        account.setFullName(fullName);
-        account.setOrganization(organization);
+        account.setEmail(trim(email));
+        account.setFullName(trim(fullName));
+        account.setOrganization(trim(organization));
         account.setSignedConfidentialityAgreement(signedConfidentialityAgreement);
+        account.setPending(true);
+        account.setqDarAccount(true);
         return  account;
     }
 

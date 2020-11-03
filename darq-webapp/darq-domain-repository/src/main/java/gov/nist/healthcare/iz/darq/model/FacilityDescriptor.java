@@ -2,10 +2,12 @@ package gov.nist.healthcare.iz.darq.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 public class FacilityDescriptor {
     @Id
     protected String id;
+    @Indexed(unique = true)
     protected String name;
     protected String description;
     @Transient

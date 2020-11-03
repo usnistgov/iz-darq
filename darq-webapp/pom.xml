@@ -17,12 +17,13 @@
 		<module>darq-controller</module>
 		<module>darq-app</module>
         <module>darq-common</module>
-    </modules>
+        <module>darq-users</module>
+	</modules>
 	<dependencies>
 		<dependency>
-			<groupId>gov.nist.healthcare.auth</groupId>
-			<artifactId>spring-auth</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>gov.nist.healthcare.iz</groupId>
+			<artifactId>darq-common</artifactId>
+			<version>${qdar.webtool.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

@@ -1,5 +1,6 @@
-package gov.nist.healthcare.iz.darq.access.service;
+package gov.nist.healthcare.iz.darq.access.security;
 
+import com.google.common.base.Strings;
 import gov.nist.healthcare.domain.trait.AssignableToFacility;
 import gov.nist.healthcare.domain.trait.Owned;
 import gov.nist.healthcare.domain.trait.Publishable;
@@ -58,7 +59,7 @@ public class SimpleResourceQualifier {
     }
 
     public QualifiedScope getQualifiedScope(Object resource) {
-        if(resource instanceof AssignableToFacility) {
+        if(resource instanceof AssignableToFacility && !Strings.isNullOrEmpty(((AssignableToFacility) resource).getFacilityId())) {
             return new QualifiedScope(Scope.FACILITY, ((AssignableToFacility) resource).getFacilityId());
         } else {
             return new QualifiedScope(Scope.GLOBAL);
@@ -70,7 +71,7 @@ public class SimpleResourceQualifier {
             return new QualifiedAccessToken(AccessToken.PUBLIC);
         }
         if(resource instanceof Owned) {
-            return new QualifiedAccessToken(AccessToken.OWNER, ((Owned) resource).getOwner());
+            return new QualifiedAccessToken(AccessToken.OWNER, ((Owned) resource).getOwnerId());
         }
         return new QualifiedAccessToken(AccessToken.ANY);
     }

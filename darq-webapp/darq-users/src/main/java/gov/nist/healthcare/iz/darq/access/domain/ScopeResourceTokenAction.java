@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.access.domain.permission;
+package gov.nist.healthcare.iz.darq.access.domain;
 
 public class ScopeResourceTokenAction {
     private final Scope scope;

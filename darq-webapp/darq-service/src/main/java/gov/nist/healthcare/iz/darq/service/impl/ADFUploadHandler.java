@@ -33,7 +33,7 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 	private String PATH;
 	
 	@Override
-	public void handle(String name, String facility, InputStream stream, String owner, long size) throws InvalidFileFormat {
+	public void handle(String name, String facility, InputStream stream, String ownerId, long size) throws InvalidFileFormat {
 		
 		try {
 			byte[] content = IOUtils.toByteArray(stream);
@@ -44,7 +44,8 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 				UserUploadedFile metadata = new UserUploadedFile(
 						name,
 						uid,
-						owner,
+						null,
+						ownerId,
 						file.getAnalysisDate(),
 						new Date(),
 						file.getConfiguration(),

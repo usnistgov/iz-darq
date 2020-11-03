@@ -4,6 +4,6 @@ public enum ResourceType {
     ADF,
     CONFIGURATION,
     REPORT_TEMPLATE,
+    ANALYSIS_JOB,
     REPORT,
-    WILDCARD,
 }

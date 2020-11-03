@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.config.data;
+package gov.nist.healthcare.iz.darq.boot.config.data;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -26,13 +26,8 @@ public class MongoConfig extends AbstractMongoConfiguration {
 	}
 
 	@Override
-	public Mongo mongo() throws Exception {
+	public Mongo mongo() {
 		return new MongoClient(new ServerAddress(HOST, Integer.parseInt(PORT)));
-	}
-
-	@Override
-	protected String getMappingBasePackage() {
-		return "gov.nist.healthcare.iz.darq";
 	}
 
 }

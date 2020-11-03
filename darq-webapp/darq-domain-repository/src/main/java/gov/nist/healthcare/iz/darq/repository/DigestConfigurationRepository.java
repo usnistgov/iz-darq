@@ -8,11 +8,11 @@ import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 
 public interface DigestConfigurationRepository extends MongoRepository<DigestConfiguration, String>{
 
-	List<DigestConfiguration> findByOwner(String owner);
-	DigestConfiguration findByOwnerAndId(String owner, String id);
-	@Query("{ '$or' : [ {'owner' : { $eq: ?0 }}, {'published' : {'$eq' : true }}]}")
-	List<DigestConfiguration> findAccessible(String owner);
-	@Query("{ '$and' : [ { _id : ?0 } , {'$or' : [ {'owner' : { $eq: ?1 }}, {'published' : {'$eq' : true }}] } ] }")
-	DigestConfiguration findMineOrReadOnly(String id, String owner);
+	List<DigestConfiguration> findByOwnerId(String ownerId);
+	DigestConfiguration findByOwnerIdAndId(String ownerId, String id);
+	@Query("{ '$or' : [ {'ownerId' : { $eq: ?0 }}, {'published' : {'$eq' : true }}]}")
+	List<DigestConfiguration> findAccessibleTo(String ownerId);
+	@Query("{ '$and' : [ { _id : ?0 } , {'$or' : [ {'ownerId' : { $eq: ?1 }}, {'published' : {'$eq' : true }}] } ] }")
+	DigestConfiguration findByOwnerIdOrReadOnly(String id, String ownerId);
 	
 }

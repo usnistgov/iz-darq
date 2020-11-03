@@ -1,21 +1,23 @@
-package gov.nist.healthcare.iz.darq.access.domain.permission;
+package gov.nist.healthcare.iz.darq.access.domain;
 
-import gov.nist.healthcare.iz.darq.access.domain.Permission;
-import gov.nist.healthcare.iz.darq.access.domain.Action;
-import gov.nist.healthcare.iz.darq.access.domain.ResourceType;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@JsonSerialize(using = UserPermissionSerializer.class)
 public class UserPermission extends HashMap<QualifiedScope, Map<ResourceType, Map<QualifiedAccessToken, Set<Action>>>> {
 
-    Set<Permission> permissions = new HashSet<>();
-    Set<String> facilities = new HashSet<>();
+    private final Set<Permission> permissions = new HashSet<>();
+    private final Set<String> facilities = new HashSet<>();
 
     public Set<String> getFacilities() {
         return Collections.unmodifiableSet(facilities);
+    }
+    public Set<Permission> getPermissions() {
+        return Collections.unmodifiableSet(permissions);
     }
 
     public boolean hasPermissions(Set<Permission> permissions) {

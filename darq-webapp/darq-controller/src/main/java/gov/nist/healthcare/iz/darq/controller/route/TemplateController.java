@@ -3,13 +3,17 @@ package gov.nist.healthcare.iz.darq.controller.route;
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportTemplate;
 import gov.nist.healthcare.iz.darq.controller.domain.ReportTemplateCreate;
+import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
-import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.service.impl.ADFStorage;
+import gov.nist.healthcare.iz.darq.users.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,25 +21,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import gov.nist.healthcare.auth.domain.Account;
-import gov.nist.healthcare.auth.service.AccountService;
-//import gov.nist.healthcare.iz.darq.analyzer.domain.ReportTemplate;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.domain.OpAck.AckStatus;
-import gov.nist.healthcare.iz.darq.controller.domain.TemplateDescriptor;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
+import gov.nist.healthcare.iz.darq.model.TemplateDescriptor;
 import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
 import gov.nist.healthcare.iz.darq.repository.TemplateRepository;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/api/template")
 public class TemplateController {
 
-	@Autowired
-	private AccountService accountService;
 	@Autowired
 	private ConfigurationService configService;
 	@Autowired
@@ -46,27 +46,20 @@ public class TemplateController {
 	private ADFMetaDataRepository repo;
 	@Autowired
 	private ADFStorage adfStorage;
+	@Autowired
+	private DescriptorService descriptorService;
 
 	// Get All Accessible Report Templates
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
-    public List<TemplateDescriptor> all() {
-		Account a = this.accountService.getCurrentUser();
-		List<ReportTemplate> templates = templateRepo.findAccessible(a.getUsername());
+	@PreAuthorize("AccessOperation(REPORT_TEMPLATE, VIEW, GLOBAL, PUBLIC())")
+	public List<TemplateDescriptor> all(
+			@AuthenticationPrincipal User user) {
+		List<ReportTemplate> templates = templateRepo.findAccessibleTo(user.getId());
 		List<TemplateDescriptor> result = new ArrayList<>();
-		List<DigestConfiguration> configurations = this.confRepo.findAccessible(a.getUsername());
+		List<DigestConfiguration> configurations = this.confRepo.findAccessibleTo(user.getId());
 		for(ReportTemplate rt : templates){
-			result.add(
-					new TemplateDescriptor(
-							rt.getId(),
-							rt.getName(),
-							rt.getOwner(),
-							this.configService.compatibilities(rt.getConfiguration(), configurations, a.getUsername()),
-							a.getUsername().equals(rt.getOwner()),
-							rt.isPublished(),
-							!a.getUsername().equals(rt.getOwner())
-					)
-			);
+			result.add(this.descriptorService.getTemplateDescriptor(rt, this.configService.compatibilities(rt.getConfiguration(), configurations)));
 		}
 		return result;
     }
@@ -74,37 +67,32 @@ public class TemplateController {
 	// Get All Accessible Report Templates
 	@RequestMapping(value = "/{id}/descriptor", method = RequestMethod.GET)
 	@ResponseBody
-	public TemplateDescriptor descriptor(@PathVariable("id") String id) throws NotFoundException {
-		Account a = this.accountService.getCurrentUser();
-		ReportTemplate rt = templateRepo.findMineOrReadOnly(id, a.getUsername());
-		if(rt == null) {
-			throw new NotFoundException("Report Template "+id+" Not Found");
-		}
-		List<DigestConfiguration> configurations = this.confRepo.findAccessible(a.getUsername());
-		return new TemplateDescriptor(
-			rt.getId(),
-			rt.getName(),
-			rt.getOwner(),
-			this.configService.compatibilities(rt.getConfiguration(), configurations, a.getUsername()),
-			a.getUsername().equals(rt.getOwner()),
-			rt.isPublished(),
-			!a.getUsername().equals(rt.getOwner())
-		);
+	@PreAuthorize("AccessResource(#request, REPORT_TEMPLATE, VIEW, #id)")
+	public TemplateDescriptor descriptor(
+			HttpServletRequest request,
+			@AuthenticationPrincipal User user,
+			@PathVariable("id") String id) {
+		ReportTemplate rt = (ReportTemplate) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+		List<DigestConfiguration> configurations = this.confRepo.findAccessibleTo(user.getId());
+		return this.descriptorService.getTemplateDescriptor(rt, this.configService.compatibilities(rt.getConfiguration(), configurations));
 	}
 
 	//  Save Report Template (Owned and not Locked or New)
 	@RequestMapping(value="/", method=RequestMethod.POST)
 	@ResponseBody
-	public OpAck<ReportTemplate> save(@RequestBody ReportTemplate template) throws OperationFailureException {
-		Account a = this.accountService.getCurrentUser();
-		if(template.getId() == null || template.getId().isEmpty()){
+	@PreAuthorize(
+			"#template.id != null ? " +
+			"AccessResource(#request, REPORT_TEMPLATE, EDIT, #template.id) : " +
+			"AccessOperation(REPORT_TEMPLATE, CREATE, GLOBAL)"
+	)
+	public OpAck<ReportTemplate> save(
+			HttpServletRequest request,
+			@AuthenticationPrincipal User user,
+			@RequestBody ReportTemplate template) {
+		if(template.getId() == null || template.getId().isEmpty()) {
 			template.setId(null);
-			template.setOwner(a.getUsername());
-		} else {
-			ReportTemplate existing = this.templateRepo.findByIdAndOwner(template.getId(), a.getUsername());
-			if(existing == null) {
-				throw new OperationFailureException("Can't save report template "+template.getId());
-			}
+			template.setOwner(user.getUsername());
+			template.setOwnerId(user.getId());
 		}
 		ReportTemplate saved = this.templateRepo.save(template);
 		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Saved", saved, "report-template-save");
@@ -113,17 +101,19 @@ public class TemplateController {
 	//  Create Report Template With Configuration
 	@RequestMapping(value="/create", method=RequestMethod.POST)
 	@ResponseBody
-	public OpAck<ReportTemplate> create(@RequestBody ReportTemplateCreate create) throws OperationFailureException {
-		Account a = this.accountService.getCurrentUser();
+	@PreAuthorize("AccessOperation(REPORT_TEMPLATE, CREATE, GLOBAL)")
+	public OpAck<ReportTemplate> create(
+			@AuthenticationPrincipal User user,
+			@RequestBody ReportTemplateCreate create) throws OperationFailureException {
 		ReportTemplate template = new ReportTemplate();
 		template.setId(null);
-		template.setOwner(a.getUsername());
+		template.setOwner(user.getUsername());
+		template.setOwnerId(user.getId());
 		template.setName(create.getName());
 
-		DigestConfiguration configuration = this.confRepo.findMineOrReadOnly(create.getConfigurationId(), a.getUsername());
-
+		DigestConfiguration configuration = this.confRepo.findByOwnerIdOrReadOnly(create.getConfigurationId(), user.getId());
 		if(configuration == null){
-			throw new OperationFailureException("Can't use configuration "+configuration.getId());
+			throw new OperationFailureException("Can't use configuration "+create.getConfigurationId());
 		} else {
 			template.setConfiguration(configuration.getPayload());
 			ReportTemplate saved = this.templateRepo.save(template);
@@ -134,91 +124,71 @@ public class TemplateController {
 	//  Get Report Template by Id (Owned or Published [viewOnly])
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public ReportTemplate get(@PathVariable("id") String id) throws NotFoundException {
-		Account a = this.accountService.getCurrentUser();
-		ReportTemplate template = templateRepo.findOne(id);
-		if(template == null || (!template.getOwner().equals(a.getUsername()) && !template.isPublished())){
-			throw new NotFoundException("Report Template "+id+" Not Found");
-		}
-		else {
-			template.setViewOnly(!a.getUsername().equals(template.getOwner()));
-			return template;
-		}
+	@PreAuthorize("AccessResource(#request, REPORT_TEMPLATE, VIEW, #id)")
+	public ReportTemplate get(
+			HttpServletRequest request,
+			@PathVariable("id") String id) {
+		return (ReportTemplate) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
 	}
 
 	//  Clone Report Template by Id (Owned or Published)
 	@RequestMapping(value="/{id}/clone", method=RequestMethod.POST)
 	@ResponseBody
-	public OpAck<ReportTemplate> clone(@PathVariable("id") String id) throws NotFoundException {
-		Account a = this.accountService.getCurrentUser();
-		ReportTemplate template = templateRepo.findOne(id);
-		if(template == null || (!template.getOwner().equals(a.getUsername()) && !template.isPublished())){
-			throw new NotFoundException("Report Template "+id+" Not Found");
-		}
-		else {
-			template.setId(null);
-			template.setName("[Clone] "+template.getName());
-			template.setOwner(a.getUsername());
-			template.setPublished(false);
-			ReportTemplate saved = this.templateRepo.save(template);
-			return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Cloned", saved, "report-template-clone");
-		}
+	@PreAuthorize("AccessResource(#request, REPORT_TEMPLATE, CLONE, #id)")
+	public OpAck<ReportTemplate> clone(
+			HttpServletRequest request,
+			@AuthenticationPrincipal User user,
+			@PathVariable("id") String id) {
+		ReportTemplate template =  (ReportTemplate) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+		template.setId(null);
+		template.setName("[Clone] "+template.getName());
+		template.setOwner(user.getUsername());
+		template.setOwnerId(user.getId());
+		template.setPublished(false);
+		ReportTemplate saved = this.templateRepo.save(template);
+		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Cloned", saved, "report-template-clone");
 	}
 
 	//  Delete Report Template by Id (Owned)
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
 	@ResponseBody
-	public OpAck<ReportTemplate> delete(@PathVariable("id") String id) throws NotFoundException {
-		Account a = this.accountService.getCurrentUser();
-		ReportTemplate x = templateRepo.findByIdAndOwner(id, a.getUsername());
-		if(x != null){
-			this.templateRepo.delete(x);
-			return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Deleted", null,"report-template-delete");
-		}
-		else {
-			throw new NotFoundException("Report Template "+id+" Not Found");
-		}
+	@PreAuthorize("AccessResource(#request, REPORT_TEMPLATE, DELETE, #id)")
+	public OpAck<ReportTemplate> delete(
+			HttpServletRequest request,
+			@PathVariable("id") String id) {
+		ReportTemplate x =  (ReportTemplate) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+		this.templateRepo.delete(x);
+		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Deleted", null,"report-template-delete");
 	}
 
 	//  Publish Report Template Owned
 	@RequestMapping(value="/{id}/publish", method=RequestMethod.POST)
 	@ResponseBody
-	public OpAck<ReportTemplate> publish(@PathVariable("id") String id) throws NotFoundException {
-		Account a = this.accountService.getCurrentUser();
-		ReportTemplate template = this.templateRepo.findByIdAndOwner(id, a.getUsername());
-		if(template != null){
-			template.setPublished(true);
-			ReportTemplate saved = this.templateRepo.save(template);
-			saved.setViewOnly(!a.getUsername().equals(saved.getOwner()));
-			return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Published", saved,"report-template-publish");
-		}
-		else {
-			throw new NotFoundException("Report Template "+id+" Not Found");
-		}
+	@PreAuthorize("AccessResource(#request, REPORT_TEMPLATE, PUBLISH, #id)")
+	public OpAck<ReportTemplate> publish(
+			HttpServletRequest request,
+			@PathVariable("id") String id) {
+		ReportTemplate template =  (ReportTemplate) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+		template.setPublished(true);
+		ReportTemplate saved = this.templateRepo.save(template);
+		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Published", saved,"report-template-publish");
 	}
 
 	// Get Accessible Templates Compatible with ADF by Id
 	@RequestMapping(value="/for/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public List<TemplateDescriptor> template(@PathVariable("id") String id) throws NotFoundException {
-		Account a = this.accountService.getCurrentUser();
-		UserUploadedFile md = adfStorage.getAccessible(id, a.getUsername());
+	@PreAuthorize("AccessResource(#request, ADF, VIEW, #id)")
+	public List<TemplateDescriptor> template(
+			@AuthenticationPrincipal User user,
+			HttpServletRequest request,
+			@PathVariable("id") String id) {
+		UserUploadedFile md =  (UserUploadedFile) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
 		List<TemplateDescriptor> result = new ArrayList<>();
 		if(md != null){
-			List<ReportTemplate> templates = this.templateRepo.findAccessible(a.getUsername());
+			List<ReportTemplate> templates = this.templateRepo.findAccessibleTo(user.getId());
 			for(ReportTemplate template : templates){
 				if(this.configService.compatible(md.getConfiguration(), template.getConfiguration())){
-					result.add(
-							new TemplateDescriptor(
-									template.getId(),
-									template.getName(),
-									template.getName(),
-									null,
-									a.getUsername().equals(template.getOwner()),
-									template.isPublished(),
-									!a.getUsername().equals(template.getOwner())
-							)
-					);
+					result.add(this.descriptorService.getTemplateDescriptor(template, this.configService.compatibilities(template.getConfiguration(),null)));
 				}
 			}
 		}

@@ -1,14 +1,14 @@
 package gov.nist.healthcare.auth.domain;
 
-public class PasswordChange {
+public class PasswordChangeRequest {
     public String username;
     public String password;
     public String replacement;
 
-    public PasswordChange() {
+    public PasswordChangeRequest() {
     }
 
-    public PasswordChange(String username, String password, String replacement) {
+    public PasswordChangeRequest(String username, String password, String replacement) {
         this.username = username;
         this.password = password;
         this.replacement = replacement;

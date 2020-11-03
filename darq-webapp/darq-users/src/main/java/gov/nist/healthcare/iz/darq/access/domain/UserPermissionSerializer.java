@@ -6,20 +6,34 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 
-public class PermissionSerializer extends StdSerializer<Permission> {
+public class UserPermissionSerializer extends StdSerializer<UserPermission> {
     
-    public PermissionSerializer() {
-        super(Permission.class);
+    public UserPermissionSerializer() {
+        super(UserPermission.class);
     }
 
     @Override
-    public void serialize(Permission value, JsonGenerator generator, SerializerProvider provider) throws IOException, JsonGenerationException {
+    public void serialize(UserPermission value, JsonGenerator generator, SerializerProvider provider) throws IOException {
         generator.writeStartObject();
-        generator.writeFieldName("name");
-        generator.writeString(value.name());
+
+        generator.writeFieldName("facilities");
+        generator.writeObject(value.getFacilities());
+
+        generator.writeFieldName("permissions");
+        generator.writeObject(value.getPermissions());
+
         generator.writeFieldName("authorize");
-        generator.writeObject(value.scopes);
+        generator.writeStartObject();
+
+        for (Map.Entry<QualifiedScope, Map<ResourceType, Map<QualifiedAccessToken, Set<Action>>>> entry : value.entrySet()) {
+            generator.writeFieldName(entry.getKey().toString());
+            generator.writeObject(entry.getValue());
+        }
+
+        generator.writeEndObject();
         generator.writeEndObject();
     }
 }

@@ -9,8 +9,11 @@
                 justify-content: center;">
         <div>
             <span style="font-size: 50px; font-weight: 600; color: #021a4c;">Oops there was an error while trying to connect you!</span>
-            <h1 style="color: #739fff">Your email address is already used, please <a href="/home">contact</a> qDAR administrator to resolve this issue.</h1>
-            <h1>${name}</h1>
+            <#if message??>
+                <h1 style="color: #739fff">Due to : ${message}</h1>
+            </#if>
+            <h1 style="color: #739fff">Please <a href="mailto:${mailto}">contact</a> qDAR administrator to resolve this issue.</h1>
+            <textarea style="width: 100%; height: 100px; resize: none;" disabled>${token}</textarea>
         </div>
     </div>
 </body>

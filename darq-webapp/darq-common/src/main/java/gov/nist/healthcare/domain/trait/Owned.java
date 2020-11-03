@@ -1,4 +1,6 @@
 package gov.nist.healthcare.domain.trait;
 
-public interface Ownable {
+public interface Owned {
+    String getOwnerId();
+    void setOwnerId(String ownerId);
 }

@@ -1,8 +1,7 @@
-package gov.nist.healthcare.iz.darq.access.domain.permission;
+package gov.nist.healthcare.iz.darq.access.security;
 
-import gov.nist.healthcare.iz.darq.access.domain.Permission;
-import gov.nist.healthcare.iz.darq.access.domain.Action;
-import gov.nist.healthcare.iz.darq.access.domain.ResourceType;
+import gov.nist.healthcare.iz.darq.access.domain.*;
+import gov.nist.healthcare.iz.darq.access.domain.exception.ResourceAccessForbidden;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
@@ -41,11 +40,15 @@ public abstract class CustomSecurityExpressionRoot extends SecurityExpressionRoo
     // Action
     public final Action VIEW = Action.VIEW;
     public final Action CREATE = Action.CREATE;
+    public final Action CLONE = Action.CLONE;
+
     public final Action EDIT = Action.EDIT;
     public final Action DELETE = Action.DELETE;
     public final Action PUBLISH = Action.PUBLISH;
     public final Action UPLOAD = Action.UPLOAD;
     public final Action COMMENT = Action.COMMENT;
+    public final Action ANALYSE = Action.ANALYSE;
+
     //Scope
     public final QualifiedScope GLOBAL = new QualifiedScope(Scope.GLOBAL);
     //Any
@@ -64,7 +67,7 @@ public abstract class CustomSecurityExpressionRoot extends SecurityExpressionRoo
     public boolean AccessResource(HttpServletRequest request, ResourceType resourceType, Set<Action> action, String id) throws NotFoundException, ResourceAccessForbidden {
         User user = this.getPrincipal();
         ResourceSecurityWrapper securityWrapper = this.resourceQualifier.getSecurityQualifiedResource(resourceType, id);
-        boolean allow = user.getPermission().hasActionsFor(securityWrapper.getScope(), resourceType, securityWrapper.getAccessToken(), action);
+        boolean allow = user.getPermissions().hasActionsFor(securityWrapper.getScope(), resourceType, securityWrapper.getAccessToken(), action);
         if(allow) {
             this.setResourceAttribute(request, securityWrapper.getPayload());
             return true;
@@ -76,7 +79,7 @@ public abstract class CustomSecurityExpressionRoot extends SecurityExpressionRoo
     public boolean AccessResource(ResourceType resourceType, Set<Action> action, String id) throws NotFoundException, ResourceAccessForbidden {
         User user = this.getPrincipal();
         ResourceSecurityWrapper securityWrapper = this.resourceQualifier.getSecurityQualifiedResource(resourceType, id);
-        boolean allow = user.getPermission().hasActionsFor(securityWrapper.getScope(), resourceType, securityWrapper.getAccessToken(), action);
+        boolean allow = user.getPermissions().hasActionsFor(securityWrapper.getScope(), resourceType, securityWrapper.getAccessToken(), action);
         if(allow) {
             return true;
         } else {
@@ -86,7 +89,7 @@ public abstract class CustomSecurityExpressionRoot extends SecurityExpressionRoo
 
     public boolean AccessOperation(ResourceType resourceType, Action action, QualifiedScope scope) throws ResourceAccessForbidden {
         User user = this.getPrincipal();
-        boolean allow = user.getPermission().hasActionFor(scope, resourceType, ANY, action);
+        boolean allow = user.getPermissions().hasActionFor(scope, resourceType, ANY, action);
         if(allow) {
             return true;
         } else {
@@ -96,7 +99,7 @@ public abstract class CustomSecurityExpressionRoot extends SecurityExpressionRoo
 
     public boolean AccessOperation(ResourceType resourceType, Action action, QualifiedScope scope, QualifiedAccessToken accessToken) throws ResourceAccessForbidden {
         User user = this.getPrincipal();
-        boolean allow = user.getPermission().hasActionFor(scope, resourceType, accessToken, action);
+        boolean allow = user.getPermissions().hasActionFor(scope, resourceType, accessToken, action);
         if(allow) {
             return true;
         } else {
@@ -107,7 +110,7 @@ public abstract class CustomSecurityExpressionRoot extends SecurityExpressionRoo
     public boolean hasPermission(String name) {
         try {
             Permission permission = Permission.valueOf(name);
-            return this.getPrincipal().getPermission().hasPermissions(Collections.singleton(permission));
+            return this.getPrincipal().getPermissions().hasPermissions(Collections.singleton(permission));
         } catch (Exception e) {
           return false;
         }
@@ -117,7 +120,7 @@ public abstract class CustomSecurityExpressionRoot extends SecurityExpressionRoo
         return new QualifiedScope(Scope.FACILITY, qualifier);
     }
     public QualifiedAccessToken OWNED() {
-        return new QualifiedAccessToken(AccessToken.OWNER, this.getPrincipal().getUsername());
+        return new QualifiedAccessToken(AccessToken.OWNER, this.getPrincipal().getId());
     }
     public QualifiedAccessToken PUBLIC() {
         return new QualifiedAccessToken(AccessToken.PUBLIC);

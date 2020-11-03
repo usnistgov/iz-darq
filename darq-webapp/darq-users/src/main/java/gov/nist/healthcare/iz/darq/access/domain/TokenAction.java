@@ -1,6 +1,4 @@
-package gov.nist.healthcare.iz.darq.access.domain.permission;
-
-import gov.nist.healthcare.iz.darq.access.domain.Action;
+package gov.nist.healthcare.iz.darq.access.domain;
 
 public class TokenAction {
     private final AccessToken token;

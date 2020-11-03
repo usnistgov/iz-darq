@@ -10,8 +10,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import gov.nist.healthcare.auth.domain.Account;
+import gov.nist.healthcare.auth.domain.Authority;
+import gov.nist.healthcare.auth.service.AuthenticationService;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -22,28 +25,35 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.nist.healthcare.auth.domain.LoginRequest;
 
-public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
+public class JWTLoginFilter<T extends Account<E>, E extends Authority, P> extends AbstractAuthenticationProcessingFilter {
 
-	@Autowired
-	private AuthenticationEntryPoint handler;
-	private TokenAuthenticationService tokenService;
-		
-	public JWTLoginFilter(String url, AuthenticationManager authManager, TokenAuthenticationService tokenService) {
+	private final AuthenticationEntryPoint handler;
+	private final Class<T> accountClazz;
+	private final AuthenticationService<T, E, P> authenticationService;
+
+	public JWTLoginFilter(String url, Class<T> accountClazz, AuthenticationManager authManager, AuthenticationEntryPoint handler, AuthenticationService<T, E, P> authenticationService) {
 		super(new AntPathRequestMatcher(url));
-		this.tokenService = tokenService;
+		this.handler = handler;
+		this.accountClazz = accountClazz;
+		this.authenticationService = authenticationService;
 		setAuthenticationManager(authManager);
 	}
 
 	@Override
-	public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException, IOException, ServletException {
-		LoginRequest creds = new ObjectMapper().readValue(req.getInputStream(), LoginRequest.class);
-		return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(creds.getUsername(),creds.getPassword(), Collections.emptyList()));
+	public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException, IOException {
+		LoginRequest credentials = new ObjectMapper().readValue(req.getInputStream(), LoginRequest.class);
+		return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(credentials.getUsername(),credentials.getPassword(), Collections.emptyList()));
 	}
 
 	@Override
 	protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication auth) throws IOException, ServletException {
 		try {
-			tokenService.addAuthentication(res, auth.getName());
+			if(auth instanceof UsernamePasswordAuthenticationToken && accountClazz.isAssignableFrom(auth.getPrincipal().getClass())) {
+				T userAccount = (T) auth.getPrincipal();
+				this.authenticationService.verifyAccountAndHandleLoginResponse(req, res, userAccount);
+			} else {
+				handler.commence(req, res, new AuthenticationServiceException(""));
+			}
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
