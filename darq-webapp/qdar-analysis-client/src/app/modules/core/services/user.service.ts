@@ -55,6 +55,10 @@ export class UserService {
     return this.http.post<Message<IUser>>(this.URL_PREFIX + 'update', update);
   }
 
+  updateProfile(update: IProfileUpdate): Observable<Message<IUser>> {
+    return this.http.post<Message<IUser>>('api/profile/update', update);
+  }
+
   passwordResetLinkRequest(email: string): Observable<Message<IUser>> {
     return this.http.post<Message<IUser>>(this.USER_PREFIX + 'reset-password-request', { email });
   }

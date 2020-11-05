@@ -20,7 +20,7 @@
     <div>
       <i class="fa fa-exclamation-triangle"></i> <a href="http://www.nist.gov/public_affairs/disclaimer.cfm" target="_blank" title="View Disclaimer"> Disclaimer</a>,
       <i class="fa fa-user-secret"></i> <a href="http://www.nist.gov/public_affairs/privacy.cfm#privpolicy" target="_blank" title="View Privacy Policy"> Privacy Policy</a>,
-      <i class="fa fa-envelope-o"></i> <a ng-href="mailto:" title="Email Website Administrator @: " href="mailto:"> Website Administrator</a>
+      <i class="fa fa-envelope-o"></i> <a ng-href="mailto:" title="Email Website Administrator @: " [href]="'mailto:' + info?.contact"> Website Administrator</a>
     </div>
 	</div>
 </div>

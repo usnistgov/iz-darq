@@ -4,7 +4,7 @@ import { IUserAccountRegister } from '../../model/user.model';
 import { UserService } from '../../services/user.service';
 import { RxjsStoreHelperService } from 'ngx-dam-framework';
 import { Store } from '@ngrx/store';
-import { of, Observable } from 'rxjs';
+import { of } from 'rxjs';
 import { WebContentService } from '../../services/web-content.service';
 import { map } from 'rxjs/operators';
 
@@ -45,6 +45,14 @@ export class RegistrationComponent implements OnInit {
       },
       (message) => {
         return of();
+      },
+      undefined,
+      {
+        loader: true,
+        blockUI: true,
+        messageOptions: {
+          persistSuccess: true,
+        }
       }
     ).subscribe();
   }

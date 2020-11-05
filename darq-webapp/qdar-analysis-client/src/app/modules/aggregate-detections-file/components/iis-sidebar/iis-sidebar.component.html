@@ -13,6 +13,11 @@
     </div>
   </div>
   <div class="facility-content">
+    <div class="alert alert-warning" *ngIf="(facilities$ | async).length === 0">
+      <ng-container *ngIf="info$ | async as info">
+        You have not been assigned any IIS access, please contact us  {{info.contact ? ('at ' + info.contact) : '' }} to request access.
+      </ng-container>
+    </div>
     <ul class="list-group">
       <li class="list-group-item cursor-pointer" style="display: flex; justify-content: space-between; align-items: center; padding: 10px;" *ngFor="let facility of filtered$ | async"  [routerLink]="[ facility.id ]" routerLinkActive="active">
         <span>

@@ -164,7 +164,12 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
                 },
                 (message) => {
                   if (message.status === MessageType.SUCCESS) {
-                    this.router.navigate(['..', 'jobs']);
+                    this.facilityId$.pipe(
+                      take(1),
+                      map((id) => {
+                        this.router.navigate(['/', 'adf', 'dashboard', id, 'jobs']);
+                      })
+                    ).subscribe();
                   }
                   return EMPTY;
                 }

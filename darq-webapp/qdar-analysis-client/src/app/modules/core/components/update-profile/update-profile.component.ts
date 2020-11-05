@@ -40,7 +40,7 @@ export class UpdateProfileComponent implements OnInit {
       this.helper.getMessageAndHandle<any>(
         this.store,
         () => {
-          return this.userService.update(this.profileUpdate);
+          return this.userService.updateProfile(this.profileUpdate);
         },
         (message) => {
           if (message.status === MessageType.SUCCESS) {

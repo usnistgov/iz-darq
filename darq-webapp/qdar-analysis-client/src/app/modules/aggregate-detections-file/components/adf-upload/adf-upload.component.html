@@ -16,8 +16,13 @@
     </ul>
     <h4 class="title-text title-heading" ><i class="fa fa-upload" style="color: blue;"></i> Upload Aggregate Detections File </h4>
   </div>
-  <div class="page-content upload-page-content">
+  <div class="page-content upload-page-content" *ngIf="facilities$ | async as facilities">
     <form class="upload-form" [formGroup]="form" >
+      <div class="alert alert-warning" *ngIf="(facilities$ | async).length === 0">
+        <ng-container *ngIf="info$ | async as info">
+          You have not been assigned any IIS access, please contact us  {{info.contact ? ('at ' + info.contact) : '' }} to request access.
+        </ng-container>
+      </div>
       <div class="form-group" style="height: 100px;">
         <app-file-upload-field [required]="true" (file)="setFile($event)" label="Aggregate Detections File"></app-file-upload-field>
       </div>
@@ -27,7 +32,7 @@
       </div>
       <div class="form-group">
         <label for="facility"><strong>IIS</strong></label>
-        <p-dropdown formControlName="facility" [autoDisplayFirst]="false" [showClear]="true" [options]="facilities$ | async" [style]="{ width : '100%'}" name="facility" id="facility" ></p-dropdown>
+        <p-dropdown formControlName="facility" [autoDisplayFirst]="false" [showClear]="true" [options]="facilities" [style]="{ width : '100%'}" name="facility" id="facility" ></p-dropdown>
       </div>
       <div class="form-group">
         <label for="tac"><strong>Terms & Conditions</strong></label>

@@ -9,6 +9,7 @@ import { Observable, combineLatest, Subscription, of } from 'rxjs';
 import { SelectItem } from 'primeng/api/selectitem';
 import { selectUserFacilitiesSorted } from '../../store/core.selectors';
 import { WebContentService } from '../../../core/services/web-content.service';
+import { ServerInfoService, IServerInfo } from '../../../core/services/app-info.service';
 
 @Component({
   selector: 'app-adf-upload',
@@ -24,6 +25,7 @@ export class AdfUploadComponent implements OnInit, OnDestroy {
   subs: Subscription;
   termsAndConditions: string;
   init = false;
+  info$: Observable<IServerInfo>;
 
   constructor(
     private store: Store<any>,
@@ -32,7 +34,9 @@ export class AdfUploadComponent implements OnInit, OnDestroy {
     private helper: RxjsStoreHelperService,
     private activatedRoute: ActivatedRoute,
     private webContentService: WebContentService,
+    private serverInfo: ServerInfoService,
   ) {
+    this.info$ = this.serverInfo.getServerInfo();
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required]),
       facility: new FormControl(null, [Validators.required]),

@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IUserFacilityDescriptor } from '../../../facility/model/facility.model';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ServerInfoService, IServerInfo } from '../../../core/services/app-info.service';
 
 
 @Component({
@@ -20,8 +21,12 @@ export class IisSidebarComponent implements OnInit {
   filtered$: Observable<IUserFacilityDescriptor[]>;
   filterText$: BehaviorSubject<string>;
   filterText: string;
+  info$: Observable<IServerInfo>;
 
-  constructor() {
+  constructor(
+    private serverInfo: ServerInfoService,
+  ) {
+    this.info$ = this.serverInfo.getServerInfo();
     this.facilities$ = new BehaviorSubject([]);
     this.filterText$ = new BehaviorSubject(undefined);
     this.filtered$ = combineLatest([
@@ -39,6 +44,7 @@ export class IisSidebarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
   }
 
 }
