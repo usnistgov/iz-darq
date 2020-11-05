@@ -64,6 +64,7 @@ export const selectUsers = createSelector(
 );
 export const selectUserById = createSelector(
   selectUsersEntities,
+  // tslint:disable-next-line: no-identical-functions
   (dict: Dictionary<IUser>, props: any): IUser => {
     if (dict[props.id]) {
       return dict[props.id];

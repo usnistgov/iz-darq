@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
+import com.google.api.client.http.HttpMediaType;
 import gov.nist.healthcare.iz.darq.model.HomePage;
 import gov.nist.healthcare.iz.darq.service.impl.WebContentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +30,16 @@ public class AppInfoController {
         return this.webContentService.getWebContent().getHomePage();
     }
 
-    @RequestMapping(value="/registerTermsAndConditions", method=RequestMethod.GET)
+    @RequestMapping(value="/registerTermsAndConditions", method=RequestMethod.GET, produces="text/plain")
     @ResponseBody
     public String registerTermsAndConditions() {
         return this.webContentService.getWebContent().getRegisterTermsAndConditions();
     }
 
-    @RequestMapping(value="/uploadTermsAndConditions", method=RequestMethod.GET)
+    @RequestMapping(value="/uploadTermsAndConditions", method=RequestMethod.GET, produces="text/plain")
     @ResponseBody
     public String uploadTermsAndConditions() {
         return this.webContentService.getWebContent().getUploadTermsAndConditions();
     }
-
 
 }

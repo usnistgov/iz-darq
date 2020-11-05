@@ -38,7 +38,7 @@
 
         <app-descriptor-display [descriptor]="configuration" [userId]="userId$ | async"></app-descriptor-display>
 
-        <context-menu #cm [disabled]="!('CLONE' | accessOnResource:configuration:'CONFIGURATION'| async) && !('DELETE' | accessOnResource: configuration: 'CONFIGURATION' | async)">
+        <context-menu #cm [disabled]="('CLONE' | accessOnResource:configuration:'CONFIGURATION'| async) === false && ('DELETE' | accessOnResource: configuration: 'CONFIGURATION' | async) === false">
           <ng-template *ngIf="'CLONE' | accessOnResource:configuration:'CONFIGURATION'| async" contextMenuItem let-configuration (execute)="cloneConfiguration($event.item)" [enabled]="!rla.isActive || (rla.isActive && !(widget.containsUnsavedChanges$() | async))">
             <i class="fa fa-files-o"></i>
             Clone Configuration

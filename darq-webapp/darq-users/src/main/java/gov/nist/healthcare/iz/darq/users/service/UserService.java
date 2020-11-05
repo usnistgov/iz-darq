@@ -27,6 +27,9 @@ public interface UserService {
     User changePassword(PasswordChangeRequest passwordChangeRequest) throws FieldValidationException;
     User createCredentials(CreateCredentialsRequest createCredentialsRequest) throws UsernameNotFoundException, FieldValidationException, RequestValidationException, OperationFailureException;
     User updateProfile(ProfileUpdateRequest updateRequest, User user) throws UsernameNotFoundException, FieldValidationException;
+
+    UserAccount internalUpdate(ProfileUpdateRequest updateRequest, UserAccount account) throws UsernameNotFoundException, FieldValidationException;
+
     User changePassword(UserAccount account, String password) throws FieldValidationException;
     User findUserByUsername(String username);
     User findUserByIssuer(String issuer, String issuerId);

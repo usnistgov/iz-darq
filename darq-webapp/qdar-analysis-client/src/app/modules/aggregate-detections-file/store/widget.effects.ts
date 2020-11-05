@@ -1,20 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Effect, ofType, Actions } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
+import { Store, Action } from '@ngrx/store';
 import { DamWidgetEffect, SetValue, LoadResourcesInRepository, OpenEditor, OpenEditorFailure, MessageService } from 'ngx-dam-framework';
-import { combineLatest, of } from 'rxjs';
+import { combineLatest, of, Observable } from 'rxjs';
 import { concatMap, flatMap, catchError, take } from 'rxjs/operators';
-import { IAnalysisJob } from '../../report/model/report.model';
-import { IDetectionResource, ICvxResource } from '../../shared/model/public.model';
 import { AnalysisService } from '../../shared/services/analysis.service';
 import { SupportDataService } from '../../shared/services/support-data.service';
 import { ADF_WIDGET } from '../components/adf-widget/adf-widget.component';
-import { IADFDescriptor } from '../model/adf.model';
 import { FileService } from '../services/file.service';
 import {
   LoadADFDashboard,
   LoadADFDashboardSuccess,
-  LoadADFDashboardFailure,
   OpenADFListEditor,
   OpenAnalysisJobEditor,
   CoreActionTypes,
@@ -24,8 +20,6 @@ import {
 import { selectUserFacilityById } from './core.selectors';
 import { OpenReportsEditor } from './core.actions';
 import { ReportService } from '../../report/services/report.service';
-
-type Resources = IDetectionResource | ICvxResource | IADFDescriptor | IAnalysisJob;
 
 @Injectable()
 export class WidgetEffects extends DamWidgetEffect {
@@ -70,10 +64,7 @@ export class WidgetEffects extends DamWidgetEffect {
           ];
         }),
         catchError((error) => {
-          return of(
-            this.messageService.actionFromError(error),
-            new LoadADFDashboardFailure()
-          );
+          return this.handleError(error, action);
         })
       );
     })
@@ -114,10 +105,7 @@ export class WidgetEffects extends DamWidgetEffect {
           ];
         }),
         catchError((error) => {
-          return of(
-            this.messageService.actionFromError(error),
-            new OpenEditorFailure({ id: action.payload.id }),
-          );
+          return this.handleError(error, action);
         })
       );
     })
@@ -158,10 +146,7 @@ export class WidgetEffects extends DamWidgetEffect {
           ];
         }),
         catchError((error) => {
-          return of(
-            this.messageService.actionFromError(error),
-            new OpenEditorFailure({ id: action.payload.id }),
-          );
+          return this.handleError(error, action);
         })
       );
     })
@@ -202,14 +187,18 @@ export class WidgetEffects extends DamWidgetEffect {
           ];
         }),
         catchError((error) => {
-          return of(
-            this.messageService.actionFromError(error),
-            new OpenEditorFailure({ id: action.payload.id }),
-          );
+          return this.handleError(error, action);
         })
       );
     })
   );
+
+  handleError(error, action): Observable<Action> {
+    return of(
+      this.messageService.actionFromError(error),
+      new OpenEditorFailure({ id: action.payload.editor.id }),
+    );
+  }
 
   constructor(
     private fileService: FileService,

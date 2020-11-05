@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { IUserAccountRegister } from '../../model/user.model';
 import { UserService } from '../../services/user.service';
-import { RxjsStoreHelperService, MessageType } from 'ngx-dam-framework';
+import { RxjsStoreHelperService } from 'ngx-dam-framework';
 import { Store } from '@ngrx/store';
 import { of, Observable } from 'rxjs';
+import { WebContentService } from '../../services/web-content.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-registration',
@@ -14,11 +16,14 @@ import { of, Observable } from 'rxjs';
 export class RegistrationComponent implements OnInit {
 
   form: FormGroup;
+  termsAndConditions: string;
+  init = false;
 
   constructor(
     private userService: UserService,
     private store: Store<any>,
     private helper: RxjsStoreHelperService,
+    private webContentService: WebContentService,
   ) {
     this.form = new FormGroup({
       fullName: new FormControl('', [Validators.required]),
@@ -45,6 +50,12 @@ export class RegistrationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.webContentService.getRegisterTermsAndConditions().pipe(
+      map((value) => {
+        this.termsAndConditions = value;
+        this.init = true;
+      }),
+    ).subscribe();
   }
 
 }

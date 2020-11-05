@@ -1,10 +1,11 @@
 import { Directive, Input, OnChanges, SimpleChange, ElementRef } from '@angular/core';
 
 @Directive({
+  // tslint:disable-next-line: directive-selector
   selector: '[p-editor-model]'
 })
 export class PeAutoscrollFixDirective implements OnChanges {
-  @Input("p-editor-model") content: string;
+  @Input('p-editor-model') content: string;
 
   ngOnChanges(changes: { [property: string]: SimpleChange }) {
     const change = changes['content'];

@@ -2,8 +2,58 @@
   <div style="margin-bottom: 20px;">
     <span>Total Registered Users <span class="badge badge-primary">{{ users.length }} </span></span>
   </div>
-
+  <form [formGroup]="filterFormGroup" style="padding: 10px; border-radius: 2px; border: 1px solid lightgray; background-color: aliceblue; margin-bottom: 5px;">
+    <h5 style="margin-bottom: 15px;"><i class="fa fa-filter"></i> Filter</h5>
+    <div style="display: flex; align-items: center; justify-content: center;">
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="source"><strong>Source</strong></label>
+        <p-dropdown
+          [options]="sourceOptions"
+          [autoDisplayFirst]="false"
+          styleClass="form-control user-filter" formControlName="source" name="source" id="source"
+        ></p-dropdown>
+      </div>
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="username"><strong>Username</strong></label>
+        <input type="text" placeholder="Username" class="form-control" formControlName="username" name="username" id="username">
+      </div>
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="name"><strong>Name</strong></label>
+        <input type="text" placeholder="Name" class="form-control" formControlName="name" name="name" id="name">
+      </div>
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="email"><strong>Email</strong></label>
+        <input type="email" placeholder="Email" class="form-control" formControlName="email" name="email" id="email">
+      </div>
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="org"><strong>Organization</strong></label>
+        <input type="text" placeholder="Organization" class="form-control" formControlName="org" name="org" id="org">
+      </div>
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="status"><strong>Status</strong></label>
+        <p-dropdown
+          [options]="statusOptions"
+          [autoDisplayFirst]="false"
+          styleClass="form-control user-filter" formControlName="status" name="status" id="status"
+        ></p-dropdown>
+      </div>
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="role"><strong>Role</strong></label>
+        <p-dropdown
+          [options]="roleOptions"
+          [autoDisplayFirst]="false"
+          styleClass="form-control user-filter" formControlName="role" name="role" id="role"
+        ></p-dropdown>
+      </div>
+    </div>
+    <div style="width: 100%; display: flex; justify-content: flex-end;">
+      <button class="btn btn-sm btn-danger" (click)="clear()">
+        <i class="fa fa-trash"></i> Clear
+      </button>
+    </div>
+  </form>
   <p-table
+    #dt
     [value]="users"
     [paginator]="true"
     [rows]="10"

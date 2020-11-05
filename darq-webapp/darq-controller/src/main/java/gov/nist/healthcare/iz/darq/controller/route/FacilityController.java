@@ -43,11 +43,22 @@ public class FacilityController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public OpAck<FacilityDescriptor> create(@RequestBody FacilityDescriptor descriptor) throws OperationFailureException {
-        if(Strings.isNullOrEmpty(descriptor.getId()) && !Strings.isNullOrEmpty(descriptor.getName())) {
+        if(!Strings.isNullOrEmpty(descriptor.getId()) || Strings.isNullOrEmpty(descriptor.getName())) {
+            throw new OperationFailureException("Invalid facility info");
+        }
+
+        descriptor.setName(descriptor.getName().trim());
+        Facility existing = this.facilityService.findByName(descriptor.getName());
+        if (existing != null) {
+            throw new OperationFailureException("Facility with name " + descriptor.getName() + " already existing");
+        }
+
+        try {
             Facility f = this.facilityRepository.save(new Facility(null, descriptor.getName(), descriptor.getDescription(), new HashSet<>()));
             return new OpAck<>(OpAck.AckStatus.SUCCESS, "Facility Created successfully", new FacilityDescriptor(f.getId(), f.getName(), f.getDescription(), f.getMembers().size()), "facility-create");
+        } catch (Exception e) {
+            throw new OperationFailureException("Invalid facility info, due to " + e.getMessage());
         }
-        throw new OperationFailureException("Invalid Facility Info");
     }
 
     //  Save

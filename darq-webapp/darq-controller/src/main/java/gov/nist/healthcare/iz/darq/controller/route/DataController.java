@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 
 import gov.nist.healthcare.iz.darq.service.utils.CodeSetService;
@@ -34,36 +35,52 @@ public class DataController {
 	@Autowired
 	private CodeSetService codeSet;
 
-    @RequestMapping(value = "/detections", method = RequestMethod.GET)
+	private Map<String, DetectionDescriptor> detectionsMap;
+	private List<String> patientCodeSet;
+	private List<String> vaccinationCodeSet;
+
+	private List<CVXCode> cvxCodes;
+
+	@PostConstruct
+	private void init() throws IllegalAccessException {
+		// Detections
+		this.detectionsMap = new HashMap<>();
+		Set<Detection> all = new HashSet<>(Arrays.asList(Detection.values()));
+		Set<Detection> active = MessageValidator.activeDetections();
+		for(Detection d : all) {
+			this.detectionsMap.put(d.getMqeMqeCode(), new DetectionDescriptor(d.getDisplayText(),d.getTargetObject().toString(), active.contains(d)));
+		}
+
+		//CodeSets
+		this.patientCodeSet = codeSet.patientCodes();
+		this.vaccinationCodeSet = codeSet.vaccinationCodes();
+
+		//CVX
+		this.cvxCodes =  this.cvx.findAll();
+	}
+
+	@RequestMapping(value = "/detections", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, DetectionDescriptor> detections() {
-    	Map<String, DetectionDescriptor> detections = new HashMap<>();
-    	Set<Detection> all = new HashSet<>(Arrays.asList(Detection.values()));
-		Set<Detection> active = MessageValidator.activeDetections();
-    	for(Detection d : all) {
-    		detections.put(d.getMqeMqeCode(), new DetectionDescriptor(d.getDisplayText(),d.getTargetObject().toString(), active.contains(d)));
-    	}
-        return detections;
+        return this.detectionsMap;
     }
 
 	// Get Code Set
 	@RequestMapping(value="/codesets/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public List<String> codeset(@PathVariable("id") String id) throws IllegalAccessException {
+	public List<String> codeset(@PathVariable("id") String id) {
 		if(id.equals("patient")){
-			return codeSet.patientCodes();
+			return this.patientCodeSet;
 		}
 		else {
-			return codeSet.vaccinationCodes();
+			return this.vaccinationCodeSet;
 		}
 	}
-
-
 
 	@RequestMapping(value = "/cvx", method = RequestMethod.GET)
     @ResponseBody
     public List<CVXCode> cvx() {
-    	return this.cvx.findAll();
+    	return this.cvxCodes;
     }
     
     @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)

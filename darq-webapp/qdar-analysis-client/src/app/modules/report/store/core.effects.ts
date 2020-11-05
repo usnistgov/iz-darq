@@ -26,6 +26,7 @@ import { selectReportPayload } from './core.selectors';
 import { FileService } from '../../aggregate-detections-file/services/file.service';
 import { IUserFacilityDescriptor } from '../../facility/model/facility.model';
 
+export type Resources = IDetectionResource | ICvxResource | IReportSection | IUserFacilityDescriptor;
 
 @Injectable()
 export class CoreEffects extends DamWidgetEffect {
@@ -109,7 +110,7 @@ export class CoreEffects extends DamWidgetEffect {
               patientTables,
               vaccinationTables,
             }),
-            new LoadResourcesInRepository<IDetectionResource | ICvxResource | IReportSection | IUserFacilityDescriptor>({
+            new LoadResourcesInRepository<Resources>({
               collections: [{
                 key: 'detections',
                 values: detections,

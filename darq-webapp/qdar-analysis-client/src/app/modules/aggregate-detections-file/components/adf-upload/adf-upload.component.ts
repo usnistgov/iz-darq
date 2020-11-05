@@ -8,6 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, combineLatest, Subscription, of } from 'rxjs';
 import { SelectItem } from 'primeng/api/selectitem';
 import { selectUserFacilitiesSorted } from '../../store/core.selectors';
+import { WebContentService } from '../../../core/services/web-content.service';
 
 @Component({
   selector: 'app-adf-upload',
@@ -21,6 +22,8 @@ export class AdfUploadComponent implements OnInit, OnDestroy {
   facilities$: Observable<SelectItem[]>;
   dashboardRoute$: Observable<string[]>;
   subs: Subscription;
+  termsAndConditions: string;
+  init = false;
 
   constructor(
     private store: Store<any>,
@@ -28,6 +31,7 @@ export class AdfUploadComponent implements OnInit, OnDestroy {
     private router: Router,
     private helper: RxjsStoreHelperService,
     private activatedRoute: ActivatedRoute,
+    private webContentService: WebContentService,
   ) {
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required]),
@@ -86,6 +90,12 @@ export class AdfUploadComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.webContentService.getUploadTermsAndConditions().pipe(
+      map((value) => {
+        this.termsAndConditions = value;
+        this.init = true;
+      }),
+    ).subscribe();
   }
 
   ngOnDestroy() {

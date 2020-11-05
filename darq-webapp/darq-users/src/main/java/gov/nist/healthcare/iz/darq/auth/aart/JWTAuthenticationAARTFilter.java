@@ -8,14 +8,17 @@ import gov.nist.healthcare.iz.darq.access.service.ConfigurableService;
 import gov.nist.healthcare.iz.darq.model.ToolConfigurationKey;
 import gov.nist.healthcare.iz.darq.model.ToolConfigurationKeyValue;
 import gov.nist.healthcare.iz.darq.model.ToolConfigurationProperty;
+import gov.nist.healthcare.iz.darq.users.domain.ProfileUpdateRequest;
 import gov.nist.healthcare.iz.darq.users.domain.RemoteAccountCreationRequest;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import gov.nist.healthcare.iz.darq.users.domain.UserAccount;
+import gov.nist.healthcare.iz.darq.users.exception.FieldValidationException;
 import gov.nist.healthcare.iz.darq.users.exception.RequestValidationException;
 import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import org.apache.commons.io.IOUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -30,10 +33,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.*;
 
 public class JWTAuthenticationAARTFilter extends AbstractAuthenticationProcessingFilter implements ConfigurableService {
@@ -43,7 +49,7 @@ public class JWTAuthenticationAARTFilter extends AbstractAuthenticationProcessin
     private final AuthenticationService<UserAccount, UserRole, User> authenticationService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final Environment environment;
-    private String publicKey;
+    private PublicKey publicKey;
 
     public JWTAuthenticationAARTFilter(String URL, UserManagementService userManagementService, AuthenticationManager manager, AuthenticationService<UserAccount, UserRole, User> authenticationService, AuthenticationEntryPoint authenticationEntryPoint, Environment environment) {
         super(new AntPathRequestMatcher(URL));
@@ -61,7 +67,7 @@ public class JWTAuthenticationAARTFilter extends AbstractAuthenticationProcessin
             String token = request.getParameter("token");
             if (!Strings.isNullOrEmpty(token)) {
                 Jws<Claims> jwt = Jwts.parser()
-                        .setSigningKey(this.publicKey.getBytes(StandardCharsets.UTF_8))
+                        .setSigningKey(this.publicKey)
                         .parseClaimsJws(token);
                 UserAccount user = this.getOrCreateUser(jwt);
                 return new JWTAuthenticationAARTToken(user, jwt, path, user.getAuthorities());
@@ -104,12 +110,19 @@ public class JWTAuthenticationAARTFilter extends AbstractAuthenticationProcessin
         authenticationEntryPoint.commence(request, response, failed);
     }
 
-    private UserAccount getOrCreateUser(Jws<Claims> jwt) throws RequestValidationException {
+    private UserAccount getOrCreateUser(Jws<Claims> jwt) throws RequestValidationException, FieldValidationException {
         String issuer = jwt.getBody().getIssuer();
         String subject = jwt.getBody().getSubject();
         UserAccount user = this.userManagementService.findUserAccountByIssuer(issuer, subject);
         if(user != null) {
-            return user;
+            ProfileUpdateRequest profileUpdateRequest = new ProfileUpdateRequest(
+                    user.getId(),
+                    jwt.getBody().get("email", String.class),
+                    jwt.getBody().get("name", String.class),
+                    jwt.getBody().get("org", String.class),
+                    null
+            );
+            return this.userManagementService.internalUpdate(profileUpdateRequest, user);
         } else {
             return this.userManagementService.registerRemoteAccount(new RemoteAccountCreationRequest(
                     issuer,
@@ -127,14 +140,17 @@ public class JWTAuthenticationAARTFilter extends AbstractAuthenticationProcessin
     }
 
     @Override
-    public void configure(Properties properties) {
-        this.publicKey = properties.getProperty("aart.connector.publicKey.location");
+    public void configure(Properties properties) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] cert_bytes = IOUtils.toByteArray(new FileInputStream(properties.getProperty("aart.connector.publicKey.location")));
+        X509EncodedKeySpec ks = new X509EncodedKeySpec(cert_bytes);
+        KeyFactory kf = KeyFactory.getInstance("RSA");
+        this.publicKey = kf.generatePublic(ks);
     }
 
     @Override
     public Set<ToolConfigurationProperty> initialize() {
         return new HashSet<>(
-                Collections.singletonList(new ToolConfigurationProperty("aart.connector.publicKey.location", "/Users/hnt5/darq-keys/aart.pub", true))
+                Collections.singletonList(new ToolConfigurationProperty("aart.connector.publicKey.location", this.environment.getProperty("aart.connector.publicKey.location"), true))
         );
     }
 
@@ -147,8 +163,8 @@ public class JWTAuthenticationAARTFilter extends AbstractAuthenticationProcessin
 
     @Override
     public OpAck<Void> checkServiceStatus() {
-        if(publicKey == null || publicKey.isEmpty() || !publicKey.equals("/Users/hnt5/darq-keys/aart.pub")) {
-            return new OpAck<>(OpAck.AckStatus.FAILED, "AART public key not found", null, "AART CONNECTOR");
+        if(publicKey == null) {
+            return new OpAck<>(OpAck.AckStatus.FAILED, "AART public key not found or invalid", null, "AART CONNECTOR");
         } else {
             return new OpAck<>(OpAck.AckStatus.SUCCESS, "AART public key valid", null, "AART CONNECTOR");
         }

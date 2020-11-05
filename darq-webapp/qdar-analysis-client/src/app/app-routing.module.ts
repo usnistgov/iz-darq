@@ -1,6 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, ActivatedRouteSnapshot } from '@angular/router';
-import { LoginComponent, AuthenticatedGuard, NotAuthenticatedGuard, TokenValidGuard } from 'ngx-dam-framework';
+import {
+  LoginComponent,
+  AuthenticatedGuard,
+  NotAuthenticatedGuard,
+  TokenValidGuard,
+  UserPredicateGuard,
+  IDamUser,
+} from 'ngx-dam-framework';
 import { HomeComponent } from './modules/core/components/home/home.component';
 import { ErrorPageComponent } from './modules/core/components/error-page/error-page.component';
 import { RegistrationComponent } from './modules/core/components/registration/registration.component';
@@ -61,12 +68,28 @@ const routes: Routes = [
   {
     path: 'create-credentials',
     component: CreateCredentialsComponent,
-    canActivate: [AuthenticatedGuard],
+    data: {
+      predicate: (user: any) => {
+        return !user.payload?.credentials && user.payload?.source === 'AART';
+      }
+    },
+    canActivate: [
+      AuthenticatedGuard,
+      UserPredicateGuard,
+    ],
   },
   {
     path: 'update-profile',
     component: UpdateProfileComponent,
-    canActivate: [AuthenticatedGuard],
+    data: {
+      predicate: (user: any) => {
+        return !user.payload?.source;
+      }
+    },
+    canActivate: [
+      AuthenticatedGuard,
+      UserPredicateGuard,
+    ],
   },
   {
     path: 'home',
@@ -102,17 +125,33 @@ const routes: Routes = [
   },
   {
     path: 'facility',
+    data: {
+      predicate: (user: IDamUser) => {
+        return user.administrator;
+      }
+    },
     loadChildren: () => import('./modules/facility/facility.module').then(
       m => m.FacilityModule
     ),
-    canActivate: [AuthenticatedGuard],
+    canActivate: [
+      AuthenticatedGuard,
+      UserPredicateGuard
+    ]
   },
   {
     path: 'administration',
     loadChildren: () => import('./modules/administration/administration.module').then(
       m => m.AdministrationModule
     ),
-    canActivate: [AuthenticatedGuard],
+    data: {
+      predicate: (user: IDamUser) => {
+        return user.administrator;
+      }
+    },
+    canActivate: [
+      AuthenticatedGuard,
+      UserPredicateGuard
+    ]
   },
   {
     path: 'error',

@@ -47,4 +47,4 @@ export const fieldDisplayName = {
   [Field.GENDER]: Field.GENDER,
   [Field.VACCINE_CODE]: Field.VACCINE_CODE,
   [Field.VACCINATION_YEAR]: Field.VACCINATION_YEAR
-}
+};

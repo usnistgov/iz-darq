@@ -161,13 +161,17 @@ public class ToolConfigurationService {
             for (ToolConfigurationProperty prop : props) {
                 this.setIfAbsent(prop);
             }
-            service.configure(
-                    this.getPropertiesObject(service.getConfigurationKeys()
-                            .stream()
-                            .map(ToolConfigurationKey::getKey)
-                            .collect(Collectors.toSet())
-                    )
-            );
+            try {
+                service.configure(
+                        this.getPropertiesObject(service.getConfigurationKeys()
+                                .stream()
+                                .map(ToolConfigurationKey::getKey)
+                                .collect(Collectors.toSet())
+                        )
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

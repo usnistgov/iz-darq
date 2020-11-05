@@ -56,6 +56,7 @@ export class VerifyEmailComponent implements OnInit {
         }
         return of(
           new UpdateAuthStatus({
+            statusChecked: true,
             isLoggedIn: true,
             userInfo: this.userTransformer(message.data),
           })

@@ -63,6 +63,7 @@ export class CreateCredentialsComponent implements OnInit, OnDestroy {
         }
         return of(
           new UpdateAuthStatus({
+            statusChecked: true,
             isLoggedIn: true,
             userInfo: this.userTransformer(message.data),
           })

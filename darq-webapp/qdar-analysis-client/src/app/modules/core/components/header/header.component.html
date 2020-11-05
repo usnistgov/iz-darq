@@ -31,7 +31,7 @@
       <a class="nav-link">Administration Panel</a>
     </li>
   </ul>
-  <ul *ngIf="!(isLogged$ | async)" class="navbar-nav">
+  <ul *ngIf="(isLogged$ | async) === false" class="navbar-nav">
     <li class="nav-item" routerLink="login" routerLinkActive="active">
       <a class="nav-link">Login</a>
     </li>

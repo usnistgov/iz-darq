@@ -207,6 +207,13 @@ export class DataTableComponent implements OnInit {
       };
     });
 
+    const detectionOptions = (value) => {
+      return {
+        value: values[Field.DETECTION][value],
+        label: values[Field.DETECTION][value],
+      };
+    };
+
     this.searchOptions = {
       ageGroupOptions: Object.keys(values[Field.AGE_GROUP] || {}).map((value) => {
         return {
@@ -215,19 +222,9 @@ export class DataTableComponent implements OnInit {
         };
       }),
       vaccinationDetectionOptions:
-        this.table.type === AnalysisType.VACCINCATIONS_DETECTIONS ? Object.keys(values[Field.DETECTION] || {}).map((value) => {
-          return {
-            value: values[Field.DETECTION][value],
-            label: values[Field.DETECTION][value],
-          };
-        }) : [],
+        this.table.type === AnalysisType.VACCINCATIONS_DETECTIONS ? Object.keys(values[Field.DETECTION] || {}).map(detectionOptions) : [],
       patientDetectionOptions:
-        this.table.type === AnalysisType.PATIENTS_DETECTIONS ? Object.keys(values[Field.DETECTION] || {}).map((value) => {
-          return {
-            value: values[Field.DETECTION][value],
-            label: values[Field.DETECTION][value],
-          };
-        }) : [],
+        this.table.type === AnalysisType.PATIENTS_DETECTIONS ? Object.keys(values[Field.DETECTION] || {}).map(detectionOptions) : [],
       cvxOptions: Object.keys(values[Field.VACCINE_CODE] || {}).map((value) => {
         return {
           value: values[Field.VACCINE_CODE][value],

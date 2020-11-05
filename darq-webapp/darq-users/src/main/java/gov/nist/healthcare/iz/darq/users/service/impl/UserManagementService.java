@@ -251,6 +251,35 @@ public class UserManagementService implements UserService {
     }
 
     @Override
+    public UserAccount internalUpdate(ProfileUpdateRequest updateRequest, UserAccount account) throws UsernameNotFoundException, FieldValidationException {
+        if(account == null) {
+            throw new UsernameNotFoundException(updateRequest.getId());
+        }
+
+        // Password
+        if(!Strings.isNullOrEmpty(updateRequest.getPassword())) {
+            this.throwOnValidationFail(this.validatePassword(updateRequest.getPassword()));
+            account.setPassword(this.encoder.encode(updateRequest.getPassword()));
+        }
+
+        // Name
+        this.throwOnValidationFail(this.validateString("name", updateRequest.getFullName()));
+        account.setFullName(updateRequest.getFullName());
+
+        // Only admin can change email
+        this.throwOnValidationFail(this.validateEmail(updateRequest.getEmail(), account.getId()));
+        account.setEmail(updateRequest.getEmail());
+        account.setVerified(true);
+
+        // Organization
+        this.throwOnValidationFail(this.validateString("organization", updateRequest.getOrganization()));
+        account.setOrganization(updateRequest.getOrganization());
+
+        this.accountService.save(account);
+        return account;
+    }
+
+    @Override
     public User changePassword(UserAccount account, String password) throws UsernameNotFoundException, FieldValidationException {
         this.throwOnValidationFail(this.validatePassword(password));
         account.setPassword(this.encoder.encode(password));

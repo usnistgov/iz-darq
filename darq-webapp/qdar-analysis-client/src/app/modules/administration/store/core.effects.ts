@@ -1,7 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { map, concatMap, flatMap, catchError } from 'rxjs/operators';
-import { CoreActionTypes, CoreActions, LoadAdministrationWidgetSuccess, LoadUsersSuccess, LoadUsersFailure, OpenWebContentEditor, OpenEmailTemplateEditor, OpenConfigurationEditor } from './core.actions';
+import {
+  CoreActionTypes,
+  CoreActions,
+  LoadAdministrationWidgetSuccess,
+  LoadUsersSuccess,
+  LoadUsersFailure,
+  OpenWebContentEditor,
+  OpenEmailTemplateEditor,
+  OpenConfigurationEditor,
+} from './core.actions';
 import {
   DamWidgetEffect,
   LoadResourcesInRepository,
@@ -19,7 +28,8 @@ import { handleError } from '../../shared/services/helper.functions';
 import { UserService } from '../../core/services/user.service';
 import { AdminTabs } from '../components/admin-sidebar/admin-sidebar.component';
 import { AdminService } from '../services/admin.service';
-import { of, combineLatest } from 'rxjs';
+import { of, combineLatest, Observable } from 'rxjs';
+import { Action } from '@ngrx/store';
 
 
 
@@ -85,10 +95,7 @@ export class CoreEffects extends DamWidgetEffect {
           ];
         }),
         catchError((error) => {
-          return of(
-            this.messageService.actionFromError(error),
-            new OpenEditorFailure({ id: action.payload.editor.id }),
-          );
+          return this.handleError(error, action);
         })
       );
     })
@@ -115,10 +122,7 @@ export class CoreEffects extends DamWidgetEffect {
           ];
         }),
         catchError((error) => {
-          return of(
-            this.messageService.actionFromError(error),
-            new OpenEditorFailure({ id: action.payload.editor.id }),
-          );
+          return this.handleError(error, action);
         })
       );
     })
@@ -150,14 +154,18 @@ export class CoreEffects extends DamWidgetEffect {
           ];
         }),
         catchError((error) => {
-          return of(
-            this.messageService.actionFromError(error),
-            new OpenEditorFailure({ id: action.payload.editor.id }),
-          );
+          return this.handleError(error, action);
         })
       );
     })
   );
+
+  handleError(error, action): Observable<Action> {
+    return of(
+      this.messageService.actionFromError(error),
+      new OpenEditorFailure({ id: action.payload.editor.id }),
+    );
+  }
 
 
   constructor(

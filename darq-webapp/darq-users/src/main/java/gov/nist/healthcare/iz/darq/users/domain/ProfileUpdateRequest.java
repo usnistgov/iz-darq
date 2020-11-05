@@ -7,6 +7,17 @@ public class ProfileUpdateRequest {
     private String organization;
     private String password;
 
+    public ProfileUpdateRequest(String id, String email, String fullName, String organization, String password) {
+        this.id = id;
+        this.email = email;
+        this.fullName = fullName;
+        this.organization = organization;
+        this.password = password;
+    }
+
+    public ProfileUpdateRequest() {
+    }
+
     public String getId() {
         return id;
     }

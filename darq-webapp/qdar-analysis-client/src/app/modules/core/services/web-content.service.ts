@@ -24,11 +24,11 @@ export class WebContentService {
   }
 
   getRegisterTermsAndConditions(): Observable<string> {
-    return this.http.get<string>(this.URL_PREFIX + 'registerTermsAndConditions');
+    return this.http.get<string>(this.URL_PREFIX + 'registerTermsAndConditions', { responseType: 'text' as 'json' });
   }
 
   getUploadTermsAndConditions(): Observable<string> {
-    return this.http.get<string>(this.URL_PREFIX + 'uploadTermsAndConditions');
+    return this.http.get<string>(this.URL_PREFIX + 'uploadTermsAndConditions', { responseType: 'text' as 'json' });
   }
 
 }

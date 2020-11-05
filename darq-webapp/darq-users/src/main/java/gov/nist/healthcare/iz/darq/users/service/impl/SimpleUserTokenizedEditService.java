@@ -23,6 +23,7 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class SimpleUserTokenizedEditService implements UserTokenizedEditService {
@@ -32,7 +33,7 @@ public class SimpleUserTokenizedEditService implements UserTokenizedEditService 
     private final String TOOL_DEPLOYED_URL = "qdar.deployed.url";
     private final String EMAIL_VERIFICATION_PATH = "qdar.user.email.verification.path";
     private final String PASSWORD_RESET_PATH = "qdar.user.password.reset.path";
-
+    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy, HH:mm:ss z");
 
     private final SimpleEmailService emailService;
     private final UserEditTokenRepository userEditTokenRepository;
@@ -68,7 +69,7 @@ public class SimpleUserTokenizedEditService implements UserTokenizedEditService 
         Map<String, String> params = new HashMap<>();
         params.put("USERNAME", user.getScreenName());
         params.put("LINK", getLink(token));
-        params.put("EXPIRATION", new Date((long) (stamp + (DURATION * 1000))).toString());
+        params.put("EXPIRATION", DATE_FORMAT.format(new Date((long) (stamp + (DURATION * 1000)))));
         switch (token.getType()) {
             case PASSWORD_CHANGE:
                 this.emailService.sendIfEnabled(EmailType.ACCOUNT_PASSWORD_CHANGE, user.getEmail(), params);
