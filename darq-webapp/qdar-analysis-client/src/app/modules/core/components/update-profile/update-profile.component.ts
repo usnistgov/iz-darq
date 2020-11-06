@@ -36,7 +36,6 @@ export class UpdateProfileComponent implements OnInit {
 
   submit() {
     if (this.profileUpdate) {
-      console.log(this.profileUpdate);
       this.helper.getMessageAndHandle<any>(
         this.store,
         () => {

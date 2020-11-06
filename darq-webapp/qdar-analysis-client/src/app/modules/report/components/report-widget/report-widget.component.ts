@@ -11,8 +11,8 @@ import {
   TurnOffLoader
 } from 'ngx-dam-framework';
 import { Observable, of, combineLatest, from } from 'rxjs';
-import { IReport, IReportSectionResult } from '../../model/report.model';
-import { selectReportPayload, selectReportGeneralFilter } from '../../store/core.selectors';
+import { IReport } from '../../model/report.model';
+import { selectReportPayload, selectReportGeneralFilter, selectReportTocNodes } from '../../store/core.selectors';
 import { ITocNode } from '../report-toc/report-toc.component';
 import { map, concatMap, flatMap, take } from 'rxjs/operators';
 import { ReportService } from '../../services/report.service';
@@ -73,12 +73,7 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
     this.facility$ = this.report$.pipe(
       flatMap((report) => this.store.select(selectUserFacilityById, { id: report.facilityId ? report.facilityId : PRIVATE_FACILITY_ID })),
     );
-
-    this.nodes$ = this.report$.pipe(
-      map((report) => {
-        return this.makeTocNode(report.sections);
-      }),
-    );
+    this.nodes$ = this.store.select(selectReportTocNodes);
     this.labelizer$ = combineLatest([
       this.store.select(selectReportPayload),
       this.store.select(selectAllDetections),
@@ -139,22 +134,6 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
 
   ngAfterViewInit(): void {
     this.store.dispatch(new TurnOffLoader());
-  }
-
-  makeTocNode(sections: IReportSectionResult[]): ITocNode[] {
-    if (!sections) {
-      return [];
-    }
-
-    return sections.map((s) => {
-      return {
-        id: s.id,
-        header: s.header,
-        path: s.path,
-        warning: s.thresholdViolation,
-        children: this.makeTocNode(s.children),
-      };
-    });
   }
 
   filterReport() {

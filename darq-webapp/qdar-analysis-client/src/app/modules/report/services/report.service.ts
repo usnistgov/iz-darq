@@ -50,9 +50,11 @@ export class ReportService {
   }
 
   filterSection(section: IReportSectionResult, filter: IReportFilter, activeFieldFilters: Field[]): IReportSectionResult {
+    const data = section.data.map((d) => this.filterDataTable(d, filter, activeFieldFilters));
     return {
       ...section,
-      data: section.data.map((data) => this.filterDataTable(data, filter, activeFieldFilters)),
+      thresholdViolation: data.map((d) => d.thresholdViolation).includes(true),
+      data,
       children: section.children.map((child) => this.filterSection(child, filter, activeFieldFilters))
     };
   }
@@ -61,15 +63,17 @@ export class ReportService {
     const hasFilterField = filter.fields.active && filter.fields && Object.keys(filter.fields).length > 0 && table.groupBy.map((field) => {
       return activeFieldFilters.includes(field);
     }).includes(true);
+    const values = table.values.filter((row) => {
+      return this.comparatorFilter((row.result.count / row.result.total) * 100, filter.percentage) &&
+        this.comparatorFilter(row.result.total, filter.denominator) &&
+        (!row.threshold || this.thresholdFilter(row, filter.threshold)) &&
+        (!hasFilterField || this.fieldFilter(row, filter.fields));
+    });
 
     return {
       ...table,
-      values: table.values.filter((row) => {
-        return this.comparatorFilter((row.result.count / row.result.total) * 100, filter.percentage) &&
-          this.comparatorFilter(row.result.total, filter.denominator) &&
-          (!row.threshold || this.thresholdFilter(row, filter.threshold)) &&
-          (!hasFilterField || this.fieldFilter(row, filter.fields));
-      })
+      thresholdViolation: values.map((d) => d.pass).includes(false),
+      values,
     };
   }
 

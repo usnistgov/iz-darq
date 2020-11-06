@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ViewChild, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { TREE_ACTIONS, TreeComponent, TreeNode } from 'angular-tree-component';
-import { fromEvent } from 'rxjs';
+import { fromEvent, Subscription, Subject, interval, combineLatest } from 'rxjs';
 import { tap, debounceTime } from 'rxjs/operators';
 
 export interface ITocNode {
@@ -16,19 +16,20 @@ export interface ITocNode {
   templateUrl: './report-toc.component.html',
   styleUrls: ['./report-toc.component.scss']
 })
-export class ReportTocComponent implements OnInit, AfterViewInit {
+export class ReportTocComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(TreeComponent)
   treeComponent: TreeComponent;
   pnodes: ITocNode[];
   options;
-  offsets: {
+  offsets: Subject<{
     id: string,
     top: number,
-  }[] = [];
+  }[]>;
   container: HTMLElement;
   thresholdFilter: boolean = null;
-
+  scroll: Subscription;
+  refresh: Subscription;
   @Input()
   set nodes(nodes: ITocNode[]) {
     this.pnodes = nodes;
@@ -39,6 +40,7 @@ export class ReportTocComponent implements OnInit, AfterViewInit {
   }
 
   constructor() {
+    this.offsets = new Subject();
     this.options = {
       allowDrag: false,
       actionMapping: {
@@ -59,32 +61,45 @@ export class ReportTocComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    // Init Active node tree
     this.treeComponent.treeModel.expandAll();
     const firstNode: TreeNode = this.treeComponent.treeModel.getFirstRoot();
     firstNode.setActiveAndVisible();
+
+    // Get DOM Elements
     this.container = document.getElementsByClassName('container-content').item(0) as HTMLElement;
     const collection = document.getElementsByClassName('scroll-to');
     const size = collection.length;
-    let i = 0;
-    this.offsets = [];
-    while (i < size) {
-      const elm = collection.item(i) as HTMLElement;
-      this.offsets.push({
-        id: elm.id,
-        top: elm.offsetTop - this.container.offsetTop,
-      });
-      i++;
-    }
 
-    fromEvent(this.container, 'scroll').pipe(
+    this.refresh = interval(800).pipe(
+      tap(() => {
+        let i = 0;
+        const offsets = [];
+        while (i < size) {
+          const elm = collection.item(i) as HTMLElement;
+          offsets.push({
+            id: elm.id,
+            top: elm.offsetTop - this.container.offsetTop,
+          });
+          i++;
+        }
+        this.offsets.next(offsets);
+      })
+    ).subscribe();
+
+
+    this.scroll = combineLatest([
+      fromEvent(this.container, 'scroll'),
+      this.offsets,
+    ]).pipe(
       debounceTime(300),
-      tap((elm) => {
+      tap(([elm, offsets]) => {
         const target = elm.target as HTMLElement;
         const soff = target.scrollTop;
         if (this.container.scrollHeight - (soff + target.clientHeight) === 0 && soff !== 0) {
-          this.focusOn(this.offsets[size - 1].id);
+          this.focusOn(offsets[size - 1].id);
         } else {
-          const match = this.findMatch(soff);
+          const match = this.findMatch(soff, offsets);
           if (match) {
             this.focusOn(match.id);
           }
@@ -112,19 +127,29 @@ export class ReportTocComponent implements OnInit, AfterViewInit {
     }
   }
 
-  findMatch(top: number) {
-    const size = this.offsets.length;
+  findMatch(top: number, offsets) {
+    const size = offsets.length;
     let i = 0;
     while (i < (size - 1)) {
-      if (top >= this.offsets[i].top && top < this.offsets[i + 1].top) {
-        return this.offsets[i];
+      if (top >= offsets[i].top && top < offsets[i + 1].top) {
+        return offsets[i];
       }
       i++;
     }
-    return this.offsets[0];
+    return offsets[0];
   }
 
   ngOnInit(): void {
+  }
+
+  ngOnDestroy() {
+    if (this.refresh) {
+      this.refresh.unsubscribe();
+    }
+
+    if (this.scroll) {
+      this.scroll.unsubscribe();
+    }
   }
 
 }

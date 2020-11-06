@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DamAbstractEditorComponent, MessageService, IEditorMetadata, EditorSave, LoadPayloadData } from 'ngx-dam-framework';
+import { DamAbstractEditorComponent, MessageService, IEditorMetadata, EditorSave, LoadPayloadData, SetValue } from 'ngx-dam-framework';
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { ValuesService, Labelizer } from '../../../shared/services/values.service';
@@ -13,6 +13,7 @@ import { IReportFilter } from '../../../report-template/model/report-template.mo
 import { PermissionService } from '../../../core/services/permission.service';
 import { ResourceType } from '../../../core/model/resouce-type.enum';
 import { Action as _Action } from '../../../core/model/action.enum';
+import { ITocNode } from '../report-toc/report-toc.component';
 
 export const REPORT_EDITOR_METADATA: IEditorMetadata = {
   id: 'REPORT_EDITOR',
@@ -31,6 +32,7 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
   filtered$: Observable<IReport>;
   labelizer$: Observable<Labelizer>;
   wSub: Subscription;
+  nodesSub: Subscription;
   viewOnly$: Observable<boolean>;
   generalFilter$: Observable<IReportFilter>;
   report$: BehaviorSubject<IReport>;
@@ -96,11 +98,36 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
         }
       })
     );
+
+    this.nodesSub = this.filtered$.pipe(
+      map((report) => {
+        this.store.dispatch(new SetValue({ reportTocNodes: this.makeTocNode(report.sections) }));
+      })
+    ).subscribe();
+  }
+
+  makeTocNode(sections: IReportSectionResult[]): ITocNode[] {
+    if (!sections) {
+      return [];
+    }
+
+    return sections.map((s) => {
+      return {
+        id: s.id,
+        header: s.header,
+        path: s.path,
+        warning: s.thresholdViolation,
+        children: this.makeTocNode(s.children),
+      };
+    });
   }
 
   ngOnDestroy(): void {
     if (this.wSub) {
       this.wSub.unsubscribe();
+    }
+    if (this.nodesSub) {
+      this.nodesSub.unsubscribe();
     }
   }
 

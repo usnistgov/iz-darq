@@ -109,6 +109,7 @@ export class CoreEffects extends DamWidgetEffect {
             new SetValue({
               patientTables,
               vaccinationTables,
+              reportTocNodes: [],
             }),
             new LoadResourcesInRepository<Resources>({
               collections: [{
