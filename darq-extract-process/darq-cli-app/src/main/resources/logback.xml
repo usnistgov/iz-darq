@@ -1,16 +1,13 @@
 <configuration>
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <!-- encoders are assigned the type
-         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
     </encoder>
   </appender>
   
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>darq_cli.log</file>
-
     <encoder>
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
     </encoder>
@@ -24,6 +21,7 @@
    </appender>
 
   <logger name="org.immregistries" level="OFF" additivity="false" />
+  <logger name="org.springframework" level="OFF" additivity="false" />
   <logger name="gov.nist" level="*" additivity="false" >
 	<appender-ref ref="FILE" />
   </logger>
