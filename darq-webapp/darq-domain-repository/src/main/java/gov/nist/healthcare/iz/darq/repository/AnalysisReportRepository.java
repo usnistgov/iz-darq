@@ -15,4 +15,6 @@ public interface AnalysisReportRepository extends MongoRepository<AnalysisReport
     List<AnalysisReport> findByPublishedAndOwnerIdAndFacilityId(boolean published, String ownerId, String facility);
     List<AnalysisReport> findByPublishedAndFacilityId(boolean published, String facilityId);
     List<AnalysisReport> findByOwnerIdAndFacilityIdIsNull(String id);
+    List<AnalysisReport> findByPublishedAndFacilityIdNotNull(boolean published);
+
 }

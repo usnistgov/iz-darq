@@ -34,12 +34,12 @@
         <label for="facility"><strong>IIS</strong></label>
         <p-dropdown formControlName="facility" [autoDisplayFirst]="false" [showClear]="true" [options]="facilities" [style]="{ width : '100%'}" name="facility" id="facility" ></p-dropdown>
       </div>
-      <div class="form-group">
+      <div class="form-group" *ngIf="termsAndConditions">
         <label for="tac"><strong>Terms & Conditions</strong></label>
         <textarea [value]="termsAndConditions" style="resize: none;" class="form-control" disabled rows="10">
         </textarea>
       </div>
-      <div class="form-group form-check">
+      <div class="form-group form-check" *ngIf="termsAndConditions">
         <input required formControlName="accept" type="checkbox" class="form-check-input" id="accept-check">
         <label class="form-check-label" for="accept-check">I have read and accept the terms & conditions of use</label>
       </div>

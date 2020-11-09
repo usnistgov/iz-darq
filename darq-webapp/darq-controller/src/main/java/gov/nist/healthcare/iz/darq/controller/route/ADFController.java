@@ -2,11 +2,14 @@ package gov.nist.healthcare.iz.darq.controller.route;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
+import gov.nist.healthcare.iz.darq.access.service.EmailService;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
 import gov.nist.healthcare.iz.darq.repository.AnalysisReportRepository;
@@ -14,6 +17,7 @@ import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import gov.nist.healthcare.iz.darq.users.facility.service.FacilityService;
+import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
@@ -50,6 +54,10 @@ public class ADFController {
 	private AnalysisReportRepository analysisReportRepository;
 	@Autowired
 	private DescriptorService descriptorService;
+	@Autowired
+	private EmailService emailService;
+	@Autowired
+	private UserManagementService userManagementService;
 
 	//  Facilities for user
 	@RequestMapping(value = "/adf/facilities", method = RequestMethod.GET)
@@ -90,6 +98,21 @@ public class ADFController {
 		InputStream stream = file.getInputStream();
 		long size = file.getSize();
 		uploadHandler.handle(name, facility, stream, user.getId(), size);
+		if(!Strings.isNullOrEmpty(facility)) {
+			Facility facilityObject = this.facilityService.getFacilityById(facility);
+			this.userManagementService.getAllUsers().stream()
+			.filter((u) -> u.isAdministrator() && !Strings.isNullOrEmpty(u.getEmail()))
+			.forEach((u) -> {
+				HashMap<String, String> params = new HashMap<>();
+				params.put("USERNAME", user.getScreenName());
+				params.put("IIS", facilityObject.getName());
+				try {
+					this.emailService.sendIfEnabled(EmailType.ADF_UPLOADED, u.getEmail(), params);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		}
 		return new OpAck<>(AckStatus.SUCCESS, "ADF Uploaded", null, "upload");
 	}
 	

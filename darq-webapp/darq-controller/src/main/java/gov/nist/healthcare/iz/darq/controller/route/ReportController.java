@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/report")
@@ -103,10 +104,12 @@ public class ReportController {
 
         try {
             Facility facility = this.facilityService.getFacilityById(report.getFacilityId());
-            facility
+            Stream.concat(facility
                     .getMembers()
                     .stream()
-                    .map(this.userManagementService::findUserById)
+                    .map(this.userManagementService::findUserById),
+                    this.userManagementService.getAllUsers().stream().filter(User::isAdministrator)
+            )
                     .filter(u -> u != null && !Strings.isNullOrEmpty(u.getEmail()))
                     .forEach((user) -> {
                         HashMap<String, String> params = new HashMap<>();

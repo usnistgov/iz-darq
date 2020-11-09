@@ -22,24 +22,20 @@ public class DigestConfiguration {
 			}
 
 			@Override
-			public ADFMetaData get(String id, String owner) {
+			public ADFMetaData get(String id) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+
+			@Override
+			public ADFile getFile(String id) throws Exception {
 				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
-			public ADFMetaData getAccessible(String id, String owner) throws Exception {
-				return null;
-			}
-
-			@Override
-			public ADFile getFile(String id, String owner) throws Exception {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public boolean delete(String id, String owner) throws IOException {
+			public boolean delete(String id) throws IOException {
 				// TODO Auto-generated method stub
 				return false;
 			}

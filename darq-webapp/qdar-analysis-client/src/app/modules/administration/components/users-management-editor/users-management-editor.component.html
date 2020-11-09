@@ -14,35 +14,35 @@
         ></p-dropdown>
       </div>
       <div class="form-group" style="margin-right: 3px;">
-        <label for="username"><strong>Username</strong></label>
-        <input type="text" placeholder="Username" class="form-control" formControlName="username" name="username" id="username">
+        <label for="username-filter"><strong>Username</strong></label>
+        <input type="text" placeholder="Username" class="form-control" formControlName="username" name="username" id="username-filter">
       </div>
       <div class="form-group" style="margin-right: 3px;">
-        <label for="name"><strong>Name</strong></label>
-        <input type="text" placeholder="Name" class="form-control" formControlName="name" name="name" id="name">
+        <label for="name-filter"><strong>Name</strong></label>
+        <input type="text" placeholder="Name" class="form-control" formControlName="name" name="name" id="name-filter">
       </div>
       <div class="form-group" style="margin-right: 3px;">
-        <label for="email"><strong>Email</strong></label>
-        <input type="email" placeholder="Email" class="form-control" formControlName="email" name="email" id="email">
+        <label for="email-filter"><strong>Email</strong></label>
+        <input type="email" placeholder="Email" class="form-control" formControlName="email" name="email" id="email-filter">
       </div>
       <div class="form-group" style="margin-right: 3px;">
-        <label for="org"><strong>Organization</strong></label>
-        <input type="text" placeholder="Organization" class="form-control" formControlName="org" name="org" id="org">
+        <label for="org-filter"><strong>Organization</strong></label>
+        <input type="text" placeholder="Organization" class="form-control" formControlName="org" name="org" id="org-filter">
       </div>
       <div class="form-group" style="margin-right: 3px;">
-        <label for="status"><strong>Status</strong></label>
+        <label for="status-filter"><strong>Status</strong></label>
         <p-dropdown
           [options]="statusOptions"
           [autoDisplayFirst]="false"
-          styleClass="form-control user-filter" formControlName="status" name="status" id="status"
+          styleClass="form-control user-filter" formControlName="status" name="status" id="status-filter"
         ></p-dropdown>
       </div>
       <div class="form-group" style="margin-right: 3px;">
-        <label for="role"><strong>Role</strong></label>
+        <label for="role-filter"><strong>Role</strong></label>
         <p-dropdown
           [options]="roleOptions"
           [autoDisplayFirst]="false"
-          styleClass="form-control user-filter" formControlName="role" name="role" id="role"
+          styleClass="form-control user-filter" formControlName="role" name="role" id="role-filter"
         ></p-dropdown>
       </div>
     </div>
@@ -142,23 +142,25 @@
           }">{{item}}</span>
         </td>
         <td>
-          <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;" *ngIf="rowData.username !== 'admin' && rowData.id !== (userId$ | async)">
-            <button class="btn btn-sm btn-danger" style="margin-right: 5px;" (click)="delete(rowData)" >
-              <i class="fa fa-trash"></i>
-              Delete
-            </button>
-            <button class="btn btn-sm btn-success" style="margin-right: 5px;" (click)="approve(rowData)" *ngIf="rowData.status === 'PENDING'"  >
-              <i class="fa fa-check"></i>
-              Approve
-            </button>
-            <button class="btn btn-sm btn-dark" style="margin-right: 5px;" (click)="setLock(rowData, true)" *ngIf="rowData.status === 'ACTIVE'"  >
-              <i class="fa fa-lock"></i>
-              Lock
-            </button>
-            <button class="btn btn-sm btn-success" style="margin-right: 5px;" (click)="setLock(rowData, false)" *ngIf="rowData.status === 'LOCKED'">
-              <i class="fa fa-unlock"></i>
-              Unlock
-            </button>
+          <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;" >
+            <ng-container *ngIf="rowData.username !== 'admin' && rowData.id !== (userId$ | async)">
+              <button class="btn btn-sm btn-danger" style="margin-right: 5px;" (click)="delete(rowData)" >
+                <i class="fa fa-trash"></i>
+                Delete
+              </button>
+              <button class="btn btn-sm btn-success" style="margin-right: 5px;" (click)="approve(rowData)" *ngIf="rowData.status === 'PENDING'"  >
+                <i class="fa fa-check"></i>
+                Approve
+              </button>
+              <button class="btn btn-sm btn-dark" style="margin-right: 5px;" (click)="setLock(rowData, true)" *ngIf="rowData.status === 'ACTIVE'"  >
+                <i class="fa fa-lock"></i>
+                Lock
+              </button>
+              <button class="btn btn-sm btn-success" style="margin-right: 5px;" (click)="setLock(rowData, false)" *ngIf="rowData.status === 'LOCKED'">
+                <i class="fa fa-unlock"></i>
+                Unlock
+              </button>
+            </ng-container>
             <button class="btn btn-sm btn-warning" style="margin-right: 5px;" (click)="edit(rowData)" >
               <i class="fa fa-pencil"></i>
               Edit Profile

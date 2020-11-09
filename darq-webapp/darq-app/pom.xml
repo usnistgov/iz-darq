@@ -11,9 +11,9 @@
 	<artifactId>darq-app</artifactId>
 	<version>${qdar.webtool.version}</version>
 	<properties>
-		<qdar.webtool.version>2.0.0</qdar.webtool.version>
-		<qdar.api.version>1.5.0</qdar.api.version>
-		<qdar.cli.version>1.5.0</qdar.cli.version>
+		<qdar.webtool.version>2.1.0</qdar.webtool.version>
+		<qdar.api.version>1.6.0</qdar.api.version>
+		<qdar.cli.version>1.6.0</qdar.cli.version>
 		<mqe.version>2020.02-BETA</mqe.version>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>MM-dd-yyyy</maven.build.timestamp.format>

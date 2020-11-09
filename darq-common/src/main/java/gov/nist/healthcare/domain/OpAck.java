@@ -10,7 +10,10 @@ public class OpAck<T> {
 	private String text;
 	private T data;
 	private String op;
-	
+
+	public OpAck() {
+	}
+
 	public OpAck(AckStatus status, String text, T data, String op) {
 		super();
 		this.status = status;

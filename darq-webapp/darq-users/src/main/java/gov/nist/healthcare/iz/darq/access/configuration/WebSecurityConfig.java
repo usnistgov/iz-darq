@@ -2,6 +2,7 @@ package gov.nist.healthcare.iz.darq.access.configuration;
 
 
 import gov.nist.healthcare.iz.darq.access.domain.UserRole;
+import gov.nist.healthcare.iz.darq.auth.aart.JWTAuthenticationAARTClientFilter;
 import gov.nist.healthcare.iz.darq.auth.aart.JWTAuthenticationAARTFilter;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import gov.nist.healthcare.iz.darq.users.domain.UserAccount;
@@ -59,13 +60,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new JWTAuthenticationAARTFilter("/**/api/aart", userManagementService, authManager, authenticationService, handler, environment);
 	}
 
+	@Bean
+	public JWTAuthenticationAARTClientFilter clientFilter() {
+		return new JWTAuthenticationAARTClientFilter(environment, "/**/aart/client/**");
+	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable()
 		.authorizeRequests()
 			.antMatchers("/**/public/**").permitAll()
 			.antMatchers("/**/api/aart/**").permitAll()
-
 			.antMatchers("/**/api/login").not().authenticated()
 			.antMatchers("/**/api/user/register").not().authenticated()
 			.antMatchers("/**/api/user/reset-password").not().authenticated()
@@ -81,7 +86,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 			.addFilterBefore(loginFilter(), UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-			.addFilterBefore(jwtAuthenticationAARTFilter(), UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(jwtAuthenticationAARTFilter(), UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(clientFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 
 	@Override
