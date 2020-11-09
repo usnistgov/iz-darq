@@ -1,26 +1,19 @@
-import { createEntityAdapter, Dictionary } from '@ngrx/entity';
 import { createSelector } from '@ngrx/store';
-import { selectFromCollection, User } from 'ngx-dam-framework';
-import { IUserResource } from '../model/user.model';
+import { selectUserInfo, selectIsLoggedIn } from 'ngx-dam-framework';
+import { ICurrentUser } from '../model/user.model';
 
-const UsersAdapter = createEntityAdapter<IUserResource>();
-const UsersSelectors = UsersAdapter.getSelectors();
-export const selectUsersRepo = selectFromCollection('users');
-export const selectUsersEntities = createSelector(
-  selectUsersRepo,
-  UsersSelectors.selectEntities,
-);
-export const selectUsers = createSelector(
-  selectUsersRepo,
-  UsersSelectors.selectAll,
-);
-export const selectUserById = createSelector(
-  selectUsersEntities,
-  (dict: Dictionary<IUserResource>, props: any): User => {
-    if (dict[props.id]) {
-      return dict[props.id];
-    } else {
-      return undefined;
-    }
+export const selectCurrentUser = createSelector(
+  selectIsLoggedIn,
+  selectUserInfo,
+  (logged: boolean, user: any): ICurrentUser => {
+    return logged ? user.payload as ICurrentUser : undefined;
   }
 );
+
+export const selectCurrentUserId = createSelector(
+  selectCurrentUser,
+  (user: ICurrentUser): string => {
+    return user ? user.id : undefined;
+  }
+);
+

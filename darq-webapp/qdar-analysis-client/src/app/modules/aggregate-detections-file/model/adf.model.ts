@@ -28,6 +28,7 @@ export interface IADFMetadata extends IDamResource {
   version: string;
   build: string;
   mqeVersion: string;
+  facilityId: string;
   inactiveDetections: string[];
 }
 

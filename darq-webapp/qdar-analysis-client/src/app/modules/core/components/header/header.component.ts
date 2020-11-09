@@ -6,8 +6,10 @@ import {
   OnInit,
   Input,
 } from '@angular/core';
-import { selectRouterURL, selectIsAdmin } from 'ngx-dam-framework';
+import { selectRouterURL, selectIsAdmin, selectIsLoggedIn, LogoutRequest } from 'ngx-dam-framework';
 import { IServerInfo } from '../../services/app-info.service';
+import { ICurrentUser } from '../../model/user.model';
+import { selectCurrentUser } from '../../store/core.selectors';
 
 @Component({
   selector: 'app-header',
@@ -21,8 +23,12 @@ export class HeaderComponent implements OnInit {
 
   isAdf: Observable<boolean>;
   isAdmin$: Observable<boolean>;
+  isLogged$: Observable<boolean>;
+  currentUser$: Observable<ICurrentUser>;
 
   constructor(private store: Store<any>) {
+    this.isLogged$ = store.select(selectIsLoggedIn);
+    this.currentUser$ = store.select(selectCurrentUser);
     this.isAdf = store.select(selectRouterURL).pipe(
       map(
         (url: string) => {
@@ -31,6 +37,10 @@ export class HeaderComponent implements OnInit {
       ),
     );
     this.isAdmin$ = this.store.select(selectIsAdmin);
+  }
+
+  logout() {
+    this.store.dispatch(new LogoutRequest());
   }
 
   ngOnInit(): void {

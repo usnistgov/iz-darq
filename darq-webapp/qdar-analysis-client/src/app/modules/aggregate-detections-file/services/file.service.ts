@@ -1,10 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { Message } from 'ngx-dam-framework';
 import { IADFDescriptor, IADFMetadata } from '../model/adf.model';
 import { IReportTemplateDescriptor } from '../../report-template/model/report-template.model';
-import { IFacilityDescriptor } from '../../facility/model/facility.model';
+import { IUserFacilityDescriptor } from '../../facility/model/facility.model';
+import { EntityType } from '../../shared/model/entity.model';
+import { PermissionService } from '../../core/services/permission.service';
+import { take, map, flatMap } from 'rxjs/operators';
+import { Action } from '../../core/model/action.enum';
+import { ResourceType } from '../../core/model/resouce-type.enum';
+import { Scope } from '../../core/model/scope.enum';
+
+export const PRIVATE_FACILITY_ID = 'private';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +21,47 @@ export class FileService {
 
   readonly URL_PREFIX = 'api/adf/';
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private permission: PermissionService,
+  ) { }
 
-  getFacilitiesForUser(): Observable<IFacilityDescriptor[]> {
-    return this.http.get<IFacilityDescriptor[]>(this.URL_PREFIX + '/facilities');
+
+  getPrivateFacility(): Observable<IUserFacilityDescriptor> {
+    return this.http.get<number>('api/adf/private').pipe(
+      map((files) => {
+        return {
+          id: PRIVATE_FACILITY_ID,
+          type: EntityType.FACILITY,
+          name: 'Private',
+          size: undefined,
+          reports: undefined,
+          files,
+          _private: true,
+        };
+      })
+    );
+  }
+
+  getFacilitiesForUser(): Observable<IUserFacilityDescriptor[]> {
+    return combineLatest([
+      this.http.get<IUserFacilityDescriptor[]>(this.URL_PREFIX + '/facilities'),
+      this.permission.abilities$.pipe(
+        flatMap((abilities) => {
+          return abilities.onScopeCan(Action.UPLOAD, ResourceType.ADF, { scope: Scope.GLOBAL }) ?
+            this.getPrivateFacility() :
+            of(undefined as IUserFacilityDescriptor);
+        }),
+      ),
+    ]).pipe(
+      take(1),
+      map(([facilities, priv]) => {
+        return [
+          ...facilities,
+          ...priv ? [priv] : [],
+        ];
+      }),
+    );
   }
 
   getList(): Observable<IADFDescriptor[]> {
@@ -24,7 +69,11 @@ export class FileService {
   }
 
   getListByFacility(id: string): Observable<IADFDescriptor[]> {
-    return this.http.get<IADFDescriptor[]>(this.URL_PREFIX + 'facility/' + id);
+    if (id === PRIVATE_FACILITY_ID) {
+      return this.getList();
+    } else {
+      return this.http.get<IADFDescriptor[]>(this.URL_PREFIX + 'facility/' + id);
+    }
   }
 
   deleteFile(id: string): Observable<Message<IADFMetadata>> {

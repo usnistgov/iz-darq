@@ -1,25 +1,19 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
 import com.google.common.base.Strings;
-import gov.nist.healthcare.auth.domain.Account;
-import gov.nist.healthcare.auth.repository.AccountRepository;
-import gov.nist.healthcare.auth.service.AccountService;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.controller.domain.FacilityMember;
-import gov.nist.healthcare.iz.darq.model.ConfigurationDescriptor;
 import gov.nist.healthcare.iz.darq.model.Facility;
 import gov.nist.healthcare.iz.darq.model.FacilityDescriptor;
 import gov.nist.healthcare.iz.darq.repository.FacilityRepository;
-import gov.nist.healthcare.iz.darq.service.FacilityService;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.users.facility.service.FacilityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/facility")
@@ -27,12 +21,8 @@ public class FacilityController {
 
     @Autowired
     FacilityRepository facilityRepository;
-
     @Autowired
     FacilityService facilityService;
-
-    @Autowired
-    AccountService accountService;
 
 
     //  Get All Facilities (Descriptor)
@@ -52,12 +42,23 @@ public class FacilityController {
     //  Save Descriptor
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public OpAck<FacilityDescriptor> create(@RequestBody FacilityDescriptor descriptor) throws NotFoundException, OperationFailureException {
-        if(Strings.isNullOrEmpty(descriptor.getId()) && !Strings.isNullOrEmpty(descriptor.getName())) {
-            Facility f = this.facilityRepository.save(new Facility(descriptor.getId(), descriptor.getName(), descriptor.getDescription(), new HashSet<>()));
-            return new OpAck<>(OpAck.AckStatus.SUCCESS, "Facility Created successfully", new FacilityDescriptor(f.getId(), f.getName(), f.getDescription(), f.getMembers().size()), "facility-create");
+    public OpAck<FacilityDescriptor> create(@RequestBody FacilityDescriptor descriptor) throws OperationFailureException {
+        if(!Strings.isNullOrEmpty(descriptor.getId()) || Strings.isNullOrEmpty(descriptor.getName())) {
+            throw new OperationFailureException("Invalid facility info");
         }
-        throw new OperationFailureException("Invalid Facility Info");
+
+        descriptor.setName(descriptor.getName().trim());
+        Facility existing = this.facilityService.findByName(descriptor.getName());
+        if (existing != null) {
+            throw new OperationFailureException("Facility with name " + descriptor.getName() + " already existing");
+        }
+
+        try {
+            Facility f = this.facilityRepository.save(new Facility(null, descriptor.getName(), descriptor.getDescription(), new HashSet<>()));
+            return new OpAck<>(OpAck.AckStatus.SUCCESS, "Facility Created successfully", new FacilityDescriptor(f.getId(), f.getName(), f.getDescription(), f.getMembers().size()), "facility-create");
+        } catch (Exception e) {
+            throw new OperationFailureException("Invalid facility info, due to " + e.getMessage());
+        }
     }
 
     //  Save
@@ -72,7 +73,7 @@ public class FacilityController {
     @RequestMapping(value = "/{id}/add-member", method = RequestMethod.POST)
     @ResponseBody
     public OpAck<Facility> add(@PathVariable("id") String id, @RequestBody FacilityMember member) throws NotFoundException, OperationFailureException {
-        Facility f = facilityService.addMember(id, member.getUsername());
+        Facility f = facilityService.addMember(id, member.getUserId());
         return new OpAck<>(OpAck.AckStatus.SUCCESS, "Member added successfully successfully", f, "facility-save");
     }
 
@@ -80,7 +81,7 @@ public class FacilityController {
     @RequestMapping(value = "/{id}/remove-member", method = RequestMethod.POST)
     @ResponseBody
     public OpAck<Facility> remove(@PathVariable("id") String id, @RequestBody FacilityMember member) throws NotFoundException, OperationFailureException {
-        Facility f = facilityService.removeMember(id, member.getUsername());
+        Facility f = facilityService.removeMember(id, member.getUserId());
         return new OpAck<>(OpAck.AckStatus.SUCCESS, "Member removed successfully successfully", f, "facility-save");
     }
 

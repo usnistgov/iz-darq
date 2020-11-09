@@ -1,0 +1,34 @@
+<form class="upload-form" [formGroup]="profileForm">
+  <div class="form-group">
+    <label for="name"><strong>Full name</strong></label>
+    <input type="text" placeholder="Full-name" class="form-control" formControlName="fullName" name="fullName" id="fullName" required>
+  </div>
+  <div class="form-group">
+    <label for="email"><strong>Email</strong></label>
+    <input type="email" placeholder="Email" class="form-control" formControlName="email" name="email" id="email" required>
+    <small *ngIf="!admin" class="form-text text-muted">
+      Email address can't be changed, please contact administrator to update your email address
+    </small>
+  </div>
+  <div class="form-group">
+    <label for="organization"><strong>Organization</strong></label>
+    <input type="text" placeholder="Organization" class="form-control" formControlName="organization" name="organization" id="organization" required>
+  </div>
+</form>
+<div class="form-group form-check" *ngIf="account.credentials">
+  <input required [(ngModel)]="password" type="checkbox" class="form-check-input" id="passwordc" (ngModelChange)="checkPassword()">
+  <label class="form-check-label" for="passwordc">Change Password</label>
+</div>
+<form *ngIf="password && account.credentials" class="upload-form" [formGroup]="passwordForm" [appMustMatch]="['password', 'confirmPassword']">
+  <div class="form-group">
+    <label for="name"><strong>Password</strong></label>
+    <input type="password" placeholder="Password" class="form-control" formControlName="password" name="password" id="password" required>
+    <small class="form-text text-muted">
+      Your password must be 8-20 characters long, might contain upper and lower case letters and numbers and a special character (@*#!'&).
+    </small>
+  </div>
+  <div class="form-group">
+    <label for="name"><strong>Confirm Password</strong></label>
+    <input type="password" placeholder="Confirm Password" class="form-control" formControlName="confirmPassword" name="confirmPassword" id="confirmPassword" required>
+  </div>
+</form>

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 export interface IServerInfo {
   version: string;
   date: string;
+  contact: string;
 }
 
 @Injectable({

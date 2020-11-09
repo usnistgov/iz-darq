@@ -1,4 +1,5 @@
 package gov.nist.healthcare.iz.darq.parser.model;
+import gov.nist.healthcare.iz.darq.parser.annotation.DummyValue;
 import gov.nist.healthcare.iz.darq.parser.annotation.Field;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -31,7 +32,7 @@ public class Patient extends gov.nist.healthcare.iz.darq.parser.service.model.Re
 	public DqString language;
 	@Field(name="Email Address", index = 18)
 	public DqString email_address;
-	@Field(name="Phone Number", index = 17)
+	@Field(name="Phone Number", dummyStringValue = "(555)5551212", index = 17)
 	public DqString phone;
 	@Field(name="Ethnicity Code", index = 16, coded = true, table = "ETH_0189")
 	public DqString ethnicity_code;

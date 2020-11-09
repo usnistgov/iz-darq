@@ -10,8 +10,11 @@ import { CardModule } from 'primeng/card';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RegistrationComponent } from './components/registration/registration.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
-import { UserManagementComponent } from './components/user-management/user-management.component';
 import { SharedModule } from '../shared/shared.module';
+import { CreateCredentialsComponent } from './components/create-credentials/create-credentials.component';
+import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
+import { UpdateProfileComponent } from './components/update-profile/update-profile.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,10 @@ import { SharedModule } from '../shared/shared.module';
     ErrorPageComponent,
     RegistrationComponent,
     ForgotPasswordComponent,
-    UserManagementComponent
+    CreateCredentialsComponent,
+    VerifyEmailComponent,
+    UpdateProfileComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     CommonModule,
@@ -39,7 +45,7 @@ import { SharedModule } from '../shared/shared.module';
     ErrorPageComponent,
     RegistrationComponent,
     ForgotPasswordComponent,
-    UserManagementComponent
+    UpdateProfileComponent,
   ],
 })
 export class CoreModule { }

@@ -9,9 +9,12 @@ import java.util.List;
 @Repository
 public interface AnalysisReportRepository extends MongoRepository<AnalysisReport, String> {
 
-    AnalysisReport findByIdAndOwner(String id, String owner);
-    AnalysisReport findByIdAndOwnerAndPublished(String id, String owner, boolean published);
-    List<AnalysisReport> findByPublishedAndOwnerAndFacilityId(boolean published, String owner, String facility);
+    AnalysisReport findByIdAndOwnerId(String id, String ownerId);
+    AnalysisReport findByIdAndOwnerIdAndPublished(String id, String ownerId, boolean published);
+    AnalysisReport findByIdAndPublished(String id, boolean published);
+    List<AnalysisReport> findByPublishedAndOwnerIdAndFacilityId(boolean published, String ownerId, String facility);
     List<AnalysisReport> findByPublishedAndFacilityId(boolean published, String facilityId);
+    List<AnalysisReport> findByOwnerIdAndFacilityIdIsNull(String id);
+    List<AnalysisReport> findByPublishedAndFacilityIdNotNull(boolean published);
 
 }

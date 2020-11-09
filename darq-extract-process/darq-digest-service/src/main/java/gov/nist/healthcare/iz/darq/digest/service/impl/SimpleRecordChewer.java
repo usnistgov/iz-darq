@@ -32,7 +32,7 @@ public class SimpleRecordChewer implements RecordChewer {
 	@Override
 	public ADChunk munch(ConfigurationProvider configuration, AggregatePatientRecord apr, LocalDate date) throws Exception {
 
-		if((new LocalDate(apr.patient.date_of_birth.getValue())).isAfter(date)) {
+		if(apr.patient.date_of_birth.getValue().isAfter(date)) {
 			throw new Exception("Birth date is after Evaluation Date ");
 		}
 
@@ -42,7 +42,7 @@ public class SimpleRecordChewer implements RecordChewer {
 		validator.validateRecord(apr, date);
 
 		try {
-			collector.collectPatient(itemizer.itemizePatient(apr.patient), ageGroupCalculator.getGroup(new LocalDate(apr.patient.date_of_birth.getValue()), date));
+			collector.collectPatient(itemizer.itemizePatient(apr.patient), ageGroupCalculator.getGroup(apr.patient.date_of_birth.getValue(), date));
 			for(VaccineRecord vr : apr.history){
 				collector.collectVaccination(itemizer.itemizeVax(vr), ageGroupCalculator.getGroup(new LocalDate(apr.patient.date_of_birth.getValue()), new LocalDate(vr.administration_date.getValue())), vr.reporting_group.toString());
 			}

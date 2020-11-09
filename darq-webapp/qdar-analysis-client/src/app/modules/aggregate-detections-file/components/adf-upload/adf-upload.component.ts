@@ -1,37 +1,53 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { FileService } from '../../services/file.service';
+import { FileService, PRIVATE_FACILITY_ID } from '../../services/file.service';
 import { RxjsStoreHelperService, MessageType } from 'ngx-dam-framework';
-import { finalize, map } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Observable, combineLatest, Subscription, of } from 'rxjs';
 import { SelectItem } from 'primeng/api/selectitem';
-import { selectFacilityList } from '../../store/core.selectors';
+import { selectUserFacilitiesSorted } from '../../store/core.selectors';
+import { WebContentService } from '../../../core/services/web-content.service';
+import { ServerInfoService, IServerInfo } from '../../../core/services/app-info.service';
 
 @Component({
   selector: 'app-adf-upload',
   templateUrl: './adf-upload.component.html',
   styleUrls: ['./adf-upload.component.scss']
 })
-export class AdfUploadComponent implements OnInit {
+export class AdfUploadComponent implements OnInit, OnDestroy {
 
   file: File;
   form: FormGroup;
   facilities$: Observable<SelectItem[]>;
+  dashboardRoute$: Observable<string[]>;
+  subs: Subscription;
+  termsAndConditions: string;
+  init = false;
+  info$: Observable<IServerInfo>;
 
   constructor(
     private store: Store<any>,
     private fileService: FileService,
     private router: Router,
     private helper: RxjsStoreHelperService,
+    private activatedRoute: ActivatedRoute,
+    private webContentService: WebContentService,
+    private serverInfo: ServerInfoService,
   ) {
+    this.info$ = this.serverInfo.getServerInfo();
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required]),
-      facility: new FormControl(null),
+      facility: new FormControl(null, [Validators.required]),
       accept: new FormControl(false, [Validators.required]),
     });
-    this.facilities$ = store.select(selectFacilityList).pipe(
+    this.dashboardRoute$ = this.activatedRoute.queryParams.pipe(
+      map((queryParams) => {
+        return queryParams.facilityId ? ['/', 'adf', 'dashboard', queryParams.facilityId] : ['/', 'adf', 'dashboard'];
+      })
+    );
+    this.facilities$ = store.select(selectUserFacilitiesSorted).pipe(
       map((list) => {
         return list.map((f) => {
           return {
@@ -41,6 +57,14 @@ export class AdfUploadComponent implements OnInit {
         });
       }),
     );
+
+    this.subs = combineLatest([this.facilities$, this.activatedRoute.queryParams]).pipe(
+      map(([facilities, params]) => {
+        if (facilities && facilities.length > 0 && params.facilityId && facilities.find((f) => f.value === params.facilityId)) {
+          this.form.get('facility').setValue(params.facilityId);
+        }
+      })
+    ).subscribe();
   }
 
   submit() {
@@ -48,7 +72,7 @@ export class AdfUploadComponent implements OnInit {
     const data = this.form.getRawValue();
     form.append('name', data.name);
     form.append('file', this.file);
-    if (data.facility) {
+    if (data.facility !== PRIVATE_FACILITY_ID) {
       form.append('facility', data.facility);
     }
     this.helper.getMessageAndHandle<any>(
@@ -58,9 +82,9 @@ export class AdfUploadComponent implements OnInit {
       },
       (message) => {
         if (message.status === MessageType.SUCCESS) {
-          this.router.navigate(['/', 'adf', 'dashboard', data.facility ? data.facility : 'local']);
+          this.router.navigate(['/', 'adf', 'dashboard', data.facility]);
         }
-        return [];
+        return of();
       }
     ).subscribe();
   }
@@ -70,6 +94,16 @@ export class AdfUploadComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.webContentService.getUploadTermsAndConditions().pipe(
+      map((value) => {
+        this.termsAndConditions = value;
+        this.init = true;
+      }),
+    ).subscribe();
+  }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
   }
 
 }

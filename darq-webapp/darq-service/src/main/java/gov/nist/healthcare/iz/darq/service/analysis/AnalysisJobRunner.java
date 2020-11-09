@@ -12,6 +12,6 @@ public interface AnalysisJobRunner {
     AnalysisJob startJob(AnalysisJob job) throws Exception;
     AnalysisJob failJob(AnalysisJob job, String reason) throws JobRunningException;
     List<AnalysisJob> getAllJobsForUserAndFacility(String user, String facilityId);
-    boolean deleteJobForUser(String id, String user) throws JobRunningException;
+    boolean deleteJob(String id) throws JobRunningException;
 
 }

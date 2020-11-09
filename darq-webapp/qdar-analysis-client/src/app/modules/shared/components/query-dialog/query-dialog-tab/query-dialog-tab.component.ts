@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { AnalysisType } from '../../../../report-template/model/analysis.values';
+import { AnalysisType, fieldDisplayName } from '../../../../report-template/model/analysis.values';
 import { UserMessage } from 'ngx-dam-framework';
 
 export abstract class QueryDialogTabComponent<T> implements OnInit {
@@ -14,6 +14,7 @@ export abstract class QueryDialogTabComponent<T> implements OnInit {
   valid: EventEmitter<boolean>;
   @Output()
   messages: EventEmitter<UserMessage[]>;
+  fieldDisplayName = fieldDisplayName;
 
   constructor() {
     this.valueChange = new EventEmitter();

@@ -1,0 +1,6 @@
+<h2 mat-dialog-title>Update User Profile {{ user.username }}</h2>
+<app-user-profile [user]="user" (profileUpdate)="update($event)" [admin]="true" ></app-user-profile>
+<mat-dialog-actions style="justify-content: flex-end;">
+  <button [mat-dialog-close]="" class="btn btn-sm btn-secondary" style="margin-right: 5px;">Cancel</button>
+  <button [disabled]="!valid" [mat-dialog-close]="profileUpdate" class="btn btn-sm btn-success">Update</button>
+</mat-dialog-actions>

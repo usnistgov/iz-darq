@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { TurnOffLoader } from 'ngx-dam-framework';
 
 @Component({
   selector: 'app-error-page',
@@ -7,9 +9,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ErrorPageComponent implements OnInit {
 
-  constructor() { }
+  constructor(private store: Store<any>) { }
 
   ngOnInit(): void {
+    this.store.dispatch(new TurnOffLoader(true));
   }
 
 }

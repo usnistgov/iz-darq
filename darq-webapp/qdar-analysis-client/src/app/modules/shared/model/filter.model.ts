@@ -5,15 +5,15 @@ export enum FilterType {
   ALL = 'ALL',
 }
 
-export function filterDescriptorByType<T extends IDescriptor>(list: T[], type: FilterType): T[] {
+export function filterDescriptorByType<T extends IDescriptor>(list: T[], type: FilterType, userId: string): T[] {
   return list.filter((descriptor) => {
     switch (type) {
       case FilterType.ALL:
         return true;
       case FilterType.OWNED:
-        return descriptor.owned;
+        return descriptor.owner === userId;
       case FilterType.PUBLIC:
-        return descriptor.published;
+        return descriptor.public;
     }
   });
 }

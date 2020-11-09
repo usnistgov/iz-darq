@@ -1,30 +1,29 @@
 package gov.nist.healthcare.auth.domain;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Document
-public class Account {
+public class Account<P extends Authority> implements UserDetails {
 
 	@Id
 	private String id;
 	private String username;
 	@JsonIgnore
 	private String password;
-	private String email;
 	private boolean pending = false;
-	private String fullName;
-	private String organization;
-	private Boolean signedConfidentialityAgreement = false;
-	@DBRef
-	private Set<Privilege> privileges;
+	private boolean locked = false;
+	@DBRef(db = "privilege")
+	@Field("privileges")
+	private Set<P> authorities;
 	
 	public String getId() {
 		return id;
@@ -44,46 +43,46 @@ public class Account {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
 	public boolean isPending() {
 		return pending;
 	}
 	public void setPending(boolean pending) {
 		this.pending = pending;
 	}
-	public String getFullName() {
-		return fullName;
+	public void setAuthorities(Set<P> authorities) {
+		this.authorities = authorities;
 	}
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public boolean isLocked() {
+		return locked;
 	}
-	public String getOrganization() {
-		return organization;
-	}
-	public void setOrganization(String organization) {
-		this.organization = organization;
-	}
-	public Boolean getSignedConfidentialityAgreement() {
-		return signedConfidentialityAgreement;
-	}
-	public void setSignedConfidentialityAgreement(Boolean signedConfidentialityAgreement) {
-		this.signedConfidentialityAgreement = signedConfidentialityAgreement;
-	}
-	public Set<Privilege> getPrivileges() {
-		return privileges;
-	}
-	public void setPrivileges(Set<Privilege> privileges) {
-		this.privileges = privileges;
-	}
-	
-	@Transient
-	public UserDetails userDetails(){
-		return new User(getUsername(), getPassword(), !isPending(), true, true, true, privileges);
+	public void setLocked(boolean locked) {
+		this.locked = locked;
 	}
 
+	//---- User Details Getters
+	@Override
+	@Transient
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+	@Override
+	@Transient
+	public boolean isAccountNonLocked() {
+		return !this.isLocked();
+	}
+	@Override
+	@Transient
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+	@Override
+	@Transient
+	public boolean isEnabled() {
+		return !this.isPending();
+	}
+	@Override
+	@Field("privileges")
+	public Set<P> getAuthorities() {
+		return Collections.unmodifiableSet(authorities != null ? authorities : new HashSet<>());
+	}
 }

@@ -1,0 +1,79 @@
+[
+  {
+    "type": "ADMIN_ACCOUNT_CREATED",
+    "enabled": true,
+    "subject": "A new user account has been created and is pending approval",
+    "template": "Hi ${ADMIN_USERNAME}, <br>You are receiving this email because you are a qDAR Administrator <br>A new user registration is pending admin approval <br>Full-name : ${USER_FULL_NAME} <br>Username : ${USERNAME} <br>Email : ${USER_EMAIL} <br>Organization : ${USER_ORG} <br>Account source : ${ACCOUNT_SOURCE} <br>Sincerely,<br>QDAR Team.",
+    "params": [ "ADMIN_USERNAME", "USER_FULL_NAME", "USERNAME", "USER_EMAIL", "USER_ORG", "ACCOUNT_SOURCE" ]
+  },
+  {
+    "type": "ACCOUNT_APPROVED",
+    "enabled": true,
+    "subject": "Your qDAR account has been approved!",
+    "template": "Hi ${USERNAME}, <br>Your account has been approved. <br>Sincerely,<br>QDAR Team.",
+    "params": [ "USERNAME" ]
+  },
+  {
+    "type": "ACCOUNT_LOCKED",
+    "enabled": true,
+    "subject": "Your qDAR account has been locked",
+    "template": "Hi ${USERNAME}, <br>Your account has been locked. <br>Sincerely,<br>QDAR Team.",
+    "params": [ "USERNAME" ]
+  },
+  {
+    "type": "ACCOUNT_UNLOCKED",
+    "enabled": true,
+    "subject": "Your qDAR account has been unlocked",
+    "template": "Hi ${USERNAME}, <br>Your account has been unlocked. <br>Sincerely,<br>QDAR Team.",
+    "params": [ "USERNAME" ]
+  },
+  {
+    "type": "ACCOUNT_PASSWORD_CHANGE",
+    "enabled": true,
+    "subject": "Your change password request",
+    "template": "Hi ${USERNAME}, <br>You have requested to change your password, to do so please follow the link ${LINK}, the link will expire at ${EXPIRATION}. <br>Sincerely,<br>QDAR Team.",
+    "params": [ "USERNAME", "LINK", "EXPIRATION" ]
+  },
+  {
+    "type": "ACCOUNT_ROLE_CHANGE",
+    "enabled": true,
+    "subject": "You've been granted a new role",
+    "template": "Hi ${USERNAME}, <br>You have been granted a new role \"${ROLE}\". <br>Sincerely,<br>QDAR Team.",
+    "params": [ "USERNAME", "ROLE" ]
+  },
+  {
+    "type": "ACCOUNT_DELETED",
+    "enabled": true,
+    "subject": "Your account has been deleted",
+    "template": "Hi ${USERNAME}, <br>Your account has been deleted. <br>Sincerely,<br>QDAR Team.",
+    "params": [ "USERNAME" ]
+  },
+  {
+    "type": "ACCOUNT_UPDATED",
+    "enabled": true,
+    "subject": "Your account information has been updated",
+    "template": "Hi ${USERNAME}, <br>Your account information has been updated. <br>Sincerely,<br>QDAR Team.",
+    "params": [ "USERNAME" ]
+  },
+  {
+    "type": "REPORT_PUBLISHED",
+    "enabled": true,
+    "subject": "A new report has been published",
+    "template": "Hi ${USERNAME}, <br>A new report has been published to IIS \"${IIS}\". <br>Sincerely,<br>QDAR Team.",
+    "params": [ "USERNAME", "IIS" ]
+  },
+  {
+    "type": "ADF_UPLOADED",
+    "enabled": true,
+    "subject": "A new ADF has been uploaded",
+    "template": "Hi ${USERNAME}, <br>A new ADF has been uploaded to IIS \"${IIS}\". <br>Sincerely,<br>QDAR Team.",
+    "params": [ "USERNAME", "IIS" ]
+  },
+  {
+    "type": "USER_VERIFY_EMAIL",
+    "enabled": true,
+    "subject": "qDAR account email verification",
+    "template": "Hi ${USERNAME}, <br>To verify your email address please follow the link ${LINK}. <br>this link will expire on ${EXPIRATION}. <br>Sincerely,<br>QDAR Team.",
+    "params": [ "USERNAME", "LINK", "EXPIRATION" ]
+  }
+]

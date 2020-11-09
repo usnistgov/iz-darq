@@ -16,7 +16,7 @@
                   (click)="addGroup(field)"
                   *ngFor="let field of fieldsList"
                   class="list-group-item cursor-pointer">
-                  <strong>{{field}}</strong>
+                  <strong>{{fieldDisplayName[field]}}</strong>
                 </li>
               </ul>
             </td>
@@ -36,7 +36,7 @@
             justify-content: space-between;"
             *ngFor="let field of value; let i = index"
             class="list-group-item">
-            <strong>{{field}}</strong>
+            <strong>{{fieldDisplayName[field]}}</strong>
             <button class="btn btn-sm btn-danger pull-right" (click)="removeGroup(i)">
               <i class="fa fa-times"></i>
             </button>

@@ -37,7 +37,7 @@
             {{ header.label }}
           </th>
           <th [pSortableColumn]="header.key" pResizableColumn *ngSwitchDefault>
-            {{ header.label }}
+            {{ fieldDisplayName[header.label] }}
             <p-sortIcon [field]="header.key"></p-sortIcon>
           </th>
         </ng-container >
@@ -109,7 +109,9 @@
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-value>
-    <tr class="ui-selectable-row">
+    <tr class="ui-selectable-row" [ngClass]="{
+      'threshold-fail' : value.threshold && !value.pass
+    }">
       <td *ngFor="let header of columns" [ngClass]="{
         'no-padding':  header.type === ColumnType.BAR,
         'threshold-fail' : header.type === ColumnType.THRESHOLD && value.threshold && !value.pass,

@@ -1,22 +1,24 @@
 package gov.nist.healthcare.iz.darq.analyzer.model.analysis;
 
-import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportSection;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import gov.nist.healthcare.domain.trait.Owned;
+import gov.nist.healthcare.domain.trait.Publishable;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 
 import java.util.Date;
-import java.util.List;
 
-public class Report {
+public class Report implements Owned, Publishable {
     @Id
     protected String id;
     protected String name;
     protected String description;
     protected ConfigurationPayload configuration;
+    @Deprecated
     protected String owner;
-    @Transient
-    protected boolean viewOnly;
+    protected String ownerId;
     protected boolean published;
     protected Date lastUpdated;
 
@@ -51,21 +53,14 @@ public class Report {
     public void setConfiguration(ConfigurationPayload configuration) {
         this.configuration = configuration;
     }
-
+    @Deprecated
+    @JsonIgnore
     public String getOwner() {
         return owner;
     }
-
+    @Deprecated
     public void setOwner(String owner) {
         this.owner = owner;
-    }
-
-    public boolean isViewOnly() {
-        return viewOnly;
-    }
-
-    public void setViewOnly(boolean viewOnly) {
-        this.viewOnly = viewOnly;
     }
 
     public boolean isPublished() {
@@ -82,5 +77,22 @@ public class Report {
 
     public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    @Override
+    @JsonProperty("owner")
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    @Override
+    @Transient
+    @JsonProperty("public")
+    public boolean isPublic() {
+        return this.isPublished();
     }
 }

@@ -11,8 +11,8 @@ export interface IReportDescriptor extends IDamResource {
   owner: string;
   lastUpdated: Date;
   published: boolean;
+  public: boolean;
   type: EntityType.REPORT;
-  viewOnly: boolean;
   configuration: IConfigurationPayload;
   template: IReportTemplateDescriptor;
   adfName: string;

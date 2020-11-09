@@ -1,0 +1,51 @@
+<div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+  <h5>Status</h5>
+  <button class="btn btn-sm btn-primary pull-right" (click)="checkStatus()">
+    <i class="fa fa-refresh"></i>
+    Check Status
+  </button>
+</div>
+
+<table class="table table-sm table-bordered">
+  <tbody>
+    <tr *ngFor="let item of statusCheck$ | async">
+      <td style="vertical-align: middle; width: 50%;">
+        {{ $any(item).op }}
+      </td>
+      <td style="vertical-align: middle; width: 50%;">
+        <div [ngSwitch]="item.status">
+          <div *ngSwitchCase="'SUCCESS'" style="display: flex; align-items: center; justify-content: center;">
+            <div style="height: 12px; width: 12px; border-radius: 12px; margin-right: 5px; background-color: green;"></div> {{ $any(item).text }}
+          </div>
+          <div *ngSwitchCase="'FAILED'" style="display: flex; align-items: center; justify-content: center;">
+            <div style="height: 12px; width: 12px; border-radius: 12px; margin-right: 5px; background-color: red;"></div> {{ $any(item).text }}
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<h5>Properties</h5>
+<form [formGroup]="$any(form)">
+  <table class="table table-sm table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let entry of form.controls; let i = index" [formArrayName]="i">
+        <th style="vertical-align: middle;">
+          {{  $any(entry).controls.key.value }}
+          <span style="color: red;" *ngIf="$any(entry).controls.required.value">*</span>
+        </th>
+        <td>
+          <input type="text" formControlName="value" class="form-control" [name]="'value-' + i" [id]="'value-' + i">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>

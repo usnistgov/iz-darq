@@ -1,12 +1,12 @@
 {
   "/api/*": {
-    "target": "http://localhost:8080/qdar",
+    "target": "http://localhost:8081/qdar",
     "changeOrigin": true,
     "secure": false,
     "logLevel": "debug"
   },
   "/public/*": {
-    "target": "http://localhost:8080/qdar",
+    "target": "http://localhost:8081/qdar",
     "changeOrigin": true,
     "secure": false,
     "logLevel": "debug"

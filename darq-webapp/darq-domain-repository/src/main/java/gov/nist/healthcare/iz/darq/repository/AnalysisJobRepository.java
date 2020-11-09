@@ -11,12 +11,11 @@ import java.util.List;
 public interface AnalysisJobRepository extends MongoRepository<AnalysisJob, String> {
 
     List<AnalysisJob> findByStatusIn(List<JobStatus> status);
-    boolean existsByIdAndOwner(String id, String owner);
-    List<AnalysisJob> findByOwner(String owner);
+    boolean existsByIdAndOwnerId(String id, String ownerId);
+    List<AnalysisJob> findByOwnerId(String ownerId);
     List<AnalysisJob> findByReportId(String reportId);
-    List<AnalysisJob> findByOwnerAndFacilityId(String owner, String facilityId);
-    List<AnalysisJob> findByOwnerAndFacilityIdIsNull(String owner);
-
-    AnalysisJob findByIdAndOwner(String id, String owner);
+    List<AnalysisJob> findByOwnerIdAndFacilityId(String ownerId, String facilityId);
+    List<AnalysisJob> findByOwnerIdAndFacilityIdIsNull(String ownerId);
+    AnalysisJob findByIdAndOwnerId(String id, String ownerId);
 
 }

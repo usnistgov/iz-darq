@@ -41,7 +41,7 @@ public class SimpleReportService implements ReportService {
 		// Check for inative detections
 		if(file.getInactiveDetections() != null && file.getInactiveDetections().size() > 0) {
 			QueryField f = query.get(Field.DETECTION);
-			if(f != null) {
+			if(f != null && f.getValues() != null) {
 				inactive = f.getValues().stream().filter((d) -> file.getInactiveDetections().contains(d)).collect(Collectors.toSet());
 				f.getValues().removeAll(inactive);
 			}

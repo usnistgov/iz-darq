@@ -38,6 +38,11 @@ import { QueryDisplayComponent } from './components/query-display/query-display.
 import { DataTableDialogComponent } from './components/data-table-dialog/data-table-dialog.component';
 import { ScrollToDirective } from './directives/scroll-to.directive';
 import { NameDialogComponent } from './components/name-dialog/name-dialog.component';
+import { AccessResourcePipe } from './pipes/access-resource.pipe';
+import { AccessScopePipe } from './pipes/access-scope.pipe';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { MustMatchDirective } from './directives/must-match.directive';
+import { PeAutoscrollFixDirective } from './directives/pe-auto-scroll-fix.directive';
 
 @NgModule({
   declarations: [
@@ -61,6 +66,11 @@ import { NameDialogComponent } from './components/name-dialog/name-dialog.compon
     DataTableDialogComponent,
     ScrollToDirective,
     NameDialogComponent,
+    AccessResourcePipe,
+    AccessScopePipe,
+    UserProfileComponent,
+    MustMatchDirective,
+    PeAutoscrollFixDirective,
   ],
   imports: [
     CommonModule,
@@ -118,6 +128,11 @@ import { NameDialogComponent } from './components/name-dialog/name-dialog.compon
     DataTableDialogComponent,
     ScrollToDirective,
     FieldInputComponent,
+    AccessResourcePipe,
+    AccessScopePipe,
+    UserProfileComponent,
+    MustMatchDirective,
+    PeAutoscrollFixDirective
   ]
 })
 export class SharedModule { }

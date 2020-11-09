@@ -12,12 +12,12 @@
   <button class="btn btn-sm btn-primary" style="margin-right: 5px;"
     [disabled]="widget.containsUnsavedChanges$() | async"
     (click)="publish()"
-    *ngIf="isOwned && !isPublished && (isAdmin$ | async)"
+    *ngIf="!isPublished && 'PUBLISH' | accessOnResource: value:'CONFIGURATION' | async"
   >
     <i class="fa fa-globe"></i>
     Publish
   </button>
-  <button class="btn btn-sm btn-info" style="margin-right: 5px;" [disabled]="widget.containsUnsavedChanges$() | async" (click)="lock()" *ngIf="isOwned && !isLocked">
+  <button class="btn btn-sm btn-info" style="margin-right: 5px;" [disabled]="(widget.containsUnsavedChanges$() | async) || ('EDIT' | accessOnResource: value: 'CONFIGURATION' | async) === false" (click)="lock()" *ngIf="!isLocked">
     <i class="fa fa-lock"></i>
     Lock
   </button>
@@ -25,19 +25,19 @@
 <form>
   <div class="form-group">
     <label for="name"><strong>Configuration Name</strong></label>
-    <input type="text" placeholder="Name" class="form-control" name="name" id="name" [ngModel]="value.name" (input)="nameChange($event.target.value)" [disabled]="viewOnly" required>
+    <input type="text" placeholder="Name" class="form-control" name="name" id="name" [ngModel]="value.name" (input)="nameChange($event.target.value)" [disabled]="(viewOnly$ | async)" required>
   </div>
   <div class="form-group" >
     <label for="description"><strong>Description</strong></label>
-    <p-editor *ngIf="!viewOnly" name="description" id="description" [ngModel]="value.description" (ngModelChange)="descriptionChange($event)" [style]="{'height':'130px'}">
+    <p-editor *ngIf="(viewOnly$ | async) === false" name="description" id="description" [ngModel]="value.description" (ngModelChange)="descriptionChange($event)" [style]="{'height':'130px'}">
     </p-editor>
-    <div *ngIf="viewOnly" [innerHTML]="value.description"></div>
+    <div *ngIf="(viewOnly$ | async)" [innerHTML]="value.description"></div>
   </div>
   <div class="form-group" >
     <label for="asOf"><strong>Analyse As Date</strong></label><br>
     <p-calendar
       inputStyleClass="form-control"
-      *ngIf="!viewOnly"
+      *ngIf="(viewOnly$ | async) === false"
       name="asOf"
       id="asOf"
       [ngModel]="value.payload.asOf"
@@ -47,14 +47,14 @@
       placeholder="Analyse As Of Day Of Analysis"
       appendTo="body"
     ></p-calendar>
-    <span *ngIf="viewOnly">{{ value.payload.asOf ? value.payload.asOf : 'Analyse as of day of analysis' }}</span>
+    <span *ngIf="(viewOnly$ | async)">{{ value.payload.asOf ? value.payload.asOf : 'Analyse as of day of analysis' }}</span>
   </div>
   <div class="form-group">
     <label for="ageGroups"><strong>Age Groups</strong></label>
     <app-age-groups
       id="ageGroups"
       [ageGroups]="value.payload.ageGroups"
-      [viewOnly]="viewOnly"
+      [viewOnly]="(viewOnly$ | async)"
       (valueChange)="ageGroupsChange($event)"
     ></app-age-groups>
   </div>
@@ -62,7 +62,7 @@
     <label for="detections"><strong>Managed Detections</strong></label>
     <app-detections-list
       id="detections"
-      [viewOnly]="viewOnly"
+      [viewOnly]="(viewOnly$ | async)"
       [detections]="detections | async"
       [value]="value.payload.detections"
       (valueChange)="detectionsChange($event)"

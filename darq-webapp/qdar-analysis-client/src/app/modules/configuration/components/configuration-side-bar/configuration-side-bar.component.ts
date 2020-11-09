@@ -9,13 +9,14 @@ import {
   RxjsStoreHelperService,
 } from 'ngx-dam-framework';
 import { MatDialog } from '@angular/material/dialog';
-import { concatMap, map } from 'rxjs/operators';
+import { concatMap, map, flatMap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { of, BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import { of, BehaviorSubject, Observable, combineLatest, from } from 'rxjs';
 import { GoToEntity } from '../../../shared/store/core.actions';
 import { EntityType } from 'src/app/modules/shared/model/entity.model';
 import { DamWidgetComponent } from 'ngx-dam-framework';
 import { FilterType, filterDescriptorByType } from '../../../shared/model/filter.model';
+import { selectCurrentUserId } from '../../../core/store/core.selectors';
 
 @Component({
   selector: 'app-configuration-side-bar',
@@ -26,7 +27,7 @@ export class ConfigurationSideBarComponent implements OnInit {
 
   @Input()
   set configurations(c: IConfigurationDescriptor[]) {
-    this.configurationsSubject.next(c);
+    this.configurationsSubject.next([...c.map((v) => ({ ...v }))]);
   }
 
   get configurations() {
@@ -37,7 +38,7 @@ export class ConfigurationSideBarComponent implements OnInit {
   configurationsSubject: BehaviorSubject<IConfigurationDescriptor[]>;
   listTypeSubject: BehaviorSubject<FilterType>;
   filterTextSubject: BehaviorSubject<string>;
-
+  userId$: Observable<string>;
   filterType = FilterType;
 
   constructor(
@@ -50,14 +51,15 @@ export class ConfigurationSideBarComponent implements OnInit {
     this.configurationsSubject = new BehaviorSubject([]);
     this.listTypeSubject = new BehaviorSubject(FilterType.ALL);
     this.filterTextSubject = new BehaviorSubject('');
-
+    this.userId$ = this.store.select(selectCurrentUserId);
     this.filtered$ = combineLatest([
       this.configurationsSubject,
       this.listTypeSubject,
       this.filterTextSubject,
+      this.userId$,
     ]).pipe(
-      map(([configuration, type, text]) => {
-        return filterDescriptorByType(configuration, type).filter((conf) => {
+      map(([configuration, type, text, userId]) => {
+        return filterDescriptorByType(configuration, type, userId).filter((conf) => {
           return conf.name.includes(text);
         });
       }),
@@ -100,7 +102,7 @@ export class ConfigurationSideBarComponent implements OnInit {
               return this.configurationService.delete(configuration.id);
             },
             (message) => {
-              return message.status === MessageType.SUCCESS ? [new DeleteResourcesFromRepository({
+              return from(message.status === MessageType.SUCCESS ? [new DeleteResourcesFromRepository({
                 collections: [{
                   key: 'configurations',
                   values: [configuration.id],
@@ -111,7 +113,7 @@ export class ConfigurationSideBarComponent implements OnInit {
                   type: EntityType.CONFIGURATION,
                 }),
               ] : [])
-              ] : [];
+              ] : []);
             }
           );
         }
@@ -121,16 +123,23 @@ export class ConfigurationSideBarComponent implements OnInit {
   }
 
   readonly addAndOpenHandler = (message) => {
-    return message.status === MessageType.SUCCESS ? [new InsertResourcesInCollection({
-      key: 'configurations',
-      values: [
-        this.configurationService.getDescriptor(message.data, true),
-      ],
-    }),
-    new GoToEntity({
-      type: EntityType.CONFIGURATION,
-      id: message.data.id,
-    })] : [];
+    return message.status === MessageType.SUCCESS ?
+      this.configurationService.getDescriptorById(message.data.id).pipe(
+        flatMap((descriptor) => {
+          return from([
+            new InsertResourcesInCollection({
+              key: 'configurations',
+              values: [
+                descriptor,
+              ],
+            }),
+            new GoToEntity({
+              type: EntityType.CONFIGURATION,
+              id: message.data.id,
+            }),
+          ]);
+        })
+      ) : from([]);
   }
 
   cloneConfiguration(configuration: IConfigurationDescriptor) {

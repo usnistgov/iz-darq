@@ -19,17 +19,17 @@ export class ConfigurationService {
       id: undefined,
       name: '',
       owner: undefined,
+      ownerDisplayName: undefined,
       lastUpdated: undefined,
       locked: false,
-      owned: true,
       published: false,
+      public: false,
       payload: {
         ageGroups: [],
         detections: [],
       },
       description: '',
       type: EntityType.CONFIGURATION,
-      viewOnly: undefined,
     };
   }
 
@@ -65,18 +65,8 @@ export class ConfigurationService {
     return this.http.post<Message<IDigestConfiguration>>(this.URL_PREFIX + id + '/clone', {});
   }
 
-  getDescriptor(configuration: IDigestConfiguration, owned: boolean): IConfigurationDescriptor {
-    return {
-      id: configuration.id,
-      type: EntityType.CONFIGURATION,
-      name: configuration.name,
-      owner: configuration.owner,
-      lastUpdated: configuration.lastUpdated,
-      viewOnly: configuration.viewOnly,
-      locked: configuration.locked,
-      published: configuration.published,
-      owned,
-    };
+  getDescriptorById(id: string): Observable<IConfigurationDescriptor> {
+    return this.http.get<IDigestConfiguration>(this.URL_PREFIX + id + '/descriptor');
   }
 
 }

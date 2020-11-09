@@ -4,12 +4,10 @@ import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisReport;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportTemplate;
 import gov.nist.healthcare.iz.darq.analyzer.service.ReportService;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 import gov.nist.healthcare.iz.darq.model.AnalysisJob;
 import gov.nist.healthcare.iz.darq.model.JobStatus;
 import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
-import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.repository.AnalysisJobRepository;
 import gov.nist.healthcare.iz.darq.repository.AnalysisReportRepository;
 import gov.nist.healthcare.iz.darq.repository.TemplateRepository;
@@ -30,15 +28,13 @@ import java.util.concurrent.*;
 public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
 
     ThreadPoolExecutor executor;
-    Map<String, Map<String, Future<?>>> futures;
+    Map<String, Future<?>> futures;
 
     @Value("${job.executor.threads}")
     private int threads;
     private final int DEFAULT_THREAD_COUNT = 5;
     @Autowired
     TemplateRepository templateRepository;
-//    @Autowired
-//    ADFMetaDataRepository adfMetaDataRepository;
     @Autowired
     AnalysisJobRepository analysisJobRepository;
     @Autowired
@@ -67,9 +63,9 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
 
 
     @Override
-    public AnalysisJob addJob(String name, String templateId, String adfId, String user) throws JobRunningException, NotFoundException {
-        ReportTemplate template = this.templateRepository.findMineOrReadOnly(templateId, user);
-        UserUploadedFile adf = this.store.getAccessible(adfId, user);
+    public AnalysisJob addJob(String name, String templateId, String adfId, String userId) throws JobRunningException {
+        ReportTemplate template = this.templateRepository.findByOwnerIdOrReadOnly(templateId, userId);
+        UserUploadedFile adf = this.store.get(adfId);
         if(template == null) {
             throw new JobRunningException("Report Template" + templateId + " Not Found");
         }
@@ -78,17 +74,17 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
             throw new JobRunningException("ADF " + adfId + " Not Found");
         }
 
-        AnalysisJob job = new AnalysisJob(name, adfId, adf.getName(), template, user, adf.getFacilityId());
+        AnalysisJob job = new AnalysisJob(name, adfId, adf.getName(), template, null, userId, adf.getFacilityId());
         job.setSubmitTime(new Date());
         this.analysisJobRepository.save(job);
         Future<?> future = executor.submit(new RunnableJob(job, this));
-        this.register(job.getId(), job.getOwner(), future);
+        this.register(job.getId(), future);
         return job;
     }
 
     @Override
     public AnalysisJob startJob(AnalysisJob job) throws Exception {
-        ADFile file = this.store.getFile(job.getAdfId(), job.getOwner());
+        ADFile file = this.store.getFile(job.getAdfId());
         if(job.getStatus() == JobStatus.RUNNING) {
             throw new JobRunningException("Job " + job.getName() + " Already Running ");
         }
@@ -99,6 +95,7 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
         report.fromTemplate(job.getTemplate());
         report.setName(job.getName());
         report.setOwner(job.getOwner());
+        report.setOwnerId(job.getOwnerId());
         report.setFacilityId(job.getFacilityId());
         report.setAdfName(job.getAdfName());
         report.setReportTemplate(job.getTemplate());
@@ -107,24 +104,16 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
         job.setEndTime(new Date());
         job.setStatus(JobStatus.FINISHED);
         this.analysisJobRepository.save(job);
-        this.clear(job.getId(), job.getOwner());
+        this.clear(job.getId());
         return job;
     }
 
-    public void register(String id, String user, Future<?> future) {
-        if(!this.futures.containsKey(user)) {
-            this.futures.put(user, new HashMap<>());
-        }
-        this.futures.get(user).put(id, future);
+    public void register(String id, Future<?> future) {
+        this.futures.put(id, future);
     }
 
-    public void clear(String id, String user) {
-        if(this.futures.containsKey(user)) {
-            this.futures.get(user).remove(id);
-            if(this.futures.get(user).size() == 0) {
-                this.futures.remove(user);
-            }
-        }
+    public void clear(String id) {
+        this.futures.remove(id);
     }
 
     @Override
@@ -133,41 +122,41 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
         job.setEndTime(new Date());
         job.setFailure(reason);
         this.analysisJobRepository.save(job);
-        this.clear(job.getId(), job.getOwner());
+        this.clear(job.getId());
         return job;
     }
 
     @Override
-    public List<AnalysisJob> getAllJobsForUserAndFacility(String user, String facilityId) {
+    public List<AnalysisJob> getAllJobsForUserAndFacility(String userId, String facilityId) {
         if (facilityId == null) {
-            return this.analysisJobRepository.findByOwnerAndFacilityIdIsNull(user);
+            return this.analysisJobRepository.findByOwnerIdAndFacilityIdIsNull(userId);
         } else {
-            return this.analysisJobRepository.findByOwnerAndFacilityId(user, facilityId);
+            return this.analysisJobRepository.findByOwnerIdAndFacilityId(userId, facilityId);
         }
     }
 
     @Override
-    public boolean deleteJobForUser(String id, String user) throws JobRunningException {
-        if(this.futures.containsKey(user) && this.futures.get(user).containsKey(id)) {
-            Future<?> future = this.futures.get(user).get(id);
+    public boolean deleteJob(String id) throws JobRunningException {
+        if(this.futures.containsKey(id)) {
+            Future<?> future = this.futures.get(id);
             if(future.isDone() || future.isCancelled()) {
-                AnalysisJob job = this.analysisJobRepository.findByIdAndOwner(id, user);
+                AnalysisJob job = this.analysisJobRepository.findOne(id);
                 if(job != null) {
                     if(!Strings.isNullOrEmpty(job.getReportId())) {
                         this.reportRepository.delete(job.getReportId());
                     }
                     this.analysisJobRepository.delete(id);
                 } else {
-                    this.clear(id, user);
+                    this.clear(id);
                     throw new JobRunningException("Job does not exist");
                 }
-                this.clear(id, user);
+                this.clear(id);
                 return true;
             } else {
                 throw new JobRunningException("Can't delete running task");
             }
         } else {
-            AnalysisJob job = this.analysisJobRepository.findByIdAndOwner(id, user);
+            AnalysisJob job = this.analysisJobRepository.findOne(id);
             if(job != null) {
                 if(!Strings.isNullOrEmpty(job.getReportId())) {
                     this.reportRepository.delete(job.getReportId());

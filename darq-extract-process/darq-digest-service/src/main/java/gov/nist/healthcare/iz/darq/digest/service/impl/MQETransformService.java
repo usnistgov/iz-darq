@@ -1,19 +1,19 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.immregistries.mqe.validator.transform.MessageTransformer;
 import org.immregistries.mqe.vxu.*;
 import gov.nist.healthcare.iz.darq.digest.domain.TransformResult;
 import gov.nist.healthcare.iz.darq.parser.model.AggregatePatientRecord;
 import gov.nist.healthcare.iz.darq.parser.model.Name;
 import gov.nist.healthcare.iz.darq.parser.model.VaccineRecord;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class MQETransformService {
 	
-	private MessageTransformer transformer = MessageTransformer.INSTANCE;
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+	private final MessageTransformer transformer = MessageTransformer.INSTANCE;
+	private final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyyMMdd");
 
 	
 	public MQETransformService() {
@@ -89,7 +89,7 @@ public class MQETransformService {
 			vax.setBodySiteCode(vr.admin_site.getValue());
 			vax.setBodyRouteCode(vr.admin_route.getValue());
 			
-			vax.setExpirationDate(vr.exp_date.getValue());
+			vax.setExpirationDate(vr.exp_date.getValue().toDate());
 			vax.setAmount(vr.volume_unit.getValue());
 			
 			vax.setOrderedByNumber(vr.ordering_provider.getValue());
@@ -135,8 +135,8 @@ public class MQETransformService {
 		}
 	}
 	
-	private String formatDate(Date date){
-		if(date != null) return dateFormat.format(date);
+	private String formatDate(LocalDate date){
+		if(date != null) return dateFormat.print(date);
 		return "";
 	}
 

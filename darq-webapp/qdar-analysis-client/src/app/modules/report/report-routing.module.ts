@@ -4,6 +4,7 @@ import { DamWidgetRoute, AuthenticatedGuard, EditorActivateGuard, EditorDeactiva
 import { REPORT_WIDGET, ReportWidgetComponent } from './components/report-widget/report-widget.component';
 import { LoadReport, CoreActionTypes, OpenReportEditor } from './store/core.actions';
 import { ReportEditorComponent, REPORT_EDITOR_METADATA } from './components/report-editor/report-editor.component';
+import { LoaderGuard } from '../shared/guards/loader.guard';
 
 
 const routes: Routes = [{
@@ -16,6 +17,11 @@ const routes: Routes = [{
     failureAction: CoreActionTypes.LoadReportFailure,
     redirectTo: ['error'],
     component: ReportWidgetComponent,
+  }, {
+    canActivate: [
+      LoaderGuard,
+    ],
+    canDeactivate: [],
   }),
   children: [
     {

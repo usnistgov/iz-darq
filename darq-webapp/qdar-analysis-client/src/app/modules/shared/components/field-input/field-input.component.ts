@@ -4,7 +4,7 @@ import { IDetectionResource, ICvxResource } from '../../model/public.model';
 import { IRange } from '../../model/age-group.model';
 import { Field } from 'src/app/modules/report-template/model/analysis.values';
 import { AnalysisType } from '../../../report-template/model/analysis.values';
-import { AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 export interface IFieldInputInfo {
   inputType: 'TEXT' | 'DROPDOWN';
@@ -90,7 +90,6 @@ export class FieldInputComponent implements ControlValueAccessor, OnInit {
         }
       },
     };
-    console.log(this.fieldInputInfo);
   }
 
   @Input()

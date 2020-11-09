@@ -6,7 +6,7 @@ import { IFacility, IFacilityDescriptor } from '../model/facility.model';
 import { EntityType } from '../../shared/model/entity.model';
 
 export interface IAddMember {
-  username: string;
+  userId: string;
 }
 
 @Injectable({

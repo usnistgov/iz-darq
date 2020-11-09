@@ -17,7 +17,7 @@
       <th colspan="2" class="title">Selection</th>
     </tr>
     <tr *ngFor="let selector of query.selectors">
-      <th class="field field-title">{{selector.field}}</th>
+      <th class="field field-title">{{fieldDisplayName[selector.field]}}</th>
       <td>
         <ul class="list-group" class="list-group">
           <li
@@ -41,7 +41,7 @@
             style="text-align: center;"
             *ngFor="let group of query.groupBy"
             class="list-group-item">
-            {{group}}
+            {{fieldDisplayName[group]}}
           </li>
         </ul>
       </td>
@@ -63,7 +63,7 @@
         <table class="table table-sm">
           <tr>
             <th class="field">Priority</th>
-            <th class="field" *ngFor="let group of query.groupBy">{{group}}</th>
+            <th class="field" *ngFor="let group of query.groupBy">{{fieldDisplayName[group]}}</th>
             <th class="field">Threshold (Goal %)</th>
           </tr>
           <tr *ngFor="let threshold of query.threshold.custom.thresholds; let i = index">
@@ -108,7 +108,7 @@
         <table class="table table-sm">
           <tr>
             <th class="field">Priority</th>
-            <th class="field" *ngFor="let group of query.groupBy">{{group}}</th>
+            <th class="field" *ngFor="let group of query.groupBy">{{fieldDisplayName[group]}}</th>
           </tr>
           <tr *ngFor="let valueMap of query.filter.groups.values; let i = index">
             <td class="field">{{i}}</td>

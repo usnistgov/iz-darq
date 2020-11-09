@@ -1,8 +1,6 @@
-<span><i class="fa fa-user" style="color: blue; margin-right: 3px;" *ngIf="descriptor.owned && !descriptor.published"></i></span>
-<span *ngIf="descriptor.published" class="badge badge-warning">
-  <i class="fa fa-globe" style="color: brown; margin-right: 3px;" ></i>
-  <i class="fa fa-user" style="color: blue; margin-right: 3px;"></i>
-  {{descriptor.owner}}
+<i *ngIf="descriptor.owner === userId" class="fa fa-user" style="color: blue; margin-right: 3px;"></i>
+<span *ngIf="descriptor.public" class="badge badge-warning">
+  <i class="fa fa-globe" style="color: brown; margin-right: 3px;" ></i>{{descriptor.ownerDisplayName}}
 </span>
-  {{ descriptor.name }}
-<span><i class="fa fa-lock" style="color: red; margin-right: 3px;"*ngIf="descriptor.owned && descriptor.locked"></i></span>
+{{ descriptor.name }}
+<span><i class="fa fa-lock" style="color: red; margin-right: 3px;"*ngIf="descriptor.locked"></i></span>

@@ -1,5 +1,6 @@
 import { EntityType } from '../../shared/model/entity.model';
 import { IDamResource } from 'ngx-dam-framework';
+import { IUser } from '../../core/model/user.model';
 
 
 export interface IFacilityDescriptor extends IDamResource {
@@ -9,6 +10,16 @@ export interface IFacilityDescriptor extends IDamResource {
   size: number;
 }
 
+export interface IUserFacilityDescriptor extends IFacilityDescriptor {
+  reports: number;
+  files: number;
+  _private?: boolean;
+}
+
 export interface IFacility extends IFacilityDescriptor {
   members: string[];
+}
+
+export interface IFacilityContent extends IFacilityDescriptor {
+  members: IUser[];
 }

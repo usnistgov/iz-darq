@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { catchError, map, concatMap, flatMap, take } from 'rxjs/operators';
+import { catchError, map, concatMap, flatMap } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import {
   CoreActionTypes,
   LoadFacilitiesSuccess,
   LoadFacilitiesFailure,
-  LoadFacility,
   LoadFacilitySuccess,
   LoadFacilityFailure,
   OpenFacilityEditor,
@@ -27,7 +26,7 @@ import {
 import { IFacilityDescriptor } from '../model/facility.model';
 import { handleError } from '../../shared/services/helper.functions';
 import { UserService } from '../../core/services/user.service';
-import { IUserResource } from '../../core/model/user.model';
+import { IUser } from '../../core/model/user.model';
 
 @Injectable()
 export class CoreEffects extends DamWidgetEffect {
@@ -36,7 +35,6 @@ export class CoreEffects extends DamWidgetEffect {
   save$ = this.actions$.pipe(
     ofType(DamActionTypes.GlobalSave),
     map((action: GlobalSave) => {
-      console.log('GLOBAL');
       return new EditorSave({});
     })
   );
@@ -62,26 +60,18 @@ export class CoreEffects extends DamWidgetEffect {
     })
   );
 
-  // @Effect()
-  // loadFacility$ = this.actions$.pipe(
-  //   ofType(CoreActionTypes.LoadFacility),
-  //   concatMap((action: LoadFacility) => {
-
-  //   })
-  // );
-
   @Effect()
   openFacilityEditor$ = this.actions$.pipe(
     ofType(CoreActionTypes.OpenFacilityEditor),
     concatMap((action: OpenFacilityEditor) => {
       return combineLatest([
         this.facilityService.getById(action.payload.id),
-        this.userService.getList(),
+        this.userService.getListOfAllUsers(),
       ]).pipe(
         flatMap(([facility, users]) => {
           return [
             new LoadPayloadData(facility),
-            new LoadResourcesInRepository<IUserResource>({
+            new LoadResourcesInRepository<IUser>({
               collections: [{
                 key: 'users',
                 values: users,

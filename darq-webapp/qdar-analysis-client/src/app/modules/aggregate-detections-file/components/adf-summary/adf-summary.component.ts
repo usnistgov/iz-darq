@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, combineLatest, Subject, Subscription, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { Observable, combineLatest, Subscription, ReplaySubject } from 'rxjs';
 import { IADFMetadata, IExtractPercent } from '../../model/adf.model';
 import { Store } from '@ngrx/store';
 import { selectOpenFileMetadata } from '../../store/core.selectors';
 import { AgeGroupService } from '../../../shared/services/age-group.service';
-import { tap, map, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { selectDetectionById } from '../../../shared/store/core.selectors';
 import { IDetectionResource } from '../../../shared/model/public.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-adf-summary',
@@ -23,10 +24,12 @@ export class AdfSummaryComponent implements OnInit, OnDestroy {
   unrecognized$: ReplaySubject<string[]>;
   inactive$: ReplaySubject<IDetectionResource[]>;
   dSub: Subscription;
+  dashboardRoute$: Observable<string[]>;
 
   constructor(
     private store: Store<any>,
-    public agService: AgeGroupService) {
+    public agService: AgeGroupService,
+    private activatedRoute: ActivatedRoute) {
     this.adfMeta$ = this.store.select(selectOpenFileMetadata);
     this.extractItems$ = this.store.select(selectOpenFileMetadata).pipe(
       map((meta) => {
@@ -38,7 +41,11 @@ export class AdfSummaryComponent implements OnInit, OnDestroy {
         });
       }),
     );
-
+    this.dashboardRoute$ = this.activatedRoute.queryParams.pipe(
+      map((queryParams) => {
+        return queryParams.facilityId ? ['/', 'adf', 'dashboard', queryParams.facilityId] : ['/', 'adf', 'dashboard'];
+      })
+    );
     this.supported$ = new ReplaySubject();
     this.unrecognized$ = new ReplaySubject();
     this.inactive$ = new ReplaySubject();

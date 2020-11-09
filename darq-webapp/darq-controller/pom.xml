@@ -17,7 +17,7 @@
 
       <dependency>
           <groupId>gov.nist.healthcare.iz</groupId>
-          <artifactId>darq-service</artifactId>
+          <artifactId>darq-users</artifactId>
           <version>${qdar.webtool.version}</version>
   	</dependency>
   </dependencies>

@@ -29,16 +29,15 @@ import gov.nist.healthcare.iz.darq.parser.model.VaccineRecord;
 
 public class DQAValidator {
 
-	private MessageValidator validator = MessageValidator.INSTANCE;
-	private MQETransformService transformer;
-	private List<Issue> issues;
-	private List<VxInfo> vx;
-	private Map<String, String> providers;
-	private AgeGroupService ageGroupCalculator;
-	private DetectionFilter filter;
-	private VaxGroupMapper vaxMapper;
-	private int nbVx;
-	private DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyyMMdd");
+	private final MessageValidator validator = MessageValidator.INSTANCE;
+	private final MQETransformService transformer;
+	private final List<Issue> issues;
+	private final List<VxInfo> vx;
+	private final Map<String, String> providers;
+	private final AgeGroupService ageGroupCalculator;
+	private final DetectionFilter filter;
+	private final VaxGroupMapper vaxMapper;
+	private final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyyMMdd");
 
 
 	public DQAValidator(AgeGroupService ageGroupCalculator, DetectionFilter filter, VaxGroupMapper vaxMapper) {
@@ -47,7 +46,6 @@ public class DQAValidator {
 		this.issues = new ArrayList<>();
 		this.providers = new HashMap<>();
 		this.vx = new ArrayList<>();
-		this.nbVx = 0;
 		this.ageGroupCalculator = ageGroupCalculator;
 		this.filter = filter;
 		this.vaxMapper = vaxMapper;
@@ -58,10 +56,9 @@ public class DQAValidator {
 		// Transform APR
 		TransformResult<VaccineRecord, MqeVaccination, MqeMessageReceived> tresult = this.transformer.transform(apr);
 		MqeMessageReceived msg = tresult.getPayload();
-		nbVx = msg.getVaccinations().size();
-		
+
 		// DOB and Patient AgeGroup
-		LocalDate DOB = LocalDate.parse(msg.getPatient().getBirthDateString(), dateFormat);
+		LocalDate DOB = apr.patient.date_of_birth.getValue();
 		String currentAgeGroup = this.ageGroupCalculator.getGroup(DOB, date);
 
 		// For each Vaccination
@@ -103,7 +100,7 @@ public class DQAValidator {
 			
 			// If the rule targets a vaccination set age group relative to admin date else use the age group relative to today
 			String ageGroup = vaccine ? this.ageGroupCalculator.getGroup(DOB, LocalDate.parse(vx.getAdminDateString(), dateFormat)) : currentAgeGroup;
-			
+
 			for(ValidationReport vi : r.getIssues()){
 				
 				// Check if detection is is configuration

@@ -1,6 +1,6 @@
 <div style="margin-bottom: 15px;" [id]="value.id" class="scroll-to">
   <div style="position: sticky; position: -webkit-sticky; z-index: 999; top: 0; background-color: white; padding: 5px; border-bottom: 2px solid #d6d6d6;">
-    <h5>{{value.path}}. {{value.header}} <i *ngIf="value.thresholdViolation" class="fa fa-warning" style="color: red;" pTooltip="Some values violate threshold" ></i> </h5>
+    <h5>{{value.path}}. {{value.header}} <i *ngIf="filtered.thresholdViolation" class="fa fa-warning" style="color: red;" pTooltip="Some values violate threshold" ></i> </h5>
   </div>
 
   <div style="padding: 10px;" [innerHTML]="value.text"></div>

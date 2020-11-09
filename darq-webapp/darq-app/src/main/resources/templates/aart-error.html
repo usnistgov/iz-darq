@@ -1,0 +1,20 @@
+<html style="width: 100%; height: 100%; margin: 0;">
+<head>
+    <title>qDAR</title>
+</head>
+<body style="width: 100%; height: 100%; margin: 0; display: flex; align-items: center; justify-content: center; background-color: antiquewhite;">
+    <div style="display: flex;
+                height: 100%;
+                align-items: center;
+                justify-content: center;">
+        <div>
+            <span style="font-size: 50px; font-weight: 600; color: #021a4c;">Oops there was an error while trying to connect you!</span>
+            <#if message??>
+                <h1 style="color: #739fff">Due to : ${message}</h1>
+            </#if>
+            <h1 style="color: #739fff">Please <a href="mailto:${mailto}">contact</a> qDAR administrator to resolve this issue.</h1>
+            <textarea style="width: 100%; height: 100px; resize: none;" disabled>${token}</textarea>
+        </div>
+    </div>
+</body>
+</html>

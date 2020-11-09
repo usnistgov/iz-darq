@@ -1,0 +1,173 @@
+<ng-container *ngIf="users$ | async as users">
+  <div style="margin-bottom: 20px;">
+    <span>Total Registered Users <span class="badge badge-primary">{{ users.length }} </span></span>
+  </div>
+  <form [formGroup]="filterFormGroup" style="padding: 10px; border-radius: 2px; border: 1px solid lightgray; background-color: aliceblue; margin-bottom: 5px;">
+    <h5 style="margin-bottom: 15px;"><i class="fa fa-filter"></i> Filter</h5>
+    <div style="display: flex; align-items: center; justify-content: center;">
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="source"><strong>Source</strong></label>
+        <p-dropdown
+          [options]="sourceOptions"
+          [autoDisplayFirst]="false"
+          styleClass="form-control user-filter" formControlName="source" name="source" id="source"
+        ></p-dropdown>
+      </div>
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="username-filter"><strong>Username</strong></label>
+        <input type="text" placeholder="Username" class="form-control" formControlName="username" name="username" id="username-filter">
+      </div>
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="name-filter"><strong>Name</strong></label>
+        <input type="text" placeholder="Name" class="form-control" formControlName="name" name="name" id="name-filter">
+      </div>
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="email-filter"><strong>Email</strong></label>
+        <input type="email" placeholder="Email" class="form-control" formControlName="email" name="email" id="email-filter">
+      </div>
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="org-filter"><strong>Organization</strong></label>
+        <input type="text" placeholder="Organization" class="form-control" formControlName="org" name="org" id="org-filter">
+      </div>
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="status-filter"><strong>Status</strong></label>
+        <p-dropdown
+          [options]="statusOptions"
+          [autoDisplayFirst]="false"
+          styleClass="form-control user-filter" formControlName="status" name="status" id="status-filter"
+        ></p-dropdown>
+      </div>
+      <div class="form-group" style="margin-right: 3px;">
+        <label for="role-filter"><strong>Role</strong></label>
+        <p-dropdown
+          [options]="roleOptions"
+          [autoDisplayFirst]="false"
+          styleClass="form-control user-filter" formControlName="role" name="role" id="role-filter"
+        ></p-dropdown>
+      </div>
+    </div>
+    <div style="width: 100%; display: flex; justify-content: flex-end;">
+      <button class="btn btn-sm btn-danger" (click)="clear()">
+        <i class="fa fa-trash"></i> Clear
+      </button>
+    </div>
+  </form>
+  <p-table
+    #dt
+    [value]="users"
+    [paginator]="true"
+    [rows]="10"
+    class="ui-table-dash"
+    sortMode="multiple"
+    [styleClass]="'table table-sm table-striped'">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="vertical-align: middle;" pSortableColumn="source">
+          Source
+          <p-sortIcon field="source"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle;" pSortableColumn="credentials">
+          Credentials
+          <p-sortIcon field="credentials"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle;" pSortableColumn="username">
+          Username
+          <p-sortIcon field="username"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle;" pSortableColumn="fullName">
+          Name
+          <p-sortIcon field="fullName"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle; width: 200px;" pSortableColumn="email">
+          Email
+          <p-sortIcon field="email"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle;" pSortableColumn="organization">
+          Organization
+          <p-sortIcon field="organization"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle;" pSortableColumn="pending">
+          Status
+          <p-sortIcon field="pending"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle;">
+          User Roles
+        </th>
+        <th style="vertical-align: middle; width: 380px;">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData>
+      <tr>
+        <td>
+          <span *ngIf="rowData.source" style="font-size: 14px; margin-right: 5px;" class="badge badge-dark">{{rowData.source}}</span>
+          <span *ngIf="!rowData.source" style="font-size: 14px; margin-right: 5px;" class="badge badge-primary">qDAR</span>
+        </td>
+        <td>
+          <span *ngIf="rowData.credentials" style="font-size: 14px; margin-right: 5px;" class="badge badge-success">Yes</span>
+          <span *ngIf="!rowData.credentials" style="font-size: 14px; margin-right: 5px;" class="badge badge-secondary">No</span>
+        </td>
+        <td>
+          <span *ngIf="rowData.username === 'admin'" style="font-size: 14px; margin-right: 5px;" class="badge badge-danger">PRINCIPAL</span>
+          <span *ngIf="rowData.id === (userId$ | async)" style="font-size: 14px; margin-right: 5px;" class="badge badge-primary">CURRENT</span>
+          <strong>{{ rowData.username }}</strong>
+        </td>
+        <td>{{ rowData.name }}</td>
+        <td>
+          {{ rowData.email }}
+          <span style="color: green;" *ngIf="rowData.verified" >(verified)</span>
+          <span style="color: brown;" *ngIf="!rowData.verified" >(pending verification)</span>
+
+        </td>
+        <td>{{ rowData.organization }}</td>
+        <td>
+          <div [ngSwitch]="rowData.status">
+            <div *ngSwitchCase="'ACTIVE'" style="display: flex; align-items: center; justify-content: center;">
+              <div style="height: 12px; width: 12px; border-radius: 12px; margin-right: 5px; background-color: green;"></div> Active
+            </div>
+            <div *ngSwitchCase="'LOCKED'" style="display: flex; align-items: center; justify-content: center;">
+              <div style="height: 12px; width: 12px; border-radius: 12px; margin-right: 5px; background-color: red;"></div> Locked
+            </div>
+            <div *ngSwitchCase="'PENDING'" style="display: flex; align-items: center; justify-content: center;">
+              <div style="height: 12px; width: 12px; border-radius: 12px; margin-right: 5px; background-color: orange;"></div> Pending
+            </div>
+          </div>
+        </td>
+        <td>
+          <button (click)="editRole(rowData)" class="btn btn-sm btn-secondary" style="margin-right: 5px;" *ngIf="rowData.username !== 'admin' && rowData.id !== (userId$ | async)" >
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </button>
+          <span *ngFor="let item of rowData.roles" style="font-size: 14px; margin-right: 5px;" class="badge" [ngClass]="{
+            'badge-primary' : item !== 'ADMIN',
+            'badge-success' : item === 'ADMIN'
+          }">{{item}}</span>
+        </td>
+        <td>
+          <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;" >
+            <ng-container *ngIf="rowData.username !== 'admin' && rowData.id !== (userId$ | async)">
+              <button class="btn btn-sm btn-danger" style="margin-right: 5px;" (click)="delete(rowData)" >
+                <i class="fa fa-trash"></i>
+                Delete
+              </button>
+              <button class="btn btn-sm btn-success" style="margin-right: 5px;" (click)="approve(rowData)" *ngIf="rowData.status === 'PENDING'"  >
+                <i class="fa fa-check"></i>
+                Approve
+              </button>
+              <button class="btn btn-sm btn-dark" style="margin-right: 5px;" (click)="setLock(rowData, true)" *ngIf="rowData.status === 'ACTIVE'"  >
+                <i class="fa fa-lock"></i>
+                Lock
+              </button>
+              <button class="btn btn-sm btn-success" style="margin-right: 5px;" (click)="setLock(rowData, false)" *ngIf="rowData.status === 'LOCKED'">
+                <i class="fa fa-unlock"></i>
+                Unlock
+              </button>
+            </ng-container>
+            <button class="btn btn-sm btn-warning" style="margin-right: 5px;" (click)="edit(rowData)" >
+              <i class="fa fa-pencil"></i>
+              Edit Profile
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-container>

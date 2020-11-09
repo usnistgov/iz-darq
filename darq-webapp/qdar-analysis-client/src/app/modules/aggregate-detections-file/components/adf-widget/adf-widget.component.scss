@@ -1,0 +1,3 @@
+:host ::ng-deep .container-section-toolbar {
+  grid-template-rows: [toolbar] 55px [page-container-content] auto !important;
+}

@@ -142,7 +142,7 @@ dam-fullscreen-button button {
   border-bottom: 2px solid rgb(114, 196, 118); /* green */
 }
 
-.ng-invalid:not(form)  {
+.ng-invalid:not(form):not(div)  {
   background-color: $invalid_color !important;
   border-bottom: 2px solid #d6403d; /* red */
 }
@@ -223,6 +223,7 @@ dam-fullscreen-button button {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background-color: white;
 }
 
 .section-editor .ui-editor-content {
@@ -242,4 +243,8 @@ dam-fullscreen-button button {
 .ui-tabview-nav .invalid-tab {
   background-color: $invalid_color !important;
   border: 1px solid #d6d6d6e3 !important;
+}
+
+.ui-dropdown.user-filter {
+  padding: 0 !important;
 }

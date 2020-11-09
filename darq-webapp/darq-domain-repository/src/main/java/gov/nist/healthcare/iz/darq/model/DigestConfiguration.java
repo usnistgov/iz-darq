@@ -2,15 +2,21 @@ package gov.nist.healthcare.iz.darq.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import gov.nist.healthcare.domain.trait.Owned;
+import gov.nist.healthcare.domain.trait.Publishable;
 import org.springframework.data.annotation.Transient;
 
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 
-public class DigestConfiguration {
+public class DigestConfiguration implements Owned, Publishable {
 
 	private String id;
 	private String name;
+	@Deprecated
 	private String owner;
+	private String ownerId;
 	private Date lastUpdated;
 	private ConfigurationPayload payload;
 	private String description;
@@ -31,9 +37,12 @@ public class DigestConfiguration {
 	public void setName(String name) {
 		this.name = name;
 	}
+	@Deprecated
+	@JsonIgnore
 	public String getOwner() {
 		return owner;
 	}
+	@Deprecated
 	public void setOwner(String owner) {
 		this.owner = owner;
 	}
@@ -72,5 +81,22 @@ public class DigestConfiguration {
 	}
 	public void setLocked(boolean locked) {
 		this.locked = locked;
+	}
+
+	@Override
+	@JsonProperty("owner")
+	public String getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
+	}
+
+	@Override
+	@Transient
+	@JsonProperty("public")
+	public boolean isPublic() {
+		return this.published;
 	}
 }

@@ -1,0 +1,29 @@
+:host ::ng-deep .home-section-editor .ui-editor-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}
+
+:host ::ng-deep .home-section-editor.ng-invalid .ui-editor-container {
+  background-color: #ffedf0;
+}
+
+:host ::ng-deep .home-section-editor .ui-editor-content {
+  flex: auto;
+}
+
+.email-template {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  margin-bottom: 10px;
+}
+
+.enabled {
+  background-color: #eef9f9;
+}
+
+.disabled {
+  background-color: #efefef;
+}

@@ -1,10 +1,10 @@
 {
 	"darq-cli" : {
 		"name" : "darq-cli.jar",
-		"size" : "12Mb",
+		"size" : "19Mb",
 		"path" : "darq-cli.jar",
 		"type" : "application/java-archive",
-		"description" : "Command Line Tool to generate Aggregated Detections File (Requirement : Java)"
+		"description" : "Command Line Tool to generate Aggregated Detections File (Requirement : Java) v1.6.0"
 	},
 	"extract-doc" : {
 		"name" : "DAR_Extract_Specification_draft.docx",

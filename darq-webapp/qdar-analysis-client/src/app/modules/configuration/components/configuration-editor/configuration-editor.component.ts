@@ -3,19 +3,16 @@ import {
   DamAbstractEditorComponent,
   EditorSave,
   IEditorMetadata,
-  selectUsername,
   EditorUpdate,
   IWorkspaceCurrent,
   MessageService,
   ConfirmDialogComponent,
   InsertResourcesInCollection,
-  selectIsAdmin,
-  CleanWorkspace,
 } from 'ngx-dam-framework';
 import { Observable, of, Subscription, throwError } from 'rxjs';
-import { Action, Store } from '@ngrx/store';
+import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
-import { flatMap, map, tap, take, concatMap, catchError } from 'rxjs/operators';
+import { flatMap, map, take, concatMap, catchError } from 'rxjs/operators';
 import { selectConfigurationById } from '../../store/core.selectors';
 import { IConfigurationDescriptor, IDigestConfiguration } from '../../model/configuration.model';
 import { IRange } from '../../../shared/model/age-group.model';
@@ -24,6 +21,9 @@ import { selectAllDetections } from '../../../shared/store/core.selectors';
 import { ConfigurationService } from '../../services/configuration.service';
 import { DamWidgetComponent, Message } from 'ngx-dam-framework';
 import { MatDialog } from '@angular/material/dialog';
+import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
+import { ResourceType } from '../../../core/model/resouce-type.enum';
+import { PermissionService } from '../../../core/services/permission.service';
 
 export const CONFIGURATION_EDITOR_MD: IEditorMetadata = {
   id: 'CONFIGURATION_EDITOR',
@@ -37,11 +37,9 @@ export const CONFIGURATION_EDITOR_MD: IEditorMetadata = {
 })
 export class ConfigurationEditorComponent extends DamAbstractEditorComponent implements OnInit, OnDestroy {
 
-  viewOnly: boolean;
+  viewOnly$: Observable<boolean>;
   isLocked: boolean;
   isPublished: boolean;
-  isOwned: boolean;
-  isAdmin$: Observable<boolean>;
   value: IDigestConfiguration;
   detections: Observable<IDetectionResource[]>;
   wSub: Subscription;
@@ -49,6 +47,7 @@ export class ConfigurationEditorComponent extends DamAbstractEditorComponent imp
   constructor(
     store: Store<any>,
     actions$: Actions,
+    private permissionService: PermissionService,
     public dialog: MatDialog,
     public widget: DamWidgetComponent,
     private configurationService: ConfigurationService,
@@ -59,7 +58,13 @@ export class ConfigurationEditorComponent extends DamAbstractEditorComponent imp
       map((configuration: IDigestConfiguration) => {
         this.isLocked = configuration.locked;
         this.isPublished = configuration.published;
-        this.viewOnly = configuration.viewOnly;
+
+        this.viewOnly$ = this.permissionService.abilities$.pipe(
+          map((abilities) => {
+            return abilities.onResourceCant(ResourceAction.EDIT, ResourceType.CONFIGURATION, configuration) || configuration.locked;
+          })
+        );
+
         this.value = {
           ...configuration,
           payload: {
@@ -69,15 +74,8 @@ export class ConfigurationEditorComponent extends DamAbstractEditorComponent imp
             ],
           },
         };
-        this.store.select(selectUsername).pipe(
-          take(1),
-          tap((username) => {
-            this.isOwned = username === configuration.owner;
-          })
-        ).subscribe();
       }),
     ).subscribe();
-    this.isAdmin$ = this.store.select(selectIsAdmin);
     this.detections = this.store.select(selectAllDetections);
   }
 
@@ -101,20 +99,28 @@ export class ConfigurationEditorComponent extends DamAbstractEditorComponent imp
             concatMap((id) => {
               return action(id).pipe(
                 flatMap((message) => {
-                  return [
-                    new InsertResourcesInCollection({
-                      key: 'configurations',
-                      values: [this.configurationService.getDescriptor(message.data, this.isOwned)],
-                    }),
-                    this.messageService.messageToAction(message),
-                    new EditorUpdate({ value: message.data, updateDate: true }),
-                  ];
+
+                  return this.configurationService.getDescriptorById(message.data.id).pipe(
+                    flatMap((descriptor) => {
+                      return [
+                        new InsertResourcesInCollection({
+                          key: 'configurations',
+                          values: [descriptor],
+                        }),
+                        this.messageService.messageToAction(message),
+                        new EditorUpdate({ value: message.data, updateDate: true }),
+                      ];
+                    })
+                  );
+
+
                 }),
                 map((a) => {
                   this.store.dispatch(a);
                 }),
                 catchError((error) => {
-                  return throwError(this.messageService.actionFromError(error));
+                  this.store.dispatch(this.messageService.actionFromError(error));
+                  return of(error);
                 })
               );
             }),
@@ -205,13 +211,17 @@ export class ConfigurationEditorComponent extends DamAbstractEditorComponent imp
       concatMap((current: IWorkspaceCurrent) => {
         return this.configurationService.save(current.data).pipe(
           flatMap((message) => {
-            return [
-              new InsertResourcesInCollection({
-                key: 'configurations',
-                values: [this.configurationService.getDescriptor(message.data, this.isOwned)],
-              }),
-              this.messageService.messageToAction(message),
-            ];
+            return this.configurationService.getDescriptorById(message.data.id).pipe(
+              flatMap((descriptor) => {
+                return [
+                  new InsertResourcesInCollection({
+                    key: 'configurations',
+                    values: [descriptor],
+                  }),
+                  this.messageService.messageToAction(message),
+                ];
+              })
+            );
           }),
           catchError((error) => {
             return throwError(this.messageService.actionFromError(error));

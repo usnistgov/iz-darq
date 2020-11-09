@@ -11,9 +11,9 @@
 	<artifactId>darq-app</artifactId>
 	<version>${qdar.webtool.version}</version>
 	<properties>
-		<qdar.webtool.version>2.0.0</qdar.webtool.version>
-		<qdar.api.version>1.5.0</qdar.api.version>
-		<qdar.cli.version>1.5.0</qdar.cli.version>
+		<qdar.webtool.version>2.1.0</qdar.webtool.version>
+		<qdar.api.version>1.6.0</qdar.api.version>
+		<qdar.cli.version>1.6.0</qdar.cli.version>
 		<mqe.version>2020.02-BETA</mqe.version>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>MM-dd-yyyy</maven.build.timestamp.format>
@@ -24,25 +24,30 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-<!--			<exclusions>-->
-<!--				<exclusion>-->
-<!--					<artifactId>tomcat-embed-el</artifactId>-->
-<!--					<groupId>org.apache.tomcat.embed</groupId>-->
-<!--				</exclusion>-->
-<!--				<exclusion>-->
-<!--					<artifactId>tomcat-embed-core</artifactId>-->
-<!--					<groupId>org.apache.tomcat.embed</groupId>-->
-<!--				</exclusion>-->
-<!--				<exclusion>-->
-<!--					<artifactId>tomcat-embed-websocket</artifactId>-->
-<!--					<groupId>org.apache.tomcat.embed</groupId>-->
-<!--				</exclusion>-->
-<!--			</exclusions>-->
+			<exclusions>
+				<exclusion>
+					<artifactId>tomcat-embed-el</artifactId>
+					<groupId>org.apache.tomcat.embed</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>tomcat-embed-core</artifactId>
+					<groupId>org.apache.tomcat.embed</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>tomcat-embed-websocket</artifactId>
+					<groupId>org.apache.tomcat.embed</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.healthcare.iz</groupId>
+			<artifactId>darq-users</artifactId>
+			<version>${qdar.webtool.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
-<!--			<scope>provided</scope>-->
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -66,7 +71,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.9.10.5</version>
+			<version>2.7.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -78,7 +83,11 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.15</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+    </dependencies>
 	<build>
 		<finalName>qdar</finalName>
 		<resources>
@@ -113,48 +122,3 @@
 		</plugins>
 	</build>
 </project>
-<!-- <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"> 
-	<modelVersion>4.0.0</modelVersion> <parent> <groupId>org.springframework.boot</groupId> 
-	<artifactId>spring-boot-starter-parent</artifactId> <version>1.5.9.RELEASE</version> 
-	<relativePath /> </parent> <packaging>jar</packaging> <artifactId>darq-app</artifactId> 
-	<properties> <maven.compiler.source>1.8</maven.compiler.source> <cli.version>0.0.1-SNAPSHOT</cli.version> 
-	<maven.compiler.target>1.8</maven.compiler.target> <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format> 
-	<ts>${maven.build.timestamp}</ts> <start-class>gov.nist.healthcare.iz.darq.boot.Application</start-class> 
-	</properties> <dependencies> <dependency> <groupId>javax.xml.bind</groupId> 
-	<artifactId>jaxb-api</artifactId> <version>2.3.0</version> </dependency> 
-	<dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-core</artifactId> 
-	<version>2.3.0</version> </dependency> <dependency> <groupId>com.sun.xml.bind</groupId> 
-	<artifactId>jaxb-impl</artifactId> <version>2.3.0</version> </dependency> 
-	<dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-web</artifactId> 
-	</dependency> <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-security</artifactId> 
-	</dependency> <dependency> <groupId>gov.nist.healthcare.iz</groupId> <artifactId>darq-controller</artifactId> 
-	<version>0.0.1-SNAPSHOT</version> </dependency> <dependency> <groupId>gov.nist.healthcare.iz</groupId> 
-	<artifactId>darq-configuration</artifactId> <version>0.0.1-SNAPSHOT</version> 
-	</dependency> <dependency> <groupId>com.fasterxml.jackson.core</groupId> 
-	<artifactId>jackson-core</artifactId> <version>2.7.4</version> </dependency> 
-	<dependency> <groupId>com.fasterxml.jackson.core</groupId> <artifactId>jackson-databind</artifactId> 
-	<version>2.9.10.5</version> </dependency> <dependency> <groupId>org.apache.poi</groupId> 
-	<artifactId>poi</artifactId> <version>3.15</version> </dependency> <dependency> 
-	<groupId>org.apache.poi</groupId> <artifactId>poi-ooxml</artifactId> <version>3.15</version> 
-	</dependency> <dependency> <groupId>gov.nist.healthcare.iz</groupId> <artifactId>darq-cli-app</artifactId> 
-	<version>0.0.1-SNAPSHOT</version> <optional>true</optional> </dependency> 
-	</dependencies> <build> <resources> <resource> <directory>src/main/webapp</directory> 
-	</resource> <resource> <directory>src/main/resources</directory> </resource> 
-	</resources> <plugins> <plugin> <groupId>org.springframework.boot</groupId> 
-	<artifactId>spring-boot-maven-plugin</artifactId> <version>2.0.1.RELEASE</version> 
-	<executions> <execution> <goals> <goal>repackage</goal> </goals> </execution> 
-	</executions> </plugin> <plugin> <artifactId>exec-maven-plugin</artifactId> 
-	<groupId>org.codehaus.mojo</groupId> <executions> <execution> <id>npm-install</id> 
-	<goals> <goal>exec</goal> </goals> <phase>process-resources</phase> <configuration> 
-	<executable>npm</executable> <arguments> <argument>install</argument> </arguments> 
-	<workingDirectory>${project.basedir}/../front-end</workingDirectory> </configuration> 
-	</execution> <execution> <id>angular-cli-build</id> <goals> <goal>exec</goal> 
-	</goals> <phase>process-resources</phase> <configuration> <executable>ng</executable> 
-	<arguments> <argument>build</argument> </arguments> <workingDirectory>${project.basedir}/../front-end</workingDirectory> 
-	</configuration> </execution> <execution> <id>cp-darq-cli</id> <goals> <goal>exec</goal> 
-	</goals> <phase>process-resources</phase> <configuration> <executable>cp</executable> 
-	<arguments> <argument>../../darq-extract-process/darq-cli-app/target/darq-cli-app-${cli.version}-jar-with-dependencies.jar</argument> 
-	<argument>./src/main/resources/darq-cli.jar</argument> </arguments> <workingDirectory>${project.basedir}</workingDirectory> 
-	</configuration> </execution> </executions> </plugin> </plugins> </build> 
-	</project> -->

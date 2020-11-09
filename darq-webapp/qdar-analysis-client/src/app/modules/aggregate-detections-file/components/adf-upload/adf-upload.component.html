@@ -1,11 +1,11 @@
-<div class="page-container">
+<div class="page-container" *ngIf="init">
   <div class="page-alerts">
     <dam-alerts-container></dam-alerts-container>
   </div>
   <div class="page-title upload-page-title">
     <ul class="nav nav-pills">
       <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/', 'adf', 'dashboard' ]" >
+        <a class="nav-link" [routerLink]="dashboardRoute$ | async" >
           <h5 class="title-text">
             <i class="fa fa-chevron-left" style="margin-right: 15px;"></i>
             <i class="fa fa-database" style="color: crimson;"></i>
@@ -16,8 +16,13 @@
     </ul>
     <h4 class="title-text title-heading" ><i class="fa fa-upload" style="color: blue;"></i> Upload Aggregate Detections File </h4>
   </div>
-  <div class="page-content upload-page-content">
+  <div class="page-content upload-page-content" *ngIf="facilities$ | async as facilities">
     <form class="upload-form" [formGroup]="form" >
+      <div class="alert alert-warning" *ngIf="(facilities$ | async).length === 0">
+        <ng-container *ngIf="info$ | async as info">
+          You have not been assigned any IIS access, please contact us  {{info.contact ? ('at ' + info.contact) : '' }} to request access.
+        </ng-container>
+      </div>
       <div class="form-group" style="height: 100px;">
         <app-file-upload-field [required]="true" (file)="setFile($event)" label="Aggregate Detections File"></app-file-upload-field>
       </div>
@@ -26,15 +31,15 @@
         <input type="text" placeholder="Name" class="form-control" formControlName="name" name="name" id="name" required>
       </div>
       <div class="form-group">
-        <label for="facility"><strong>Facility</strong></label>
-        <p-dropdown formControlName="facility" [autoDisplayFirst]="false" [showClear]="true" [options]="facilities$ | async" [style]="{ width : '100%'}" name="facility" id="facility" ></p-dropdown>
+        <label for="facility"><strong>IIS</strong></label>
+        <p-dropdown formControlName="facility" [autoDisplayFirst]="false" [showClear]="true" [options]="facilities" [style]="{ width : '100%'}" name="facility" id="facility" ></p-dropdown>
       </div>
-      <div class="form-group">
+      <div class="form-group" *ngIf="termsAndConditions">
         <label for="tac"><strong>Terms & Conditions</strong></label>
-        <textarea style="resize: none;" class="form-control" disabled rows="10">
+        <textarea [value]="termsAndConditions" style="resize: none;" class="form-control" disabled rows="10">
         </textarea>
       </div>
-      <div class="form-group form-check">
+      <div class="form-group form-check" *ngIf="termsAndConditions">
         <input required formControlName="accept" type="checkbox" class="form-check-input" id="accept-check">
         <label class="form-check-label" for="accept-check">I have read and accept the terms & conditions of use</label>
       </div>

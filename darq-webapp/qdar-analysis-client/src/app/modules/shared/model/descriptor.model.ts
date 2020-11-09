@@ -6,9 +6,9 @@ export interface IDescriptor extends IDamResource {
   type: EntityType;
   name: string;
   owner: string;
+  ownerDisplayName: string;
   lastUpdated: Date;
-  viewOnly: boolean;
   locked: boolean;
-  owned: boolean;
   published: boolean;
+  public: boolean;
 }

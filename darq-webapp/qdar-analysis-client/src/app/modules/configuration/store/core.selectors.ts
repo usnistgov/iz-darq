@@ -1,6 +1,6 @@
 import { selectFromCollection, selectWorkspaceCurrent } from 'ngx-dam-framework';
 import { createEntityAdapter, Dictionary } from '@ngrx/entity';
-import { IConfigurationDescriptor } from '../model/configuration.model';
+import { IConfigurationDescriptor, IDigestConfiguration } from '../model/configuration.model';
 import { createSelector } from '@ngrx/store';
 
 const configurationsAdapter = createEntityAdapter<IConfigurationDescriptor>();
@@ -24,13 +24,13 @@ export const selectConfigurationById = createSelector(
     }
   }
 );
-export const selectCurrentConfigurationIsViewOnly = createSelector(
+export const selectCurrentConfiguration = createSelector(
   selectWorkspaceCurrent,
   (active: {
     data: any;
     valid: boolean;
     time: Date;
   }) => {
-    return !active || !active.data || active.data.viewOnly;
+    return active ? active.data as IDigestConfiguration : undefined;
   }
 );

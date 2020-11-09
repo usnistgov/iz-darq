@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { IUserResource } from '../../../core/model/user.model';
+import { IUser } from '../../../core/model/user.model';
 
 @Component({
   selector: 'app-user-list',
@@ -9,9 +9,9 @@ import { IUserResource } from '../../../core/model/user.model';
 })
 export class UserListComponent implements OnInit {
 
-  users: IUserResource[];
-  pickList: IUserResource[];
-  picked: IUserResource[];
+  users: IUser[];
+  pickList: IUser[];
+  picked: IUser[];
   selection: string[];
 
   constructor(
@@ -22,7 +22,7 @@ export class UserListComponent implements OnInit {
     this.selection = data.selection;
 
     this.pickList = this.users.filter((elm) => {
-      return !this.selection.find((s) => s === elm.username);
+      return !this.selection.find((s) => s === elm.id);
     });
   }
 
@@ -31,7 +31,7 @@ export class UserListComponent implements OnInit {
   }
 
   select() {
-    this.dialogRef.close(this.picked.map((d) => d.username));
+    this.dialogRef.close(this.picked.map((d) => d.id));
   }
 
   ngOnInit(): void {
