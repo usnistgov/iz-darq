@@ -11,6 +11,7 @@ export interface IADFDescriptor extends IDamResource {
   analysedOn: Date;
   uploadedOn: Date;
   size: string;
+  version: string;
   compatibilities: IConfigurationDescriptor[];
   facilityId: string;
 }
@@ -30,6 +31,17 @@ export interface IADFMetadata extends IDamResource {
   mqeVersion: string;
   facilityId: string;
   inactiveDetections: string[];
+  composed: boolean;
+  components: {
+    id: string;
+    name: string;
+    ownerId: string;
+    analysedOn: Date;
+    uploadedOn: Date;
+    size: string;
+    summary: IADFSummary;
+    facilityId: string;
+  }[];
 }
 
 export interface IADFSummary {

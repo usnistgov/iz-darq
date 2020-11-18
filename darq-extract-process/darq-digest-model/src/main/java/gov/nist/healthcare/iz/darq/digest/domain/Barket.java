@@ -1,4 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
+
+import java.util.Objects;
+
 public class Barket implements Comparable<Barket>{
 		public int year;
 		public int month;
@@ -40,35 +43,19 @@ public class Barket implements Comparable<Barket>{
 			int odec = o.getYear() * 10000 + o.getMonth() * 100 + o.getDay() * 10;
 			return dec - odec;
 		}
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + day;
-			result = prime * result + month;
-			result = prime * result + year;
-			return result;
-		}
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Barket other = (Barket) obj;
-			if (day != other.day)
-				return false;
-			if (month != other.month)
-				return false;
-			if (year != other.year)
-				return false;
-			return true;
-		}
-		
-		
-		
-		
-		
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Barket barket = (Barket) o;
+		return year == barket.year &&
+				month == barket.month &&
+				day == barket.day;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(year, month, day);
+	}
 }

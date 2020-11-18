@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.adf.utils.crypto;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 
 import java.io.*;
@@ -14,5 +15,6 @@ public interface CryptoUtils {
 	ADFile decryptFile(InputStream reader) throws Exception;
 	PublicKey publicKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException;
 	PrivateKey privateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException;
+	ObjectMapper getObjectMapper();
 
 }

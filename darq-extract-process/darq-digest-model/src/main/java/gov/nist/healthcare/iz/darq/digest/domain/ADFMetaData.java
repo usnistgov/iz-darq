@@ -35,7 +35,8 @@ public class ADFMetaData {
 			String version,
 			String build,
 			String mqeVersion,
-			Set<String> inactiveDetections) {
+			Set<String> inactiveDetections
+	) {
 		super();
 		this.name = name;
 		this.path = path;

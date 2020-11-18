@@ -68,6 +68,18 @@ export class FileService {
     return this.http.get<IADFDescriptor[]>(this.URL_PREFIX);
   }
 
+  getAll(): Observable<IADFDescriptor[]> {
+    return this.http.get<IADFDescriptor[]>(this.URL_PREFIX + 'files');
+  }
+
+  mergeFiles(request: { name: string, facilityId: string, ids: string[] }): Observable<Message<IADFDescriptor>> {
+    const transformed = {
+      ...request,
+      facilityId: request.facilityId === PRIVATE_FACILITY_ID ? null : request.facilityId,
+    };
+    return this.http.post<Message<IADFDescriptor>>(this.URL_PREFIX + 'merge', transformed);
+  }
+
   getListByFacility(id: string): Observable<IADFDescriptor[]> {
     if (id === PRIVATE_FACILITY_ID) {
       return this.getList();

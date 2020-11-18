@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ConfigurationPayload {
 	
@@ -49,5 +47,25 @@ public class ConfigurationPayload {
 		} else {
 			return new Date();
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ConfigurationPayload that = (ConfigurationPayload) o;
+		Set<Range> sourceAgeGroups = new HashSet<>(ageGroups);
+		Set<Range> targetAgeGroups = new HashSet<>(that.ageGroups);
+		Set<String> sourceDetections = new HashSet<>(detections);
+		Set<String> targetDetections = new HashSet<>(that.detections);
+		return sourceAgeGroups.equals(targetAgeGroups) &&
+				sourceDetections.equals(targetDetections) &&
+				Objects.equals(asOf, that.asOf) &&
+				Objects.equals(vaxCodeAbstraction, that.vaxCodeAbstraction);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(ageGroups, detections, asOf, vaxCodeAbstraction);
 	}
 }

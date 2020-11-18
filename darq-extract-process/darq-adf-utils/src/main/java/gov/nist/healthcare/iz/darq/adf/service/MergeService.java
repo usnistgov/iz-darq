@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.digest.service;
+package gov.nist.healthcare.iz.darq.adf.service;
 
 import java.util.Map;
 

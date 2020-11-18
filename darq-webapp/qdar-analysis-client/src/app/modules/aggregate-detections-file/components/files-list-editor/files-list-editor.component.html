@@ -44,6 +44,7 @@
     <tr>
       <td>
         <i class="fa fa-file" style="color: blue; margin-right: 10px;"></i>
+        <i *ngIf="rowData.composed" class="fa fa-compress" style="color: #a71ba7; margin-right: 10px;"></i>
         <strong>{{ rowData.name }}</strong>
       </td>
       <td><i class="fa fa-user" style="color: rgb(255, 0, 119);"></i> {{ rowData.ownerDisplayName }}</td>

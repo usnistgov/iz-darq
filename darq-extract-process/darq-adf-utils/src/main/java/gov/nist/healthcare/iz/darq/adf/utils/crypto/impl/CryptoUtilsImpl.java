@@ -81,7 +81,12 @@ public class CryptoUtilsImpl implements CryptoUtils {
 		KeyFactory kf = KeyFactory.getInstance("RSA");
 		return kf.generatePrivate(ks);
 	}
-	
+
+	@Override
+	public ObjectMapper getObjectMapper() {
+		return this.mapper;
+	}
+
 	private SecretKeySpec password() throws NoSuchAlgorithmException {
 		KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 	    keyGen.init(128);

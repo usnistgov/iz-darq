@@ -5,14 +5,13 @@ import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.service.ConfigurationProvider;
 import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
-import gov.nist.healthcare.iz.darq.digest.service.MergeService;
+import gov.nist.healthcare.iz.darq.adf.service.MergeService;
 import gov.nist.healthcare.iz.darq.digest.service.exception.InvalidPatientRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.AggregateParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParseError;
 
 import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

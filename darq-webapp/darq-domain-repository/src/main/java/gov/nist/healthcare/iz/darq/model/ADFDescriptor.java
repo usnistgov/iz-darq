@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Strings;
 
 
 public class ADFDescriptor {
@@ -19,14 +20,17 @@ public class ADFDescriptor {
 	Date uploadedOn;
 	String size;
 	String keyHash;
+	private String version;
 	List<ConfigurationDescriptor> compatibilities;
 	String facilityId;
+	boolean composed;
+	List<ADFileComponent> components;
 	
 	public ADFDescriptor() {
 		super();
 	}
 
-	public ADFDescriptor(String id, String name, String owner, String ownerDisplayName, String ownerId, Date analysedOn, Date uploadedOn, String size, List<ConfigurationDescriptor> compatibilities, String facilityId) {
+	public ADFDescriptor(String id, String name, String owner, String ownerDisplayName, String ownerId, Date analysedOn, Date uploadedOn, String size, List<ConfigurationDescriptor> compatibilities, String version, String build, String mqeVersion, String facilityId, List<ADFileComponent> components) {
 		this.id = id;
 		this.name = name;
 		this.owner = owner;
@@ -36,7 +40,20 @@ public class ADFDescriptor {
 		this.uploadedOn = uploadedOn;
 		this.size = size;
 		this.compatibilities = compatibilities;
+		StringBuilder stringBuilder = new StringBuilder();
+		if(!Strings.isNullOrEmpty(version)) {
+			stringBuilder.append(version);
+			if(!Strings.isNullOrEmpty(build)) {
+				stringBuilder.append(" (").append(build).append(")");
+			}
+			if(!Strings.isNullOrEmpty(mqeVersion)) {
+				stringBuilder.append(" - ").append(mqeVersion);
+			}
+		}
+		this.version = stringBuilder.toString();
 		this.facilityId = facilityId;
+		this.composed = components != null && components.size() > 1;
+		this.components = components;
 	}
 
 	public String getFacilityId() {
@@ -104,6 +121,14 @@ public class ADFDescriptor {
 		this.compatibilities = compatibilities;
 	}
 
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
 	public String getOwnerDisplayName() {
 		return ownerDisplayName;
 	}
@@ -120,4 +145,21 @@ public class ADFDescriptor {
 	public void setOwnerId(String ownerId) {
 		this.ownerId = ownerId;
 	}
+
+	public boolean isComposed() {
+		return composed;
+	}
+
+	public void setComposed(boolean composed) {
+		this.composed = composed;
+	}
+
+	public List<ADFileComponent> getComponents() {
+		return components;
+	}
+
+	public void setComponents(List<ADFileComponent> components) {
+		this.components = components;
+	}
+
 }
