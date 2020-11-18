@@ -9,12 +9,14 @@ import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 public abstract class CustomSecurityExpressionRoot extends SecurityExpressionRoot {
 
     private final SimpleResourceQualifier resourceQualifier;
     public static final String RESOURCE_ATTRIBUTE = "SECURITY_RESOLVED_RESOURCE";
+    public static final String RESOURCE_SET_ATTRIBUTE = "SECURITY_RESOLVED_RESOURCE_SET";
 
     //Permissions
     public final Permission CONFIG_PUBLIC_VIEW = Permission.CONFIG_PUBLIC_VIEW;
@@ -76,6 +78,23 @@ public abstract class CustomSecurityExpressionRoot extends SecurityExpressionRoo
         }
     }
 
+    public boolean AccessMultipleResource(HttpServletRequest request, ResourceType resourceType, Set<Action> action, Set<String> ids) throws NotFoundException, ResourceAccessForbidden {
+        User user = this.getPrincipal();
+        Set<Object> resources = new HashSet<>();
+        for(String id: ids) {
+            ResourceSecurityWrapper securityWrapper = this.resourceQualifier.getSecurityQualifiedResource(resourceType, id);
+            boolean allow = user.getPermissions().hasActionsFor(securityWrapper.getScope(), resourceType, securityWrapper.getAccessToken(), action);
+            if(allow) {
+                resources.add(securityWrapper.getPayload());
+            } else {
+                throw new ResourceAccessForbidden(resourceType, id, action);
+            }
+        }
+
+        this.setResourceCollectionAttribute(request, resources);
+        return true;
+    }
+
     public boolean AccessResource(ResourceType resourceType, Set<Action> action, String id) throws NotFoundException, ResourceAccessForbidden {
         User user = this.getPrincipal();
         ResourceSecurityWrapper securityWrapper = this.resourceQualifier.getSecurityQualifiedResource(resourceType, id);
@@ -116,6 +135,10 @@ public abstract class CustomSecurityExpressionRoot extends SecurityExpressionRoo
         }
     }
 
+    public boolean isAdmin() {
+        return this.getPrincipal().isAdministrator();
+    }
+
     public QualifiedScope FACILITY(String qualifier) {
         return new QualifiedScope(Scope.FACILITY, qualifier);
     }
@@ -128,5 +151,9 @@ public abstract class CustomSecurityExpressionRoot extends SecurityExpressionRoo
 
     public void setResourceAttribute(HttpServletRequest request, Object resource) {
         request.setAttribute(RESOURCE_ATTRIBUTE, resource);
+    }
+
+    public void setResourceCollectionAttribute(HttpServletRequest request, Set<Object> resources) {
+        request.setAttribute(RESOURCE_SET_ATTRIBUTE, resources);
     }
 }

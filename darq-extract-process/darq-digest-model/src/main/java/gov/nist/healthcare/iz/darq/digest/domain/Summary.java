@@ -31,6 +31,20 @@ public class Summary {
 			this.total = fraction.getTotal();
 		}
 
+		public static ExtractPercent merge(ExtractPercent source, ExtractPercent target) {
+			ExtractPercent result = new ExtractPercent();
+			result.valued = (source.valued + target.valued) / 2.0;
+			result.excluded = (source.excluded + target.excluded) / 2.0;
+			result.notCollected = (source.notCollected + target.notCollected) / 2.0;
+			result.notExtracted = (source.notExtracted + target.notExtracted) / 2.0;
+			result.valuePresent = (source.valuePresent + target.valuePresent) / 2.0;
+			result.valueNotPresent = (source.valueNotPresent + target.valueNotPresent) / 2.0;
+			result.valueLength = (source.valueLength + target.valueLength) / 2.0;
+			result.empty = (source.empty + target.empty) / 2.0;
+			result.total = source.total + target.total;
+			return result;
+		}
+
 		public ExtractPercent() {
 			super();
 		}
@@ -148,6 +162,24 @@ public class Summary {
 		counts.avgVaccinationsPerRecord = counts.totalReadPatientRecords > 0 ? counts.totalReadVaccinations / counts.totalReadPatientRecords : 0;
 		counts.numberOfProviders = chunk.getProviders().size();
 		counts.minVaccinationsPerRecord = chunk.getMinVaccination();
+	}
+
+	public static Summary merge(Summary source, Summary target) {
+		Summary result = new Summary();
+		result.setCounts(SummaryCounts.merge(source.getCounts(), target.getCounts()));
+		result.setOutOfRange(source.outOfRange + target.outOfRange);
+		result.setCountByAgeGroup(source.countByAgeGroup.stream().map((countByAgeGroup) -> {
+			AgeGroupCount count = new AgeGroupCount();
+			count.setRange(countByAgeGroup.range);
+			count.setNb(count.nb + target.countByAgeGroup.stream().filter((t) -> t.getRange().equals(count.range)).findFirst().map(AgeGroupCount::getNb).get());
+			return count;
+		}).collect(Collectors.toList()));
+		Map<String, ExtractPercent> extractPercentMap = new HashMap<>();
+		source.getExtract().forEach((k, v) -> {
+			extractPercentMap.put(k, ExtractPercent.merge(v, target.getExtract().get(k)));
+		});
+		result.setExtract(extractPercentMap);
+		return result;
 	}
 	
 	public Summary() {

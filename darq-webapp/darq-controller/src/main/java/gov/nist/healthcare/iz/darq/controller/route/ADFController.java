@@ -1,20 +1,20 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
 import gov.nist.healthcare.iz.darq.access.service.EmailService;
+import gov.nist.healthcare.iz.darq.controller.domain.ADFMergeRequest;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
 import gov.nist.healthcare.iz.darq.repository.AnalysisReportRepository;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
+import gov.nist.healthcare.iz.darq.service.impl.ADFService;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import gov.nist.healthcare.iz.darq.users.facility.service.FacilityService;
 import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
@@ -58,6 +58,8 @@ public class ADFController {
 	private EmailService emailService;
 	@Autowired
 	private UserManagementService userManagementService;
+	@Autowired
+	private ADFService adfService;
 
 	//  Facilities for user
 	@RequestMapping(value = "/adf/facilities", method = RequestMethod.GET)
@@ -126,6 +128,18 @@ public class ADFController {
 		return getADFDescriptorFromFiles(files, user);
 	}
 
+	@RequestMapping(value="/adf/files", method=RequestMethod.GET)
+	@ResponseBody
+	public List<ADFDescriptor> all(@AuthenticationPrincipal User user) {
+		List<UserUploadedFile> files = Stream.concat(
+				repo.findByOwnerIdAndFacilityIdIsNull(user.getId()).stream(),
+				user.getPermissions().getFacilities().stream()
+						.map(repo::findByFacilityId)
+						.flatMap(Collection::stream)
+		).collect(Collectors.toList());
+		return getADFDescriptorFromFiles(files, user);
+	}
+
 
 	@RequestMapping(value="/adf", method=RequestMethod.GET)
 	@ResponseBody
@@ -143,6 +157,18 @@ public class ADFController {
 			HttpServletRequest request,
 			@PathVariable("id") String id) throws Exception {
 		return (UserUploadedFile) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+	}
+
+	@RequestMapping(value="/adf/merge", method=RequestMethod.POST)
+	@ResponseBody
+	@PreAuthorize("isAdmin() && AccessMultipleResource(#request, ADF, VIEW, #mergeRequest.ids)")
+	public OpAck<Void> get(
+			HttpServletRequest request,
+			@AuthenticationPrincipal User user,
+			@RequestBody ADFMergeRequest mergeRequest) throws Exception {
+		Set<UserUploadedFile> files = (Set<UserUploadedFile>) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_SET_ATTRIBUTE);
+		adfService.merge(mergeRequest.getName(), mergeRequest.getFacilityId(), user.getId(), files);
+		return new OpAck<>(AckStatus.SUCCESS,"Merge File Created Successfully", null, "adf-merge");
 	}
 	
 	@RequestMapping(value="/adf/{id}", method=RequestMethod.DELETE)

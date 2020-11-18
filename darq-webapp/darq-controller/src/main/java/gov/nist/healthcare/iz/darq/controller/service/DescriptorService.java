@@ -51,7 +51,11 @@ public class DescriptorService {
                 userUploadedFile.getUploadedOn(),
                 userUploadedFile.getSize(),
                 compatibilities.stream().map(this::getConfigurationDescriptor).collect(Collectors.toList()),
-                userUploadedFile.getFacilityId()
+                userUploadedFile.getVersion(),
+                userUploadedFile.getBuild(),
+                userUploadedFile.getMqeVersion(),
+                userUploadedFile.getFacilityId(),
+                userUploadedFile.getComponents()
         );
     }
 

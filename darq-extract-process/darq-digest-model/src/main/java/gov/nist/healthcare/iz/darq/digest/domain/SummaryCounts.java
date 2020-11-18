@@ -40,6 +40,20 @@ public class SummaryCounts {
 	}
 	
 	
-	
+	public static SummaryCounts merge(SummaryCounts source, SummaryCounts target) {
+		SummaryCounts result = new SummaryCounts();
+		result.totalReadVaccinations = source.totalReadVaccinations + target.totalReadVaccinations;
+		result.totalReadPatientRecords = source.totalReadPatientRecords + target.totalReadPatientRecords;
+		result.totalSkippedPatientRecords = source.totalSkippedPatientRecords + target.totalSkippedPatientRecords;
+		result.totalSkippedVaccinationRecords = source.totalSkippedVaccinationRecords + target.totalSkippedVaccinationRecords;
+		result.maxVaccinationsPerRecord = Math.max(source.maxVaccinationsPerRecord, target.maxVaccinationsPerRecord);
+		result.minVaccinationsPerRecord = Math.min(source.minVaccinationsPerRecord, target.minVaccinationsPerRecord);
+		result.numberOfProviders = source.numberOfProviders + target.numberOfProviders;
+		result.avgVaccinationsPerRecord = (source.avgVaccinationsPerRecord + target.avgVaccinationsPerRecord) / 2;
+		result.maxVaccinationsPerProvider = Math.max(source.maxVaccinationsPerProvider, target.maxVaccinationsPerProvider);
+		result.minVaccinationsPerProvider = Math.min(source.minVaccinationsPerProvider, target.minVaccinationsPerProvider);
+		result.avgVaccinationsPerProvider = (source.avgVaccinationsPerProvider + target.avgVaccinationsPerProvider) / 2;
+		return result;
+	}
 
 }

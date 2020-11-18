@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, combineLatest, Subscription, ReplaySubject } from 'rxjs';
 import { IADFMetadata, IExtractPercent } from '../../model/adf.model';
 import { Store } from '@ngrx/store';
-import { selectOpenFileMetadata } from '../../store/core.selectors';
+import { selectOpenFileMetadata, selectUserFacilities } from '../../store/core.selectors';
 import { AgeGroupService } from '../../../shared/services/age-group.service';
 import { map, switchMap } from 'rxjs/operators';
 import { selectDetectionById } from '../../../shared/store/core.selectors';
@@ -25,6 +25,7 @@ export class AdfSummaryComponent implements OnInit, OnDestroy {
   inactive$: ReplaySubject<IDetectionResource[]>;
   dSub: Subscription;
   dashboardRoute$: Observable<string[]>;
+  facilityMap$: Observable<Record<string, string>>;
 
   constructor(
     private store: Store<any>,
@@ -49,7 +50,15 @@ export class AdfSummaryComponent implements OnInit, OnDestroy {
     this.supported$ = new ReplaySubject();
     this.unrecognized$ = new ReplaySubject();
     this.inactive$ = new ReplaySubject();
-
+    this.facilityMap$ = this.store.select(selectUserFacilities).pipe(
+      map((facilities) => {
+        const facilityMap = {};
+        facilities.forEach((f) => {
+          facilityMap[f.id] = f.name;
+        });
+        return facilityMap;
+      }),
+    );
     this.dSub = this.store.select(selectOpenFileMetadata).pipe(
       switchMap((meta) => {
         return combineLatest(meta.configuration.detections.map((detection) => {

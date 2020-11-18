@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.digest.service.impl;
+package gov.nist.healthcare.iz.darq.adf.service.impl;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,7 +8,7 @@ import java.util.Set;
 import gov.nist.healthcare.iz.darq.digest.domain.*;
 import org.springframework.stereotype.Service;
 
-import gov.nist.healthcare.iz.darq.digest.service.MergeService;
+import gov.nist.healthcare.iz.darq.adf.service.MergeService;
 
 @Service
 public class MergeServiceImpl implements MergeService {
