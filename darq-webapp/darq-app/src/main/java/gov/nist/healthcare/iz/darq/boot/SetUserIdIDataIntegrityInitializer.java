@@ -79,7 +79,7 @@ public class SetUserIdIDataIntegrityInitializer {
         for(Facility facility: facilities) {
             Set<String> members = new HashSet<>();
             for(String member: facility.getMembers()) {
-                UserAccount userByOwner = this.userAccountRepository.findByUsername(member);
+                UserAccount userByOwner = this.userAccountRepository.findByUsernameIgnoreCase(member);
                 UserAccount userByOwnerId = this.userAccountRepository.findById(member);
 
                 if(userByOwner == null && userByOwnerId == null) {
@@ -99,7 +99,7 @@ public class SetUserIdIDataIntegrityInitializer {
             throw new OperationFailureException(name + " " + id + " has no user");
         }
         if(!Strings.isNullOrEmpty(owner)) {
-            UserAccount account = this.userAccountRepository.findByUsername(owner);
+            UserAccount account = this.userAccountRepository.findByUsernameIgnoreCase(owner);
             resource.setOwnerId(account.getId());
         }
         return resource;

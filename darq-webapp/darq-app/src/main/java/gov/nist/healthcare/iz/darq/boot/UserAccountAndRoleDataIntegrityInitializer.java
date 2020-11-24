@@ -3,7 +3,6 @@ package gov.nist.healthcare.iz.darq.boot;
 import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.access.domain.Permission;
 import gov.nist.healthcare.iz.darq.access.domain.UserRole;
-import gov.nist.healthcare.iz.darq.users.domain.IssuerId;
 import gov.nist.healthcare.iz.darq.users.domain.UserAccount;
 import gov.nist.healthcare.iz.darq.users.repository.UserAccountRepository;
 import gov.nist.healthcare.iz.darq.users.repository.UserRoleRepository;
@@ -125,7 +124,7 @@ public class UserAccountAndRoleDataIntegrityInitializer {
 
         // ------------------------ USERS --------------------
         // --- [ADMIN] ----
-        UserAccount admin = this.userAccountRepository.findByUsername("admin");
+        UserAccount admin = this.userAccountRepository.findByUsernameIgnoreCase("admin");
         if(admin == null) {
             if(ADMIN_PASSWORD != null && !ADMIN_PASSWORD.isEmpty()) {
                 userManagementService.createAdmin("admin", ADMIN_PASSWORD);
@@ -146,9 +145,23 @@ public class UserAccountAndRoleDataIntegrityInitializer {
                 )));
             }
             user.setqDarAccount(!Strings.isNullOrEmpty(user.getUsername()) && !Strings.isNullOrEmpty(user.getPassword()));
-//            user.setVerified(true);
-            this.userAccountRepository.save(user);
+
+            if(!Strings.isNullOrEmpty(user.getUsername()) && user.getUsername().equals("admin")) {
+                user.setVerified(true);
+                user.setLocked(false);
+                user.setPending(false);
+            }
+
+            if(!Strings.isNullOrEmpty(user.getUsername())) {
+                this.userAccountRepository.findByUsernameIgnoreCase(user.getUsername());
+            }
+
+            if(!Strings.isNullOrEmpty(user.getEmail())) {
+                user.setEmail(user.getEmail().toLowerCase());
+                this.userAccountRepository.findByEmailIgnoreCase(user.getEmail());
+            }
         }
+        this.userAccountRepository.save(users);
 
         // --- [Role Clean Up] ---
         List<UserRole> roles = this.userRoleRepository.findAll();

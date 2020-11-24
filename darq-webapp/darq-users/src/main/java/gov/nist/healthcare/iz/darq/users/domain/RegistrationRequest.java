@@ -1,8 +1,5 @@
 package gov.nist.healthcare.iz.darq.users.domain;
 
-import java.util.Collections;
-import java.util.HashSet;
-
 public class RegistrationRequest {
 
     private String username;
@@ -18,12 +15,23 @@ public class RegistrationRequest {
         }
         return null;
     }
+
+    String lowercase(String str) {
+        if(str != null) {
+            return str.toLowerCase();
+        }
+        return null;
+    }
+
+    String sanitize(String str) {
+        return lowercase(trim(str));
+    }
     
     public UserAccount toAccount() {
         UserAccount account = new UserAccount();
-        account.setUsername(trim(username));
+        account.setUsername(username);
         account.setPassword(password);
-        account.setEmail(trim(email));
+        account.setEmail(lowercase(email));
         account.setFullName(trim(fullName));
         account.setOrganization(trim(organization));
         account.setSignedConfidentialityAgreement(signedConfidentialityAgreement);

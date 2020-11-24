@@ -44,7 +44,7 @@ public class UserManagementService implements UserService {
         return this.accountRepository.findById(id);
     }
     public UserAccount findAccountByEmail(String email) {
-        return this.accountRepository.findByEmail(email);
+        return this.accountRepository.findByEmailIgnoreCase(email);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class UserManagementService implements UserService {
     }
 
     public UserAccount passwordIsMatch(String username, String password) throws NotFoundException {
-        UserAccount account = this.accountRepository.findByUsername(username);
+        UserAccount account = this.accountRepository.findByUsernameIgnoreCase(username);
         if(account == null) {
             throw new NotFoundException("Wrong username");
         }
@@ -238,7 +238,7 @@ public class UserManagementService implements UserService {
         if(user != null && user.isAdministrator()) {
             // Email
             this.throwOnValidationFail(this.validateEmail(updateRequest.getEmail(), account.getId()));
-            account.setEmail(updateRequest.getEmail());
+            account.setEmail(lowercase(updateRequest.getEmail()));
             account.setVerified(true);
         }
 
@@ -268,7 +268,7 @@ public class UserManagementService implements UserService {
 
         // Only admin can change email
         this.throwOnValidationFail(this.validateEmail(updateRequest.getEmail(), account.getId()));
-        account.setEmail(updateRequest.getEmail());
+        account.setEmail(lowercase(updateRequest.getEmail()));
         account.setVerified(true);
 
         // Organization
@@ -413,9 +413,9 @@ public class UserManagementService implements UserService {
         if(!format) {
             return new FieldValidation(false, expectation);
         } else {
-            UserAccount account = this.accountRepository.findByEmail(email);
+            UserAccount account = this.accountRepository.findByEmailIgnoreCase(email);
             if(account != null && !account.getId().equals(exclude)) {
-                return new FieldValidation(false, "email already used");
+                return new FieldValidation(false, "Email address already used");
             }
         }
         return new FieldValidation(true, expectation);
@@ -432,10 +432,23 @@ public class UserManagementService implements UserService {
         if(!format) {
             return new FieldValidation(false, expectation);
         } else {
-            if(this.accountService.exists(value)) {
-                return new FieldValidation(false, "Username already used");
+            String sanitized = value.trim().toLowerCase();
+            if(sanitized.equals("admin")) {
+                return new FieldValidation(false, "Invalid username");
+            } else {
+                if(this.accountService.exists(value)) {
+                    return new FieldValidation(false, "Username already used");
+                }
             }
         }
         return new FieldValidation(true, expectation);
     }
+
+    String lowercase(String str) {
+        if(str != null) {
+            return str.toLowerCase();
+        }
+        return null;
+    }
+
 }

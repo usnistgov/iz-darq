@@ -26,7 +26,7 @@ public class DefaultAccountService<T extends Account<P>, P extends Authority> im
 
 	@Override
 	public T getAccountByUsername(String username) {
-		return accountRepository.findByUsername(username);
+		return accountRepository.findByUsernameIgnoreCase(username);
 	}
 	@Override
 	public T getAccountById(String userId) {
@@ -167,7 +167,7 @@ public class DefaultAccountService<T extends Account<P>, P extends Authority> im
 
 	@Override
 	public boolean exists(String username) {
-		return this.accountRepository.existsByUsername(username);
+		return this.accountRepository.existsByUsernameIgnoreCase(username);
 	}
 
 }
