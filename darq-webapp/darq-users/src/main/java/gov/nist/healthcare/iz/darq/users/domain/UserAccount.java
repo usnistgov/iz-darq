@@ -2,6 +2,7 @@ package gov.nist.healthcare.iz.darq.users.domain;
 
 import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.iz.darq.access.domain.UserRole;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Set;
@@ -12,6 +13,7 @@ public class UserAccount extends Account<UserRole> {
     private String organization;
     private Boolean signedConfidentialityAgreement = false;
     private boolean verified;
+    @Indexed(unique = true)
     private String email;
     private boolean qDarAccount;
     private String source;
@@ -80,4 +82,5 @@ public class UserAccount extends Account<UserRole> {
     public void setVerified(boolean verified) {
         this.verified = verified;
     }
+
 }

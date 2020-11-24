@@ -1,7 +1,4 @@
 package gov.nist.healthcare.auth.domain;
-
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -83,6 +80,9 @@ public class Account<P extends Authority> implements UserDetails {
 	@Override
 	@Field("privileges")
 	public Set<P> getAuthorities() {
-		return Collections.unmodifiableSet(authorities != null ? authorities : new HashSet<>());
+		if(authorities == null) {
+			this.authorities = new HashSet<>();
+		}
+		return authorities;
 	}
 }

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserAccountRepository extends AccountRepository<UserAccount, UserRole> {
-    UserAccount findByEmail(String email);
+    UserAccount findByEmailIgnoreCase(String email);
     UserAccount findByIssuerIdListIsContaining(IssuerId issuerId);
 }

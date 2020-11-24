@@ -1,6 +1,5 @@
 package gov.nist.healthcare.iz.darq.users.domain;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -26,9 +25,20 @@ public class RemoteAccountCreationRequest {
         return null;
     }
 
+    String lowercase(String str) {
+        if(str != null) {
+            return str.toLowerCase();
+        }
+        return null;
+    }
+
+    String sanitize(String str) {
+        return lowercase(trim(str));
+    }
+
     public UserAccount toAccount() {
         UserAccount account = new UserAccount();
-        account.setEmail(trim(email));
+        account.setEmail(lowercase(email));
         account.setFullName(trim(fullName));
         account.setOrganization(trim(organization));
         account.setqDarAccount(false);

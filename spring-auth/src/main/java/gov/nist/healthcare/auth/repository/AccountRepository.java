@@ -10,10 +10,9 @@ import java.util.List;
 
 
 public interface AccountRepository<T extends Account<E>, E extends Authority> extends MongoRepository<T, String> {
-	
-	T findByUsername(String username);
+	T findByUsernameIgnoreCase(String username);
 	T findById(String id);
 	@Query(value="{ 'authorities' : { '$not' : { '$in' : [ { '$ref' :  'privilege', '$id' : ?0 } ] }}}")
 	List<T> allExceptRole(String id);
-	boolean existsByUsername(String username);
+	boolean existsByUsernameIgnoreCase(String username);
 }
