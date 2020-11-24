@@ -11,7 +11,7 @@
 	<artifactId>darq-app</artifactId>
 	<version>${qdar.webtool.version}</version>
 	<properties>
-		<qdar.webtool.version>2.2.0</qdar.webtool.version>
+		<qdar.webtool.version>2.2.1</qdar.webtool.version>
 		<qdar.api.version>1.6.0</qdar.api.version>
 		<qdar.cli.version>1.6.0</qdar.cli.version>
 		<mqe.version>2020.02-BETA</mqe.version>
