@@ -4,8 +4,7 @@
 	<parent>
 		<groupId>gov.nist.healthcare.iz</groupId>
 		<artifactId>darq</artifactId>
-		<relativePath>../pom.xml</relativePath>
-		<version>${qdar.api.version}</version>
+		<version>1.6.0</version>
 	</parent>
 	<artifactId>file-parser</artifactId>
 	<dependencies>
