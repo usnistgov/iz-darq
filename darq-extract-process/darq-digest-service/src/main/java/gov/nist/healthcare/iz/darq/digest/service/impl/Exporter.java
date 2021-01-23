@@ -32,8 +32,9 @@ public class Exporter implements ExportADChunk {
 	private HTMLSummaryGenerator summaryGenerator;
 
 	Set<String> getInactiveDetections(List<String> fromConfig) {
-		Set<String> active = MessageValidator.activeDetections().stream().map(Detection::getMqeMqeCode).collect(Collectors.toSet());
-		return fromConfig.stream().filter((code) -> !active.contains(code)).collect(Collectors.toSet());
+		//Set<String> active = MessageValidator.activeDetections().stream().map(Detection::getMqeMqeCode).collect(Collectors.toSet());
+		//return fromConfig.stream().filter((code) -> !active.contains(code)).collect(Collectors.toSet());
+        return null;
 	}
 	
 	

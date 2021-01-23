@@ -46,10 +46,10 @@ public class DataController {
 		// Detections
 		this.detectionsMap = new HashMap<>();
 		Set<Detection> all = new HashSet<>(Arrays.asList(Detection.values()));
-		Set<Detection> active = MessageValidator.activeDetections();
-		for(Detection d : all) {
-			this.detectionsMap.put(d.getMqeMqeCode(), new DetectionDescriptor(d.getDisplayText(),d.getTargetObject().toString(), active.contains(d)));
-		}
+		//Set<Detection> active = MessageValidator.activeDetections();
+		//for(Detection d : all) {
+		//	this.detectionsMap.put(d.getMqeMqeCode(), new DetectionDescriptor(d.getDisplayText(),d.getTargetObject().toString(), active.contains(d)));
+		//}
 
 		//CodeSets
 		this.patientCodeSet = codeSet.patientCodes();
