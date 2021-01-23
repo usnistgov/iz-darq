@@ -6,7 +6,7 @@
         <artifactId>darq</artifactId>
         <groupId>gov.nist.healthcare.iz</groupId>
         <relativePath>../pom.xml</relativePath>
-        <version>${qdar.api.version}</version>
+        <version>1.6.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

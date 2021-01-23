@@ -4,7 +4,7 @@
     <groupId>gov.nist.healthcare.iz</groupId>
     <artifactId>darq-webapp</artifactId>
     <relativePath>../pom.xml</relativePath>
-    <version>${qdar.webtool.version}</version>
+    <version>2.2.1</version>
   </parent>
   <artifactId>darq-configuration</artifactId>
   <dependencies>

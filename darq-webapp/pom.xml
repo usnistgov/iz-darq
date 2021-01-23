@@ -5,10 +5,10 @@
 		<groupId>gov.nist.healthcare.iz</groupId>
 		<artifactId>darq</artifactId>
 		<relativePath>../pom.xml</relativePath>
-		<version>${qdar.api.version}</version>
+		<version>1.6.0</version>
 	</parent>
 	<artifactId>darq-webapp</artifactId>
-	<version>${qdar.webtool.version}</version>
+	<version>2.2.1</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>darq-configuration</module>
@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>gov.nist.healthcare.iz</groupId>
 			<artifactId>darq-common</artifactId>
-			<version>${qdar.api.version}</version>
+			<version>1.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
