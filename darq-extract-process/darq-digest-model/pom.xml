@@ -3,8 +3,7 @@
   <parent>
     <groupId>gov.nist.healthcare.iz</groupId>
     <artifactId>darq-extract-process</artifactId>
-    <relativePath>../pom.xml</relativePath>
-    <version>${qdar.cli.version}</version>
+    <version>1.6.0</version>
   </parent>
   <artifactId>darq-digest-model</artifactId>
 </project>

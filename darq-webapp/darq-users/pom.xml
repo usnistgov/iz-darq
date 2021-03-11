@@ -5,8 +5,7 @@
     <parent>
         <artifactId>darq-webapp</artifactId>
         <groupId>gov.nist.healthcare.iz</groupId>
-        <relativePath>../pom.xml</relativePath>
-        <version>${qdar.webtool.version}</version>
+        <version>2.2.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>darq-users</artifactId>
@@ -19,7 +18,7 @@
         <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>
             <artifactId>darq-service</artifactId>
-            <version>${qdar.webtool.version}</version>
+            <version>2.2.1</version>
         </dependency>
     </dependencies>
 </project>

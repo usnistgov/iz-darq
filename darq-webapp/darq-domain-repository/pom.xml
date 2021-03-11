@@ -3,20 +3,19 @@
   <parent>
 	  <groupId>gov.nist.healthcare.iz</groupId>
 	  <artifactId>darq-webapp</artifactId>
-	  <relativePath>../pom.xml</relativePath>
-	  <version>${qdar.webtool.version}</version>
+	  <version>2.2.1</version>
   </parent>
   <artifactId>darq-domain-repository</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>gov.nist.healthcare.iz</groupId>
   		<artifactId>darq-digest-model</artifactId>
-		<version>${qdar.cli.version}</version>
+		<version>1.6.0</version>
   	</dependency>
   	<dependency>
   		<groupId>gov.nist.healthcare.iz</groupId>
   		<artifactId>darq-analyzer</artifactId>
-		<version>${qdar.api.version}</version>
+		<version>1.6.0</version>
   	</dependency>
   </dependencies>
 </project>

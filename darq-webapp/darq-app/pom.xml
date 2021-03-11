@@ -5,11 +5,10 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.5.9.RELEASE</version>
-		<relativePath />
 	</parent>
 	<packaging>war</packaging>
 	<artifactId>darq-app</artifactId>
-	<version>${qdar.webtool.version}</version>
+	<version>2.2.1</version>
 	<properties>
 		<qdar.webtool.version>2.2.1</qdar.webtool.version>
 		<qdar.api.version>1.6.0</qdar.api.version>
@@ -42,7 +41,7 @@
 		<dependency>
 			<groupId>gov.nist.healthcare.iz</groupId>
 			<artifactId>darq-users</artifactId>
-			<version>${qdar.webtool.version}</version>
+			<version>2.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -56,12 +55,12 @@
 		<dependency>
 			<groupId>gov.nist.healthcare.iz</groupId>
 			<artifactId>darq-controller</artifactId>
-			<version>${qdar.webtool.version}</version>
+			<version>2.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>gov.nist.healthcare.iz</groupId>
 			<artifactId>darq-configuration</artifactId>
-			<version>${qdar.webtool.version}</version>
+			<version>2.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
