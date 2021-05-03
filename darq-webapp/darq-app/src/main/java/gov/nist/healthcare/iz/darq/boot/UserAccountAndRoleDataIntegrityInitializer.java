@@ -115,6 +115,7 @@ public class UserAccountAndRoleDataIntegrityInitializer {
         if(ADMIN == null) {
             ADMIN = new UserRole();
         }
+        ADMIN.setRole("ADMIN");
         ADMIN.setPermissions(new HashSet<>(Arrays.asList(
                 Permission.values()
         )));

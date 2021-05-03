@@ -35,8 +35,8 @@ public class SimpleConfigurationService implements ConfigurationService {
 		}
 		//detections
 		if(master.getDetections() != null && slave.getDetections() != null){
-			for(String d : slave.getDetections()){
-				if(!master.getDetections().contains(d)){
+			for(String d : master.getDetections()){
+				if(!slave.getDetections().contains(d)){
 					detections = false;
 					break;
 				}
