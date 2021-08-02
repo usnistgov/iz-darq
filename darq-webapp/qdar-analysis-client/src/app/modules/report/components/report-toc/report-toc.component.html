@@ -3,15 +3,15 @@
     <dam-side-bar-toggle></dam-side-bar-toggle>
     <div>
       <span> Threshold </span>
-      <div class="btn-group btn-group-toggle" ngbRadioGroup name="listType" [(ngModel)]="thresholdFilter" (ngModelChange)="filterThreshold($event)" style="border: 1px solid #dee2e6; border-radius: 3px;">
+      <div class="btn-group btn-group-toggle" ngbRadioGroup name="listType" [(ngModel)]="thresholdFilterValue" (ngModelChange)="filterThreshold($event)" style="border: 1px solid #dee2e6; border-radius: 3px;">
         <label ngbButtonLabel class="btn-light btn-sm">
           <input ngbButton type="radio" [value]="null"> All
         </label>
         <label ngbButtonLabel class="btn-light btn-sm">
-          <input ngbButton type="radio" [value]="true"> <span style="color: red;">Fail</span>
+          <input ngbButton type="radio" [value]="false"> <span style="color: red;">Fail</span>
         </label>
         <label ngbButtonLabel class="btn-light btn-sm">
-          <input ngbButton type="radio" [value]="false"> <span style="color: green;">Pass</span>
+          <input ngbButton type="radio" [value]="true"> <span style="color: green;">Pass</span>
         </label>
       </div>
     </div>

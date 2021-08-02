@@ -6,7 +6,7 @@ import { ValuesService, Labelizer } from '../../../shared/services/values.servic
 import { Observable, combineLatest, Subscription, throwError, BehaviorSubject } from 'rxjs';
 import { IReport, IReportSectionResult } from '../../model/report.model';
 import { selectAllDetections, selectAllCvx, selectPatientTables, selectVaccinationTables } from '../../../shared/store/core.selectors';
-import { map, tap, concatMap, take, flatMap, catchError, skipUntil } from 'rxjs/operators';
+import { map, tap, concatMap, take, flatMap, catchError, skipUntil, withLatestFrom } from 'rxjs/operators';
 import { selectReportPayload, selectReportGeneralFilter } from '../../store/core.selectors';
 import { ReportService } from '../../services/report.service';
 import { IReportFilter } from '../../../report-template/model/report-template.model';
@@ -100,26 +100,41 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
     );
 
     this.nodesSub = this.filtered$.pipe(
-      map((report) => {
-        this.store.dispatch(new SetValue({ reportTocNodes: this.makeTocNode(report.sections) }));
+      withLatestFrom(this.filterIsActive$),
+      map(([report, filterIsActive]) => {
+        this.store.dispatch(new SetValue({ reportTocNodes: this.makeTocNode(filterIsActive, report.sections) }));
       })
     ).subscribe();
   }
 
-  makeTocNode(sections: IReportSectionResult[]): ITocNode[] {
+  emptyFiltered(filterActive: boolean, report: IReport) {
+    return filterActive && !report.sections.map((section) => section.hasValue).includes(true);
+  }
+
+  makeTocNode(filterIsActive: boolean, sections: IReportSectionResult[]): ITocNode[] {
     if (!sections) {
       return [];
     }
 
-    return sections.map((s) => {
-      return {
-        id: s.id,
-        header: s.header,
-        path: s.path,
-        warning: s.thresholdViolation,
-        children: this.makeTocNode(s.children),
-      };
-    });
+    return sections
+      .filter((section) => !filterIsActive || section.hasValue)
+      .map((s) => {
+        return {
+          id: s.id,
+          header: s.header,
+          path: s.path,
+          warning: s.thresholdViolation,
+          children: this.makeTocNode(filterIsActive, s.children),
+        };
+      });
+  }
+
+  get filterIsActive$() {
+    return this.generalFilter$.pipe(
+      map((filter) => {
+        return this.reportService.filterIsActive(filter);
+      })
+    );
   }
 
   ngOnDestroy(): void {

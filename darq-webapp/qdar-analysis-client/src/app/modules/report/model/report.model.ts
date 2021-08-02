@@ -31,6 +31,7 @@ export interface IReportSectionResult extends IReportSection {
   comment: string;
   thresholdViolation: boolean;
   children: IReportSectionResult[];
+  hasValue: boolean;
 }
 
 export interface IDataTable extends IDataViewQuery {

@@ -22,6 +22,9 @@ export class ReportSectionComponent implements OnInit {
   }
 
   @Input()
+  filterActive: boolean;
+
+  @Input()
   filtered: IReportSectionResult;
 
   @Output()
@@ -29,6 +32,8 @@ export class ReportSectionComponent implements OnInit {
 
   @Input()
   labelizer: Labelizer;
+
+  filteredHasValue: boolean;
   editMode: boolean;
   pval: IReportSectionResult;
 

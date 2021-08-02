@@ -26,7 +26,7 @@
   </ng-template>
 
   <ng-template #toolbar>
-    <button class="btn btn-sm btn-light" style="margin-right: 5px;" (click)="filterReport()">
+    <button class="btn btn-sm" [ngClass]="{ 'btn-success' : filterIsActive$ | async, 'btn-dark' : !(filterIsActive$ | async) }" style="margin-left: 5px;" (click)="filterReport()">
       <i class="fa fa-filter" [ngClass]="{ 'filter-active' : filterIsActive$ | async }" ></i>
       Report Filter
     </button>
@@ -46,6 +46,6 @@
   </ng-template>
 
   <ng-template #sideBar>
-    <app-report-toc [nodes]="nodes$ | async" ></app-report-toc>
+    <app-report-toc (thresholdFilter)="filterByThreshold($event)" [nodes]="nodes$ | async" ></app-report-toc>
   </ng-template>
 </dam-layout>

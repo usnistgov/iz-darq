@@ -14,7 +14,7 @@ import { Observable, of, combineLatest, from } from 'rxjs';
 import { IReport } from '../../model/report.model';
 import { selectReportPayload, selectReportGeneralFilter, selectReportTocNodes } from '../../store/core.selectors';
 import { ITocNode } from '../report-toc/report-toc.component';
-import { map, concatMap, flatMap, take } from 'rxjs/operators';
+import { map, concatMap, flatMap, take, tap } from 'rxjs/operators';
 import { ReportService } from '../../services/report.service';
 import { IReportFilter } from '../../../report-template/model/report-template.model';
 import { selectAllDetections, selectAllCvx, selectPatientTables, selectVaccinationTables } from '../../../shared/store/core.selectors';
@@ -98,7 +98,7 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
   get filterIsActive$() {
     return this.generalFilter$.pipe(
       map((filter) => {
-        return filter && (filter.denominator.active || filter.fields.active || filter.percentage.active || filter.threshold.active);
+        return this.reportService.filterIsActive(filter);
       })
     );
   }
@@ -134,6 +134,23 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
 
   ngAfterViewInit(): void {
     this.store.dispatch(new TurnOffLoader());
+  }
+
+  filterByThreshold(value: boolean) {
+    this.generalFilter$.pipe(
+      take(1),
+      tap((filter) => {
+        this.store.dispatch(new SetValue({
+          reportGeneralFilter: {
+            ...filter,
+            threshold: {
+              active: value !== null,
+              pass: value,
+            },
+          },
+        }));
+      })
+    ).subscribe();
   }
 
   filterReport() {

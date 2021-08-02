@@ -41,21 +41,37 @@ export class ReportService {
     return this.http.post<Message<IReport>>(this.URL_PREFIX, report);
   }
 
+  filterIsActive(filter: IReportFilter): boolean {
+    return filter && (filter.denominator.active || filter.fields.active || filter.percentage.active || filter.threshold.active);
+  }
+
   postProcessFilter(report: IReport, filter: IReportFilter): IReport {
     const activeFieldFilters = Object.keys(filter.fields.fields).filter((key) => filter.fields.fields[key].length > 0) as Field[];
     return {
       ...report,
-      sections: report.sections.map((section) => this.filterSection(section, filter, activeFieldFilters))
+      sections: report.sections
+        .map((section) => this.filterSection(section, filter, activeFieldFilters))
     };
   }
 
+  hasValue(children: IReportSectionResult[], data: IDataTable[]) {
+    const childHasValue = children?.length > 0 && children.map((child) => child.hasValue).includes(true);
+    const hasData = data?.length > 0 && data.map((d) => d.values?.length > 0).includes(true);
+    return childHasValue || hasData;
+  }
+
   filterSection(section: IReportSectionResult, filter: IReportFilter, activeFieldFilters: Field[]): IReportSectionResult {
-    const data = section.data.map((d) => this.filterDataTable(d, filter, activeFieldFilters));
+    const data = section.data
+      .map((d) => this.filterDataTable(d, filter, activeFieldFilters));
+    const children = section.children
+      .map((child) => this.filterSection(child, filter, activeFieldFilters));
+
     return {
       ...section,
       thresholdViolation: data.map((d) => d.thresholdViolation).includes(true),
       data,
-      children: section.children.map((child) => this.filterSection(child, filter, activeFieldFilters))
+      children,
+      hasValue: this.hasValue(children, data),
     };
   }
 
@@ -66,7 +82,7 @@ export class ReportService {
     const values = table.values.filter((row) => {
       return this.comparatorFilter((row.result.count / row.result.total) * 100, filter.percentage) &&
         this.comparatorFilter(row.result.total, filter.denominator) &&
-        (!row.threshold || this.thresholdFilter(row, filter.threshold)) &&
+        this.thresholdFilter(row, filter.threshold) &&
         (!hasFilterField || this.fieldFilter(row, filter.fields));
     });
 
@@ -83,7 +99,8 @@ export class ReportService {
   }
 
   thresholdFilter(row: IDataTableRow, filter: IThresholdFilter) {
-    return !filter.active || row.pass === filter.pass;
+    const rowThresholdActivation = row.threshold ? row.pass : true;
+    return !filter.active || rowThresholdActivation === filter.pass;
   }
 
   fieldFilter(row: IDataTableRow, filter: IReportFieldFilter) {

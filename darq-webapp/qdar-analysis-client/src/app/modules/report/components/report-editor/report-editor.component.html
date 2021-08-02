@@ -1,4 +1,7 @@
-<div *ngIf="filtered$ | async as filtered" id="report_container"  >
+<div *ngIf="filtered$ | async as filtered" id="report_container" style="height: 100%;"  >
+  <div class="no-match" *ngIf="emptyFiltered(filterIsActive$ | async, filtered)">
+    <span style="font-weight: bold; color: lightgray;"> NO REPORT SECTION MATCHES THE FILTERS</span>
+  </div>
   <div *ngIf="report.description" style="padding: 10px;" [innerHTML]="report.description"></div>
-  <app-report-section [viewOnly]="viewOnly$ | async" *ngFor="let section of report.sections; let i = index" [value]="section" [filtered]="filtered.sections[i]" [labelizer]="labelizer$ | async" (valueChange)="childChange($event, i)" ></app-report-section>
+  <app-report-section [filterActive]="filterIsActive$ | async" [viewOnly]="viewOnly$ | async" *ngFor="let section of report.sections; let i = index" [value]="section" [filtered]="filtered.sections[i]" [labelizer]="labelizer$ | async" (valueChange)="childChange($event, i)" ></app-report-section>
 </div>
