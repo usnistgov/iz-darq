@@ -1,27 +1,3 @@
-.danger-zone {
-  background-color: pink !important;
-}
-
-.ok-zone {
-  background-color: #ccfdcc !important;
-}
-
-.neutral-zone {
-  background-color: aliceblue !important;
-}
-
-.danger-bar {
-  background-color: red !important;
-}
-
-.ok-bar {
-  background-color: blue !important;
-}
-
-.threshold {
-  border-right: 2px solid brown;
-}
-
 .value {
   text-align: center;
   font-weight: bold;
@@ -40,4 +16,27 @@
   flex-direction: column;
   justify-content: center;
   height: 100%;
+}
+
+.bar-start {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.bar-end {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.ok-bar-aira {
+  background-color: #ECBC0A !important;
+}
+.danger-bar-aira {
+  background-color: #F72222 !important;
+}
+.threshold-aira {
+  border-right: 2px solid #ECBC0A;
+}
+.neutral-bar-aira {
+  background-color: #ECBC0A !important;
 }

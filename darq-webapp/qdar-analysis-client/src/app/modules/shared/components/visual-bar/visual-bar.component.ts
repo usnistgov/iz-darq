@@ -15,7 +15,9 @@ export interface IBarArea {
   styleUrls: ['./visual-bar.component.scss']
 })
 export class VisualBarComponent implements OnInit {
-
+  inStart: boolean;
+  inEnd: boolean;
+  failed: boolean;
   @Input()
   showValue: boolean;
   hasThreshold;
@@ -42,6 +44,12 @@ export class VisualBarComponent implements OnInit {
       value: barWidth < threshold.value ? 0 : barWidth - threshold.value,
       barWidth: barWidth < threshold.value ? 0 : this.scale(100 - threshold.value, barWidth - threshold.value),
     };
+
+    this.inEnd = this.end.barWidth > 0;
+    this.inStart = !this.inEnd;
+    const failedInStart = (this.inStart && (this.start.danger || barWidth === threshold.value));
+    const failedInEnd = (this.inEnd && (this.end.danger || barWidth === threshold.value));
+    this.failed = failedInStart || failedInEnd;
   }
 
   start: IBarArea;
