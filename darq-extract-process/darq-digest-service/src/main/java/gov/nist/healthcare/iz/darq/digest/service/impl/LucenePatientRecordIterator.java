@@ -4,6 +4,8 @@ import gov.nist.extract.lucene.index.ExtractFileIndexer;
 import gov.nist.extract.lucene.index.ExtractFileSearcher;
 import gov.nist.healthcare.iz.darq.digest.service.PatientRecordIterator;
 import gov.nist.healthcare.iz.darq.digest.service.exception.InvalidPatientRecord;
+import gov.nist.extract.lucene.model.FormatIssue;
+import gov.nist.healthcare.iz.darq.parser.annotation.Record;
 import gov.nist.healthcare.iz.darq.parser.model.Patient;
 import gov.nist.healthcare.iz.darq.parser.model.VaccineRecord;
 import gov.nist.healthcare.iz.darq.parser.service.RecordParser;
@@ -23,10 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,13 +39,16 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
     private int lineNumber;
     private final Stream<String> lines;
     private String tmpDir;
+    private List<FormatIssue> sanityCheckErrors;
 
     public LucenePatientRecordIterator(Path patientFile, Path vaccinationFile, Optional<String> directory, DqDateFormat dateFormat) throws IOException {
         super(patientFile, vaccinationFile);
         logger.info("[RECORD ITERATOR] Initialization");
         tmpDir = null;
+        this.sanityCheckErrors = new ArrayList<>();
         // Index Vaccination File
-        ExtractFileIndexer luceneIndexer = new ExtractFileIndexer();
+        ExtractFileIndexer vaccinationLuceneIndexer = this.createFileIndexer(VaccineRecord.class);
+        logger.info("Created Vaccination Indexer");
         logger.info("Creating Temporary directory");
         if(directory.isPresent()) {
             logger.info("Directory location provided");
@@ -65,7 +67,8 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
         tmpDir = this.createDirectory(directory).toString();
         logger.info("Directory created at " + tmpDir);
         logger.info("[LUCENE] Indexing Vaccination File");
-        luceneIndexer.index(vaccinationFile.toString(), tmpDir);
+        vaccinationLuceneIndexer.index(vaccinationFile.toString(), tmpDir);
+        this.sanityCheckErrors = vaccinationLuceneIndexer.getSanityCheckErrors();
         logger.info("[LUCENE] Vaccination File Indexed");
         vaccinations = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(tmpDir))));
 
@@ -79,6 +82,23 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
         lines = java.nio.file.Files.lines(patientFile);
         linesIterator = lines.iterator();
         logger.info("[RECORD ITERATOR] Initialized");
+    }
+
+    private ExtractFileIndexer createFileIndexer(Class<?> clazz) {
+        logger.info("Creating Indexer");
+
+        Record annotation = clazz.getAnnotation(Record.class);
+        if(annotation == null) {
+            logger.error("No record annotation in class" + clazz.getName() + " sanity check skipped skipped");
+            return new ExtractFileIndexer();
+        } else {
+            logger.error("Class " + clazz.getName() + " expects " + annotation.size() + "fields separated by '"+ RecordParser.SEPARATOR +"'");
+            return new ExtractFileIndexer(annotation.size(), RecordParser.SEPARATOR);
+        }
+    }
+
+    public List<FormatIssue> getSanityCheckErrors() {
+        return sanityCheckErrors;
     }
 
     private Path createDirectory(Optional<String> location) {

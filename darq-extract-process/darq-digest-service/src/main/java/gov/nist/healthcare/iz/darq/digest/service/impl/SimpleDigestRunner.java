@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,7 @@ public class SimpleDigestRunner implements DigestRunner {
 	MergeService merge;
 	private LucenePatientRecordIterator iterator;
 	private int size = 0;
+	ADChunk file;
 
 	@Override
 	public ADChunk digest(ConfigurationPayload configuration, String patient, String vaccines, DqDateFormat dateFormat, Optional<String> directory) throws Exception {
@@ -41,8 +44,11 @@ public class SimpleDigestRunner implements DigestRunner {
 
 		ConfigurationProvider config = new SimpleConfigurationProvider(configuration);
 		iterator = new LucenePatientRecordIterator(Paths.get(patient), Paths.get(vaccines), directory, dateFormat);
-		final ADChunk file = new ADChunk();
+		this.file = new ADChunk();
 		LocalDate date = new LocalDate(configuration.getAsOfDate());
+		iterator.getSanityCheckErrors().forEach(formatIssue -> file.addIssue(
+				"[ LINE : "+ formatIssue.getLine()+" ][ RECORD TYPE : VACCINATION ] " + formatIssue.getMessage()
+		));
 		while(iterator.hasNext()) {
 			try {
 

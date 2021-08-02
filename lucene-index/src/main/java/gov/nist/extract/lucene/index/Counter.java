@@ -11,4 +11,8 @@ class Counter {
         i++;
         return i;
     }
+
+    int value() {
+        return i;
+    }
 }

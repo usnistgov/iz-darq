@@ -19,3 +19,4 @@ public/*
 *node_modules*
 lucene-index/lucene-index.iml
 darq-webapp/darq-app/src/main/resources/public/
+*.log
