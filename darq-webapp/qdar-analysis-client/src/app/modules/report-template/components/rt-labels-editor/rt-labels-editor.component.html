@@ -1,0 +1,85 @@
+<form>
+  <div class="form-group">
+    <label for="name"><strong>Detections Labels</strong></label>
+    <ul class="nav nav-pills" style="margin-top: 10px; margin-bottom: 10px;">
+      <li style="cursor: pointer;" class="nav-item">
+        <span (click)="detectionLabelTab = true" class="nav-link" [ngClass]="{'active' : detectionLabelTab }"> Table </span>
+      </li>
+      <li style="cursor: pointer;" class="nav-item">
+        <span (click)="detectionLabelTab = false"  class="nav-link" [ngClass]="{'active' : !detectionLabelTab }" > Raw (Text) </span>
+      </li>
+    </ul>
+
+
+    <div *ngIf="!detectionLabelTab">
+      <div style="padding: 5px; border-radius: 5px; border: 1px solid lightgray; background-color: #fcfcfc;"  >
+        <div style="display: flex; align-items: center; margin-bottom: 5px; ">
+          <button (click)="copy()" class="btn btn-sm btn-light" style="margin-right: 5px; border: 1px solid lightgray;">Copy</button>
+          <button (click)="paste()" class="btn btn-sm btn-light" style="margin-right: 5px; border: 1px solid lightgray;">Paste</button>
+          <button (click)="clear()" class="btn btn-sm btn-light" style="margin-right: 5px; border: 1px solid lightgray;">Clear</button>
+        </div>
+        <textarea #detectionTextArea disabled [value]="detectionText" rows="10" class="form-control" style="border: 0; background-color: #fcfcfc;" ></textarea>
+      </div>
+    </div>
+
+    <p-table
+      *ngIf="detectionLabelTab"
+      #dt
+      [value]="detectionLabels"
+      [columns]="['target', 'default', 'custom']"
+      [rows]="10"
+      [paginatorDropdownAppendTo]="'body'"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [paginator]="true"
+      [globalFilterFields]="['detection', 'label']"
+      [filterDelay]="0">
+      <ng-template pTemplate="caption">
+        <div style="display: flex; align-items: center;">
+          <div class="input-group" style="margin: 5px; min-width: 300px;">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fa fa-search"></i></span>
+            </div>
+            <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search">
+          </div>
+          <button class="btn btn-sm btn-primary" style="height: 38px; width: 200px;" (click)="openCustomDetectionDialog()">
+            Add Custom Label
+          </button>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Detection Code</th>
+          <th>Default Label</th>
+          <th>Custom Label</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-value let-rowIndex="rowIndex">
+        <tr class="ui-selectable-row" [ngClass]="{ 'invalid' : !value.valid }">
+          <td>{{value.target}}</td>
+          <td>{{value.default}}</td>
+          <td>{{value.custom}}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" (click)="openCustomDetectionDialog(value)">
+              Edit
+            </button>
+            <button class="btn btn-sm btn-danger" style="margin-left: 5px;" (click)="remove(rowIndex)">
+              Remove
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" style="text-align:left">
+            No Custom Labels Defined
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  <!-- <div class="form-group" >
+    <label for="fields"><strong>Fields Labels</strong></label>
+  </div> -->
+</form>

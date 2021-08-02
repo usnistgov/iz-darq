@@ -90,7 +90,7 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
             vaccinationTables,
             patientTables,
           }
-        });
+        }, report.customDetectionLabels);
       }),
     );
   }

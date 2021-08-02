@@ -58,17 +58,17 @@ export class ValuesService {
     return new Labelizer(map, options);
   }
 
-  getFieldOptions(data: IFieldInputData): IFieldInputOptions {
+  getFieldOptions(data: IFieldInputData, customLabels: Record<string, string>): IFieldInputOptions {
     const standardTransform = (elm) => {
       return {
         label: elm,
         value: elm,
       };
     };
-
+    const detectionLabels = customLabels || {};
     const detectionTransform = (elm) => {
       return {
-        label: elm.id + ' - ' + elm.description,
+        label: elm.id + ' - ' + (detectionLabels[elm.id] || elm.description),
         value: elm.id,
       };
     };

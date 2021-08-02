@@ -43,6 +43,7 @@ import { AccessScopePipe } from './pipes/access-scope.pipe';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { MustMatchDirective } from './directives/must-match.directive';
 import { PeAutoscrollFixDirective } from './directives/pe-auto-scroll-fix.directive';
+import { CustomLabelDialogComponent } from './components/custom-label-dialog/custom-label-dialog.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { PeAutoscrollFixDirective } from './directives/pe-auto-scroll-fix.direct
     UserProfileComponent,
     MustMatchDirective,
     PeAutoscrollFixDirective,
+    CustomLabelDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -132,7 +134,9 @@ import { PeAutoscrollFixDirective } from './directives/pe-auto-scroll-fix.direct
     AccessScopePipe,
     UserProfileComponent,
     MustMatchDirective,
-    PeAutoscrollFixDirective
-  ]
+    PeAutoscrollFixDirective,
+    CustomLabelDialogComponent
+  ],
+  entryComponents: [CustomLabelDialogComponent]
 })
 export class SharedModule { }

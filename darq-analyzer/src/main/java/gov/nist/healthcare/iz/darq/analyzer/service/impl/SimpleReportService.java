@@ -63,6 +63,7 @@ public class SimpleReportService implements ReportService {
 		result.setDescription(template.getDescription());
 		result.setSections(this.analyse(file, template.getSections()));
 		result.setConfiguration(template.getConfiguration());
+		result.setCustomDetectionLabels(template.getCustomDetectionLabels());
 		return result;
 	}
 

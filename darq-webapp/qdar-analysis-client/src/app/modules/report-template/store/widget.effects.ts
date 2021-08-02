@@ -154,7 +154,7 @@ export class WidgetEffects extends DamWidgetEffect {
 
   @Effect()
   openRtMetadataEditor$ = this.actions$.pipe(
-    ofType(CoreActionTypes.OpenReportTemplateMetadata),
+    ofType(CoreActionTypes.OpenReportTemplateMetadata, CoreActionTypes.OpenReportTemplateLabels),
     concatMap((action: OpenReportTemplateMetadata) => {
       return combineLatest([
         this.reportTemplateService.getDescriptorById(action.payload.id),

@@ -75,7 +75,7 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
             vaccinationTables,
             patientTables,
           }
-        });
+        }, report.customDetectionLabels);
         return this.valueService.getQueryValuesLabel(options);
       }),
     );

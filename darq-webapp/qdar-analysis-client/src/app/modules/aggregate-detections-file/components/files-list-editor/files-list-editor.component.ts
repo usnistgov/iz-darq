@@ -104,7 +104,7 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
             vaccinationTables,
             patientTables,
           }
-        });
+        }, {});
       }),
     ).pipe(
       take(1),

@@ -27,6 +27,7 @@ export interface IReportTemplate {
   sections: IReportSection[];
   public: boolean;
   configuration: IConfigurationPayload;
+  customDetectionLabels: Record<string, string>;
 }
 
 export interface IReportSection extends IDamResource {

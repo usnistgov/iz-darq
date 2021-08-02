@@ -15,7 +15,7 @@ export enum CoreActionTypes {
 
   OpenReportTemplateMetadata = '[Report Template] Open Report Template Metadata',
   OpenReportTemplateSection = '[Report Template] Open Report Template Section',
-
+  OpenReportTemplateLabels = '[Report Template] Open Report Template Labels',
 }
 
 export class LoadReportTemplates implements Action {
@@ -58,6 +58,17 @@ export class OpenReportTemplateMetadata extends OpenEditorBase implements Action
   }
 }
 
+export class OpenReportTemplateLabels extends OpenEditorBase implements Action {
+  readonly type = CoreActionTypes.OpenReportTemplateLabels;
+  constructor(public payload: {
+    id: string,
+    editor: IEditorMetadata,
+  }) {
+    super();
+  }
+}
+
+
 export class OpenReportTemplateSection extends OpenEditorBase implements Action {
   readonly type = CoreActionTypes.OpenReportTemplateSection;
   constructor(public payload: {
@@ -77,5 +88,6 @@ export type CoreActions =
   | LoadReportTemplateSuccess
   | LoadReportTemplateFailure
   | OpenReportTemplateMetadata
-  | OpenReportTemplateSection;
+  | OpenReportTemplateSection
+  | OpenReportTemplateLabels;
 

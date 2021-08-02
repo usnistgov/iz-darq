@@ -18,7 +18,7 @@ import {
   selectReportTemplateConfiguration,
   selectReportTemplate,
 } from '../../store/core.selectors';
-import { switchMap, map, take, concatMap, catchError, flatMap } from 'rxjs/operators';
+import { switchMap, map, take, concatMap, catchError, flatMap, distinctUntilChanged } from 'rxjs/operators';
 import { IReportSection, IDataViewQuery } from '../../model/report-template.model';
 import { EntityType } from '../../../shared/model/entity.model';
 import { IDetectionResource, ICvxResource } from 'src/app/modules/shared/model/public.model';
@@ -84,13 +84,17 @@ export class RtSectionPayloadEditorComponent extends DamAbstractEditorComponent 
     this.isPublished$ = this.store.select(selectRtIsPublished);
 
     this.options$ = combineLatest([
+      this.store.select(selectReportTemplate).pipe(
+        map((rt) => rt.customDetectionLabels),
+        distinctUntilChanged(),
+      ),
       this.detections$,
       this.cvxs$,
       this.store.select(selectReportTemplateConfiguration),
       this.store.select(selectPatientTables),
       this.store.select(selectVaccinationTables),
     ]).pipe(
-      map(([detections, cvxCodes, configuration, patientTables, vaccinationTables]) => {
+      map(([labels, detections, cvxCodes, configuration, patientTables, vaccinationTables]) => {
         return this.valueService.getFieldOptions({
           detections: detections.filter((d) => configuration.detections.includes(d.id)),
           ageGroups: configuration.ageGroups,
@@ -99,7 +103,7 @@ export class RtSectionPayloadEditorComponent extends DamAbstractEditorComponent 
             vaccinationTables,
             patientTables,
           }
-        });
+        }, labels);
       }),
     );
     this.labels$ = this.options$.pipe(

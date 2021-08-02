@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 
 import java.util.Date;
+import java.util.Map;
 
 public class Report implements Owned, Publishable {
     @Id
@@ -21,6 +22,7 @@ public class Report implements Owned, Publishable {
     protected String ownerId;
     protected boolean published;
     protected Date lastUpdated;
+    protected Map<String, String> customDetectionLabels;
 
     public String getId() {
         return id;
@@ -28,6 +30,14 @@ public class Report implements Owned, Publishable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Map<String, String> getCustomDetectionLabels() {
+        return customDetectionLabels;
+    }
+
+    public void setCustomDetectionLabels(Map<String, String> customDetectionLabels) {
+        this.customDetectionLabels = customDetectionLabels;
     }
 
     public String getName() {

@@ -15,6 +15,7 @@ import { WidgetEffects } from './store/widget.effects';
 import { RtSectionNarrativeEditorComponent } from './components/rt-section-narrative-editor/rt-section-narrative-editor.component';
 import { RtSectionPayloadEditorComponent } from './components/rt-section-payload-editor/rt-section-payload-editor.component';
 import { CreateRtDialogComponent } from './components/create-rt-dialog/create-rt-dialog.component';
+import { RtLabelsEditorComponent } from './components/rt-labels-editor/rt-labels-editor.component';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { CreateRtDialogComponent } from './components/create-rt-dialog/create-rt
     RtSectionNarrativeEditorComponent,
     RtSectionPayloadEditorComponent,
     CreateRtDialogComponent,
+    RtLabelsEditorComponent,
   ],
   imports: [
     CommonModule,

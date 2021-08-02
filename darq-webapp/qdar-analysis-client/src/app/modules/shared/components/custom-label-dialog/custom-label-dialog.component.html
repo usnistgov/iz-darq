@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Custom {{type}} Label</h2>
+<div mat-dialog-content>
+  <form>
+    <div class="form-group">
+      <label for="for"><strong>Label For</strong></label>
+      <p-dropdown
+      *ngIf="!editMode"
+        [options]="options"
+        [autoDisplayFirst]="false"
+        [filter]="true"
+        id="for"
+        name="for"
+        appendTo="body"
+        [(ngModel)]="target"
+        [placeholder]="type"
+        (ngModelChange)="selected($event)"
+        filterBy="value,label"
+        [style]="{ 'width' : '100%' }">
+        <ng-template let-item pTemplate="selectedItem">
+          <span>{{item.value}} - {{item.label}}</span>
+        </ng-template>
+        <ng-template let-item pTemplate="item">
+          <span>{{item.value}} - {{item.label}}</span>
+        </ng-template>
+      </p-dropdown>
+      <span style="display: block;" *ngIf="editMode">{{target}} - {{default}}</span>
+    </div>
+    <div class="form-group" >
+      <label for="custom"><strong>Custom Value</strong></label>
+      <input type="text" placeholder="Custom Label" class="form-control" name="custom" id="custom" [(ngModel)]="custom" required>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button class="btn btn-sm btn-danger" [mat-dialog-close]="" >Cancel</button>
+  <button style="margin-left: 5px;" [disabled]="!target || !custom" class="btn btn-sm btn-success" (click)="done()" >Done</button>
+</div>

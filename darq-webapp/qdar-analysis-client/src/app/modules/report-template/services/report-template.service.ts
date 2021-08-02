@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { Message, LoadPayloadData, InsertResourcesInCollection, SetValue, DeleteResourcesFromCollection, LoadResourcesInRepository } from 'ngx-dam-framework';
 import { EntityType } from '../../shared/model/entity.model';
 import { IReportTemplateDescriptor, IReportTemplate, IReportSection, IReportTemplateCreate, IDataViewQuery, Comparator } from '../model/report-template.model';
-import { IDescriptor } from '../../shared/model/descriptor.model';
 import { Action } from '@ngrx/store';
 import { IReportSectionDisplay } from '../model/state.model';
 import { Guid } from 'guid-typescript';
@@ -32,6 +31,7 @@ export class ReportTemplateService {
       viewOnly: undefined,
       configuration: undefined,
       sections: [],
+      customDetectionLabels: {},
     };
   }
 
