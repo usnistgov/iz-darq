@@ -26,7 +26,7 @@
   </ng-template>
 
   <ng-template #toolbar>
-    <button class="btn btn-sm" [ngClass]="{ 'btn-success' : filterIsActive$ | async, 'btn-dark' : !(filterIsActive$ | async) }" style="margin-left: 5px;" (click)="filterReport()">
+    <button class="btn btn-sm" [ngClass]="{ 'btn-success' : filterIsActive$ | async, 'btn-dark' : (filterIsActive$ | async) === false }" style="margin-left: 5px;" (click)="filterReport()">
       <i class="fa fa-filter" [ngClass]="{ 'filter-active' : filterIsActive$ | async }" ></i>
       Report Filter
     </button>

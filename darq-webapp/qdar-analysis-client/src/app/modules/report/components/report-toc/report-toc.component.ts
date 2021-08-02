@@ -68,6 +68,7 @@ export class ReportTocComponent implements OnInit, AfterViewInit, OnDestroy {
     };
   }
 
+  // tslint:disable-next-line: cognitive-complexity
   ngAfterViewInit() {
     // Init Active node tree
     this.treeComponent.treeModel.expandAll();
