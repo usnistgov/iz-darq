@@ -1,7 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { OnInit, Input, Output, EventEmitter, Component } from '@angular/core';
 import { AnalysisType, fieldDisplayName } from '../../../../report-template/model/analysis.values';
 import { UserMessage } from 'ngx-dam-framework';
-
+@Component({
+  template: ''
+})
 export abstract class QueryDialogTabComponent<T> implements OnInit {
 
   @Input()
