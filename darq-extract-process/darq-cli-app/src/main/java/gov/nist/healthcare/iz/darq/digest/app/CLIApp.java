@@ -3,9 +3,9 @@ package gov.nist.healthcare.iz.darq.digest.app;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
@@ -16,6 +16,12 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.immregistries.mqe.validator.detection.MqeCode;
+import org.immregistries.mqe.validator.engine.MessageValidator;
+import org.immregistries.mqe.validator.engine.RulePairBuilder;
+import org.immregistries.mqe.validator.engine.ValidationRule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -35,7 +41,8 @@ public class CLIApp {
 
 	private static final DecimalFormat df = new DecimalFormat(".##");
 	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-	
+	private final static Logger logger = LoggerFactory.getLogger(CLIApp.class.getName());
+
 	private static boolean exists(CommandLine cmd, String opt, String name){
 		if(!cmd.hasOption(opt)){
 			System.out.println(name+" is required");
@@ -137,6 +144,7 @@ public class CLIApp {
 					if(pFile && vFile && cFile && cFileValid){
 		        		SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
 		        		Exporter export = context.getBean(Exporter.class);
+		        		configureMqeValidator(configurationPayload.getDetections());
 		        		running = true;
 		        		Thread t = progress(runner);
 		        		t.start();
@@ -162,6 +170,28 @@ public class CLIApp {
 		finally {
 			running = false;
 		}
+	}
+
+	public static void configureMqeValidator(List<String> activeMqeCodes) {
+		logger.info("Configuring MQE Validator");
+		MessageValidator.INSTANCE.configure(
+				activeMqeCodes.stream()
+						.map((code) -> {
+							try {
+								return MqeCode.valueOf(code);
+							} catch (Exception e) {
+								return null;
+							}
+						})
+						.filter(Objects::nonNull)
+						.collect(Collectors.toSet())
+		);
+		logger.info("MQE Validator Configured");
+		Set<ValidationRule> rules = RulePairBuilder.INSTANCE.getActiveValidationRules().getRules();
+		logger.info("MQE Active Rules (" + rules.size() + ") :");
+		rules.forEach(
+				(r) -> logger.info("* Active Rules : " + r.getClass())
+		);
 	}
 	
 	public static Thread progress(DigestRunner runner){

@@ -2,7 +2,6 @@ package gov.nist.healthcare.iz.darq.digest.domain;
 
 public class DetectionSum {
 	
-	private String description;
 	private int positive;
 	private int negative;
 	
@@ -26,12 +25,6 @@ public class DetectionSum {
 	}
 	public void setNegative(int negative) {
 		this.negative = negative;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
 	}
 	public static DetectionSum merge(DetectionSum a, DetectionSum b){
 		return new DetectionSum(a.positive + b.positive, a.negative + b.negative);

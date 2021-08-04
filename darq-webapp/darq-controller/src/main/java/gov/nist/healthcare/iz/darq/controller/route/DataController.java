@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import gov.nist.healthcare.iz.darq.service.utils.CodeSetService;
 import org.apache.commons.io.IOUtils;
 import org.immregistries.mqe.validator.detection.Detection;
-import org.immregistries.mqe.validator.engine.MessageValidator;
+import org.immregistries.mqe.validator.engine.rules.ValidationRuleEntityLists;
+import org.immregistries.mqe.vxu.TargetType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +47,11 @@ public class DataController {
 		// Detections
 		this.detectionsMap = new HashMap<>();
 		Set<Detection> all = new HashSet<>(Arrays.asList(Detection.values()));
-		Set<Detection> active = MessageValidator.activeDetections();
+		Set<Detection> active =  ValidationRuleEntityLists.activeDetectionsForTargets(new HashSet<>(Arrays.asList(
+				TargetType.Patient,
+				TargetType.NextOfKin,
+				TargetType.Vaccination
+		)));
 		for(Detection d : all) {
 			this.detectionsMap.put(d.getMqeMqeCode(), new DetectionDescriptor(d.getDisplayText(),d.getTargetObject().toString(), active.contains(d)));
 		}
