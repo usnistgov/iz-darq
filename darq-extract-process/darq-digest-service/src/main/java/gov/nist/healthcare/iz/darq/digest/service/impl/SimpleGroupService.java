@@ -2,11 +2,9 @@ package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import gov.nist.healthcare.iz.darq.digest.domain.*;
 import org.springframework.stereotype.Component;
-import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
-import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
-import gov.nist.healthcare.iz.darq.digest.domain.VaccinationPayload;
 import gov.nist.healthcare.iz.darq.digest.service.AgeGroupService;
 import gov.nist.healthcare.iz.darq.digest.service.GroupService;
 
@@ -54,6 +52,20 @@ public class SimpleGroupService implements GroupService {
 	
 	public PatientPayload makePatPayload(Map<String, DetectionSum> dqa, Map<String, TablePayload> codes){
 		return new PatientPayload(dqa, codes, 1);
+	}
+
+	public Map<String, Map<String, ADPayload>> makeADPayloadMap(Map<String, PatientPayload> patient, Map<String, Map<String, VaccinationPayload>> vaccinations) {
+		Map<String, Map<String, ADPayload>> merged = new HashMap<>();
+		for(String reportingGroup : vaccinations.keySet()) {
+			for(String ageGroup: vaccinations.get(reportingGroup).keySet()) {
+				Map<String, ADPayload> byReportingGroup = merged.computeIfAbsent(reportingGroup, (rg) -> new HashMap<>());
+				byReportingGroup.put(ageGroup, new ADPayload(
+						patient.get(ageGroup),
+						vaccinations.get(reportingGroup).get(ageGroup)
+				));
+			}
+		}
+		return merged;
 	}
 
 }

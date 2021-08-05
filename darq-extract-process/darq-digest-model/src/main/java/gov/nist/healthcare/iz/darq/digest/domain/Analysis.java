@@ -1,5 +1,5 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
 public enum Analysis {
-	VACCINATION_SECTION, PATIENT_SECTION
+	REPORTING_GROUP_AGG_SECTION, GENERAL_PATIENT_SECTION
 }

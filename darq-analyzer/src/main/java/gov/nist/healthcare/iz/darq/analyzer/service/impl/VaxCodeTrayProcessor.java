@@ -8,10 +8,7 @@ import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisQuery.Action;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray.*;
 import gov.nist.healthcare.iz.darq.analyzer.service.TrayProcessor;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
-import gov.nist.healthcare.iz.darq.digest.domain.Field;
-import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
-import gov.nist.healthcare.iz.darq.digest.domain.VaccinationPayload;
+import gov.nist.healthcare.iz.darq.digest.domain.*;
 import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
 
 public class VaxCodeTrayProcessor extends TrayProcessor {
@@ -22,11 +19,11 @@ public class VaxCodeTrayProcessor extends TrayProcessor {
 
 	@Override
 	public List<Tray> inner(ADFile file) {
-		provider(file.getVaccinations(), new VaxCodeTray());
+		provider(file.getReportingGroupPayload(), new VaxCodeTray());
 		return this.work;
 	}
 
-	void provider(Map<String, Map<String, VaccinationPayload>> db, Tray t){
+	void provider(Map<String, Map<String, ADPayload>> db, Tray t){
 		for(String provider : db.keySet()){
 			t.start(Field.PROVIDER, provider);
 			if(!guard(t)) {
@@ -36,11 +33,11 @@ public class VaxCodeTrayProcessor extends TrayProcessor {
 		t.remove(Field.PROVIDER);
 	}
 	
-	void ageGroup(Map<String, VaccinationPayload> db, Tray t){
+	void ageGroup(Map<String, ADPayload> db, Tray t){
 		for(String ageGroup : db.keySet()){
 			t.add(Field.AGE_GROUP, ageGroup);
 			if(!guard(t)) {
-				table(db.get(ageGroup), t);
+				table(db.get(ageGroup).getVaccinationPayload(), t);
 			}
 		}
 		t.remove(Field.AGE_GROUP);

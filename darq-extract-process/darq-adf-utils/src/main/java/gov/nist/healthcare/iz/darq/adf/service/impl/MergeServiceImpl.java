@@ -15,8 +15,8 @@ public class MergeServiceImpl implements MergeService {
 
 	@Override
 	public synchronized ADChunk mergeChunk(ADChunk a, ADChunk b){
-		a.setVaccinationSection(mergeVxProvider(a.getVaccinationSection(), b.getVaccinationSection()));
-		a.setPatientSection(mergePatientAgeGroup(a.getPatientSection(), b.getPatientSection()));
+		a.setReportingGroupPayload(mergeADPayloadProvider(a.getReportingGroupPayload(), b.getReportingGroupPayload()));
+		a.setGeneralPatientPayload(mergePatientAgeGroup(a.getGeneralPatientPayload(), b.getGeneralPatientPayload()));
 		a.setExtraction(mergeExtract(a.getExtraction(), b.getExtraction()));
 		a.setProviders(mergeProvider(a.getProviders(), b.getProviders()));
 		a.setUnreadVaccinations(a.getUnreadVaccinations() + b.getUnreadVaccinations());
@@ -79,21 +79,29 @@ public class MergeServiceImpl implements MergeService {
 	}
 
 	@Override
-	public Map<String, Map<String, VaccinationPayload>> mergeVxProvider(Map<String, Map<String, VaccinationPayload>> a, Map<String, Map<String, VaccinationPayload>> b){
-		Map<String, Map<String, VaccinationPayload>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
+	public Map<String, Map<String, ADPayload>> mergeADPayloadProvider(Map<String, Map<String, ADPayload>> a, Map<String, Map<String, ADPayload>> b){
+		Map<String, Map<String, ADPayload>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> x.merge(k, v, this::mergeVxAgeGroup));
+			b.forEach((k, v) -> x.merge(k, v, this::mergeADPayloadAgeGroup));
 		}
 		return x;
 	}
-	
+
 	@Override
-	public Map<String, VaccinationPayload> mergeVxAgeGroup(Map<String, VaccinationPayload> a, Map<String, VaccinationPayload> b){
-		Map<String, VaccinationPayload> x = a != null ? new HashMap<>(a) : new HashMap<>();
+	public Map<String, ADPayload> mergeADPayloadAgeGroup(Map<String, ADPayload> a, Map<String, ADPayload> b){
+		Map<String, ADPayload> x = a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> x.merge(k, v, this::mergeVxPayload));
+			b.forEach((k, v) -> x.merge(k, v, this::mergeADPayload));
 		}
 		return x;
+	}
+
+	@Override
+	public ADPayload mergeADPayload(ADPayload a, ADPayload b){
+		return new ADPayload(
+				this.mergePatient(a.getPatientPayload(), b.getPatientPayload()),
+				this.mergeVxPayload(a.getVaccinationPayload(), b.getVaccinationPayload())
+		);
 	}
 	
 	@Override

@@ -5,12 +5,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.immregistries.mqe.validator.detection.Detection;
-import org.immregistries.mqe.validator.engine.MessageValidator;
+import org.immregistries.mqe.validator.engine.rules.ValidationRuleEntityLists;
+import org.immregistries.mqe.vxu.TargetType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
@@ -32,7 +31,11 @@ public class Exporter implements ExportADChunk {
 	private HTMLSummaryGenerator summaryGenerator;
 
 	Set<String> getInactiveDetections(List<String> fromConfig) {
-		Set<String> active = MessageValidator.activeDetections().stream().map(Detection::getMqeMqeCode).collect(Collectors.toSet());
+		Set<String> active = ValidationRuleEntityLists.activeDetectionsForTargets(new HashSet<>(Arrays.asList(
+				TargetType.Patient,
+				TargetType.NextOfKin,
+				TargetType.Vaccination
+		))).stream().map(Detection::getMqeMqeCode).collect(Collectors.toSet());
 		return fromConfig.stream().filter((code) -> !active.contains(code)).collect(Collectors.toSet());
 	}
 	
@@ -42,8 +45,8 @@ public class Exporter implements ExportADChunk {
 		
 		Summary summary = new Summary(chunk, payload);
 		ADFile file = new ADFile(
-				chunk.getPatientSection(),
-				chunk.getVaccinationSection(),
+				chunk.getGeneralPatientPayload(),
+				chunk.getReportingGroupPayload(),
 				payload,
 				summary,
 				new Vocabulary(chunk.getValues(), chunk.getCodes()),

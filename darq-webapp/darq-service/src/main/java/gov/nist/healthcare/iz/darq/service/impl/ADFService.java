@@ -113,19 +113,19 @@ public class ADFService {
         this.mergeable(files);
 
         ADFile first = files.get(0);
-        Map<String, PatientPayload> patients = first.getPatients();
-        Map<String, Map<String, VaccinationPayload>> vaccinations = first.getVaccinations();
+        Map<String, PatientPayload> generalPatientSection = first.getGeneralPatientPayload();
+        Map<String, Map<String, ADPayload>> reportingGroupPayload = first.getReportingGroupPayload();
         Summary summary = first.getSummary();
 
         for(int i = 1; i < files.size(); i++) {
-            patients = this.mergeService.mergePatientAgeGroup(patients, files.get(i).getPatients());
-            vaccinations = this.mergeService.mergeVxProvider(vaccinations, files.get(i).getVaccinations());
+            generalPatientSection = this.mergeService.mergePatientAgeGroup(generalPatientSection, files.get(i).getGeneralPatientPayload());
+            reportingGroupPayload = this.mergeService.mergeADPayloadProvider(reportingGroupPayload, files.get(i).getReportingGroupPayload());
             summary = Summary.merge(summary, files.get(i).getSummary());
         }
 
         ADFile file = new ADFile(
-                patients,
-                vaccinations,
+                generalPatientSection,
+                reportingGroupPayload,
                 first.getConfiguration(),
                 summary,
                 null,

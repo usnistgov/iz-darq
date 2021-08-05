@@ -140,6 +140,32 @@ public abstract class Tray implements Cloneable {
 			return new PatDetectionTray(this.copyList(), count, weigth);
 		}
 	}
+
+	public static class PatRgDetectionTray extends Tray {
+
+		public PatRgDetectionTray() {
+			super();
+		}
+
+		public PatRgDetectionTray(Set<TrayField> fields, int count, int weigth) {
+			super(fields, count, weigth);
+		}
+
+		@Override
+		public boolean full() {
+			return has(Arrays.asList(Field.PROVIDER, Field.AGE_GROUP, Field.DETECTION));
+		}
+
+		@Override
+		public _CG compatibilityGroup() {
+			return _CG.PD;
+		}
+
+		@Override
+		public Tray cloneTray() {
+			return new PatDetectionTray(this.copyList(), count, weigth);
+		}
+	}
 	
 	Set<TrayField> fields;
 	int count;

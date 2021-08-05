@@ -15,11 +15,12 @@ public class TrayProcessorFactory implements gov.nist.healthcare.iz.darq.analyze
 	@Override
 	public TrayProcessor create(_CG group, Function<Tray, Action> guard) {
 		switch(group){
-		case V : return new VaxTrayProcessor(guard);
-		case VT : return new VaxCodeTrayProcessor(guard);
-		case VD : return new VaxDetectionTrayProcessor(guard);
-		case PT : return new PatCodeTrayProcessor(guard);
-		case PD : return new PatDetectionTrayProcessor(guard);
+			case V : return new VaxTrayProcessor(guard);
+			case VT : return new VaxCodeTrayProcessor(guard);
+			case VD : return new VaxDetectionTrayProcessor(guard);
+			case PT : return new PatCodeTrayProcessor(guard);
+			case PD : return new PatDetectionTrayProcessor(guard);
+			case PD_RG: return new PatRgDetectionTrayProcessor(guard);
 		}
 		return null;
 	}

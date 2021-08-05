@@ -34,8 +34,8 @@ public class ADFile {
 	
 	
 	private Date analysisDate;
-	private Map<String, PatientPayload> patients;
-	private Map<String, Map<String, VaccinationPayload>> vaccinations;
+	private Map<String, PatientPayload> generalPatientPayload;
+	private Map<String, Map<String, ADPayload>> reportingGroupPayload;
 	private ConfigurationPayload configuration;
 	private Summary summary;
 	private Vocabulary vocabulary;
@@ -45,8 +45,8 @@ public class ADFile {
 	private Set<String> inactiveDetections;
 
 	public ADFile(
-			Map<String, PatientPayload> patients,
-			Map<String, Map<String, VaccinationPayload>> vaccinations,
+			Map<String, PatientPayload> generalPatientPayload,
+			Map<String, Map<String, ADPayload>> reportingGroupPayload,
 			ConfigurationPayload configuration,
 			Summary summary,
 			Vocabulary vocabulary,
@@ -56,8 +56,8 @@ public class ADFile {
 			Set<String> inactiveDetections
 	) {
 		super();
-		this.patients = patients;
-		this.vaccinations = vaccinations;
+		this.generalPatientPayload = generalPatientPayload;
+		this.reportingGroupPayload = reportingGroupPayload;
 		this.configuration = configuration;
 		this.analysisDate = new Date();
 		this.summary = summary;
@@ -73,19 +73,22 @@ public class ADFile {
 		super();
 	}
 
-	public Map<String, PatientPayload> getPatients() {
-		return patients;
+	public Map<String, PatientPayload> getGeneralPatientPayload() {
+		return generalPatientPayload;
 	}
-	public void setPatients(Map<String, PatientPayload> patients) {
-		this.patients = patients;
+
+	public void setGeneralPatientPayload(Map<String, PatientPayload> generalPatientPayload) {
+		this.generalPatientPayload = generalPatientPayload;
 	}
-	public Map<String, Map<String, VaccinationPayload>> getVaccinations() {
-		return vaccinations;
+
+	public Map<String, Map<String, ADPayload>> getReportingGroupPayload() {
+		return reportingGroupPayload;
 	}
-	public void setVaccinations(Map<String, Map<String, VaccinationPayload>> vaccinations) {
-		this.vaccinations = vaccinations;
+
+	public void setReportingGroupPayload(Map<String, Map<String, ADPayload>> reportingGroupPayload) {
+		this.reportingGroupPayload = reportingGroupPayload;
 	}
-	
+
 	public Date getAnalysisDate() {
 		return analysisDate;
 	}

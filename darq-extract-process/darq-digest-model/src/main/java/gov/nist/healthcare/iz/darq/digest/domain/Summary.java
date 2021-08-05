@@ -138,8 +138,8 @@ public class Summary {
 		this.issues = chunk.issueList();
 		this.countByAgeGroup = new ArrayList<>();
 		Map<String, Integer> ageCounts = new HashMap<>();
-		for(String ageGroup : chunk.getPatientSection().keySet()){
-			ageCounts.put(ageGroup, chunk.getPatientSection().get(ageGroup).getCount());
+		for(String ageGroup : chunk.getGeneralPatientPayload().keySet()){
+			ageCounts.put(ageGroup, chunk.getGeneralPatientPayload().get(ageGroup).getCount());
 		}
 		extract = new HashMap<>();
 		for(String e : chunk.getExtraction().keySet()){

@@ -21,7 +21,7 @@ public class PatDetectionTrayProcessor extends TrayProcessor {
 
 	@Override
 	public List<Tray> inner(ADFile file) {
-		ageGroup(file.getPatients(), new PatDetectionTray());
+		ageGroup(file.getGeneralPatientPayload(), new PatDetectionTray());
 		return this.work;
 	}
 

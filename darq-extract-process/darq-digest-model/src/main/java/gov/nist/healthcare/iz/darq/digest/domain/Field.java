@@ -6,7 +6,7 @@ import java.util.Set;
 
 
 public enum Field {
-	PROVIDER(_CG.V, _CG.VD, _CG.VT), 
+	PROVIDER(_CG.V, _CG.VD, _CG.VT, _CG.PD_RG, _CG.PT_RG),
 	AGE_GROUP(_CG.values()), 
 	TABLE(_CG.VT, _CG.PT), 
 	CODE(_CG.VT, _CG.PT), 
@@ -18,11 +18,13 @@ public enum Field {
 	
 	//-- FIELDS COMPATIBILITY GROUP
 	public static enum _CG {
-		V(Analysis.VACCINATION_SECTION), 
-		VD(Analysis.VACCINATION_SECTION), 
-		VT(Analysis.VACCINATION_SECTION), 
-		PD(Analysis.PATIENT_SECTION), 
-		PT(Analysis.PATIENT_SECTION);
+		V(Analysis.REPORTING_GROUP_AGG_SECTION),
+		VD(Analysis.REPORTING_GROUP_AGG_SECTION),
+		VT(Analysis.REPORTING_GROUP_AGG_SECTION),
+		PD(Analysis.GENERAL_PATIENT_SECTION),
+		PT(Analysis.GENERAL_PATIENT_SECTION),
+		PD_RG(Analysis.REPORTING_GROUP_AGG_SECTION),
+		PT_RG(Analysis.REPORTING_GROUP_AGG_SECTION);
 		
 		Analysis scope;
 		private _CG(Analysis scope) {

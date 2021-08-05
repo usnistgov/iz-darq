@@ -14,18 +14,25 @@ public class ADChunk {
 	private int minVaccination = 99999;
 	private IssueList issues;
 	private Map<String, String> providers;
-	private Map<String, Map<String, VaccinationPayload>> vaccinationSection;
-	private Map<String, PatientPayload> patientSection;
+	private Map<String, PatientPayload> generalPatientPayload;
+	private Map<String, Map<String, ADPayload>> reportingGroupPayload;
 	private Map<String, ExtractFraction> extraction;
 	private Map<Field, Set<String>> values;
 	private Map<String, Set<String>> codes;
 	
-	public ADChunk(Map<String, String> providers, Map<String, Map<String, VaccinationPayload>> vaccinationSection,
-			Map<String, PatientPayload> patientSection, Map<String, ExtractFraction> extraction, int nbVaccinations, int nbPatients, Map<Field, Set<String>> values, Map<String, Set<String>> codes) {
+	public ADChunk(
+			Map<String, String> providers,
+			Map<String, PatientPayload> generalPatientPayload,
+			Map<String, Map<String, ADPayload>> reportingGroupPayload,
+			Map<String, ExtractFraction> extraction,
+			int nbVaccinations,
+			int nbPatients,
+			Map<Field, Set<String>> values,
+			Map<String, Set<String>> codes) {
 		super();
 		this.providers = providers;
-		this.vaccinationSection = vaccinationSection;
-		this.patientSection = patientSection;
+		this.generalPatientPayload = generalPatientPayload;
+		this.reportingGroupPayload = reportingGroupPayload;
 		this.extraction = extraction;
 		this.nbVaccinations = nbVaccinations;
 		this.nbPatients = nbPatients;
@@ -36,26 +43,29 @@ public class ADChunk {
 	
 	public ADChunk() {
 		super();
-		vaccinationSection = new HashMap<>();
-		patientSection = new HashMap<>();
+		generalPatientPayload = new HashMap<>();
+		reportingGroupPayload = new HashMap<>();
 		extraction = new HashMap<>();
 		providers = new HashMap<>();
 		this.issues = new IssueList(MAX_ISSUES);
 	}
 
+	public Map<String, PatientPayload> getGeneralPatientPayload() {
+		return generalPatientPayload;
+	}
 
-	public Map<String, Map<String, VaccinationPayload>> getVaccinationSection() {
-		return vaccinationSection;
+	public void setGeneralPatientPayload(Map<String, PatientPayload> generalPatientPayload) {
+		this.generalPatientPayload = generalPatientPayload;
 	}
-	public void setVaccinationSection(Map<String, Map<String, VaccinationPayload>> vaccinationSection) {
-		this.vaccinationSection = vaccinationSection;
+
+	public Map<String, Map<String, ADPayload>> getReportingGroupPayload() {
+		return reportingGroupPayload;
 	}
-	public Map<String, PatientPayload> getPatientSection() {
-		return patientSection;
+
+	public void setReportingGroupPayload(Map<String, Map<String, ADPayload>> reportingGroupPayload) {
+		this.reportingGroupPayload = reportingGroupPayload;
 	}
-	public void setPatientSection(Map<String, PatientPayload> patientSection) {
-		this.patientSection = patientSection;
-	}
+
 	public Map<String, ExtractFraction> getExtraction() {
 		return extraction;
 	}
@@ -88,8 +98,8 @@ public class ADChunk {
 
 	@Override
 	public String toString() {
-		return "ADChunk [providers=" + providers + ", vaccinationSection=" + vaccinationSection + ", patientSection="
-				+ patientSection + ", extraction=" + extraction + "]";
+		return "ADChunk [providers=" + providers + ", reportingGroupPayload=" + this.reportingGroupPayload + ", generalPatientPayload="
+				+ this.generalPatientPayload + ", extraction=" + extraction + "]";
 	}
 
 

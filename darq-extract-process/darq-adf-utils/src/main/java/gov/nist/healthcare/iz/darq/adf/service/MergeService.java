@@ -2,23 +2,20 @@ package gov.nist.healthcare.iz.darq.adf.service;
 
 import java.util.Map;
 
-import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
-import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
-import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
-import gov.nist.healthcare.iz.darq.digest.domain.VaccinationPayload;
+import gov.nist.healthcare.iz.darq.digest.domain.*;
 
 public interface MergeService {
 
 	ADChunk mergeChunk(ADChunk a, ADChunk b);
 
-	Map<String, Map<String, VaccinationPayload>> mergeVxProvider(Map<String, Map<String, VaccinationPayload>> a,
-			Map<String, Map<String, VaccinationPayload>> b);
 
-	Map<String, VaccinationPayload> mergeVxAgeGroup(Map<String, VaccinationPayload> a,
-			Map<String, VaccinationPayload> b);
+	Map<String, Map<String, ADPayload>> mergeADPayloadProvider(Map<String, Map<String, ADPayload>> a, Map<String, Map<String, ADPayload>> b);
 
-	VaccinationPayload mergeVxPayload(VaccinationPayload a, VaccinationPayload b);
+	Map<String, ADPayload> mergeADPayloadAgeGroup(Map<String, ADPayload> a, Map<String, ADPayload> b);
+
+    ADPayload mergeADPayload(ADPayload a, ADPayload b);
+
+    VaccinationPayload mergeVxPayload(VaccinationPayload a, VaccinationPayload b);
 
 	Map<String, DetectionSum> mergeDetections(Map<String, DetectionSum> a, Map<String, DetectionSum> b);
 

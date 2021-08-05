@@ -1,19 +1,14 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import gov.nist.healthcare.iz.darq.digest.domain.ExtractFraction;
+import gov.nist.healthcare.iz.darq.digest.domain.*;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
-import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.VaccinationPayload;
 import gov.nist.healthcare.iz.darq.digest.service.AgeGroupService;
 import gov.nist.healthcare.iz.darq.digest.service.ConfigurationProvider;
 import gov.nist.healthcare.iz.darq.digest.service.RecordChewer;
@@ -56,16 +51,16 @@ public class SimpleRecordChewer implements RecordChewer {
 		Map<String, Map<String, VaccinationPayload>> vaccinationSection = this.groupService.makeVxSectionProvider(configuration.ageGroupService(), validator.getVxInfo(), validator.vaccinationDetections(), collector.getVaccinationCodes());
 		Map<String, PatientPayload> patientSection = this.groupService.makePatSectionAge(configuration.ageGroupService(), validator.patientDetections(), collector.getPatientCodes());
 		Map<String, ExtractFraction> extraction = collector.getExtract();
-
+		Map<String, Map<String, ADPayload>> merged = this.groupService.makeADPayloadMap(patientSection, vaccinationSection);
 		
-		Map<String, Map<String, VaccinationPayload>> deIdentifiedSection = new HashMap<>();
+		Map<String, Map<String, ADPayload>> deIdentifiedSection = new HashMap<>();
 		for(String provider : vaccinationSection.keySet()){
 			String hash = DigestUtils.md5DigestAsHex(provider.getBytes());
-			deIdentifiedSection.put(hash, vaccinationSection.get(provider));
+			deIdentifiedSection.put(hash, merged.get(provider));
 			providers.put(provider, hash);
 		}
 
-		return new ADChunk(providers, deIdentifiedSection, patientSection, extraction, apr.history.size(), 1, validator.vocabulary(), collector.codes());
+		return new ADChunk(providers, patientSection, deIdentifiedSection, extraction, apr.history.size(), 1, validator.vocabulary(), collector.codes());
 	}	
 
 }
