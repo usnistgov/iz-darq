@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
+import gov.nist.healthcare.iz.darq.parser.type.DqDate;
 import org.immregistries.mqe.validator.transform.MessageTransformer;
 import org.immregistries.mqe.vxu.*;
 import gov.nist.healthcare.iz.darq.digest.domain.TransformResult;
@@ -9,6 +10,8 @@ import gov.nist.healthcare.iz.darq.parser.model.VaccineRecord;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import java.util.Date;
 
 public class MQETransformService {
 	
@@ -49,7 +52,8 @@ public class MQETransformService {
 		patient.setRegistryStatusCode(record.patient.provider_facility_level.getValue());
 		patient.setRegistryStatusUniversal(record.patient.iis_level.getValue());
 		patient.setSystemEntryDateString(formatDate(record.patient.record_creation_date.getValue()));
-		
+		patient.setSystemEntryDate(toDate(record.patient.record_creation_date));
+
 		MqeAddress address = new MqeAddress();
 		
 		address.setStreet(record.patient.address.street.getValue());
@@ -89,7 +93,7 @@ public class MQETransformService {
 			vax.setBodySiteCode(vr.admin_site.getValue());
 			vax.setBodyRouteCode(vr.admin_route.getValue());
 			
-			vax.setExpirationDate(vr.exp_date.getValue().toDate());
+			vax.setExpirationDateString(formatDate(vr.exp_date.getValue()));
 			vax.setAmount(vr.volume_unit.getValue());
 			
 			vax.setOrderedByNumber(vr.ordering_provider.getValue());
@@ -104,7 +108,8 @@ public class MQETransformService {
 			vax.setFinancialEligibilityCode(vr.eligibility_at_dose.getValue());
 			vax.setFundingSourceCode(vr.vaccine_funding_source.getValue());
 			vax.setSystemEntryDateString(formatDate(vr.record_creation_date.getValue()));
-			
+			vax.setSystemEntryDate(toDate(vr.record_creation_date));
+
 			VaccinationVIS vis = new VaccinationVIS();
 
 			vis.setCvxCode(vr.vis.type.getValue());
@@ -138,6 +143,14 @@ public class MQETransformService {
 	private String formatDate(LocalDate date){
 		if(date != null) return dateFormat.print(date);
 		return "";
+	}
+
+	private Date toDate(DqDate dqDate) {
+		if(dqDate.getValue() != null) {
+			return dqDate.getValue().toDate();
+		} else {
+			return null;
+		}
 	}
 
 }

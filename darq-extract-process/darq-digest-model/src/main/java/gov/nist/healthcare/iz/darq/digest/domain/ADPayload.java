@@ -4,6 +4,9 @@ public class ADPayload {
     PatientPayload patientPayload;
     VaccinationPayload vaccinationPayload;
 
+    public ADPayload() {
+    }
+
     public ADPayload(PatientPayload patientPayload, VaccinationPayload vaccinationPayload) {
         this.patientPayload = patientPayload;
         this.vaccinationPayload = vaccinationPayload;

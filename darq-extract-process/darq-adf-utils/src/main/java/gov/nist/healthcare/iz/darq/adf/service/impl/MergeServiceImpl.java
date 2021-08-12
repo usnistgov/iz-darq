@@ -197,11 +197,23 @@ public class MergeServiceImpl implements MergeService {
 	
 	@Override
 	public PatientPayload mergePatient(PatientPayload a, PatientPayload b){
-		PatientPayload pt = new PatientPayload();
-		pt.setCount(a.getCount() + b.getCount());
-		pt.setDetection(mergeDetections(a.getDetection(), b.getDetection()));
-		pt.setCodeTable(mergeCodeTable(a.getCodeTable(), b.getCodeTable()));
-		return pt;
+		try {
+			PatientPayload pt = new PatientPayload();
+			int a_count = a != null ? a.getCount() : 0;
+			int b_count = b != null ? b.getCount() : 0;
+			Map<String, DetectionSum> a_detections = a != null ? a.getDetection() : null;
+			Map<String, DetectionSum> b_detections = b != null ? b.getDetection() : null;
+			Map<String, TablePayload> a_table =  a != null ? a.getCodeTable() : null;
+			Map<String, TablePayload> b_table =  b != null ? b.getCodeTable() : null;
+
+			pt.setCount(a_count + b_count);
+			pt.setDetection(mergeDetections(a_detections, b_detections));
+			pt.setCodeTable(mergeCodeTable(a_table, b_table));
+			return pt;
+		} catch (Exception e) {
+			throw e;
+		}
+
 	}
 
 
