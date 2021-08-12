@@ -21,5 +21,6 @@
 		<module>darq-extract-process</module>
 		<module>darq-analyzer</module>
         <module>lucene-index</module>
+        <module>fake-record-generator</module>
     </modules>
 </project>

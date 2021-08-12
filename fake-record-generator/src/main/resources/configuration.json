@@ -1,0 +1,133 @@
+{
+  "asOf": "2021-08-09",
+  "numberOfPatients": 100,
+  "numberOfVaccinations": 200,
+  "maxVxPerPatient": 5,
+  "minVxPerPatient": 0,
+  "patients" : {
+    "OWN_NAME_FIRST": { "position" : 1, "type" :  "NAME", "paramsMapTo": { "GENDER" :  "GENDER" }},
+    "OWN_NAME_MIDDLE": { "position" : 2, "type" :  "NAME", "paramsMapTo": { "GENDER" :  "GENDER" }},
+    "OWN_NAME_LAST": { "position" : 3,  "type" :  "NAME", "family" : true },
+    "MOTHER_MAIDEN_NAME": { "position" : 4, "type" :  "NAME", "family" : true },
+    "MOTHER_NAME_FIRST": { "position" : 5, "type" :  "NAME", "paramsValue": { "GENDER" :  "F" }},
+    "MOTHER_NAME_MIDDLE": { "position" : 6, "type" :  "NAME", "paramsValue": { "GENDER" :  "F" }},
+    "MOTHER_NAME_LAST": { "position" : 7, "type" :  "NAME", "family" : true },
+    "DOB": {
+      "position": 8,
+      "type": "VALUE_DISTRIBUTION",
+      "generator": {
+        "type": "ENUM",
+        "name": "DATES_OF_BIRTH"
+      },
+      "distribution": {
+        "values": {
+          "2021-07-09": 60
+        }
+      }
+    },
+    "GENDER": {
+      "position": 9,
+      "type": "VALUE_DISTRIBUTION",
+      "generator": {
+        "type": "CODED",
+        "codeSet": "PATIENT_SEX"
+      },
+      "distribution": {
+        "values": {
+          "M": 60
+        }
+      }
+    },
+    "ADDRESS_STREET" : { "position" : 10, "type" :  "RANDOM", "minLength" :  10, "maxLength" :  16 },
+    "ADDRESS_COUNTRY" : { "position" : 11, "type" :  "FIXED", "value" :  "USA" },
+    "ADDRESS_CITY" : { "position" : 12, "type" :  "VOCABULARY", "table" :  "CITY", "field" :  "CITY" },
+    "ADDRESS_STATE" : { "position" : 13, "type" :  "STATE_AWARE", "field" :  "STATE"},
+    "ADDRESS_ZIP" : { "position" : 14, "type" :  "STATE_AWARE", "field" :  "ZIPCODE", "paramsMapTo": { "STATE" :  "ADDRESS_STATE" }},
+    "RACE": { "position" : 15, "type" :  "CODED", "codeSet" :  "PATIENT_RACE"},
+    "ETHNICITY": { "position" : 16, "type" :  "CODED", "codeSet" :  "PATIENT_ETHNICITY"},
+    "PHONE": { "position" : 17, "type" :  "STATE_AWARE", "field" :  "PHONE", "paramsMapTo": { "STATE" :  "ADDRESS_STATE" }},
+    "EMAIL": { "position" : 18, "type" :  "RANDOM", "format": "EMAIL" },
+    "LANGUAGE": { "position" : 19, "type" :  "CODED", "codeSet": "PERSON_LANGUAGE" },
+    "ALIAS_NAME_FIRST": { "position" : 20, "type" :  "NAME", "paramsMapTo": { "GENDER" :  "GENDER" }},
+    "ALIAS_NAME_MIDDLE": { "position" : 21, "type" :  "NAME", "paramsMapTo": { "GENDER" :  "GENDER" }},
+    "ALIAS_NAME_LAST": { "position" : 22, "type" :  "NAME", "family" : true },
+    "RESPONSIBLE_PARTY_RELATIONSHIP": { "position" : 23, "type" :  "CODED", "codeSet": "PERSON_RELATIONSHIP" },
+    "RESPONSIBLE_PARTY_SEX" : { "transient" :  true, "type" :  "MAPPED", "from" : "REL", "to" :  "SEX", "paramsMapTo": { "FROM" :  "RESPONSIBLE_PARTY_RELATIONSHIP" },
+      "generator" : {
+        "type": "CODED",
+        "codeSet": "PATIENT_SEX"
+      }
+    },
+    "RESPONSIBLE_PARTY_NAME_FIRST": { "position" : 24, "type" :  "NAME", "paramsMapTo": { "GENDER" :  "RESPONSIBLE_PARTY_SEX" }},
+    "RESPONSIBLE_PARTY_NAME_MIDDLE": { "position" : 25, "type" :  "NAME", "paramsMapTo": { "GENDER" :  "RESPONSIBLE_PARTY_SEX" }},
+    "RESPONSIBLE_PARTY_NAME_LAST": { "position" : 26, "type" :  "NAME", "family" : true },
+    "MULTI_BIRTH_INDICATOR": { "position" : 27, "type" :  "ENUM", "name" : "MULTI_BIRTH_INDICATOR" },
+    "BIRTH_ORDER": { "position" : 28, "type": "MAPPED", "from" : "BIRTH_INDICATOR", "to" :  "BIRTH_ORDER",
+      "generator" : {
+        "type" :  "CODED", "codeSet": "BIRTH_ORDER"
+      },
+      "paramsMapTo": { "FROM" :  "MULTI_BIRTH_INDICATOR" }
+    },
+    "BIRTH_STATE": { "position" : 29, "type" :  "STATE_AWARE", "field" :  "STATE"},
+    "PROVIDER_REGISTRY_STATUS": { "position" : 30, "type" :  "CODED", "codeSet": "REGISTRY_STATUS" },
+    "REGISTRY_STATUS": { "position" : 31, "type" :  "CODED", "codeSet": "REGISTRY_STATUS" },
+    "RECODE_CREATION_DATE": { "position" : 31, "type" :  "DATE_BETWEEN", "paramsMapTo": { "START" :  "DOB" }, "paramsValue": { "END" :  "2021-08-09" } },
+    "RECODE_UPDATE_DATE": { "position" : 31, "type" :  "COPY", "paramsMapTo": { "COPY_OF" :  "RECODE_CREATION_DATE" } }
+  },
+  "vaccinations" : {
+    "VAX_ID" : { "position" :  1, "type" : "RANDOM", "minLength" : 5, "maxLength" : 5, "uppercase" :  true },
+    "REPORTING_GRP" : { "position" :  2, "type" : "RANDOM", "minLength" : 5, "maxLength" : 5, "uppercase" :  true },
+    "SENDING_ORG" : { "position" :  3, "type" : "RANDOM", "minLength" : 5, "maxLength" : 10 },
+    "RESP_ORG" : { "position" :  4, "type" : "RANDOM", "minLength" : 5, "maxLength" : 5 },
+    "ADMIN_LOCATION" : { "position" : 5, "type" :  "VOCABULARY", "table" :  "CITY", "field" :  "CITY" },
+    "ADMIN_PROVIDER" : { "position" : 6,  "type" :  "NAME", "family" : true },
+    "CVX": { "position" : 7,  "type" :  "CODED", "codeSet" :  "VACCINATION_CVX_CODE"  },
+    "NDC": { "position" : 8, "type" :  "CODED", "codeSet" :  "VACCINATION_NDC_CODE_UNIT_OF_USE" },
+    "ADMIN_DATE": { "position" : 9,  "type" :  "DATE_BETWEEN", "paramsMapTo": { "START" :  "DOB" }, "paramsValue": { "END" :  "2021-08-09" }},
+    "MVX": { "position" : 10,  "type" :  "CODED", "codeSet" :  "VACCINATION_MANUFACTURER_CODE"  },
+    "LOT_NUMBER" : {"position" :  11, "type" : "RANDOM", "minLength" : 8, "maxLength" : 8},
+    "EVENT_TYPE" : { "position" :  12, "type" :  "CODED", "codeSet" :  "VACCINATION_INFORMATION_SOURCE" },
+    "ADMIN_ROUTE" : { "position" :  13, "type" :  "CODED", "codeSet" :  "BODY_SITE" },
+    "ADMIN_SITE" : { "position" :  14, "type" :  "CODED", "codeSet" :  "BODY_ROUTE"},
+    "EXP_DATE" : { "position" : 15, "type" :  "DATE_BETWEEN", "paramsMapTo": { "START" :  "ADMIN_DATE" }, "paramsValue": { "END" :  "2021-08-09" } },
+    "AMOUNT" : { "position" : 16, "type" : "RANDOM", "format" : "NUMBER", "minLength" : 1, "maxLength" : 50 },
+    "ORDERING_PROVIDER" : { "position" : 17,  "type" :  "NAME", "family" : true },
+    "COMPLETE_STATUS" : { "position" :  18, "type" :  "CODED", "codeSet" :  "VACCINATION_COMPLETION" },
+    "ELIGIBILITY" : { "position" :  19, "type" :  "CODED", "codeSet" :  "FINANCIAL_STATUS_CODE" },
+    "FUNDING_SOURCE" : { "position" :  20, "type" :  "CODED", "codeSet" : "VACCINATION_FUNDING_SOURCE" },
+    "VIS_TYPE" : { "position" :  21, "type" :  "CODED", "codeSet" :  "VACCINATION_VIS_DOC_TYPE"},
+    "PUBLISHED" : { "position" :  22, "type" :  "DATE_OP", "paramsMapTo": { "SOURCE" :  "ADMIN_DATE" }, "paramsValue": { "FACTOR" :  "-1", "YEARS" : "1" }},
+    "PRESENTED" : { "position" :  23, "type" : "COPY", "paramsMapTo": { "COPY_OF" :  "ADMIN_DATE" } },
+    "VX_RECODE_CREATION_DATE": { "position" : 24, "type" :  "DATE_OP", "paramsMapTo": { "SOURCE" :  "ADMIN_DATE" }, "paramsValue": { "FACTOR" :  "1", "DAYS" : "5" }},
+    "VX_RECODE_UPDATE_DATE": { "position" : 25, "type" :  "COPY", "paramsMapTo": { "COPY_OF" :  "VX_RECODE_CREATION_DATE" } },
+    "DOB": {
+      "transient": true,
+      "type" : "CROSS",
+      "field": "DOB"
+    }
+  },
+  "enums" : {
+    "MULTI_BIRTH_INDICATOR" : [ "Y", "N" ],
+    "DATES_OF_BIRTH" : ["2021-06-09", "2021-05-09"]
+  },
+  "valueMappings" : [
+    {
+      "from" : "REL",
+      "to" : "SEX",
+      "mapping" : {
+        "BRO" : { "type":  "FIXED", "value" :  "M" },
+        "FTH" : { "type":  "FIXED", "value" :  "M" },
+        "MTH" : { "type":  "FIXED", "value" :  "F" },
+        "SIS" : { "type":  "FIXED", "value" :  "F" }
+      }
+    },
+    {
+      "from" : "BIRTH_INDICATOR",
+      "to" : "BIRTH_ORDER",
+      "mapping" : {
+        "N" : { "type":  "FIXED", "value" :  "[[NP]]" }
+      }
+    }
+  ]
+}
+
