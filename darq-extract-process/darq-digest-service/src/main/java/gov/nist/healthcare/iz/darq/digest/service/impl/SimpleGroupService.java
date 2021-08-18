@@ -2,6 +2,7 @@ package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import gov.nist.healthcare.iz.darq.digest.domain.*;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import gov.nist.healthcare.iz.darq.digest.service.GroupService;
 public class SimpleGroupService implements GroupService {
 
 	
-	public Map<String, Map<String, VaccinationPayload>> makeVxSectionProvider(AgeGroupService ageGroupCalculator, Map<String, Map<String, Map<String, Map<String, Map<String, Map<String, Integer>>>>>> vx, Map<String, Map<String, Map<String, DetectionSum>>> dqa, Map<String, Map<String, Map<String, TablePayload>>> codes){
+	public Map<String, Map<String, VaccinationPayload>> makeVxSectionProvider(AgeGroupService ageGroupCalculator, Map<String, Map<String, Map<String, Map<String, Map<String, TablePayload>>>>> vx, Map<String, Map<String, Map<String, DetectionSum>>> dqa, Map<String, Map<String, Map<String, TablePayload>>> codes){
 		Map<String, Map<String, VaccinationPayload>> vxSection = new HashMap<>();
 
 		for(String provider : vx.keySet()){
@@ -23,7 +24,7 @@ public class SimpleGroupService implements GroupService {
 	}
 	
 	
-	public Map<String, VaccinationPayload> makeVxSectionAge(AgeGroupService ageGroupCalculator, Map<String, Map<String, Map<String, Map<String, Map<String, Integer>>>>> vx, Map<String, Map<String, DetectionSum>> dqa, Map<String, Map<String, TablePayload>> codes){
+	public Map<String, VaccinationPayload> makeVxSectionAge(AgeGroupService ageGroupCalculator, Map<String, Map<String, Map<String, Map<String, TablePayload>>>> vx, Map<String, Map<String, DetectionSum>> dqa, Map<String, Map<String, TablePayload>> codes){
 		Map<String, VaccinationPayload> vxSection = new HashMap<>();
 		
 		for(String grp : ageGroupCalculator.getGroups()){
@@ -34,7 +35,7 @@ public class SimpleGroupService implements GroupService {
 		return vxSection;
 	}
 	
-	public VaccinationPayload makeVxPayload(Map<String, Map<String, Map<String, Map<String, Integer>>>> vx, Map<String, DetectionSum> dqa, Map<String, TablePayload> codes){
+	public VaccinationPayload makeVxPayload(Map<String, Map<String, Map<String, TablePayload>>> vx, Map<String, DetectionSum> dqa, Map<String, TablePayload> codes){
 		return new VaccinationPayload(dqa, codes, vx);
 	}
 	
@@ -57,13 +58,25 @@ public class SimpleGroupService implements GroupService {
 	public Map<String, Map<String, ADPayload>> makeADPayloadMap(Map<String, PatientPayload> patient, Map<String, Map<String, VaccinationPayload>> vaccinations) {
 		Map<String, Map<String, ADPayload>> merged = new HashMap<>();
 		for(String reportingGroup : vaccinations.keySet()) {
+			Map<String, ADPayload> byReportingGroup = merged.computeIfAbsent(reportingGroup, (rg) -> new HashMap<>());
 			for(String ageGroup: vaccinations.get(reportingGroup).keySet()) {
-				Map<String, ADPayload> byReportingGroup = merged.computeIfAbsent(reportingGroup, (rg) -> new HashMap<>());
 				byReportingGroup.put(ageGroup, new ADPayload(
-						patient.get(ageGroup),
+						new PatientPayload(),
 						vaccinations.get(reportingGroup).get(ageGroup)
 				));
 			}
+
+			for(String ageGroupPatient: patient.keySet()) {
+				byReportingGroup.computeIfPresent(ageGroupPatient, (k, v) -> {
+					v.setPatientPayload(patient.get(ageGroupPatient));
+					return v;
+				});
+				byReportingGroup.computeIfAbsent(ageGroupPatient, (k) -> new ADPayload(
+						patient.get(ageGroupPatient),
+						new VaccinationPayload()
+				));
+			}
+
 		}
 		return merged;
 	}

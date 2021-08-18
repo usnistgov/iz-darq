@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
 import gov.nist.healthcare.iz.darq.digest.service.model.Issue;
 import gov.nist.healthcare.iz.darq.digest.service.model.VxInfo;
 import org.immregistries.mqe.validator.detection.Detection;
@@ -203,8 +204,8 @@ public class DQAValidator {
 						);
 	}
 	
-	//------- PROVIDER ---- AGE ------ CODE------- YEAR ------ GENDER ---- SOURCE -- NB
-	Map<String, Map<String, Map<String, Map<String, Map<String, Map<String, Integer>>>>>> getVxInfo() {
+	//------- PROVIDER ---- AGE ------- YEAR ------ GENDER ---- SOURCE -- NB
+	Map<String, Map<String, Map<String, Map<String, Map<String, TablePayload>>>>> getVxInfoTable() {
 		return this.vx.stream()
 				.collect(
 						Collectors.groupingBy(
@@ -212,23 +213,37 @@ public class DQAValidator {
 								Collectors.groupingBy(
 										VxInfo::getAgeGroup,
 										Collectors.groupingBy(
-												VxInfo::getCode,
+												VxInfo::getYear,
 												Collectors.groupingBy(
-													VxInfo::getYear,
-													Collectors.groupingBy(
-															VxInfo::getGender,
-															Collectors.groupingBy(
-																	VxInfo::getSource,
-																	Collectors.collectingAndThen(
-																			Collectors.counting(),
-																			Math::toIntExact)
-																	)
-															)
-													)
+														VxInfo::getGender,
+														Collectors.groupingBy(
+																VxInfo::getSource,
+																Collectors.collectingAndThen(
+																		Collectors.toList(),
+																		(x) -> {
+																			TablePayload t = new TablePayload();
+																			t.setTotal(x.size());
+																			t.setCodes(
+																					x.stream()
+																							.collect(
+																									Collectors.groupingBy(
+																											VxInfo::getCode,
+																											Collectors.collectingAndThen(
+																													Collectors.toList(),
+																													List::size
+																											)
+																									)
+																							)
+																			);
+																			return t;
+																		}
+																)
+														)
 												)
 										)
 								)
-						);
+						)
+				);
 	}
 	
 

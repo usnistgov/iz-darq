@@ -2,6 +2,7 @@ package gov.nist.healthcare.iz.darq.analyzer.service.impl;
 
 import java.util.function.Function;
 
+import gov.nist.healthcare.iz.darq.analyzer.service.tray.*;
 import org.springframework.stereotype.Service;
 
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisQuery.Action;
@@ -21,6 +22,7 @@ public class TrayProcessorFactory implements gov.nist.healthcare.iz.darq.analyze
 			case PT : return new PatCodeTrayProcessor(guard);
 			case PD : return new PatDetectionTrayProcessor(guard);
 			case PD_RG: return new PatRgDetectionTrayProcessor(guard);
+			case PT_RG: return new PatRgCodeTrayProcessor(guard);
 		}
 		return null;
 	}

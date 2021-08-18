@@ -92,6 +92,7 @@ export class QuerySelectorComponent extends QueryDialogTabComponent<IDataSelecto
   getImportantField() {
     switch (this.analysis) {
       case AnalysisType.PATIENTS_VOCABULARY:
+      case AnalysisType.PATIENTS_PROVIDER_VOCABULARY:
       case AnalysisType.VACCINCATIONS_VOCABULARY:
         return Field.TABLE;
       default:

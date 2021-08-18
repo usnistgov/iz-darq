@@ -19,17 +19,12 @@ public interface MergeService {
 
 	Map<String, DetectionSum> mergeDetections(Map<String, DetectionSum> a, Map<String, DetectionSum> b);
 
-	Map<String, Map<String, Map<String, Map<String, Integer>>>> mergeVxCode(
-			Map<String, Map<String, Map<String, Map<String, Integer>>>> a,
-			Map<String, Map<String, Map<String, Map<String, Integer>>>> b);
+	Map<String, Map<String, Map<String, TablePayload>>> mergeVxYear(
+			Map<String, Map<String, Map<String, TablePayload>>> a,
+			Map<String, Map<String, Map<String, TablePayload>>> b);
 
-	Map<String, Map<String, Map<String, Integer>>> mergeVxYear(Map<String, Map<String, Map<String, Integer>>> a,
-			Map<String, Map<String, Map<String, Integer>>> b);
-
-	Map<String, Map<String, Integer>> mergeVxSource(Map<String, Map<String, Integer>> a,
-			Map<String, Map<String, Integer>> b);
-
-	Map<String, Integer> mergeVxSex(Map<String, Integer> a, Map<String, Integer> b);
+	Map<String, Map<String, TablePayload>> mergeVxGender(Map<String, Map<String, TablePayload>> a,
+			Map<String, Map<String, TablePayload>> b);
 
 	Integer merge(Integer a, Integer b);
 

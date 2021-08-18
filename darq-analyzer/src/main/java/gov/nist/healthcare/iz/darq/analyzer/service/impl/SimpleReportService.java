@@ -58,13 +58,18 @@ public class SimpleReportService implements ReportService {
 	
 	@Override
 	public AnalysisReport analyse(ADFile file, ReportTemplate template) {
-		AnalysisReport result = new AnalysisReport();
-		result.setName(template.getName());
-		result.setDescription(template.getDescription());
-		result.setSections(this.analyse(file, template.getSections()));
-		result.setConfiguration(template.getConfiguration());
-		result.setCustomDetectionLabels(template.getCustomDetectionLabels());
-		return result;
+		try {
+			AnalysisReport result = new AnalysisReport();
+			result.setName(template.getName());
+			result.setDescription(template.getDescription());
+			result.setSections(this.analyse(file, template.getSections()));
+			result.setConfiguration(template.getConfiguration());
+			result.setCustomDetectionLabels(template.getCustomDetectionLabels());
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 
 	public List<ReportSectionResult> analyse(ADFile file, List<? extends ReportSection> sections) {

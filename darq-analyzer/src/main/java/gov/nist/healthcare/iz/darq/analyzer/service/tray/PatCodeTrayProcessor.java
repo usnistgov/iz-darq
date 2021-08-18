@@ -1,23 +1,24 @@
-package gov.nist.healthcare.iz.darq.analyzer.service.impl;
+package gov.nist.healthcare.iz.darq.analyzer.service.tray;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisQuery.Action;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray.*;
 import gov.nist.healthcare.iz.darq.analyzer.service.TrayProcessor;
+import gov.nist.healthcare.iz.darq.analyzer.service.tray.helper.CodeProcessorHelper;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
 
 public class PatCodeTrayProcessor extends TrayProcessor {
+	CodeProcessorHelper codeProcessorHelper;
 
 	public PatCodeTrayProcessor(Function<Tray, Action> predicate) {
 		super(predicate);
+		codeProcessorHelper = new CodeProcessorHelper(this::guard, this::finalize);
 	}
 
 	@Override
@@ -27,35 +28,15 @@ public class PatCodeTrayProcessor extends TrayProcessor {
 	}
 
 	void ageGroup(Map<String, PatientPayload> db, Tray t){
-		for(String ageGroup : db.keySet()){
-			t.start(Field.AGE_GROUP, ageGroup);
-			if(!guard(t)) {
-				table(db.get(ageGroup), t);
-			}	
+		if(db != null) {
+			for(String ageGroup : db.keySet()){
+				t.start(Field.AGE_GROUP, ageGroup);
+				if(!guard(t)) {
+					codeProcessorHelper.aggregate(Field.TABLE, Field.CODE, db.get(ageGroup).getCodeTable(), t);
+				}
+			}
+			t.remove(Field.AGE_GROUP);
 		}
-		t.remove(Field.AGE_GROUP);
-	}
-	
-	void table(PatientPayload db, Tray t){
-		for(String table : db.getCodeTable().keySet()){
-			t.add(Field.TABLE, table);
-			if(!guard(t)) {
-				code(db.getCodeTable().get(table), t);
-			}	
-		}
-		t.remove(Field.TABLE);
-	}
-	
-	void code(TablePayload db, Tray t){
-		for(String code : db.getCodes().keySet()){
-			t.add(Field.CODE, code);
-			if(!guard(t)) {
-				t.setWeigth(db.getCodes().get(code));
-				t.setCount(db.getCodes().get(code));
-				finalize(t);
-			}	
-		}
-		t.remove(Field.CODE);
 	}
 	
 	@Override

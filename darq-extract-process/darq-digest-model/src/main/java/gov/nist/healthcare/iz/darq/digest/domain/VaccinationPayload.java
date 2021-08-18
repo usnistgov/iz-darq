@@ -3,40 +3,28 @@ package gov.nist.healthcare.iz.darq.digest.domain;
 import java.util.Map;
 
 public class VaccinationPayload {
-	
-	private int countAdministred;
-	private int countHistorical;
+
+	private int total;
 	private Map<String, DetectionSum> detection;
 	private Map<String, TablePayload> codeTable;
-	private Map<String, Map<String, Map<String, Map<String, Integer>>>> vaccinations;
+	private Map<String, Map<String, Map<String, TablePayload>>> vaccinations;
 	
 	
 	
 	public VaccinationPayload(Map<String, DetectionSum> detection,
 			Map<String, TablePayload> codeTable,
-			Map<String, Map<String, Map<String, Map<String, Integer>>>> vaccinations) {
+			Map<String, Map<String, Map<String, TablePayload>>> vaccinations) {
 		super();
 		this.detection = detection;
 		this.codeTable = codeTable;
 		this.vaccinations = vaccinations;
-		this.countAdministred = countVx(vaccinations, "00");
-		this.countHistorical = countVx(vaccinations, "01");
-	}
-	
-	public int countVx(Map<String, Map<String, Map<String, Map<String, Integer>>>> vaccinations, String ev){
-		int i = 0;
-		for(String code : vaccinations.keySet()){
-			for(String year : vaccinations.get(code).keySet()){
-				for(String gender : vaccinations.get(code).get(year).keySet()){
-					for(String event : vaccinations.get(code).get(year).get(gender).keySet()){
-						if(event.equals(ev)){
-							i += vaccinations.get(code).get(year).get(gender).get(event);
-						}
-					}
-				}
-			}
-		}
-		return i;
+		this.total = vaccinations.keySet().stream().flatMap(
+				(year) -> vaccinations.get(year).keySet().stream().flatMap(
+						(gender) -> vaccinations.get(year).get(gender).keySet().stream().map(
+								(event) -> vaccinations.get(year).get(gender).get(event).getTotal()
+						)
+				)
+		).mapToInt(Integer::intValue).sum();
 	}
 		
 	public VaccinationPayload() {
@@ -44,18 +32,6 @@ public class VaccinationPayload {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getCountAdministred() {
-		return countAdministred;
-	}
-	public void setCountAdministred(int countAdministred) {
-		this.countAdministred = countAdministred;
-	}
-	public int getCountHistorical() {
-		return countHistorical;
-	}
-	public void setCountHistorical(int countHistorical) {
-		this.countHistorical = countHistorical;
-	}
 	public Map<String, DetectionSum> getDetection() {
 		return detection;
 	}
@@ -71,19 +47,19 @@ public class VaccinationPayload {
 		this.codeTable = codeTable;
 	}
 
-	public Map<String, Map<String, Map<String, Map<String, Integer>>>> getVaccinations() {
-		return vaccinations;
-	}
-	public void setVaccinations(Map<String, Map<String, Map<String, Map<String, Integer>>>> vaccinations) {
-		this.vaccinations = vaccinations;
+	public int getTotal() {
+		return total;
 	}
 
-	@Override
-	public String toString() {
-		return "VaccinationPayload [countAdministred=" + countAdministred + ", countHistorical=" + countHistorical
-				+ ", detection=" + detection + ", codeTable=" + codeTable + ", vaccinations=" + vaccinations + "]";
+	public void setTotal(int total) {
+		this.total = total;
 	}
-	
-	
-	
+
+	public Map<String, Map<String, Map<String, TablePayload>>> getVaccinations() {
+		return vaccinations;
+	}
+
+	public void setVaccinations(Map<String, Map<String, Map<String, TablePayload>>> vaccinations) {
+		this.vaccinations = vaccinations;
+	}
 }

@@ -107,11 +107,10 @@ public class MergeServiceImpl implements MergeService {
 	@Override
 	public VaccinationPayload mergeVxPayload(VaccinationPayload a, VaccinationPayload b){
 		VaccinationPayload vxP = new VaccinationPayload();
-		vxP.setCountAdministred(a.getCountAdministred() + b.getCountAdministred());
-		vxP.setCountHistorical(a.getCountHistorical() + b.getCountHistorical());
+		vxP.setTotal(a.getTotal() + b.getTotal());
 		vxP.setDetection(mergeDetections(a.getDetection(), b.getDetection()));
 		vxP.setCodeTable(mergeCodeTable(a.getCodeTable(), b.getCodeTable()));
-		vxP.setVaccinations(mergeVxCode(a.getVaccinations(), b.getVaccinations()));
+		vxP.setVaccinations(mergeVxYear(a.getVaccinations(), b.getVaccinations()));
 		return vxP;
 	}
 	
@@ -146,40 +145,23 @@ public class MergeServiceImpl implements MergeService {
 	}
 	
 	@Override
-	public Map<String, Map<String, Map<String, Map<String, Integer>>>> mergeVxCode(Map<String, Map<String, Map<String, Map<String, Integer>>>> a, Map<String, Map<String, Map<String, Map<String, Integer>>>> b){
-		Map<String, Map<String, Map<String, Map<String, Integer>>>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
+	public Map<String, Map<String, Map<String, TablePayload>>> mergeVxYear(Map<String, Map<String, Map<String, TablePayload>>> a, Map<String, Map<String, Map<String, TablePayload>>> b){
+		Map<String, Map<String, Map<String, TablePayload>>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> x.merge(k, v, this::mergeVxYear));
+			b.forEach((k, v) -> x.merge(k, v, this::mergeVxGender));
 		}
 		return x;
 	}
 	
 	@Override
-	public Map<String, Map<String, Map<String, Integer>>> mergeVxYear(Map<String, Map<String, Map<String, Integer>>> a, Map<String, Map<String, Map<String, Integer>>> b){
-		Map<String, Map<String, Map<String, Integer>>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
+	public Map<String, Map<String, TablePayload>> mergeVxGender(Map<String, Map<String, TablePayload>> a, Map<String, Map<String, TablePayload>> b){
+		Map<String, Map<String, TablePayload>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
-			b.forEach((k, v) -> x.merge(k, v, this::mergeVxSource));
+			b.forEach((k, v) -> x.merge(k, v, this::mergeCodeTable));
 		}
 		return x;
 	}
-	
-	@Override
-	public Map<String, Map<String, Integer>> mergeVxSource(Map<String, Map<String, Integer>> a, Map<String, Map<String, Integer>> b){
-		Map<String, Map<String, Integer>> x =  a != null ? new HashMap<>(a) : new HashMap<>();
-		if(b != null){
-			b.forEach((k, v) -> x.merge(k, v, this::mergeVxSex));
-		}
-		return x;
-	}
-	
-	@Override
-	public Map<String, Integer> mergeVxSex(Map<String, Integer> a, Map<String, Integer> b){
-		Map<String, Integer> x =  a != null ? new HashMap<>(a) : new HashMap<>();
-		if(b != null){
-			b.forEach((k, v) -> x.merge(k, v, this::merge));
-		}
-		return x;
-	}
+
 	
 	@Override
 	public Integer merge(Integer a, Integer b){
@@ -197,23 +179,11 @@ public class MergeServiceImpl implements MergeService {
 	
 	@Override
 	public PatientPayload mergePatient(PatientPayload a, PatientPayload b){
-		try {
-			PatientPayload pt = new PatientPayload();
-			int a_count = a != null ? a.getCount() : 0;
-			int b_count = b != null ? b.getCount() : 0;
-			Map<String, DetectionSum> a_detections = a != null ? a.getDetection() : null;
-			Map<String, DetectionSum> b_detections = b != null ? b.getDetection() : null;
-			Map<String, TablePayload> a_table =  a != null ? a.getCodeTable() : null;
-			Map<String, TablePayload> b_table =  b != null ? b.getCodeTable() : null;
-
-			pt.setCount(a_count + b_count);
-			pt.setDetection(mergeDetections(a_detections, b_detections));
-			pt.setCodeTable(mergeCodeTable(a_table, b_table));
-			return pt;
-		} catch (Exception e) {
-			throw e;
-		}
-
+		PatientPayload pt = new PatientPayload();
+		pt.setCount(a.getCount() + b.getCount());
+		pt.setDetection(mergeDetections(a.getDetection(), b.getDetection()));
+		pt.setCodeTable(mergeCodeTable(a.getCodeTable(), b.getCodeTable()));
+		return pt;
 	}
 
 

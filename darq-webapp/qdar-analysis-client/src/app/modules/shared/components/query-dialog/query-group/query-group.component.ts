@@ -27,7 +27,7 @@ export class QueryGroupComponent extends QueryDialogTabComponent<Field[]> implem
 
   validate() {
     const imp = this.getImportantField();
-    const valid = this.value.includes(imp);
+    const valid = !(imp || []).map((elm) => this.value.includes(elm)).includes(false);
 
     return {
       status: valid,
@@ -90,16 +90,20 @@ export class QueryGroupComponent extends QueryDialogTabComponent<Field[]> implem
     }
   }
 
-  getImportantField() {
+  getImportantField(): Field[] {
     switch (this.analysis) {
       case AnalysisType.PATIENTS_DETECTIONS:
       case AnalysisType.VACCINCATIONS_DETECTIONS:
-        return Field.DETECTION;
+        return [Field.DETECTION];
       case AnalysisType.PATIENTS_VOCABULARY:
       case AnalysisType.VACCINCATIONS_VOCABULARY:
-        return Field.CODE;
+        return [Field.CODE];
       case AnalysisType.VACCINCATIONS:
-        return Field.VACCINE_CODE;
+        return [Field.VACCINE_CODE];
+      case AnalysisType.PATIENTS_PROVIDER_VOCABULARY:
+        return [Field.PROVIDER, Field.CODE];
+      case AnalysisType.PATIENTS_PROVIDER_DETECTIONS:
+        return [Field.PROVIDER, Field.DETECTION];
     }
   }
 

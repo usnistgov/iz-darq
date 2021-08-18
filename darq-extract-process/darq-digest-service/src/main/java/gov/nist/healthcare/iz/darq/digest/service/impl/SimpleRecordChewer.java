@@ -48,19 +48,19 @@ public class SimpleRecordChewer implements RecordChewer {
 		Map<String, String> providers = new HashMap<>();
 		
 		
-		Map<String, Map<String, VaccinationPayload>> vaccinationSection = this.groupService.makeVxSectionProvider(configuration.ageGroupService(), validator.getVxInfo(), validator.vaccinationDetections(), collector.getVaccinationCodes());
+		Map<String, Map<String, VaccinationPayload>> vaccinationSection = this.groupService.makeVxSectionProvider(configuration.ageGroupService(), validator.getVxInfoTable(), validator.vaccinationDetections(), collector.getVaccinationCodes());
 		Map<String, PatientPayload> patientSection = this.groupService.makePatSectionAge(configuration.ageGroupService(), validator.patientDetections(), collector.getPatientCodes());
 		Map<String, ExtractFraction> extraction = collector.getExtract();
 		Map<String, Map<String, ADPayload>> merged = this.groupService.makeADPayloadMap(patientSection, vaccinationSection);
 		
 		Map<String, Map<String, ADPayload>> deIdentifiedSection = new HashMap<>();
-		for(String provider : vaccinationSection.keySet()){
+		for(String provider : merged.keySet()){
 			String hash = DigestUtils.md5DigestAsHex(provider.getBytes());
 			deIdentifiedSection.put(hash, merged.get(provider));
 			providers.put(provider, hash);
 		}
 
 		return new ADChunk(providers, patientSection, deIdentifiedSection, extraction, apr.history.size(), 1, validator.vocabulary(), collector.codes());
-	}	
+	}
 
 }
