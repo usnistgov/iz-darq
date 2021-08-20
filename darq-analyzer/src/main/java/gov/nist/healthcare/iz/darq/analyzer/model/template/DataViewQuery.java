@@ -3,6 +3,7 @@ package gov.nist.healthcare.iz.darq.analyzer.model.template;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 
 import java.util.List;
+import java.util.Set;
 
 public class DataViewQuery {
 
@@ -10,8 +11,9 @@ public class DataViewQuery {
     protected String caption;
     protected boolean paginate;
     protected int rows;
+    protected Set<Field> occurrences;
+    protected Set<Field> groupBy;
     protected List<DataSelector> selectors;
-    protected List<Field> groupBy;
     protected QueryResultFilter filter;
     protected QueryThreshold threshold;
 
@@ -55,13 +57,6 @@ public class DataViewQuery {
         this.selectors = selectors;
     }
 
-    public List<Field> getGroupBy() {
-        return groupBy;
-    }
-
-    public void setGroupBy(List<Field> groupBy) {
-        this.groupBy = groupBy;
-    }
 
     public QueryResultFilter getFilter() {
         return filter;
@@ -77,5 +72,21 @@ public class DataViewQuery {
 
     public void setThreshold(QueryThreshold threshold) {
         this.threshold = threshold;
+    }
+
+    public Set<Field> getOccurrences() {
+        return occurrences;
+    }
+
+    public void setOccurrences(Set<Field> occurrences) {
+        this.occurrences = occurrences;
+    }
+
+    public void setGroupBy(Set<Field> groupBy) {
+        this.groupBy = groupBy;
+    }
+
+    public Set<Field> getGroupBy() {
+        return groupBy;
     }
 }

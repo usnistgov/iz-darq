@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DataTableRow {
+    int groupId;
     Map<Field, String> values;
     Fraction result;
     Threshold threshold;
@@ -43,6 +44,14 @@ public class DataTableRow {
 
     public void setPass(boolean pass) {
         this.pass = pass;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     @Override

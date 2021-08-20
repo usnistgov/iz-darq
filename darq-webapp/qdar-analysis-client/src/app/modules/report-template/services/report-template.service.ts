@@ -42,6 +42,7 @@ export class ReportTemplateService {
       paginate: true,
       rows: 10,
       selectors: [],
+      occurrences: [],
       groupBy: [
         Field.DETECTION,
       ],

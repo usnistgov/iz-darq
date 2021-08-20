@@ -47,6 +47,7 @@ export interface IDataTableRow {
   values: {
     [key: string]: string;
   };
+  groupId: number;
   result: IFraction;
   threshold: IThreshold;
   pass: boolean;

@@ -48,7 +48,7 @@ export const fieldDisplayName = {
   [Field.AGE_GROUP]: Field.AGE_GROUP,
   [Field.TABLE]: Field.TABLE,
   [Field.CODE]: Field.CODE,
-  [Field.DETECTION]: Field.DETECTION,
+  [Field.DETECTION]: 'DETECTION_TYPE',
   [Field.EVENT]: Field.EVENT,
   [Field.GENDER]: Field.GENDER,
   [Field.VACCINE_CODE]: Field.VACCINE_CODE,

@@ -88,6 +88,7 @@ export interface IDataViewQuery {
   paginate: boolean;
   rows: number;
   selectors: IDataSelector[];
+  occurrences: Field[];
   groupBy: Field[];
   filter: IQueryResultFilter;
   threshold: {

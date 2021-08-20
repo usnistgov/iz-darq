@@ -16,7 +16,6 @@ import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 
 
-@Service
 public class SimpleDataTableService implements DataTableService {
 
 	@Override

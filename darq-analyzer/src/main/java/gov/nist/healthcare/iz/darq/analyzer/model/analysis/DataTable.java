@@ -3,6 +3,8 @@ import gov.nist.healthcare.iz.darq.analyzer.model.template.DataViewQuery;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DataTable extends DataViewQuery {
     Map<Field, Set<String>> vocabulary;
@@ -20,7 +22,10 @@ public class DataTable extends DataViewQuery {
         this.setGroupBy(query.getGroupBy());
         this.setFilter(query.getFilter());
         this.setThreshold(query.getThreshold());
-        this.headers = new ArrayList<>(query.getGroupBy());
+        this.headers = Stream.concat(
+                query.getGroupBy().stream(),
+                query.getOccurrences().stream()
+        ).collect(Collectors.toList());
         this.values = new ArrayList<>();
         this.vocabulary = new HashMap<>();
     }
