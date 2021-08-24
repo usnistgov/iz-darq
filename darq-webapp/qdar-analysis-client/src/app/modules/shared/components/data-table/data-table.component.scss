@@ -20,6 +20,25 @@
   background-color: rgb(204, 253, 204) !important;
 }
 
+.nominator {
+  background-color: #fffae7 !important;
+}
+
+.denominator {
+  background-color: #f3fcff !important;
+}
+
+.number {
+  display: inline;
+  padding: 3px;
+  border-radius: 3px;
+  border: 1px solid lightgray;
+}
+
+.disabled-cell {
+  background-color: #f4f4f4 !important;
+}
+
 p-dropdown {
   flex-grow: 1;
 }

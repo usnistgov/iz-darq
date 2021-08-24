@@ -1,25 +1,37 @@
 <p-table
   #dt
-  *ngIf="initialized"
+  *ngIf="initialized && showTable"
   [value]="rows"
   [rowHover]="true"
-  [rows]="table.rows"
+  [rows]="table.query.rows"
   [showCurrentPageReport]="true"
   [paginatorDropdownAppendTo]="'body'"
-  [paginator]="table.paginate && rows?.length > 1"
+  [paginator]="table.query.paginate && rows?.length > 1"
   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
   [globalFilterFields]="searchFields"
   [resizableColumns]="true"
+  [columns]="columns"
+  sortMode="multiple"
   [filterDelay]="0">
-  <ng-template pTemplate="caption" *ngIf="table.caption || rows?.length > 1">
-    <div style="width: 100%; text-align: center; margin-bottom: 5px;"  *ngIf="table.caption" >
-      {{table.caption}}
+  <ng-template pTemplate="caption" *ngIf="table.query.caption || rows?.length > 1">
+    <div style="width: 100%; text-align: center; margin-bottom: 5px;"  *ngIf="table.query.caption" >
+      {{table.query.caption}}
     </div>
-    <div class="input-group" style="margin-left: 5px; min-width: 300px;" *ngIf="rows?.length > 1">
-      <div class="input-group-prepend">
-        <span class="input-group-text"><i class="fa fa-search"></i></span>
+    <div style="width: 100%; display: flex;">
+      <div *ngIf="tree && tree.length > 0" style="margin-right: 5px;" class="btn-group btn-group-toggle" [(ngModel)]="showTable" ngbRadioGroup name="radioBasic">
+        <label ngbButtonLabel class="btn-primary">
+          <input ngbButton type="radio" [value]="true"> Table
+        </label>
+        <label ngbButtonLabel class="btn-primary">
+          <input ngbButton type="radio" [value]="false"> Tree
+        </label>
       </div>
-      <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search">
+      <div class="input-group" style="margin-left: 5px; min-width: 300px;" *ngIf="rows?.length > 1">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fa fa-search"></i></span>
+        </div>
+        <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search">
+      </div>
     </div>
   </ng-template>
   <ng-template pTemplate="header">
@@ -33,11 +45,16 @@
           <th *ngSwitchCase="ColumnType.BAR" style="width: 340px;">
             {{ header.label }}
           </th>
+          <th [pSortableColumnDisabled]="rows?.length <= 1" [pSortableColumn]="header.key" pResizableColumn *ngSwitchCase="ColumnType.GROUP" style="width: 100px;">
+            {{ header.label }}
+            <p-sortIcon *ngIf="rows?.length > 1" [field]="header.key"></p-sortIcon>
+          </th>
           <th [pSortableColumnDisabled]="rows?.length <= 1" [pSortableColumn]="header.key" pResizableColumn *ngSwitchCase="ColumnType.VALUE" style="width: 250px;">
             {{ header.label }}
             <p-sortIcon *ngIf="rows?.length > 1" [field]="header.key"></p-sortIcon>
           </th>
           <th [pSortableColumnDisabled]="rows?.length <= 1" [pSortableColumn]="header.key" pResizableColumn *ngSwitchDefault>
+            <span *ngIf="header.denominator" class="badge badge-dark">Group Field</span>
             {{ fieldDisplayName[header.label] }}
             <p-sortIcon *ngIf="rows?.length > 1" [field]="header.key"></p-sortIcon>
           </th>
@@ -50,7 +67,7 @@
           <div *ngSwitchCase="ColumnType.FIELD" style="display: flex; align-items: center;">
             <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active' : search.fields[header.key] }" ></i>
             <app-field-input
-              [analysis]="table.type"
+              [analysis]="table.query.type"
               [options]="searchOptions"
               [field]="header.key"
               [showClear]="true"
@@ -109,7 +126,7 @@
       </th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-value>
+  <ng-template pTemplate="body" let-value let-expanded="expanded">
     <tr class="ui-selectable-row" [ngClass]="{
       'threshold-fail' : value.threshold && !value.pass
     }">
@@ -122,11 +139,19 @@
           <div *ngSwitchCase="ColumnType.FIELD" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
             {{ value[header.key] }}
           </div>
+          <div *ngSwitchCase="ColumnType.GROUP">
+            {{ value[header.key] }}
+          </div>
           <div *ngSwitchCase="ColumnType.THRESHOLD">
             {{ value.threshold ? labelizer.comparator(value.threshold.comparator) + ' ' + value.threshold.value + '% ' + (value.pass ? '(PASS)' : "(FAIL)") : 'No Threshold'}}
           </div>
-          <div *ngSwitchCase="ColumnType.VALUE">
-            {{ value.percentage | number:'1.0-1'}}% ( {{( value.count | number:'.') + " / " + ( value.total | number:'.')}} )
+          <div *ngSwitchCase="ColumnType.VALUE" style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              {{ value.percentage | number:'1.0-1'}}%
+            </div>
+            <div>
+              ( <span>{{( value.count | number:'.')}}</span> / <span>{{( value.total | number:'.')}}</span> )
+            </div>
           </div>
           <div *ngSwitchCase="ColumnType.BAR" style="height: 100%;  padding: 0 !important; vertical-align:middle;">
             <app-visual-bar
@@ -150,3 +175,176 @@
     </tr>
   </ng-template>
 </p-table>
+
+
+<p-treeTable
+  #dtt
+  *ngIf="initialized && !showTable"
+  [value]="tree"
+  [globalFilterFields]="searchFields"
+  [columns]="columns"
+  >
+  <ng-template pTemplate="caption" *ngIf="table.query.caption || rows?.length > 1">
+    <div style="width: 100%; text-align: center; margin-bottom: 5px;"  *ngIf="table.query.caption" >
+      {{table.query.caption}}
+    </div>
+    <div style="width: 100%; display: flex;">
+      <div *ngIf="tree && tree.length > 0" style="margin-right: 5px;" class="btn-group btn-group-toggle" [(ngModel)]="showTable" ngbRadioGroup name="radioBasic">
+        <label ngbButtonLabel class="btn-primary">
+          <input ngbButton type="radio" [value]="true"> Table
+        </label>
+        <label ngbButtonLabel class="btn-primary">
+          <input ngbButton type="radio" [value]="false"> Tree
+        </label>
+      </div>
+      <div class="input-group" style="margin-left: 5px; min-width: 300px;" *ngIf="rows?.length > 1">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fa fa-search"></i></span>
+        </div>
+        <input class="form-control" type="text" (input)="dtt.filterGlobal($event.target.value, 'contains')" placeholder="Search">
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <ng-container  *ngFor="let header of columns">
+        <ng-container [ngSwitch]="header.type">
+          <th style="width: 180px;" [ttSortableColumnDisabled]="rows?.length <= 1" [ttSortableColumn]="header.key" ttResizableColumn *ngSwitchCase="ColumnType.THRESHOLD">
+            {{ header.label }}
+            <p-treeTableSortIcon *ngIf="rows?.length > 1" [field]="header.key"></p-treeTableSortIcon>
+          </th>
+          <th *ngSwitchCase="ColumnType.BAR" style="width: 340px;">
+            {{ header.label }}
+          </th>
+          <th [ttSortableColumnDisabled]="rows?.length <= 1" [ttSortableColumn]="header.key" ttResizableColumn *ngSwitchCase="ColumnType.GROUP" style="width: 100px;">
+            {{ header.label }}
+            <p-treeTableSortIcon *ngIf="rows?.length > 1" [field]="header.key"></p-treeTableSortIcon>
+          </th>
+          <th [ttSortableColumnDisabled]="rows?.length <= 1" [ttSortableColumn]="header.key" ttResizableColumn *ngSwitchCase="ColumnType.VALUE" style="width: 250px;">
+            {{ header.label }}
+            <p-treeTableSortIcon *ngIf="rows?.length > 1" [field]="header.key"></p-treeTableSortIcon>
+          </th>
+          <th [ttSortableColumnDisabled]="rows?.length <= 1" [ttSortableColumn]="header.key" ttResizableColumn *ngSwitchDefault>
+            <span *ngIf="header.denominator" class="badge badge-dark">Group Field</span>
+            {{ fieldDisplayName[header.label] }}
+            <p-treeTableSortIcon *ngIf="rows?.length > 1" [field]="header.key"></p-treeTableSortIcon>
+          </th>
+        </ng-container >
+      </ng-container>
+    </tr>
+    <tr *ngIf="rows?.length > 1">
+      <th *ngFor="let header of columns">
+        <div [ngSwitch]="header.type">
+          <div *ngSwitchCase="ColumnType.FIELD" style="display: flex; align-items: center;">
+            <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active' : search.fields[header.key] }" ></i>
+            <app-field-input
+              [analysis]="table.query.type"
+              [options]="searchOptions"
+              [field]="header.key"
+              [showClear]="true"
+              [id]="header.key"
+              [placeholder]="'Search Filter'"
+              style="flex-grow: 1;"
+              [(ngModel)]="search.fields[header.key]"
+              (ngModelChange)="dtt.filter($event, header.key, 'contains')"
+            ></app-field-input>
+          </div>
+          <div *ngSwitchCase="ColumnType.VALUE" style="display: flex; align-items: center;">
+            <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active' : valueFilterIsSet() }" ></i>
+            <p-dropdown
+              [options]="comparatorOptions"
+              [autoDisplayFirst]="false"
+              id="globalc"
+              name="globalc"
+              appendTo="body"
+              [(ngModel)]="search.value.comparator"
+              (ngModelChange)="filterValue(dtt)"
+              [style]="{'min-width' : '90px'}"
+              placeholder="CMP">
+            </p-dropdown>
+            <input pInputText
+              class="form-control"
+              style="margin-left: 5px; width: 70px;"
+              type="number"
+              [placeholder]="'%'"
+              [(ngModel)]="search.value.value"
+              (ngModelChange)="filterValue(dtt)"
+              placeholder="Percentage">
+            <button class="btn btn-sm btn-danger" style="margin-left: 5px;" (click)="clearValue(dtt)" >
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+          <div *ngSwitchCase="ColumnType.THRESHOLD" style="display: flex; align-items: center;">
+            <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active' : thresholdFilterIsSet() }" ></i>
+            <p-dropdown
+              [options]="thresholdOptions"
+              [autoDisplayFirst]="false"
+              id="thresholdf"
+              name="thresholdf"
+              appendTo="body"
+              [showClear]="true"
+              [style]="{ 'flex-grow' : '1', 'min-width' : 'unset', 'width' : '100%' }"
+              [(ngModel)]="search.threshold"
+              (ngModelChange)="filterThreshold(dtt)"
+              placeholder="Value">
+            </p-dropdown>
+          </div>
+          <div *ngSwitchCase="ColumnType.BAR">
+            <input type="checkbox" style="margin-right: 10px;" id="pc" name="pc" [(ngModel)]="search.showValue">
+            <label class="form-check-label" style="font-weight: normal;" for="pc">Show Percentages</label>
+          </div>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-value="rowData" let-rowNode >
+    <tr class="ui-selectable-row" [ngClass]="{
+      'threshold-fail' : value.threshold && !value.pass
+    }">
+      <td *ngFor="let header of columns" [ngClass]="{
+        'no-padding':  header.type === ColumnType.BAR,
+        'threshold-fail' : header.type === ColumnType.THRESHOLD && value.threshold && !value.pass,
+        'threshold-pass' : header.type === ColumnType.THRESHOLD && value.threshold && value.pass,
+        'disabled-cell': disabledTreeCell(header, value)
+      }">
+        <div [ngSwitch]="header.type" *ngIf="!disabledTreeCell(header, value)">
+          <div *ngSwitchCase="ColumnType.FIELD" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            {{ value[header.key] }}
+          </div>
+          <div *ngSwitchCase="ColumnType.GROUP">
+            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+            {{ value[header.key] }}
+          </div>
+          <div *ngSwitchCase="ColumnType.THRESHOLD">
+            {{ value.threshold ? labelizer.comparator(value.threshold.comparator) + ' ' + value.threshold.value + '% ' + (value.pass ? '(PASS)' : "(FAIL)") : 'No Threshold'}}
+          </div>
+          <div *ngSwitchCase="ColumnType.VALUE" style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              {{ value.percentage | number:'1.0-1'}}%
+            </div>
+            <div>
+              ( <span>{{( value.count | number:'.')}}</span> / <span>{{( value.total | number:'.')}}</span> )
+            </div>
+          </div>
+          <div *ngSwitchCase="ColumnType.BAR" style="height: 100%;  padding: 0 !important; vertical-align:middle;">
+            <app-visual-bar
+              [showValue]="search.showValue"
+              [value]="{
+                value: value.fraction,
+                threshold: value.threshold
+              }"
+            >
+            </app-visual-bar>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td [attr.colspan]="columns.length" style="text-align:left">
+        No data found for query
+      </td>
+    </tr>
+  </ng-template>
+</p-treeTable>
