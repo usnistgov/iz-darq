@@ -7,7 +7,7 @@ import { Observable, combineLatest, Subscription, throwError, BehaviorSubject } 
 import { IReport, IReportSectionResult } from '../../model/report.model';
 import { selectAllDetections, selectAllCvx, selectPatientTables, selectVaccinationTables } from '../../../shared/store/core.selectors';
 import { map, tap, concatMap, take, flatMap, catchError, skipUntil, withLatestFrom } from 'rxjs/operators';
-import { selectReportPayload, selectReportGeneralFilter } from '../../store/core.selectors';
+import { selectReportPayload, selectReportGeneralFilter, selectReportingGroups } from '../../store/core.selectors';
 import { ReportService } from '../../services/report.service';
 import { IReportFilter } from '../../../report-template/model/report-template.model';
 import { PermissionService } from '../../../core/services/permission.service';
@@ -65,11 +65,13 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
       this.store.select(selectAllCvx),
       this.store.select(selectPatientTables),
       this.store.select(selectVaccinationTables),
+      this.store.select(selectReportingGroups),
     ]).pipe(
-      map(([report, detections, cvxCodes, patientTables, vaccinationTables]) => {
+      map(([report, detections, cvxCodes, patientTables, vaccinationTables, reportingGroups]) => {
         const options = this.valueService.getFieldOptions({
           detections,
           ageGroups: report.configuration.ageGroups,
+          reportingGroups,
           cvxs: cvxCodes,
           tables: {
             vaccinationTables,

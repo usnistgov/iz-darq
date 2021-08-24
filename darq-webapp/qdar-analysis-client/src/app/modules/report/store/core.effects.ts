@@ -25,8 +25,9 @@ import { handleError } from '../../shared/services/helper.functions';
 import { selectReportPayload } from './core.selectors';
 import { FileService } from '../../aggregate-detections-file/services/file.service';
 import { IUserFacilityDescriptor } from '../../facility/model/facility.model';
+import { IReportSectionResult } from '../model/report.model';
 
-export type Resources = IDetectionResource | ICvxResource | IReportSection | IUserFacilityDescriptor;
+export type Resources = IDetectionResource | ICvxResource | IReportSection | IUserFacilityDescriptor | IReportSectionResult;
 
 @Injectable()
 export class CoreEffects extends DamWidgetEffect {
@@ -76,7 +77,8 @@ export class CoreEffects extends DamWidgetEffect {
                     VACCINATION_YEAR: [],
                   },
                 }
-              }
+              },
+              reportingGroups: {},
             }),
             new OpenEditor({
               id: action.payload.id,

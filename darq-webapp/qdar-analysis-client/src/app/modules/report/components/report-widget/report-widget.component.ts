@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, forwardRef, AfterViewInit, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import {
@@ -10,24 +10,26 @@ import {
   LoadPayloadData,
   TurnOffLoader
 } from 'ngx-dam-framework';
-import { Observable, of, combineLatest, from } from 'rxjs';
+import { Observable, of, combineLatest, from, throwError } from 'rxjs';
 import { IReport } from '../../model/report.model';
-import { selectReportPayload, selectReportGeneralFilter, selectReportTocNodes } from '../../store/core.selectors';
+import { selectReportPayload, selectReportGeneralFilter, selectReportTocNodes, selectReportingGroups } from '../../store/core.selectors';
 import { ITocNode } from '../report-toc/report-toc.component';
-import { map, concatMap, flatMap, take, tap } from 'rxjs/operators';
+import { map, concatMap, flatMap, take, tap, catchError } from 'rxjs/operators';
 import { ReportService } from '../../services/report.service';
 import { IReportFilter } from '../../../report-template/model/report-template.model';
 import { selectAllDetections, selectAllCvx, selectPatientTables, selectVaccinationTables } from '../../../shared/store/core.selectors';
 import { ValuesService } from '../../../shared/services/values.service';
 import { ReportFilterDialogComponent } from '../report-filter-dialog/report-filter-dialog.component';
 import { IFieldInputOptions } from '../../../shared/components/field-input/field-input.component';
-import { SetValue } from 'ngx-dam-framework';
+import { SetValue, MessageService, Message } from 'ngx-dam-framework';
 import { PermissionService } from '../../../core/services/permission.service';
 import { ResourceType } from 'src/app/modules/core/model/resouce-type.enum';
 import { Action } from '../../../core/model/action.enum';
 import { IUserFacilityDescriptor } from 'src/app/modules/facility/model/facility.model';
 import { selectUserFacilityById } from '../../../aggregate-detections-file/store/core.selectors';
 import { PRIVATE_FACILITY_ID } from '../../../aggregate-detections-file/services/file.service';
+import { ViewChild } from '@angular/core';
+import { NgxCSVParserError } from 'ngx-csv-parser';
 
 export const REPORT_WIDGET = 'REPORT_WIDGET';
 
@@ -49,6 +51,8 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
   generalFilter$: Observable<IReportFilter>;
   labelizer$: Observable<IFieldInputOptions>;
   facility$: Observable<IUserFacilityDescriptor>;
+  reportingGroupCsvFile: File;
+  @ViewChild('fileImportInput', { static: false }) fileImportInput: ElementRef;
 
   constructor(
     store: Store<IDamDataModel>,
@@ -57,6 +61,7 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
     private permission: PermissionService,
     private reportService: ReportService,
     private valueService: ValuesService,
+    private messageService: MessageService,
   ) {
     super(REPORT_WIDGET, store, dialog);
     this.generalFilter$ = this.store.select(selectReportGeneralFilter);
@@ -80,12 +85,14 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
       this.store.select(selectAllCvx),
       this.store.select(selectPatientTables),
       this.store.select(selectVaccinationTables),
+      this.store.select(selectReportingGroups),
     ]).pipe(
-      map(([report, detections, cvxCodes, patientTables, vaccinationTables]) => {
+      map(([report, detections, cvxCodes, patientTables, vaccinationTables, reportingGroups]) => {
         return this.valueService.getFieldOptions({
           detections,
           ageGroups: report.configuration.ageGroups,
           cvxs: cvxCodes,
+          reportingGroups,
           tables: {
             vaccinationTables,
             patientTables,
@@ -101,6 +108,38 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
         return this.reportService.filterIsActive(filter);
       })
     );
+  }
+
+  fileChangeListener(event: any): void {
+    if (event?.target?.files && event.target.files.length === 1) {
+      this.reportService.getReportingGroupHashMap(event?.target?.files[0]).pipe(
+        take(1),
+        map((value) => {
+          this.reportingGroupCsvFile = event?.target?.files[0];
+          console.log(this.reportingGroupCsvFile);
+          this.store.dispatch(new SetValue({
+            reportingGroups: value,
+          }));
+        }),
+        catchError((error: NgxCSVParserError) => {
+          this.fileImportInput.nativeElement.value = '';
+          this.store.dispatch(this.messageService.messageToAction(
+            new Message(MessageType.FAILED, error.message, {}),
+            {
+              closable: true,
+            }
+          ));
+          return throwError(error);
+        })
+      ).subscribe();
+    }
+  }
+
+  clearReportingGroupCsvFile() {
+    this.reportingGroupCsvFile = null;
+    this.store.dispatch(new SetValue({
+      reportingGroups: {},
+    }));
   }
 
   publish() {

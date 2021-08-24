@@ -11,6 +11,7 @@ import { ReportSectionComponent } from './components/report-section/report-secti
 import { SharedModule } from '../shared/shared.module';
 import { ReportTocComponent } from './components/report-toc/report-toc.component';
 import { ReportFilterDialogComponent } from './components/report-filter-dialog/report-filter-dialog.component';
+import { NgxCsvParserModule } from 'ngx-csv-parser';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { ReportFilterDialogComponent } from './components/report-filter-dialog/r
     SharedModule,
     DamFrameworkModule,
     DamMessagesModule,
+    NgxCsvParserModule,
     EffectsModule.forFeature([CoreEffects]),
   ]
 })

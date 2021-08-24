@@ -6,7 +6,6 @@ export enum CoreActionTypes {
   LoadReport = '[Report] Load Report',
   LoadReportSuccess = '[Report] Load Report Success',
   LoadReportFailure = '[Report] Load Report Failure',
-
   OpenReportEditor = '[Report] Open Report Editor',
 }
 

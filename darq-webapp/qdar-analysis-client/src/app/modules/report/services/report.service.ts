@@ -14,6 +14,7 @@ import {
   QueryType,
 } from '../../report-template/model/report-template.model';
 import { Field } from '../../report-template/model/analysis.values';
+import { NgxCsvParser } from 'ngx-csv-parser';
 import { map, catchError } from 'rxjs/operators';
 
 
@@ -24,7 +25,7 @@ export class ReportService {
 
   readonly URL_PREFIX = 'api/report/';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private ngxCsvParser: NgxCsvParser) { }
 
   publish(id: string): Observable<Message<IReport>> {
     return this.http.post<Message<IReport>>(this.URL_PREFIX + 'publish/' + id, {});
@@ -49,6 +50,19 @@ export class ReportService {
 
   save(report: IReport): Observable<Message<IReport>> {
     return this.http.post<Message<IReport>>(this.URL_PREFIX, report);
+  }
+
+  getReportingGroupHashMap(file: File): Observable<Record<string, string>> {
+    return this.ngxCsvParser.parse(file, { header: false, delimiter: ',' }).pipe(
+      map((result: Array<string[]>) => {
+        return result.reduce((acc, row) => {
+          if (row && row.length === 2) {
+            acc[row[1].trim()] = row[0].trim();
+          }
+          return acc;
+        }, {});
+      })
+    );
   }
 
   filterIsActive(filter: IReportFilter): boolean {

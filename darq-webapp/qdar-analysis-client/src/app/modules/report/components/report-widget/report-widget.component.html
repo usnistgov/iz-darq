@@ -30,6 +30,24 @@
       <i class="fa fa-filter" [ngClass]="{ 'filter-active' : filterIsActive$ | async }" ></i>
       Report Filter
     </button>
+    <div class="file-btn-wrapper" *ngIf="!reportingGroupCsvFile">
+      <input #fileImportInput (change)="fileChangeListener($event)" class="file-input" type="file" id="csv">
+      <button class="btn btn-sm btn-primary" style="margin-left: 5px;">
+        <i class="fa fa-file"></i>
+        Choose Reporting Group Hash File (CSV)
+      </button>
+    </div>
+    <div *ngIf="reportingGroupCsvFile" class="group-container">
+      <button class="btn group-times-btn" (click)="clearReportingGroupCsvFile()" >
+        <i class="fa fa-times" style="color: white;"></i>
+      </button>
+      <div class="group-file">
+        {{reportingGroupCsvFile.name}}
+      </div>
+      <div class="group-addon">
+        Reporting Groups (CSV)
+      </div>
+    </div>
     <div *ngIf="(isViewOnly$ | async) === false">
       <button class="btn btn-sm btn-primary" style="margin-right: 5px;" *ngIf="'PUBLISH' | accessOnResource : report:'REPORT' | async" [disabled]="containsUnsavedChanges$() | async" (click)="publish()" >
         <i class="fa fa-share"></i>

@@ -19,6 +19,7 @@ export interface IFieldInputData {
   detections: IDetectionResource[];
   cvxs: ICvxResource[];
   ageGroups: IRange[];
+  reportingGroups: Record<string, string>;
   tables: {
     patientTables: string[];
     vaccinationTables: string[];
@@ -30,6 +31,7 @@ export interface IFieldInputOptions {
   patientDetectionOptions: SelectItem[];
   cvxOptions: SelectItem[];
   ageGroupOptions: SelectItem[];
+  reportingGroupOptions: SelectItem[];
   vaccinationTableOptions: SelectItem[];
   patientTableOptions: SelectItem[];
   eventOptions: SelectItem[];

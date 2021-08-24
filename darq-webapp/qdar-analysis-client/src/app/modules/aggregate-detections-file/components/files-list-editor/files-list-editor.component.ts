@@ -100,6 +100,7 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
           detections: detections.filter((d) => file.configuration.detections.includes(d.id)),
           ageGroups: file.configuration.ageGroups,
           cvxs: cvxCodes,
+          reportingGroups: {},
           tables: {
             vaccinationTables,
             patientTables,

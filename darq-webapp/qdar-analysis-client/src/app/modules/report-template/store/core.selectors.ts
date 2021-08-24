@@ -64,12 +64,6 @@ export const selectReportTemplateConfiguration = createSelector(
 );
 export const selectTableOfContentIsChanged = selectValue<boolean>('tableOfContentChanged');
 export const selectInitSections = selectValue<IReportSection[]>('sections');
-export const selectRtIsViewOnly = createSelector(
-  selectReportTemplate,
-  (rt: IReportTemplate) => {
-    return rt.viewOnly;
-  }
-);
 export const selectRtIsPublished = createSelector(
   selectReportTemplate,
   (rt: IReportTemplate) => {

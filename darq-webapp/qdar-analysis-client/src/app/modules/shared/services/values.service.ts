@@ -17,7 +17,7 @@ export interface IValueLabelMap {
 export class Labelizer {
   constructor(public values: IValueLabelMap, public options: IFieldInputOptions) { }
   for(field: Field, value: any): string {
-    return this.values[field] ? this.values[field][value] : value;
+    return this.values[field] ? this.values[field][value] ? this.values[field][value] : value : value;
   }
   comparator(cmp: Comparator) {
     return this.values.comparators[cmp];
@@ -51,6 +51,7 @@ export class ValuesService {
 
     processOptions(options.vaccinationDetectionOptions, Field.DETECTION);
     processOptions(options.patientDetectionOptions, Field.DETECTION);
+    processOptions(options.reportingGroupOptions, Field.PROVIDER);
     processOptions(options.cvxOptions, Field.VACCINE_CODE);
     processOptions(options.ageGroupOptions, Field.AGE_GROUP);
     processOptions(options.eventOptions, Field.EVENT);
@@ -82,6 +83,7 @@ export class ValuesService {
           value: elm.id,
         };
       }),
+      reportingGroupOptions: Object.keys(data.reportingGroups || {}).map((hash) => ({ label: data.reportingGroups[hash], value: hash })),
       ageGroupOptions: [
         ...data.ageGroups.map((elm, i) => {
           return {

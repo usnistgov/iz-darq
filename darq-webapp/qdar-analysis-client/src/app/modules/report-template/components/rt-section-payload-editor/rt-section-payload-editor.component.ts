@@ -99,6 +99,7 @@ export class RtSectionPayloadEditorComponent extends DamAbstractEditorComponent 
           detections: detections.filter((d) => configuration.detections.includes(d.id)),
           ageGroups: configuration.ageGroups,
           cvxs: cvxCodes,
+          reportingGroups: {},
           tables: {
             vaccinationTables,
             patientTables,

@@ -6,6 +6,7 @@ import { ITocNode } from '../components/report-toc/report-toc.component';
 
 
 export const selectReportGeneralFilter = selectValue<IReportFilter>('reportGeneralFilter');
+export const selectReportingGroups = selectValue<Record<string, string>>('reportingGroups');
 export const selectReportTocNodes = selectValue<ITocNode[]>('reportTocNodes');
 
 export const selectReportPayload = createSelector(
