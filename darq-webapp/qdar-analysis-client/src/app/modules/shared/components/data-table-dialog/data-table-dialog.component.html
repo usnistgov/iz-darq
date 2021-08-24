@@ -3,7 +3,7 @@
     <app-data-table [table]="table" [labelizer]="labelizer"></app-data-table>
   </p-tabPanel>
   <p-tabPanel header="Query" headerStyleClass="valid-tab">
-    <app-query-display [query]="table" [labelizer]="labelizer"></app-query-display>
+    <app-query-display [query]="table.query" [labelizer]="labelizer"></app-query-display>
   </p-tabPanel>
   <p-tabPanel *ngIf="table.issues" header="Issues" headerStyleClass="invalid-tab">
     <table *ngIf="table.issues.inactiveDetections && table.issues.inactiveDetections.length > 0" class="table table-sm table-striped table-bordered">

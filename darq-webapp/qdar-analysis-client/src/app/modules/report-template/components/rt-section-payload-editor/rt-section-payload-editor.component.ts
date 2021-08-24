@@ -19,7 +19,7 @@ import {
   selectReportTemplate,
 } from '../../store/core.selectors';
 import { switchMap, map, take, concatMap, catchError, flatMap, distinctUntilChanged } from 'rxjs/operators';
-import { IReportSection, IDataViewQuery } from '../../model/report-template.model';
+import { IReportSection, IDataViewQuery, QueryType } from '../../model/report-template.model';
 import { EntityType } from '../../../shared/model/entity.model';
 import { IDetectionResource, ICvxResource } from 'src/app/modules/shared/model/public.model';
 import { selectAllDetections, selectAllCvx, selectPatientTables, selectVaccinationTables } from '../../../shared/store/core.selectors';
@@ -122,7 +122,7 @@ export class RtSectionPayloadEditorComponent extends DamAbstractEditorComponent 
     this.accordion[n] = !this.accordion[n];
   }
 
-  openDialog(value: IDataViewQuery, i?: number) {
+  openDialog(value: QueryType, i?: number) {
     this.options$.pipe(
       take(1),
       flatMap((options) => {

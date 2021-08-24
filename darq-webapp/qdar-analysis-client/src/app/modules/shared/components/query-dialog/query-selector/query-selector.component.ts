@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, EventEmitter, OnDestroy, Output, OnChanges, SimpleChanges, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { Field, fieldsForAnalysis, AnalysisType } from '../../../../report-template/model/analysis.values';
 import { IDataSelector } from '../../../../report-template/model/report-template.model';
 import { IFieldInputOptions } from '../../field-input/field-input.component';
@@ -16,8 +16,6 @@ import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.co
 export class QuerySelectorComponent extends QueryDialogTabComponent<IDataSelector[]> implements OnInit, OnDestroy, OnChanges {
   @Input()
   options: IFieldInputOptions;
-  @Input()
-  analysis: AnalysisType;
   @ViewChild('form', { static: true })
   form: NgForm;
   fieldsList: Field[];
@@ -90,14 +88,7 @@ export class QuerySelectorComponent extends QueryDialogTabComponent<IDataSelecto
   }
 
   getImportantField() {
-    switch (this.analysis) {
-      case AnalysisType.PATIENTS_VOCABULARY:
-      case AnalysisType.PATIENTS_PROVIDER_VOCABULARY:
-      case AnalysisType.VACCINCATIONS_VOCABULARY:
-        return Field.TABLE;
-      default:
-        return undefined;
-    }
+    return undefined;
   }
 
   ngOnInit(): void {

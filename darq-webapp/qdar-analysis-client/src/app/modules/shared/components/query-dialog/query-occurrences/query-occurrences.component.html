@@ -1,16 +1,19 @@
 <div style="display: flex; flex-direction: column;">
+  <div><i class="fa fa-info" style="color: blue;"></i> Click on Field to add to the fields combination</div>
   <div
     [ngSwitch]="analysis"
     style="text-align: center;"
    >
-   <strong *ngSwitchCase="AnalysisType.PATIENTS_DETECTIONS">Over number of times detection checked for the values of this combination of fields :</strong>
-   <strong *ngSwitchCase="AnalysisType.PATIENTS_PROVIDER_DETECTIONS">Over number of times detection checked for the values of this combination of fields :</strong>
-   <strong *ngSwitchCase="AnalysisType.VACCINCATIONS_DETECTIONS">Over number of times detection checked for the values of this combination of fields :</strong>
-   <strong *ngSwitchCase="AnalysisType.PATIENTS_VOCABULARY">Over number of occurrences of the values of this combination of fields :</strong>
-   <strong *ngSwitchCase="AnalysisType.PATIENTS_PROVIDER_VOCABULARY">Over number of occurrences of the values of this combination of fields :</strong>
-   <strong *ngSwitchCase="AnalysisType.VACCINCATIONS_VOCABULARY">Over number of occurrences of the values of this combination of fields :</strong>
-   <strong *ngSwitchCase="AnalysisType.VACCINCATIONS">Over number of occurrences of the values of this combination of fields :</strong>
-  </div>  <div style="display: flex; margin-top: 10px;">
+   <strong *ngSwitchCase="AnalysisType.PATIENTS_DETECTIONS">Count number of times detection found for the values of this combination of fields :</strong>
+   <strong *ngSwitchCase="AnalysisType.PATIENTS_PROVIDER_DETECTIONS">Count number of times detection found for the values of this combination of fields :</strong>
+   <strong *ngSwitchCase="AnalysisType.VACCINCATIONS_DETECTIONS">Count number of times detection found for the values of this combination of fields :</strong>
+   <strong *ngSwitchCase="AnalysisType.PATIENTS_VOCABULARY">Count number of occurrences of the values of this combination of fields :</strong>
+   <strong *ngSwitchCase="AnalysisType.PATIENTS_PROVIDER_VOCABULARY">Count number of occurrences of the values of this combination of fields :</strong>
+   <strong *ngSwitchCase="AnalysisType.VACCINCATIONS_VOCABULARY">Count number of occurrences of the values of this combination of fields :</strong>
+   <strong *ngSwitchCase="AnalysisType.VACCINCATIONS">Count number of occurrences of the values of this combination of fields :</strong>
+  </div>
+
+  <div style="display: flex; margin-top: 10px;">
     <div style="flex-grow: 0.3; margin-right: 10px;">
       <table class="table table-sm table-bordered">
         <thead>
@@ -36,7 +39,7 @@
     </div>
     <div style="flex-grow: 0.7">
       <div style="text-align: center; padding: .3rem; border: 1px solid #dee2e6;">
-        <strong><span style="text-transform: uppercase; color: blue;">Denominator</span></strong>
+        <strong><span style="text-transform: uppercase; color: blue;">nominator</span></strong>
       </div>
       <form #form="ngForm">
         <ul class="list-group" class="list-group" style="min-height: 100px; max-height: 70vh; overflow: scroll;">

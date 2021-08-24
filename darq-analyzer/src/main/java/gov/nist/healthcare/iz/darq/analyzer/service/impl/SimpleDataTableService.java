@@ -19,7 +19,7 @@ import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 public class SimpleDataTableService implements DataTableService {
 
 	@Override
-	public DataTable createTable(List<Tray> trays, DataViewQuery payload) {
+	public DataTable createTable(List<Tray> trays, QueryPayload payload) {
 		DataTable table = new DataTable();
 		table.fromQuery(payload);
 		Map<Map<Field, String>, Fraction> rowFields = new HashMap<>();
@@ -32,7 +32,7 @@ public class SimpleDataTableService implements DataTableService {
 
 			// Create group values
 			Map<Field, String> groupBy = new HashMap<>();
-			for(Field group : payload.getGroupBy()){
+			for(Field group : payload.getDenominatorFields()){
 				String value = t.get(group);
 				groupBy.put(group, value);
 				table.putFieldValue(group, value);
@@ -65,7 +65,7 @@ public class SimpleDataTableService implements DataTableService {
 			table.getValues().add(row);
 		});
 
-		this.applyThreshold(table, payload.getThreshold());
+		this.applyThreshold(table, payload.getQueryThreshold());
 		this.applyFilters(table, payload.getFilter());
 		return table;
 	}

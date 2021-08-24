@@ -1,4 +1,4 @@
-import { IReportTemplate, IReportSection, IDataViewQuery, IThreshold, IReportTemplateDescriptor } from '../../report-template/model/report-template.model';
+import { IReportTemplate, IReportSection, IDataViewQuery, IThreshold, IReportTemplateDescriptor, ISection, QueryType } from '../../report-template/model/report-template.model';
 import { Field } from '../../report-template/model/analysis.values';
 import { IDamResource } from 'ngx-dam-framework';
 import { EntityType } from '../../shared/model/entity.model';
@@ -12,21 +12,20 @@ export interface IReportDescriptor extends IDamResource {
   lastUpdated: Date;
   published: boolean;
   public: boolean;
-  type: EntityType.REPORT;
+  type: EntityType;
   configuration: IConfigurationPayload;
-  template: IReportTemplateDescriptor;
-  adfName: string;
+  customDetectionLabels: Record<string, string>;
+}
+export interface IReport extends IReportDescriptor {
   publishDate: Date;
   facilityId: string;
-}
-
-export interface IReport extends IReportTemplate {
-  templateId: string;
-  facilityId: string;
+  adfName: string;
+  type: EntityType.REPORT;
   sections: IReportSectionResult[];
+  reportTemplate: IReportTemplate;
 }
 
-export interface IReportSectionResult extends IReportSection {
+export interface IReportSectionResult extends ISection {
   data: IDataTable[];
   comment: string;
   thresholdViolation: boolean;
@@ -34,8 +33,10 @@ export interface IReportSectionResult extends IReportSection {
   hasValue: boolean;
 }
 
-export interface IDataTable extends IDataViewQuery {
-  headers: Field[];
+export interface IDataTable {
+  nominator: Field[];
+  denominator: Field[];
+  query: QueryType;
   values: IDataTableRow[];
   issues: {
     inactiveDetections: string[];

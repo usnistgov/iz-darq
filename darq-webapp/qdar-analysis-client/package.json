@@ -34,14 +34,14 @@
     "@ngrx/store-devtools": "^9.1.0",
     "angular-tree-component": "^8.5.6",
     "bootstrap": "^4.3.1",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "font-awesome": "^4.7.0",
     "guid-typescript": "^1.0.9",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment": "^2.25.3",
     "ng-block-ui": "2.1.8",
     "ngx-contextmenu": "^5.4.0",
-    "ngx-dam-framework": "file:../dam-framework/dist/ngx-dam-framework",
+    "ngx-csv-parser": "0.0.7",
     "ngx-toastr": "^12.0.1",
     "ngx-virtual-scroller": "^4.0.3",
     "primeicons": "^3.0.0-rc.1",
@@ -50,7 +50,8 @@
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "tslint-sonarts": "^1.9.0",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.10.2",
+    "ngx-dam-framework": "file:../dam-framework/dist/ngx-dam-framework"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.901.7",

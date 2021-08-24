@@ -1,9 +1,10 @@
 package gov.nist.healthcare.iz.darq.analyzer.model.template;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomThreshold extends Filter {
-    List<ComplexThreshold> thresholds;
+    List<ComplexThreshold> thresholds = new ArrayList<>();
 
     public List<ComplexThreshold> getThresholds() {
         return thresholds;

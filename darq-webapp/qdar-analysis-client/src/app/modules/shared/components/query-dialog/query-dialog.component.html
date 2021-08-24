@@ -1,53 +1,89 @@
-<h2 mat-dialog-title>Data Table Query Builder [type : {{nameOf(value.type)}}]</h2>
+<h2 mat-dialog-title>Data Table Query Builder</h2>
 <dam-alerts [messages]="messages"></dam-alerts>
-
-  <p-tabView>
-    <p-tabPanel header="General Query Data" [headerStyleClass]="!tabsValid.general.valid ? 'invalid-tab' : 'valid-tab'">
-      <app-general-query-data
-        [(value)]="value"
-        (valid)="setValidStatus('general', $event)"
-        [paths]="paths"
-      ></app-general-query-data>
-    </p-tabPanel>
-    <p-tabPanel header="Data Selection"  [headerStyleClass]="!tabsValid.selectors.valid ? 'invalid-tab' : 'valid-tab'">
-      <app-query-selector
-        [(value)]="value.selectors"
-        (valid)="setValidStatus('selectors', $event)"
-        (messages)="setMessages('selectors', $event)"
-        [options]="options"
-        [analysis]="value.type"
-      ></app-query-selector>
-    </p-tabPanel>
-    <p-tabPanel header="Group By"  [headerStyleClass]="!tabsValid.groupBy.valid ? 'invalid-tab' : 'valid-tab'">
-      <app-query-group
-        [(value)]="value.groupBy"
-        [filterGoup]="value.filter.groups.values"
-        [thresholds]="value.threshold.custom.thresholds"
-        (valid)="setValidStatus('groupBy', $event)"
-        (messages)="setMessages('groupBy', $event)"
-        [analysis]="value.type"
-      ></app-query-group>
-    </p-tabPanel>
-    <p-tabPanel header="Post Process Row Filters"  [headerStyleClass]="!tabsValid.filters.valid ? 'invalid-tab' : 'valid-tab'">
-      <app-post-filters
-        [(value)]="value.filter"
-        [groupBy]="value.groupBy"
-        (valid)="setValidStatus('filters', $event)"
-        (messages)="setMessages('filters', $event)"
-        [options]="options"
-        [analysis]="value.type"
-      ></app-post-filters>
-    </p-tabPanel>
-    <p-tabPanel header="Thresholds" [headerStyleClass]="!tabsValid.thresholds.valid ? 'invalid-tab' : 'valid-tab'">
-      <app-query-threshold
-        [(value)]="value"
-        (valid)="setValidStatus('thresholds', $event)"
-        (messages)="setMessages('thresholds', $event)"
-        [options]="options"
-        [analysis]="value.type"
-      ></app-query-threshold>
-    </p-tabPanel>
-  </p-tabView>
+<p-tabView>
+  <p-tabPanel header="Query" [headerStyleClass]="!tabsValid.simple.valid || (
+    !tabsValid.selectors.valid || !tabsValid.occurrences.valid || !tabsValid.groupBy.valid || !tabsValid.thresholds.valid
+  ) ? 'invalid-tab' : 'valid-tab'">
+    <ul class="nav nav-pills">
+      <li class="nav-item" style="padding: 0 !important;">
+        <a class="nav-link" [ngClass]="{active: value.payloadType === QueryPayloadType.SIMPLE}"  (click)="changeMode(QueryPayloadType.SIMPLE)">Simple</a>
+      </li>
+      <li class="nav-item" style="padding: 0 !important; margin-left: 5px;">
+        <a class="nav-link" [ngClass]="{active: value.payloadType === QueryPayloadType.ADVANCED}" (click)="changeMode(QueryPayloadType.ADVANCED)" >Advanced</a>
+      </li>
+    </ul>
+    <div class="form-group" style="display: flex; width: 100%; align-items: center; margin-top: 10px;">
+      <strong for="type" style="margin-right: 20px;"> Query Type <strong style="color: red;">*</strong></strong>
+      <p-dropdown required id="type" name="type" [options]="paths" [(ngModel)]="value.type" (ngModelChange)="changeType($event)" styleClass="type-select" ></p-dropdown>
+    </div>
+    <div [ngSwitch]="value.payloadType">
+      <div *ngSwitchCase="QueryPayloadType.SIMPLE">
+        <app-simple-query
+          [(value)]="value"
+          (valid)="setValidStatus('simple', $event)"
+          (messages)="setMessages('simple', $event)"
+          [options]="options"
+          [analysis]="value.type"
+        ></app-simple-query>
+      </div>
+      <p-tabView *ngSwitchCase="QueryPayloadType.ADVANCED">
+        <p-tabPanel *ngIf="value.payloadType === QueryPayloadType.ADVANCED" header="Data Selection"  [headerStyleClass]="!tabsValid.selectors.valid ? 'invalid-tab' : 'valid-tab'">
+          <app-query-selector
+            [(value)]="value.selectors"
+            (valid)="setValidStatus('selectors', $event)"
+            (messages)="setMessages('selectors', $event)"
+            [options]="options"
+            [analysis]="value.type"
+          ></app-query-selector>
+        </p-tabPanel>
+        <p-tabPanel *ngIf="value.payloadType === QueryPayloadType.ADVANCED" header="Fraction"  [headerStyleClass]="!tabsValid.occurrences.valid || !tabsValid.groupBy.valid ? 'invalid-tab' : 'valid-tab'">
+          <app-query-occurrences
+            [(value)]="value.occurrences"
+            [filterGoup]="value.filter.groups.values"
+            [thresholds]="value.threshold.custom.thresholds"
+            (valid)="setValidStatus('occurrences', $event)"
+            (messages)="setMessages('occurrences', $event)"
+            [analysis]="value.type"
+          ></app-query-occurrences>
+          <app-query-group
+            [(value)]="value.groupBy"
+            [filterGoup]="value.filter.groups.values"
+            [thresholds]="value.threshold.custom.thresholds"
+            (valid)="setValidStatus('groupBy', $event)"
+            (messages)="setMessages('groupBy', $event)"
+            [analysis]="value.type"
+          ></app-query-group>
+        </p-tabPanel>
+        <p-tabPanel header="Thresholds" [headerStyleClass]="!tabsValid.thresholds.valid ? 'invalid-tab' : 'valid-tab'">
+          <app-query-threshold
+            [(value)]="value"
+            (valid)="setValidStatus('thresholds', $event)"
+            (messages)="setMessages('thresholds', $event)"
+            [options]="options"
+            [analysis]="value.type"
+          ></app-query-threshold>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </p-tabPanel>
+  <p-tabPanel header="Post Process Row Filters"  [headerStyleClass]="!tabsValid.filters.valid ? 'invalid-tab' : 'valid-tab'">
+    <app-post-filters
+      [(value)]="value.filter"
+      [groupBy]="getAllFields(value)"
+      (valid)="setValidStatus('filters', $event)"
+      (messages)="setMessages('filters', $event)"
+      [options]="options"
+      [analysis]="value.type"
+    ></app-post-filters>
+  </p-tabPanel>
+  <p-tabPanel header="Display Options" [headerStyleClass]="!tabsValid.general.valid ? 'invalid-tab' : 'valid-tab'">
+    <app-general-query-data
+      [(value)]="value"
+      (valid)="setValidStatus('general', $event)"
+      [paths]="paths"
+    ></app-general-query-data>
+  </p-tabPanel>
+</p-tabView>
 
 <mat-dialog-actions style="justify-content: flex-end;">
   <button class="btn btn-sm btn-secondary" style="margin-right: 5px;" [mat-dialog-close]="" >Cancel</button>

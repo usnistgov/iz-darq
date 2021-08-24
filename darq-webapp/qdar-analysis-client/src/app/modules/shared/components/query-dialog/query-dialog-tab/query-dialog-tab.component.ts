@@ -7,7 +7,13 @@ import { UserMessage } from 'ngx-dam-framework';
 export abstract class QueryDialogTabComponent<T> implements OnInit {
 
   @Input()
-  analysis: AnalysisType;
+  set analysis(type: AnalysisType) {
+    this.type = type;
+  }
+  get analysis() {
+    return this.type;
+  }
+  type: AnalysisType;
   @Input()
   value: T;
   @Output()

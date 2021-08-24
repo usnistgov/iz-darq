@@ -1,0 +1,99 @@
+<table class="table table-sm table-bordered" style="margin-top: 10px;">
+  <tbody>
+    <tr>
+      <th style="vertical-align: middle;"> Count of <strong style="color: red;">*</strong></th>
+      <td style="vertical-align: middle; text-align: end;">
+        <span *ngIf="queryFlags.detections">Count percentage of detection </span>
+        <span *ngIf="queryFlags.codes">Count percentage of code occurrences for table </span>
+        <span *ngIf="queryFlags.vaccineEvents">Count percentage of occurrences of value in vaccination event field</span>
+      </td>
+      <td style="vertical-align: middle;" *ngIf="queryFlags.detections || queryFlags.codes">
+        <app-field-input
+          [analysis]="value.type"
+          [options]="options"
+          [field]="queryFlags.detections ? 'DETECTION' : 'TABLE'"
+          [id]="'filter'"
+          [name]="'filter'"
+          [(ngModel)]="value.filterBy.value"
+          (ngModelChange)="triggerChange()"
+          required
+          style="flex-grow: 1;"
+        ></app-field-input>
+      </td>
+      <td style="vertical-align: middle;" *ngIf="queryFlags.vaccineEvents">
+        <p-dropdown
+          required
+          id="vaxnom"
+          name="vaxnom"
+          [options]="breakdownBy[AnalysisType.VACCINCATIONS]"
+          [autoDisplayFirst]="false"
+          [(ngModel)]="value.nominator"
+          (ngModelChange)="triggerChange()"
+          styleClass="type-select" >
+        </p-dropdown>
+      </td>
+    </tr>
+    <tr [ngClass]="{'not-active': !value.denominator.active}">
+      <th style="vertical-align: middle;">
+        <p-checkbox [disabled]="queryFlags.provider" label="Breakdown By" [(ngModel)]="value.denominator.active" (ngModelChange)="triggerValid()" [binary]="true"></p-checkbox>
+      </th>
+      <td style="vertical-align: middle; text-align: end;">
+        <div *ngIf="value?.denominator?.active">
+          per
+        </div>
+      </td>
+      <td style="vertical-align: middle;">
+        <div *ngIf="value?.denominator?.active" style="padding: 5px;">
+          <p-dropdown
+            [disabled]="queryFlags.provider"
+            required
+            id="denominator"
+            name="denominator"
+            [options]="breakdownBy[type]"
+            [autoDisplayFirst]="false"
+            [(ngModel)]="value.denominator.field"
+            (ngModelChange)="triggerChange()"
+            styleClass="type-select" ></p-dropdown>
+        </div>
+      </td>
+    </tr>
+    <tr [ngClass]="{'not-active': !value.threshold.active}">
+      <th style="vertical-align: middle;">
+        <p-checkbox label="Threshold" [(ngModel)]="value.threshold.active" (ngModelChange)="triggerValid()" [binary]="true"></p-checkbox>
+      </th>
+      <td style="vertical-align: middle; text-align: end;">
+        <div *ngIf="value.threshold.active">
+          with a target of
+        </div>
+      </td>
+      <td style="vertical-align: middle;">
+        <div style="display: flex; width: 100%; align-items: center; padding: 5px;" *ngIf="value.threshold.active">
+          <p-dropdown
+            [options]="comparatorOptions"
+            [autoDisplayFirst]="false"
+            id="comparator"
+            name="comparator"
+            appendTo="body"
+            required
+            [(ngModel)]="value.threshold.goal.comparator"
+            (ngModelChange)="triggerChange()"
+            [style]="{ 'width' : '100%' }">
+          </p-dropdown>
+          <input
+            style="margin-left: 10px; width: 200px;"
+            [(ngModel)]="value.threshold.goal.value"
+            (ngModelChange)="triggerChange()"
+            required
+            type="number"
+            min="0"
+            placeholder="Value (%)"
+            class="form-control"
+            name="threshold"
+            id="threshold"
+          >
+          <span style="margin-left: 10px;"> % </span>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -3,11 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Message, LoadPayloadData, InsertResourcesInCollection, SetValue, DeleteResourcesFromCollection, LoadResourcesInRepository } from 'ngx-dam-framework';
 import { EntityType } from '../../shared/model/entity.model';
-import { IReportTemplateDescriptor, IReportTemplate, IReportSection, IReportTemplateCreate, IDataViewQuery, Comparator } from '../model/report-template.model';
+import {
+  IReportTemplateDescriptor,
+  IReportTemplate,
+  IReportSection,
+  IReportTemplateCreate,
+  ISimpleViewQuery
+} from '../model/report-template.model';
 import { Action } from '@ngrx/store';
 import { IReportSectionDisplay } from '../model/state.model';
 import { Guid } from 'guid-typescript';
 import { AnalysisType, Field } from '../model/analysis.values';
+import { QueryService } from '../../shared/services/query.service';
+import { ISection } from '../model/report-template.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +24,7 @@ export class ReportTemplateService {
 
   readonly URL_PREFIX = 'api/template/';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private queryService: QueryService) { }
 
   getEmptyTemplate(): IReportTemplate {
     return {
@@ -28,59 +36,14 @@ export class ReportTemplateService {
       published: false,
       public: false,
       type: EntityType.TEMPLATE,
-      viewOnly: undefined,
       configuration: undefined,
       sections: [],
       customDetectionLabels: {},
     };
   }
 
-  getEmptyDataViewQuery(): IDataViewQuery {
-    return {
-      type: AnalysisType.VACCINCATIONS_DETECTIONS,
-      caption: '',
-      paginate: true,
-      rows: 10,
-      selectors: [],
-      occurrences: [],
-      groupBy: [
-        Field.DETECTION,
-      ],
-      filter: {
-        denominator: {
-          active: false,
-          value: 0,
-          comparator: Comparator.GT,
-        },
-        percentage: {
-          active: false,
-          value: 0,
-          comparator: Comparator.GT,
-        },
-        threshold: {
-          active: false,
-          pass: true,
-        },
-        groups: {
-          keep: false,
-          active: false,
-          values: [],
-        }
-      },
-      threshold: {
-        global: {
-          active: false,
-          goal: {
-            value: 1,
-            comparator: Comparator.LT,
-          }
-        },
-        custom: {
-          active: false,
-          thresholds: [],
-        }
-      },
-    };
+  getEmptyDataViewQuery(): ISimpleViewQuery {
+    return this.queryService.getEmptySimpleQuery(AnalysisType.VACCINCATIONS_DETECTIONS);
   }
 
   mergeMetadata(current: IReportTemplate, meta: Partial<IReportTemplate>): IReportTemplate {
@@ -156,7 +119,7 @@ export class ReportTemplateService {
     };
   }
 
-  cloneContent(sections: IReportSection[]): IReportSection[] {
+  cloneContent<T>(sections: T[]): T[] {
     return [...sections.map(elm => {
       return {
         ...elm
@@ -287,10 +250,10 @@ export class ReportTemplateService {
   }
 
 
-  flattenSections(list: IReportSection[]): IReportSection[] {
-    const sections: IReportSection[] = [];
+  flattenSections<T extends (ISection & { children: T[] })>(list: T[]): T[] {
+    const sections: T[] = [];
 
-    const loop = (l: IReportSection[]) => {
+    const loop = (l: T[]) => {
       if (!l || l.length === 0) {
         return;
       }
@@ -305,15 +268,15 @@ export class ReportTemplateService {
     return sections;
   }
 
-  sortList(list: IReportSection[], parent?: IReportSection, update: boolean = false) {
+  sortList<T extends (ISection & { children: T[] })>(list: T[], parent?: T, update: boolean = false) {
     if (list) {
       list.forEach((section, i) => {
         if (update) {
           section.position = i + 1;
           section.path = parent ? parent.path + '.' + section.position : section.position + '';
         }
-        section.children = this.cloneContent(section.children);
-        this.sortList(section.children, section, update);
+        section.children = this.cloneContent<T>(section.children);
+        this.sortList<T>(section.children, section, update);
       });
       list.sort((a, b) => a.position - b.position);
     }

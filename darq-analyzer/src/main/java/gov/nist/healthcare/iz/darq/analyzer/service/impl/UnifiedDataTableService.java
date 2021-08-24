@@ -39,15 +39,15 @@ public class UnifiedDataTableService implements DataTableService {
     }
 
     @Override
-    public DataTable createTable(List<Tray> trays, DataViewQuery payload) {
+    public DataTable createTable(List<Tray> trays, QueryPayload payload) {
         DataTable table = new DataTable();
         table.fromQuery(payload);
         Counter groupId = new Counter();
-        groupTraysBy(payload.getGroupBy(), trays)
+        groupTraysBy(payload.getDenominatorFields(), trays)
                 .forEach((group, groupTrays) -> {
                     int denominator = groupTrays.stream().map(Tray::getWeigth).reduce(0, Integer::sum);
                     groupId.i++;
-                    groupTraysBy(payload.getOccurrences(), groupTrays)
+                    groupTraysBy(payload.getNominatorFields(), groupTrays)
                             .forEach((values, rowTrays) -> {
                                 int nominator = rowTrays.stream().map(Tray::getCount).reduce(0, Integer::sum);
 
@@ -59,7 +59,7 @@ public class UnifiedDataTableService implements DataTableService {
                             });
                 });
 
-        this.applyThreshold(table, payload.getThreshold());
+        this.applyThreshold(table, payload.getQueryThreshold());
         this.applyFilters(table, payload.getFilter());
         return table;
     }

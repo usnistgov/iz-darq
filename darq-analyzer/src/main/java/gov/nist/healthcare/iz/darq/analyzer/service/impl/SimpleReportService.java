@@ -26,7 +26,7 @@ public class SimpleReportService implements ReportService {
 	private DataTableService tableService;
 
 	@Override
-	public DataTable singleQuery(ADFile file, DataViewQuery payload) {
+	public DataTable singleQuery(ADFile file, QueryPayload payload) {
 		AnalysisQuery query = queryFromPayload(payload);
 		QueryIssues issues = sanitizeQuery(file, query);
 		TrayProcessor processor = factory.create(query.getCompatibilityGroup(), query::take);
@@ -79,7 +79,7 @@ public class SimpleReportService implements ReportService {
 			ReportSectionResult section = new ReportSectionResult();
 			section.fromSection(sectionTemplate);
 
-			for (DataViewQuery payload : sectionTemplate.getData()) {
+			for (QueryPayload payload : sectionTemplate.getData()) {
 				AnalysisQuery query = queryFromPayload(payload);
 				QueryIssues issues = sanitizeQuery(file, query);
 				TrayProcessor processor = factory.create(query.getCompatibilityGroup(), query::take);
@@ -98,9 +98,9 @@ public class SimpleReportService implements ReportService {
 		return result;
 	}
 	
-	AnalysisQuery queryFromPayload(DataViewQuery payload){
+	AnalysisQuery queryFromPayload(QueryPayload payload){
 		Set<QueryField> fields = new HashSet<>();
-		for(DataSelector selector : payload.getSelectors()){
+		for(DataSelector selector : payload.getFilterFields()){
 			fields.add(
 					new QueryField(
 							selector.getField(),
@@ -112,7 +112,7 @@ public class SimpleReportService implements ReportService {
 					)
 			);
 		}
-		for(Field grp : payload.getGroupBy()){
+		for(Field grp : payload.getDenominatorFields()){
 			if(fields.stream().noneMatch((field) -> field.getF().equals(grp))) {
 				fields.add(new QueryField(grp));
 			}

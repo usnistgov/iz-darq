@@ -44,6 +44,10 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { MustMatchDirective } from './directives/must-match.directive';
 import { PeAutoscrollFixDirective } from './directives/pe-auto-scroll-fix.directive';
 import { CustomLabelDialogComponent } from './components/custom-label-dialog/custom-label-dialog.component';
+import { QueryOccurrencesComponent } from './components/query-dialog/query-occurrences/query-occurrences.component';
+import { CheckboxModule } from 'primeng/checkbox';
+import { SimpleQueryComponent } from './components/query-dialog/simple-query/simple-query.component';
+import { TreeTableModule } from 'primeng/treetable';
 
 @NgModule({
   declarations: [
@@ -73,6 +77,8 @@ import { CustomLabelDialogComponent } from './components/custom-label-dialog/cus
     MustMatchDirective,
     PeAutoscrollFixDirective,
     CustomLabelDialogComponent,
+    QueryOccurrencesComponent,
+    SimpleQueryComponent,
   ],
   imports: [
     CommonModule,
@@ -94,6 +100,8 @@ import { CustomLabelDialogComponent } from './components/custom-label-dialog/cus
     DragDropModule,
     AccordionModule,
     TooltipModule,
+    CheckboxModule,
+    TreeTableModule,
   ],
   exports: [
     // Modules,
@@ -114,6 +122,8 @@ import { CustomLabelDialogComponent } from './components/custom-label-dialog/cus
     AccordionModule,
     TooltipModule,
     TabViewModule,
+    TreeTableModule,
+    CheckboxModule,
     // Components,
     AgeGroupsComponent,
     DetectionsListComponent,
@@ -135,7 +145,7 @@ import { CustomLabelDialogComponent } from './components/custom-label-dialog/cus
     UserProfileComponent,
     MustMatchDirective,
     PeAutoscrollFixDirective,
-    CustomLabelDialogComponent
+    CustomLabelDialogComponent,
   ],
   entryComponents: [CustomLabelDialogComponent]
 })

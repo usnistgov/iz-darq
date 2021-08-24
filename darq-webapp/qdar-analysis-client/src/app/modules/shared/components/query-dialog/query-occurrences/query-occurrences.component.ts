@@ -5,11 +5,11 @@ import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.co
 import { IValueContainer, IComplexThreshold } from '../../../../report-template/model/report-template.model';
 
 @Component({
-  selector: 'app-query-group',
-  templateUrl: './query-group.component.html',
-  styleUrls: ['./query-group.component.scss']
+  selector: 'app-query-occurrences',
+  templateUrl: './query-occurrences.component.html',
+  styleUrls: ['./query-occurrences.component.scss']
 })
-export class QueryGroupComponent extends QueryDialogTabComponent<Field[]> implements OnInit, OnChanges {
+export class QueryOccurrencesComponent extends QueryDialogTabComponent<Field[]> implements OnInit, OnChanges {
   AnalysisType = AnalysisType;
   @Input()
   filterGoup: {

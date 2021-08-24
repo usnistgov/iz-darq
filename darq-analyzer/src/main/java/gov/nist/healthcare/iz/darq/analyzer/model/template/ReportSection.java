@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ReportSection extends Section {
 
-    List<DataViewQuery> data;
+    List<QueryPayload> data;
     List<ReportSection> children;
 
     public ReportSection() {
@@ -15,11 +15,11 @@ public class ReportSection extends Section {
         this.children = new ArrayList<>();
     }
 
-    public List<DataViewQuery> getData() {
+    public List<QueryPayload> getData() {
         return data;
     }
 
-    public void setData(List<DataViewQuery> data) {
+    public void setData(List<QueryPayload> data) {
         this.data = data;
     }
 

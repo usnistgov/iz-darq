@@ -3,6 +3,7 @@ package gov.nist.healthcare.iz.darq.controller.route;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTable;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.DataViewQuery;
+import gov.nist.healthcare.iz.darq.analyzer.model.template.QueryPayload;
 import gov.nist.healthcare.iz.darq.controller.domain.JobCreation;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
@@ -48,7 +49,7 @@ public class AnalysisController {
 	@ResponseBody
 	@PreAuthorize("AccessResource(ADF, VIEW, #fId)")
 	public DataTable analyze(
-			@RequestBody DataViewQuery query,
+			@RequestBody QueryPayload query,
 			@PathVariable("fId") String fId) throws Exception {
     	ADFile file = this.storage.getFile(fId);
     	if(file != null){

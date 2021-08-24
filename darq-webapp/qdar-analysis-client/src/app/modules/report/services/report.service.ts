@@ -1,10 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Message } from 'ngx-dam-framework';
 import { IReport, IReportDescriptor, IReportSectionResult, IDataTableRow, IDataTable } from '../model/report.model';
-import { Comparator, IValueContainer, IComparatorFilter, IThresholdFilter, IReportFilter, IReportFieldFilter } from '../../report-template/model/report-template.model';
+import {
+  Comparator,
+  IValueContainer,
+  IComparatorFilter,
+  IThresholdFilter,
+  IReportFilter,
+  IReportFieldFilter,
+  QueryPayloadType,
+  QueryType,
+} from '../../report-template/model/report-template.model';
 import { Field } from '../../report-template/model/analysis.values';
+import { map, catchError } from 'rxjs/operators';
 
 
 @Injectable({
@@ -76,9 +86,13 @@ export class ReportService {
   }
 
   filterDataTable(table: IDataTable, filter: IReportFilter, activeFieldFilters: Field[]): IDataTable {
-    const hasFilterField = filter.fields.active && filter.fields && Object.keys(filter.fields).length > 0 && table.groupBy.map((field) => {
-      return activeFieldFilters.includes(field);
-    }).includes(true);
+    const hasFilterField =
+      filter.fields.active &&
+      filter.fields &&
+      Object.keys(filter.fields).length > 0 &&
+      this.getAllFields(table.query).map((field) => {
+        return activeFieldFilters.includes(field);
+      }).includes(true);
     const values = table.values.filter((row) => {
       return this.comparatorFilter((row.result.count / row.result.total) * 100, filter.percentage) &&
         this.comparatorFilter(row.result.total, filter.denominator) &&
@@ -91,6 +105,22 @@ export class ReportService {
       thresholdViolation: values.map((d) => d.pass).includes(false),
       values,
     };
+  }
+
+  getAllFields(value: QueryType): Field[] {
+    switch (value.payloadType) {
+      case QueryPayloadType.SIMPLE:
+        return [
+          ...(value.denominator?.active && value.denominator.field ? [value.denominator.field] : []),
+          ...(value.nominator ? [value.nominator] : []),
+        ];
+      case QueryPayloadType.ADVANCED:
+        return [
+          ...value.groupBy,
+          ...value.occurrences,
+        ];
+    }
+    return [];
   }
 
   comparatorFilter(value: number, filter: IComparatorFilter) {

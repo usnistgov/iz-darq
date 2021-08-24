@@ -1,31 +1,23 @@
 package gov.nist.healthcare.iz.darq.analyzer.model.analysis;
-import gov.nist.healthcare.iz.darq.analyzer.model.template.DataViewQuery;
+import gov.nist.healthcare.iz.darq.analyzer.model.template.QueryPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class DataTable extends DataViewQuery {
+public class DataTable {
     Map<Field, Set<String>> vocabulary;
+    QueryPayload query;
     QueryIssues issues;
     boolean thresholdViolation;
-    List<Field> headers;
+    Set<Field> nominator;
+    Set<Field> denominator;
     List<DataTableRow> values;
 
-    public void fromQuery(DataViewQuery query) {
-        this.setType(query.getType());
-        this.setCaption(query.getCaption());
-        this.setPaginate(query.isPaginate());
-        this.setRows(query.getRows());
-        this.setSelectors(query.getSelectors());
-        this.setGroupBy(query.getGroupBy());
-        this.setFilter(query.getFilter());
-        this.setThreshold(query.getThreshold());
-        this.headers = Stream.concat(
-                query.getGroupBy().stream(),
-                query.getOccurrences().stream()
-        ).collect(Collectors.toList());
+    public void fromQuery(QueryPayload query) {
+        this.query = query;
+        this.denominator = query.getDenominatorFields();
+        this.nominator = query.getNominatorFields().stream().filter((v) -> !this.denominator.contains(v)).collect(Collectors.toSet());
         this.values = new ArrayList<>();
         this.vocabulary = new HashMap<>();
     }
@@ -53,14 +45,6 @@ public class DataTable extends DataViewQuery {
         this.vocabulary = vocabulary;
     }
 
-    public List<Field> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(List<Field> headers) {
-        this.headers = headers;
-    }
-
     public List<DataTableRow> getValues() {
         return values;
     }
@@ -77,6 +61,30 @@ public class DataTable extends DataViewQuery {
         if(!b) {
             this.setThresholdViolation(true);
         }
+    }
+
+    public QueryPayload getQuery() {
+        return query;
+    }
+
+    public void setQuery(QueryPayload query) {
+        this.query = query;
+    }
+
+    public Set<Field> getNominator() {
+        return nominator;
+    }
+
+    public void setNominator(Set<Field> nominator) {
+        this.nominator = nominator;
+    }
+
+    public Set<Field> getDenominator() {
+        return denominator;
+    }
+
+    public void setDenominator(Set<Field> denominator) {
+        this.denominator = denominator;
     }
 
     public void setValues(List<DataTableRow> values) {

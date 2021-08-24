@@ -3,6 +3,7 @@ import { AnalysisType, Field } from './analysis.values';
 import { IDescriptor } from '../../shared/model/descriptor.model';
 import { IConfigurationPayload, IConfigurationDescriptor } from '../../configuration/model/configuration.model';
 import { IDamResource } from 'ngx-dam-framework';
+import { IReportDescriptor } from '../../report/model/report.model';
 
 
 export interface IReportTemplateDescriptor extends IDescriptor {
@@ -15,30 +16,23 @@ export interface IReportTemplateCreate {
   configurationId: string;
 }
 
-export interface IReportTemplate {
-  id: string;
-  name: string;
-  description: string;
-  owner: string;
-  lastUpdated: Date;
-  published: boolean;
+export interface IReportTemplate extends IReportDescriptor {
   type: EntityType.TEMPLATE;
-  viewOnly: boolean;
   sections: IReportSection[];
-  public: boolean;
-  configuration: IConfigurationPayload;
-  customDetectionLabels: Record<string, string>;
 }
 
-export interface IReportSection extends IDamResource {
+export interface IReportSection extends ISection {
+  data?: IQueryPayload[];
+  children: IReportSection[];
+}
+
+export interface ISection extends IDamResource {
   id: string;
   type: EntityType.SECTION;
   path: string;
   position: number;
   header: string;
   text: string;
-  data?: IDataViewQuery[];
-  children: IReportSection[];
 }
 
 export interface IFilter {
@@ -82,15 +76,22 @@ export interface IReportFilter {
   fields: IReportFieldFilter;
 }
 
-export interface IDataViewQuery {
+export type QueryType = IDataViewQuery | ISimpleViewQuery;
+
+export interface IQueryPayload {
+  payloadType: QueryPayloadType;
   type: AnalysisType;
   caption: string;
   paginate: boolean;
   rows: number;
+  filter: IQueryResultFilter;
+}
+
+export interface IDataViewQuery extends IQueryPayload {
+  payloadType: QueryPayloadType.ADVANCED;
   selectors: IDataSelector[];
   occurrences: Field[];
   groupBy: Field[];
-  filter: IQueryResultFilter;
   threshold: {
     custom: {
       active: boolean,
@@ -103,10 +104,28 @@ export interface IDataViewQuery {
   };
 }
 
+export interface ISimpleViewQuery extends IQueryPayload {
+  payloadType: QueryPayloadType.SIMPLE;
+  filterBy: IDataSingleSelector;
+  nominator: Field;
+  denominator: {
+    active: boolean,
+    field: Field,
+  };
+  threshold: {
+    active: boolean,
+    goal: IThreshold,
+  };
+}
 
 export interface IDataSelector {
   field: Field;
   values: IValueContainer[];
+}
+
+export interface IDataSingleSelector {
+  field: Field;
+  value: string;
 }
 
 export interface IValueContainer {
@@ -129,4 +148,9 @@ export enum Comparator {
   GT = 'GT',
   LT = 'LT',
   EQ = 'EQ'
+}
+
+export enum QueryPayloadType {
+  SIMPLE = 'SIMPLE',
+  ADVANCED = 'ADVANCED',
 }
