@@ -187,13 +187,11 @@ public class TemplateController {
 		if(md != null){
 			List<ReportTemplate> templates = this.templateRepo.findAccessibleTo(user.getId());
 			for(ReportTemplate template : templates){
-				if(this.configService.compatible(md.getConfiguration(), template.getConfiguration())){
+				if(this.configService.compatible(template.getConfiguration(), md.getConfiguration())){
 					result.add(this.descriptorService.getTemplateDescriptor(template, this.configService.compatibilities(template.getConfiguration(),null)));
 				}
 			}
 		}
 		return result;
 	}
-	
-
 }
