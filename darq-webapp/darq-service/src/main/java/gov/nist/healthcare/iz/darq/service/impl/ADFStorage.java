@@ -16,12 +16,13 @@ import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 
 @Service
 public class ADFStorage implements ADFStore<UserUploadedFile> {
+	public static final String ADF_FILENAME = "adf.data";
 
 	@Autowired
 	private ADFMetaDataRepository repo;
 	@Autowired
 	private CryptoUtils crypto;
-	@Value("#{environment.DARQ_STORE}")
+	@Value("#{environment.QDAR_STORE}")
 	private String PATH;
 
 
@@ -53,7 +54,7 @@ public class ADFStorage implements ADFStore<UserUploadedFile> {
 	public ADFile getFile(String id) throws Exception {
 		UserUploadedFile md = this.get(id);
 		if(md != null){
-			return crypto.decryptFile(new FileInputStream(Paths.get(PATH+"/"+md.getPath()+"/adf.data").toFile()));
+			return crypto.decryptFile(new FileInputStream(Paths.get(PATH+"/"+md.getPath() + "/" + ADF_FILENAME).toFile()));
 		}
 		return null;
 	}

@@ -1,13 +1,9 @@
 package gov.nist.healthcare.iz.darq.adf.utils.crypto.impl;
 
 import java.io.*;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.*;
+import java.util.Arrays;
+import java.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -15,8 +11,9 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Value;
+import gov.nist.healthcare.crypto.service.CryptoKey;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,10 +24,19 @@ import gov.nist.healthcare.iz.darq.digest.domain.EncryptedADF;
 
 @Service
 public class CryptoUtilsImpl implements CryptoUtils {
-	
-	@Value("#{environment.DARQ_KEY}")
-	private String CERTS;
+	public final static String PUB_KEY_RESOURCE_NAME = "public.der";
+
+	@Autowired
+	@Qualifier("ADF_KEYS")
+	private CryptoKey keys;
 	private final ObjectMapper mapper = new ObjectMapper(new BsonFactory()).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+	@Override
+	public boolean checkAdfStore(InputStream fileInputStream) throws Exception {
+		EncryptedADF encryptedADF = mapper.readValue(fileInputStream, EncryptedADF.class);
+		byte[] currentKeyHash = this.keys.getPublicKeyHash();
+		return Arrays.equals(currentKeyHash, encryptedADF.keyHash);
+	}
 
 	@Override
 	public void encryptContentToFile(ADFile file, OutputStream outputStream) throws Exception {
@@ -43,20 +49,20 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	    byte[] encryptedContent = aes.doFinal(fileContent);
 	    
 	    //------------------ ENCRYPT KEY -----------------
+		PublicKey publicKey = keys.getPublicKey();
 	    final Cipher cipher = Cipher.getInstance("RSA");
-	    cipher.init(Cipher.ENCRYPT_MODE, publicKey());
+	    cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 	    byte[] encryptedKey = cipher.doFinal(aesKey.getEncoded());
 
-		mapper.writeValue(outputStream, new EncryptedADF(encryptedKey, encryptedContent));
+		mapper.writeValue(outputStream, new EncryptedADF(encryptedKey, encryptedContent, this.keys.getPublicKeyHash()));
 	}
 
 	@Override
 	public ADFile decryptFile(InputStream inputStream) throws Exception {
 		EncryptedADF encryptedADF = mapper.readValue(inputStream, EncryptedADF.class);
-		
 		//----------------- DECRYPT AES ------------------
 		final Cipher cipher = Cipher.getInstance("RSA");
-	    cipher.init(Cipher.DECRYPT_MODE, privateKey());
+	    cipher.init(Cipher.DECRYPT_MODE, keys.getPrivateKey());
 	    byte[] decryptedKey = cipher.doFinal(encryptedADF.getKey());
 	    
 		//----------------- DECRYPT FILE -----------------
@@ -66,20 +72,6 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	    byte[] decryptedBytes = cipherAes.doFinal(encryptedADF.content);
 	    
 		return deserialize(ADFile.class, decryptedBytes);
-	}
-	
-	public PublicKey publicKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-		byte[] cert_bytes = IOUtils.toByteArray(CryptoUtilsImpl.class.getResourceAsStream("/certificate.pub"));
-	    X509EncodedKeySpec ks = new X509EncodedKeySpec(cert_bytes);
-	    KeyFactory kf = KeyFactory.getInstance("RSA");
-	    return kf.generatePublic(ks);
-	}
-
-	public PrivateKey privateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-		byte[] bytes = IOUtils.toByteArray(new FileInputStream(CERTS+"/certificate.key"));
-		PKCS8EncodedKeySpec ks = new PKCS8EncodedKeySpec(bytes);
-		KeyFactory kf = KeyFactory.getInstance("RSA");
-		return kf.generatePrivate(ks);
 	}
 
 	@Override

@@ -78,7 +78,7 @@ public class RegisterController {
             UserAccount account = this.userTokenizedEditService.resetPassword(resetPasswordRequest);
             User user = this.authenticationService.login(request, response, account);
             return new OpAck<>(OpAck.AckStatus.SUCCESS, "Password Changed Successfully", user, "CHANGE_PASSWORD");
-        } catch (NotFoundException | NoSuchAlgorithmException | IOException | InvalidKeySpecException | FieldValidationException e) {
+        } catch (Exception e) {
             throw new OperationFailureException(e.getMessage());
         }
     }
@@ -90,7 +90,7 @@ public class RegisterController {
             UserAccount account = this.userTokenizedEditService.verifyEmail(verifyEmailRequest);
             User user = this.authenticationService.login(request, response, account);
             return new OpAck<>(OpAck.AckStatus.SUCCESS, "Email verified Successfully", user, "VERIFY_EMAIL");
-        } catch (NotFoundException | OperationFailureException | NoSuchAlgorithmException | IOException | InvalidKeySpecException e) {
+        } catch (Exception e) {
             throw new OperationFailureException(e.getMessage());
         }
     }

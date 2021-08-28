@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Strings;
+import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
 import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
 import org.apache.commons.cli.CommandLine;
@@ -34,6 +36,8 @@ import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
 import gov.nist.healthcare.iz.darq.digest.service.impl.Exporter;
+
+import javax.xml.bind.DatatypeConverter;
 
 @Configuration
 @ComponentScan("gov.nist.healthcare")
@@ -62,14 +66,16 @@ public class CLIApp {
     }
 	
 	@SuppressWarnings("resource")
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		ApplicationContext context = new AnnotationConfigApplicationContext(CLIApp.class);
 		Properties properties = new Properties();
 		properties.load(CLIApp.class.getResourceAsStream("/application.properties"));
 		String version = properties.getProperty("app.version");
 		String build = properties.getProperty("app.date");
 		String mqeVersion = properties.getProperty("mqe.version");
-		String tag = String.format("v%s (%s) [MQE v%s]", version, build, mqeVersion);
+		CryptoKey cryptoKey = context.getBean(CryptoKey.class);
+		String publicKeyHash = cryptoKey.getPublicKey() == null ? "Not Found" : DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash());
+		String tag = String.format("v%s (%s) [MQE v%s] [Key MD5 %s]", version, build, mqeVersion, publicKeyHash);
 
 		//--- OPTIONS
 		Options options = new Options();
@@ -80,6 +86,8 @@ public class CLIApp {
 		options.addOption("tmpDir", "temporaryDirectory", true, "Location where to create temporary directory");
 		options.addOption("pa", "printAdf", false, "print ADF content");
 		options.addOption("d", "dateFormat", true, "Date Format");
+		options.addOption("pub", "publicKey", true, "qDAR Public Key");
+
 
 		CommandLineParser parser = new DefaultParser();
 		try {
@@ -128,7 +136,6 @@ public class CLIApp {
 		        	System.out.println("Vaccinations File @ "+ vFilePath + " " + (vFile ? success("[FOUND]") : failure("[ERROR]")));
 		        	System.out.println("Configuration File @ "+ cFilePath + " " + (cFile ? cFileValid ? success("[FOUND]") : failure("[INVALID]") : failure("[ERROR]")));
 		        	System.out.println("===================================================================================================");
-					System.out.println(ConsoleColors.YELLOW_BRIGHT + "Analysis Progress => " + ConsoleColors.RESET);
 
 					// Read Date Format
 					DqDateFormat simpleDateFormat = DqDateFormat.forPattern(DEFAULT_DATE_FORMAT);
@@ -141,6 +148,25 @@ public class CLIApp {
 						}
 					}
 
+					// Read Public Key
+					if(cmd.hasOption("pub")) {
+						String publicKeyLocation = cmd.getOptionValue("pub");
+						if(cryptoKey instanceof PublicOnlyCryptoKey) {
+							((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromLocation(publicKeyLocation);
+							System.out.println("* Using provided public key " + DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash()) + "(MD5)");
+						} else {
+							throw new Exception("Public Key parameter (pub) is not supported");
+						}
+					} else {
+						if(cryptoKey instanceof PublicOnlyCryptoKey) {
+							((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromResource();
+							System.out.println("* Using bundled public key " + DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash()) + "(MD5)");
+						} else {
+							throw new Exception("Public Key is not supported (please report error)");
+						}
+					}
+
+					System.out.println(ConsoleColors.YELLOW_BRIGHT + "Analysis Progress" + ConsoleColors.RESET);
 					if(pFile && vFile && cFile && cFileValid){
 		        		SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
 		        		Exporter export = context.getBean(Exporter.class);
@@ -162,9 +188,11 @@ public class CLIApp {
 		}
 		catch (ParseException exp) {
 			System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+			logger.error("Parsing failed.  Reason: ", exp);
 		}
 		catch (Exception exp) {
 			System.err.println("Execution Failed due to exception ");
+			logger.error("Execution Failed due to exception ", exp);
 			exp.printStackTrace();
 		}
 		finally {

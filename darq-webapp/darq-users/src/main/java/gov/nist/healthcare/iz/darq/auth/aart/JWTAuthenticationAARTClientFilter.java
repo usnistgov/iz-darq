@@ -1,6 +1,7 @@
 package gov.nist.healthcare.iz.darq.auth.aart;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 import com.google.common.base.Strings;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.access.service.ConfigurableService;
@@ -27,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -99,9 +101,18 @@ public class JWTAuthenticationAARTClientFilter extends GenericFilterBean impleme
     public void configure(Properties properties) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         this.secret = properties.getProperty(SECRET_KEY);
         byte[] cert_bytes = IOUtils.toByteArray(new FileInputStream(properties.getProperty(PUBLIC_KEY)));
-        X509EncodedKeySpec ks = new X509EncodedKeySpec(cert_bytes);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
-        this.publicKey = kf.generatePublic(ks);
+        String key = new String(cert_bytes, Charset.defaultCharset());
+
+        String publicKeyPEM = key
+                .replace("-----BEGIN PUBLIC KEY-----", "")
+                .replaceAll(System.lineSeparator(), "")
+                .replace("-----END PUBLIC KEY-----", "");
+
+        byte[] encoded = Base64.decodeBase64(publicKeyPEM);
+
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
+        this.publicKey = keyFactory.generatePublic(keySpec);
     }
 
     @Override
@@ -139,7 +150,7 @@ public class JWTAuthenticationAARTClientFilter extends GenericFilterBean impleme
 
     @Override
     public String getServiceDisplayName() {
-        return "AART CLIENT AUTHENTICATION";
+        return "AART_CLIENT";
     }
 
 }

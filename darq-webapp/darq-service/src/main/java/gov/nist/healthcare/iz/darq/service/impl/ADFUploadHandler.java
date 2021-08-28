@@ -13,7 +13,6 @@ import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 
 @Service
 public class ADFUploadHandler implements ADFStoreUploadHandler {
-
 	@Autowired
 	private ADFService adfService;
 	@Autowired

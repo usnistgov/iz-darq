@@ -8,15 +8,20 @@
   <artifactId>darq-adf-utils</artifactId>
   <version>1.6.0</version>
   <dependencies>
-  	<dependency>
-  		<groupId>gov.nist.healthcare.iz</groupId>
-  		<artifactId>darq-digest-model</artifactId>
+	<dependency>
+		<groupId>gov.nist.healthcare.iz</groupId>
+		<artifactId>darq-digest-model</artifactId>
 		<version>1.6.0</version>
-  	</dependency>
-  	<dependency>
+	</dependency>
+	<dependency>
 		<groupId>com.google.guava</groupId>
 		<artifactId>guava</artifactId>
 		<version>29.0-jre</version>
+	</dependency>
+	<dependency>
+	  <groupId>gov.nist.healthcare.iz</groupId>
+	  <artifactId>crypto-helper</artifactId>
+	  <version>1.6.0</version>
 	</dependency>
   </dependencies>
 </project>

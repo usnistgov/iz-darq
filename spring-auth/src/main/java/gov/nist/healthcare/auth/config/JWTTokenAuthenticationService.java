@@ -1,17 +1,12 @@
 package gov.nist.healthcare.auth.config;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import gov.nist.healthcare.auth.domain.Authority;
 import gov.nist.healthcare.auth.service.AuthenticationService;
-import gov.nist.healthcare.auth.service.CryptoKey;
+import gov.nist.healthcare.crypto.service.CryptoKey;
 import io.jsonwebtoken.*;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.util.WebUtils;
 import gov.nist.healthcare.auth.domain.Account;
 
@@ -27,7 +22,7 @@ public class JWTTokenAuthenticationService<T extends Account<E>, E extends Autho
 		this.authenticationService = authenticationService;
 	}
 
-	public AbstractAuthenticationToken getAuthentication(HttpServletRequest request) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, AuthenticationException {
+	public AbstractAuthenticationToken getAuthentication(HttpServletRequest request) throws Exception {
 		Cookie token = WebUtils.getCookie(request,COOKIE_NAME);
 		if (token != null && token.getValue() != null && !token.getValue().isEmpty()) {
 			Jws<Claims> jwt = Jwts.parser()

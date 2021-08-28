@@ -22,5 +22,6 @@
 		<module>darq-analyzer</module>
         <module>lucene-index</module>
         <module>fake-record-generator</module>
+        <module>crypto-helper</module>
     </modules>
 </project>

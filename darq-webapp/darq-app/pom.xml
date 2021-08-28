@@ -18,6 +18,7 @@
 		<maven.build.timestamp.format>MM-dd-yyyy</maven.build.timestamp.format>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<failOnMissingWebXml>false</failOnMissingWebXml>
 	</properties>
 	<dependencyManagement>
 		<dependencies>

@@ -21,3 +21,4 @@ lucene-index/lucene-index.iml
 darq-webapp/darq-app/src/main/resources/public/
 /darq-analysis
 *.log
+darq-webapp/darq-app/src/main/resources/qdar-cli.jar

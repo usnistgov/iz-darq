@@ -2,18 +2,18 @@ package gov.nist.healthcare.iz.darq.digest.domain;
 
 public class EncryptedADF {
 	public byte[] key;
-	public String hash;
 	public byte[] content;
-	
+	public byte[] keyHash;
 	
 	public EncryptedADF() {
 		super();
 	}
 
-	public EncryptedADF(byte[] key, byte[] content) {
+	public EncryptedADF(byte[] key, byte[] content, byte[] keyHash) {
 		super();
 		this.key = key;
 		this.content = content;
+		this.keyHash = keyHash;
 	}
 	
 	public byte[] getKey() {
@@ -28,5 +28,10 @@ public class EncryptedADF {
 	public void setContent(byte[] content) {
 		this.content = content;
 	}
-
+	public byte[] getKeyHash() {
+		return keyHash;
+	}
+	public void setKeyHash(byte[] keyHash) {
+		this.keyHash = keyHash;
+	}
 }

@@ -1,6 +1,10 @@
 package gov.nist.healthcare.iz.darq.digest.app.config;
 
 import java.io.IOException;
+
+import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,6 +14,12 @@ import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 
 @Configuration
 public class DigestConfiguration {
+
+	@Bean
+	@Qualifier("ADF_KEYS")
+	public CryptoKey getAdfCryptoKey() throws Exception {
+		return new PublicOnlyCryptoKey();
+	}
 
 	@Bean
 	public ADFStore store(){

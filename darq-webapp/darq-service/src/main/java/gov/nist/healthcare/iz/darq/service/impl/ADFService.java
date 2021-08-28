@@ -22,10 +22,10 @@ import java.util.*;
 @Service
 public class ADFService {
 
-    @Value("#{environment.DARQ_STORE}")
+    @Value("#{environment.QDAR_STORE}")
     private String PATH;
     @Autowired
-    private ADFStore storage;
+    private ADFStore<UserUploadedFile> storage;
     @Autowired
     private CryptoUtils crypto;
     @Autowired
@@ -55,7 +55,7 @@ public class ADFService {
                         components
                 );
                 storage.store(metadata);
-                Files.write(Paths.get(dir.toString(), "/adf.data"), content);
+                Files.write(Paths.get(dir.toString(), "/" + ADFStorage.ADF_FILENAME), content);
                 return metadata;
             } else {
                 throw new Exception("could not create ADF directory");
@@ -93,8 +93,7 @@ public class ADFService {
     public String compatibilityVersion(ADFile file) {
         String version = Optional.ofNullable(file.getVersion()).orElse(RandomStringUtils.random(5));
         String mqe = Optional.ofNullable(file.getMqeVersion()).orElse(RandomStringUtils.random(5));
-        String build = Optional.ofNullable(file.getBuild()).orElse(RandomStringUtils.random(5));
-        return version + "(" + build + ") - " + mqe;
+        return version + " - " + mqe;
     }
 
     public UserUploadedFile merge(String name, String facility, String ownerId, Set<UserUploadedFile> metadataList) throws Exception {

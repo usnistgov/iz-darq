@@ -3,7 +3,7 @@ package gov.nist.healthcare.iz.darq.users.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import gov.nist.healthcare.auth.exception.PendingVerificationException;
-import gov.nist.healthcare.auth.service.CryptoKey;
+import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.access.domain.Permission;
 import gov.nist.healthcare.iz.darq.access.domain.UserRole;
@@ -101,13 +101,13 @@ public class AuthenticationService implements gov.nist.healthcare.auth.service.A
             OpAck<User> userOpAck = new OpAck<>(OpAck.AckStatus.SUCCESS, "Login Success", user, "LOGIN");
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.writeValue(response.getWriter(), userOpAck);
-        } catch (AuthenticationException exception) {
+        } catch (Exception exception) {
             this.authenticationEntryPoint.commence(request, response, new PendingVerificationException(account.getUsername()));
         }
     }
 
     @Override
-    public Cookie createAuthCookie(UserAccount account, Date expiresAt, ArrayList<String> facilities) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+    public Cookie createAuthCookie(UserAccount account, Date expiresAt, ArrayList<String> facilities) throws Exception {
         Claims claims = Jwts.claims();
         claims.put("roles", account
                 .getAuthorities()
@@ -144,7 +144,7 @@ public class AuthenticationService implements gov.nist.healthcare.auth.service.A
 
 
     @Override
-    public Cookie createAuthCookieWithDefaultDuration(UserAccount account, ArrayList<String> facilities) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+    public Cookie createAuthCookieWithDefaultDuration(UserAccount account, ArrayList<String> facilities) throws Exception {
         return this.createAuthCookie(account, new Date(System.currentTimeMillis() + DURATION * 1000), null);
     }
 
@@ -179,7 +179,7 @@ public class AuthenticationService implements gov.nist.healthcare.auth.service.A
     }
 
     @Override
-    public User login(HttpServletRequest request, HttpServletResponse response, UserAccount account) throws AuthenticationException, NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+    public User login(HttpServletRequest request, HttpServletResponse response, UserAccount account) throws Exception {
         User user = this.verifyAccountAndCreatePrincipal(account, null);
         Cookie authCookie = this.createAuthCookieWithDefaultDuration(account, null);
         response.setContentType("application/json");

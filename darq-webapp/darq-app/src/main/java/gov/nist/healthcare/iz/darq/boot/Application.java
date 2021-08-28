@@ -1,13 +1,15 @@
 package gov.nist.healthcare.iz.darq.boot;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
 
+import com.google.common.base.Strings;
+import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.crypto.service.impl.JKSCryptoKey;
+import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
 import gov.nist.healthcare.iz.darq.model.*;
 import gov.nist.healthcare.iz.darq.repository.EmailTemplateRepository;
 import gov.nist.healthcare.iz.darq.service.impl.SimpleEmailService;
@@ -17,6 +19,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -53,12 +56,30 @@ public class Application extends SpringBootServletInitializer{
 	@Autowired
 	WebContentService webContentService;
 	@Autowired
-	private CVXRepository cvxRepo;
-	@Value("#{environment.DARQ_STORE}")
-	private String ADF_FOLDER;
-	@Value("#{environment.DARQ_KEY}")
-	private String KEY_FOLDER;
+	CryptoUtils cryptoUtils;
 
+	@Autowired
+	private CVXRepository cvxRepo;
+	@Value("#{environment.QDAR_STORE}")
+	private String QDAR_STORE;
+
+	@Value("#{environment.QDAR_AUTH_JKS_PATH}")
+	private String QDAR_AUTH_JKS_PATH;
+	@Value("#{environment.QDAR_AUTH_JKS_PASSWORD}")
+	private String QDAR_AUTH_JKS_PASSWORD;
+	@Value("#{environment.QDAR_AUTH_KEY_ALIAS}")
+	private String QDAR_AUTH_KEY_ALIAS;
+	@Value("#{environment.QDAR_AUTH_KEY_PASSWORD}")
+	private String QDAR_AUTH_KEY_PASSWORD;
+
+	@Value("#{environment.QDAR_ADF_JKS_PATH}")
+	private String QDAR_ADF_JKS_PATH;
+	@Value("#{environment.QDAR_ADF_JKS_PASSWORD}")
+	private String QDAR_ADF_JKS_PASSWORD;
+	@Value("#{environment.QDAR_ADF_KEY_ALIAS}")
+	private String QDAR_ADF_KEY_ALIAS;
+	@Value("#{environment.QDAR_ADF_KEY_PASSWORD}")
+	private String QDAR_ADF_KEY_PASSWORD;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -89,11 +110,8 @@ public class Application extends SpringBootServletInitializer{
 	}
 
 	@Bean
-	public DownloadService downloadService() throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		TypeReference<HashMap<String,FileDownload>> typeRef = new TypeReference<HashMap<String,FileDownload>>() {};
-		Map<String, FileDownload> map = mapper.readValue(Application.class.getResourceAsStream("/docs.json"), typeRef);
-		return new SimpleDownloadService(map);
+	public DownloadService downloadService(@Qualifier("ADF_KEYS") CryptoKey cryptoKey) {
+		return new SimpleDownloadService(cryptoKey);
 	}
 
 
@@ -107,6 +125,60 @@ public class Application extends SpringBootServletInitializer{
 			emailService.setEmailTemplateIfAbsent(template);
 		}
 		return emailService;
+	}
+
+	@Bean("AUTH_KEYS")
+	public CryptoKey authCryptoKeys() throws Exception {
+		List<String> errors = new ArrayList<>();
+		if(Strings.isNullOrEmpty(QDAR_AUTH_JKS_PATH)) {
+			errors.add("Could not find environment Variable QDAR_AUTH_JKS_PATH");
+		}
+		if(Strings.isNullOrEmpty(QDAR_AUTH_JKS_PASSWORD)) {
+			errors.add("Could not find environment Variable QDAR_AUTH_JKS_PASSWORD");
+		}
+		if(Strings.isNullOrEmpty(QDAR_AUTH_KEY_ALIAS)) {
+			errors.add("Could not find environment Variable QDAR_AUTH_KEY_ALIAS");
+		}
+		if(Strings.isNullOrEmpty(QDAR_AUTH_KEY_PASSWORD)) {
+			errors.add("Could not find environment Variable QDAR_AUTH_KEY_PASSWORD");
+		}
+
+		if(errors.size() > 0) {
+			throw new Exception("[QDAR_AUTH_ENV] One or more environment variables are missing : " + String.join(",", errors));
+		} else {
+			try {
+				return new JKSCryptoKey(QDAR_AUTH_JKS_PATH, QDAR_AUTH_KEY_ALIAS, QDAR_AUTH_JKS_PASSWORD, QDAR_AUTH_KEY_PASSWORD);
+			} catch (Exception exception) {
+				throw new Exception("[QDAR_AUTH_KEYS] Failed to read AUTH Keys", exception);
+			}
+		}
+	}
+
+	@Bean("ADF_KEYS")
+	public CryptoKey adfCryptoKeys() throws Exception {
+		List<String> errors = new ArrayList<>();
+		if(Strings.isNullOrEmpty(QDAR_ADF_JKS_PATH)) {
+			errors.add("Could not find environment Variable QDAR_ADF_JKS_PATH");
+		}
+		if(Strings.isNullOrEmpty(QDAR_ADF_JKS_PASSWORD)) {
+			errors.add("Could not find environment Variable QDAR_ADF_JKS_PASSWORD");
+		}
+		if(Strings.isNullOrEmpty(QDAR_ADF_KEY_ALIAS)) {
+			errors.add("Could not find environment Variable QDAR_ADF_KEY_ALIAS");
+		}
+		if(Strings.isNullOrEmpty(QDAR_ADF_KEY_PASSWORD)) {
+			errors.add("Could not find environment Variable QDAR_ADF_KEY_PASSWORD");
+		}
+
+		if(errors.size() > 0) {
+			throw new Exception("[QDAR_ADF_ENV] One or more environment variables are missing : " + String.join(",", errors));
+		} else {
+			try {
+				return new JKSCryptoKey(QDAR_ADF_JKS_PATH, QDAR_ADF_KEY_ALIAS, QDAR_ADF_JKS_PASSWORD, QDAR_ADF_KEY_PASSWORD);
+			} catch (Exception exception) {
+				throw new Exception("[QDAR_ADF_KEYS] Failed to read ADF Keys", exception);
+			}
+		}
 	}
 
 	//-----------------------------------------------------
@@ -145,44 +217,8 @@ public class Application extends SpringBootServletInitializer{
 	
     @PostConstruct
     public void setup() throws Exception {
-    	
-    	//-- Verify ENV
-    	boolean b = true;
-    	if(ADF_FOLDER == null || ADF_FOLDER.isEmpty()){
-    		b = false;
-    		System.out.println("[DARQ-SETUP] Could not find environment Variable DARQ_STORE");
-    	}
-    		
-    	if(KEY_FOLDER == null || KEY_FOLDER.isEmpty()){
-    		b = false;
-    		System.out.println("[DARQ-SETUP] Could not find environment Variable DARQ_KEY");
-    	}
-    	
-    	if(!b) throw new Exception("One or more Environement Variables were not found");
-    			
-    	//-- Verify ADF Folder
-    	File f = new File(ADF_FOLDER);
-    	if(!f.exists()){
-    		f.mkdirs();
-    		if(!f.exists()){
-    			throw new Exception("Could not create directory : "+ADF_FOLDER);
-    		}
-    	}
-    	
-    	//-- Verify Keys
-    	File k = new File(KEY_FOLDER);
-    	if(!k.exists()){
-    		throw new Exception("Could not find directory : "+KEY_FOLDER);
-    	}
-    	else {
-    		File pub = new File(KEY_FOLDER+"/certificate.pub");
-    		File priv = new File(KEY_FOLDER+"/certificate.key");
-    		if(!pub.exists()){
-    			throw new Exception("Could not find PUBLIC KEY : "+KEY_FOLDER+"/certificate.pub");
-    		}
-    		if(!priv.exists()){
-    			throw new Exception("Could not find PRIVATE KEY : "+KEY_FOLDER+"/certificate.priv");
-    		}
+    	if(Strings.isNullOrEmpty(QDAR_STORE)){
+			throw new Exception("[QDAR_ADF_STORE] Could not find environment Variable QDAR_STORE");
     	}
     }
 }

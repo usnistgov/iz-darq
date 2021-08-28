@@ -3,7 +3,7 @@ package gov.nist.healthcare.iz.darq.access.configuration;
 import gov.nist.healthcare.auth.config.JWTAuthenticationFilter;
 import gov.nist.healthcare.auth.config.JWTTokenAuthenticationService;
 import gov.nist.healthcare.auth.service.AccountService;
-import gov.nist.healthcare.auth.service.CryptoKey;
+import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.auth.service.impl.DefaultAccountService;
 import gov.nist.healthcare.iz.darq.access.domain.UserRole;
 import gov.nist.healthcare.iz.darq.repository.FacilityRepository;
@@ -20,6 +20,7 @@ import gov.nist.healthcare.iz.darq.users.service.impl.AuthenticationService;
 import gov.nist.healthcare.iz.darq.users.service.impl.SimpleUserTokenizedEditService;
 import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,7 +47,8 @@ public class AuthServiceConfiguration {
     @Autowired
     private UserEditTokenRepository userEditTokenRepository;
     @Autowired
-    private CryptoKey cryptoKey;
+    @Qualifier("AUTH_KEYS")
+    private CryptoKey authCryptoKeys;
     @Autowired
     private FacilityRepository facilityRepository;
     @Autowired
@@ -55,8 +57,6 @@ public class AuthServiceConfiguration {
     Environment environment;
     @Autowired
     AuthenticationEntryPoint handler;
-    @Autowired
-    CryptoKey keys;
 
     @Bean
     public BCryptPasswordEncoder encoder() {
@@ -70,12 +70,12 @@ public class AuthServiceConfiguration {
 
     @Bean
     public JWTTokenAuthenticationService<UserAccount, UserRole, User> tokenAuthenticationService(AuthenticationService authenticationService) {
-        return new JWTTokenAuthenticationService<>(this.COOKIE_NAME, this.cryptoKey, authenticationService);
+        return new JWTTokenAuthenticationService<>(this.COOKIE_NAME, this.authCryptoKeys, authenticationService);
     }
 
     @Bean
     public AuthenticationService authenticationService(UserManagementService userManagementService, FacilityService facilityService) {
-        return new AuthenticationService(userManagementService, handler, facilityService, keys, COOKIE_NAME, DURATION);
+        return new AuthenticationService(userManagementService, handler, facilityService, this.authCryptoKeys, COOKIE_NAME, DURATION);
     }
 
     @Bean
