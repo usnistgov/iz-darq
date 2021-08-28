@@ -15,6 +15,7 @@ import { CreateCredentialsComponent } from './components/create-credentials/crea
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { UpdateProfileComponent } from './components/update-profile/update-profile.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { DownloadComponent } from './components/download/download.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
     VerifyEmailComponent,
     UpdateProfileComponent,
     ResetPasswordComponent,
+    DownloadComponent,
   ],
   imports: [
     CommonModule,
@@ -46,6 +48,7 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
     RegistrationComponent,
     ForgotPasswordComponent,
     UpdateProfileComponent,
+    DownloadComponent,
   ],
 })
 export class CoreModule { }

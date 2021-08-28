@@ -16,6 +16,7 @@ import { VerifyEmailComponent } from './modules/core/components/verify-email/ver
 import { UpdateProfileComponent } from './modules/core/components/update-profile/update-profile.component';
 import { ForgotPasswordComponent } from './modules/core/components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './modules/core/components/reset-password/reset-password.component';
+import { DownloadComponent } from './modules/core/components/download/download.component';
 
 
 const routes: Routes = [
@@ -33,6 +34,10 @@ const routes: Routes = [
     path: 'register',
     component: RegistrationComponent,
     canActivate: [NotAuthenticatedGuard],
+  },
+  {
+    path: 'download',
+    component: DownloadComponent,
   },
   {
     path: 'forgotten-password',

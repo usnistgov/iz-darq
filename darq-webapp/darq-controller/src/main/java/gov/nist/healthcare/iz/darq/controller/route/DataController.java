@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -7,6 +8,10 @@ import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 
+import gov.nist.healthcare.iz.darq.model.FileDescriptorWrapper;
+import gov.nist.healthcare.iz.darq.model.qDARJarFile;
+import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
+import gov.nist.healthcare.iz.darq.service.impl.SimpleDownloadService;
 import gov.nist.healthcare.iz.darq.service.utils.CodeSetService;
 import org.apache.commons.io.IOUtils;
 import org.immregistries.mqe.validator.detection.Detection;
@@ -21,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gov.nist.healthcare.iz.darq.controller.domain.DetectionDescriptor;
 import gov.nist.healthcare.iz.darq.model.CVXCode;
-import gov.nist.healthcare.iz.darq.model.FileDownload;
+import gov.nist.healthcare.iz.darq.model.FileDescriptor;
 import gov.nist.healthcare.iz.darq.repository.CVXRepository;
 import gov.nist.healthcare.iz.darq.service.utils.DownloadService;
 
@@ -88,10 +93,10 @@ public class DataController {
     	return this.cvxCodes;
     }
     
-    @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/download/file/{id}", method = RequestMethod.GET)
     public void download(HttpServletResponse response, @PathVariable("id") String id) throws IOException {
     	InputStream io = this.download.getFile(id);
-    	FileDownload file = this.download.getInfo(id);
+    	FileDescriptor file = this.download.getInfo(id);
     	if(io != null){
     		response.setContentType(file.getType());
     		response.setHeader("Content-disposition", "attachment;filename="+file.getName());
@@ -101,10 +106,29 @@ public class DataController {
     		response.sendError(404);
     	}
     }
+
+	@RequestMapping(value = "/download/cli", method = RequestMethod.GET)
+	public void downloadCLI(HttpServletResponse response) throws Exception {
+		qDARJarFile file = this.download.getJarFileInfo();
+		response.setContentType("application/java-archive");
+		response.setHeader("Content-disposition", "attachment;filename="+ SimpleDownloadService.RESOURCES_JAR_FILE);
+		response.getOutputStream().write(IOUtils.toByteArray(new FileInputStream(file.getLocation().toFile())));
+	}
+
+	@RequestMapping(value = "/download/cli/info", method = RequestMethod.GET)
+	@ResponseBody
+	public qDARJarFile cliInfo(HttpServletResponse response) throws NotFoundException {
+		qDARJarFile file = this.download.getJarFileInfo();
+		if(file == null) {
+			throw  new NotFoundException("Jar file not found");
+		} else {
+			return file;
+		}
+	}
     
-    @RequestMapping(value = "/downloads", method = RequestMethod.GET)
+    @RequestMapping(value = "/download/files", method = RequestMethod.GET)
     @ResponseBody
-    public List<FileDownload> downloads(HttpServletResponse response) throws IOException {
+    public List<FileDescriptorWrapper> downloads(HttpServletResponse response) throws IOException {
     	return this.download.catalog();
     }
 

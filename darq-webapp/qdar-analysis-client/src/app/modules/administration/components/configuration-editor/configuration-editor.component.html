@@ -20,6 +20,9 @@
           <div *ngSwitchCase="'FAILED'" style="display: flex; align-items: center; justify-content: center;">
             <div style="height: 12px; width: 12px; border-radius: 12px; margin-right: 5px; background-color: red;"></div> {{ $any(item).text }}
           </div>
+          <div *ngSwitchCase="'WARNING'" style="display: flex; align-items: center; justify-content: center;">
+            <div style="height: 12px; width: 12px; border-radius: 12px; margin-right: 5px; background-color: yellow;"></div> {{ $any(item).text }}
+          </div>
         </div>
       </td>
     </tr>

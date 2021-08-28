@@ -1,0 +1,22 @@
+.upload-page-title {
+  background-color: white;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.upload-page-content {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  overflow: scroll;
+  padding-top: 50px;
+}
+
+ul {
+  position: absolute;
+}
+
+.upload-form {
+  width: 700px;
+}
