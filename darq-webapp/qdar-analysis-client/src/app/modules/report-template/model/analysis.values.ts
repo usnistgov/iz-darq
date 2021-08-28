@@ -46,7 +46,7 @@ export const names = {
 export const fieldDisplayName = {
   [Field.PROVIDER]: 'REPORTING_GROUP',
   [Field.AGE_GROUP]: Field.AGE_GROUP,
-  [Field.TABLE]: Field.TABLE,
+  [Field.TABLE]: 'FIELD_TABLE',
   [Field.CODE]: Field.CODE,
   [Field.DETECTION]: 'DETECTION_TYPE',
   [Field.EVENT]: Field.EVENT,

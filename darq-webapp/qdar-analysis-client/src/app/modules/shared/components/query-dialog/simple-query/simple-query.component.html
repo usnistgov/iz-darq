@@ -4,7 +4,7 @@
       <th style="vertical-align: middle;"> Count of <strong style="color: red;">*</strong></th>
       <td style="vertical-align: middle; text-align: end;">
         <span *ngIf="queryFlags.detections">Count percentage of detection </span>
-        <span *ngIf="queryFlags.codes">Count percentage of code occurrences for table </span>
+        <span *ngIf="queryFlags.codes">Count percentage of code occurrences for field / table </span>
         <span *ngIf="queryFlags.vaccineEvents">Count percentage of occurrences of value in vaccination event field</span>
       </td>
       <td style="vertical-align: middle;" *ngIf="queryFlags.detections || queryFlags.codes">
