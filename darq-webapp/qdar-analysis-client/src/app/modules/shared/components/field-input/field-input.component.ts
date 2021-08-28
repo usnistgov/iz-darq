@@ -34,7 +34,6 @@ export interface IFieldInputOptions {
   reportingGroupOptions: SelectItem[];
   vaccinationTableOptions: SelectItem[];
   patientTableOptions: SelectItem[];
-  eventOptions: SelectItem[];
 }
 
 @Component({
@@ -66,13 +65,6 @@ export class FieldInputComponent implements ControlValueAccessor, OnInit {
         inputType: 'DROPDOWN',
         options: {
           default: data.ageGroupOptions,
-        }
-      },
-      [Field.EVENT]: {
-        id: 'ev',
-        inputType: 'DROPDOWN',
-        options: {
-          default: data.eventOptions,
         }
       },
       [Field.VACCINE_CODE]: {

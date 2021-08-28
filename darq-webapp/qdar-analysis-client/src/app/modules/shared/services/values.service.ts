@@ -54,7 +54,6 @@ export class ValuesService {
     processOptions(options.reportingGroupOptions, Field.PROVIDER);
     processOptions(options.cvxOptions, Field.VACCINE_CODE);
     processOptions(options.ageGroupOptions, Field.AGE_GROUP);
-    processOptions(options.eventOptions, Field.EVENT);
 
     return new Labelizer(map, options);
   }
@@ -97,14 +96,7 @@ export class ValuesService {
         }
       ],
       vaccinationTableOptions: data.tables.vaccinationTables.map(standardTransform),
-      patientTableOptions: data.tables.patientTables.map(standardTransform),
-      eventOptions: [{
-        label: 'Administered',
-        value: '00'
-      }, {
-        label: 'Historical',
-        value: '01'
-      }],
+      patientTableOptions: data.tables.patientTables.map(standardTransform)
     };
   }
 
