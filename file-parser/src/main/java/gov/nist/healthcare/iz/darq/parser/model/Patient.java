@@ -38,15 +38,15 @@ public class Patient extends gov.nist.healthcare.iz.darq.parser.service.model.Re
 	public DqString ethnicity_code;
 	@Field(name="Race Code", index = 15, coded = true, table = "RACE_0005")
 	public DqString race_code;
-	@Field(name="Birth State", index = 29, coded = true, table = "US_POSTAL_STATE")
+	@Field(name="Birth State", index = 29, coded = true, table = "BIRTH_US_POSTAL_STATE")
 	public DqString birth_facility_name;
 	@Field(name="Birth Multiple Indicator", index = 27, coded = true, table = "MULTI_BIRTH")
 	public DqString multi_birth_indicator;
 	@Field(name="Birth Order", index = 28)
 	public DqNumeric birth_order;
-	@Field(name="Provider Facility Level", index = 30, coded = true, table = "PSTAT_0441")
+	@Field(name="Provider Facility Level", index = 30, coded = true, table = "FACILITY_PSTAT_0441")
 	public DqString provider_facility_level;
-	@Field(name="Provider IIS Level", index = 31, coded = true, table = "PSTAT_0441")
+	@Field(name="Provider IIS Level", index = 31, coded = true, table = "IIS_PSTAT_0441")
 	public DqString iis_level;
 	@Field(name="Record Creation Date", index = 32)
 	public DqDate record_creation_date;
