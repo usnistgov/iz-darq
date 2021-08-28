@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
@@ -40,6 +41,17 @@ public class qDARClient {
     private String secret;
     private String protocol;
     private String authority;
+
+    public static PrivateKey getPrivateKeyFromJKS(String jksLocation, String jksPassword, String keyAlias, String keyPassword) throws Exception {
+        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keystore.load(new FileInputStream(new File(jksLocation)), jksPassword.toCharArray());
+        Key key = keystore.getKey(keyAlias, keyPassword.toCharArray());
+        if (key instanceof PrivateKey) {
+            return (PrivateKey) key;
+        } else {
+            throw new Exception("Key "+ keyAlias + " in JKS " + jksLocation + " is not an RSA private key");
+        }
+    }
 
     public qDARClient(String protocol, String authority, String secret, PrivateKey privateKey) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException {
         wire = SSLRestTemplateFactory.createSSLRestTemplate();
@@ -99,20 +111,17 @@ public class qDARClient {
         return headers;
     }
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException, AuthorizationFailure, InvalidKeySpecException {
-        PrivateKey privateKey = privateKey();
+    public static void main(String[] args) throws Exception {
+        PrivateKey privateKey = qDARClient.getPrivateKeyFromJKS(
+                "JKS_LOCATION",
+                "JKS_PASSWORD",
+                "KEY_ALIAS",
+                "KEY_PASSWORD"
+        );
         qDARClient qDARClient = new qDARClient("http", "localhost:8081", "_SECRET_" , privateKey);
         System.out.println(qDARClient.getFacilities());
         System.out.println(qDARClient.getAllReports());
         System.out.println(qDARClient.getReportsByFacilityId("_FACILITY_ID_"));
-        System.out.println(qDARClient.getReportsByFacilityName("MI IIS"));
+        System.out.println(qDARClient.getReportsByFacilityName("_FACILITY_NAME_"));
     }
-
-    public static PrivateKey privateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        byte[] bytes = IOUtils.toByteArray(new FileInputStream("_PRIVATE_KEY_PATH_"));
-        PKCS8EncodedKeySpec ks = new PKCS8EncodedKeySpec(bytes);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
-        return kf.generatePrivate(ks);
-    }
-
 }
