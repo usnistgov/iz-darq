@@ -216,9 +216,7 @@
           <th *ngSwitchCase="ColumnType.BAR" style="width: 340px;">
             {{ header.label }}
           </th>
-          <th [ttSortableColumnDisabled]="rows?.length <= 1" [ttSortableColumn]="header.key" ttResizableColumn *ngSwitchCase="ColumnType.GROUP" style="width: 100px;">
-            {{ header.label }}
-            <p-treeTableSortIcon *ngIf="rows?.length > 1" [field]="header.key"></p-treeTableSortIcon>
+          <th *ngSwitchCase="ColumnType.GROUP" style="width: 50px;">
           </th>
           <th [ttSortableColumnDisabled]="rows?.length <= 1" [ttSortableColumn]="header.key" ttResizableColumn *ngSwitchCase="ColumnType.VALUE" style="width: 250px;">
             {{ header.label }}
@@ -313,7 +311,6 @@
           </div>
           <div *ngSwitchCase="ColumnType.GROUP">
             <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-            {{ value[header.key] }}
           </div>
           <div *ngSwitchCase="ColumnType.THRESHOLD">
             {{ value.threshold ? labelizer.comparator(value.threshold.comparator) + ' ' + value.threshold.value + '% ' + (value.pass ? '(PASS)' : "(FAIL)") : 'No Threshold'}}
