@@ -90,6 +90,6 @@ public class ServerInfo implements ConfigurableService {
 
 	@Override
 	public String getServiceDisplayName() {
-		return "AART CONNECT ERROR RESOLVER";
+		return "SERVER_INFO";
 	}
 }

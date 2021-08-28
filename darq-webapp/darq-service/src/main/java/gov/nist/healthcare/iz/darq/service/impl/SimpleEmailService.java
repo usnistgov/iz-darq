@@ -178,6 +178,6 @@ public class SimpleEmailService implements EmailService, ConfigurableService {
 
     @Override
     public String getServiceDisplayName() {
-        return "EMAIL SERVER";
+        return "EMAIL_SERVER";
     }
 }

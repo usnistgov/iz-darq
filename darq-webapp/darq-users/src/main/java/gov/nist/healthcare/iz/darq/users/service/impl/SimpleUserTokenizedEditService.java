@@ -231,7 +231,7 @@ public class SimpleUserTokenizedEditService implements UserTokenizedEditService 
 
     @Override
     public String getServiceDisplayName() {
-        return "USER VERIFICATION";
+        return "USER_VERIFICATION";
     }
 
 }

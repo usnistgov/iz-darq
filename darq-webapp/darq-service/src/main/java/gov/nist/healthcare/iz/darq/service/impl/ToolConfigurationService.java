@@ -140,7 +140,7 @@ public class ToolConfigurationService {
                         .collect(Collectors.toSet())
                     )
                 );
-                return service.checkServiceStatus();
+                return setOpCode(service.checkServiceStatus(), service);
             } catch (Exception e) {
                 return new OpAck<Void>(OpAck.AckStatus.FAILED, e.getMessage(), null, service.getServiceDisplayName());
             }
@@ -150,8 +150,13 @@ public class ToolConfigurationService {
     public Set<OpAck<Void>> checkConfigurationStatus() {
         return this.configurableServiceList
                 .stream()
-                .map(ConfigurableService::checkServiceStatus)
+                .map((service) -> setOpCode(service.checkServiceStatus(), service))
                 .collect(Collectors.toSet());
+    }
+
+    public OpAck<Void> setOpCode(OpAck<Void> ack, ConfigurableService service) {
+        ack.setOp(service.getServiceDisplayName());
+        return ack;
     }
 
     @PostConstruct

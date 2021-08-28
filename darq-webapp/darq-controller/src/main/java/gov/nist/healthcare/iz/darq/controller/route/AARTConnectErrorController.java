@@ -104,6 +104,6 @@ public class AARTConnectErrorController implements ConfigurableService {
 
     @Override
     public String getServiceDisplayName() {
-        return "AART CONNECT ERROR RESOLVER";
+        return "AART_CONNECT_ERROR";
     }
 }
