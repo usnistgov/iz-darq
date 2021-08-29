@@ -1,27 +1,30 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-	  <groupId>gov.nist.healthcare.iz</groupId>
-	  <artifactId>darq-extract-process</artifactId>
-	  <version>1.6.0</version>
-  </parent>
-  <artifactId>darq-adf-utils</artifactId>
-  <version>1.6.0</version>
-  <dependencies>
-	<dependency>
-		<groupId>gov.nist.healthcare.iz</groupId>
-		<artifactId>darq-digest-model</artifactId>
-		<version>1.6.0</version>
-	</dependency>
-	<dependency>
-		<groupId>com.google.guava</groupId>
-		<artifactId>guava</artifactId>
-		<version>29.0-jre</version>
-	</dependency>
-	<dependency>
-	  <groupId>gov.nist.healthcare.iz</groupId>
-	  <artifactId>crypto-helper</artifactId>
-	  <version>1.6.0</version>
-	</dependency>
-  </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>gov.nist.healthcare.iz</groupId>
+        <artifactId>darq-extract-process</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>darq-adf-utils</artifactId>
+    <properties>
+        <qdar.api.version>2.0.0-SNAPSHOT</qdar.api.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>gov.nist.healthcare.iz</groupId>
+            <artifactId>darq-digest-model</artifactId>
+            <version>${qdar.api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>29.0-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.healthcare.iz</groupId>
+            <artifactId>crypto-helper</artifactId>
+            <version>${qdar.api.version}</version>
+        </dependency>
+    </dependencies>
 </project>

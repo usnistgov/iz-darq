@@ -3,15 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gov.nist.healthcare.iz</groupId>
 	<artifactId>darq</artifactId>
-	<version>1.6.0</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<qdar.webtool.version>2.2.1</qdar.webtool.version>
-		<qdar.api.version>1.6.0</qdar.api.version>
-		<qdar.cli.version>1.6.0</qdar.cli.version>
-		<mqe.version>2021.7-BETA</mqe.version>
+		<qdar.api.version>2.0.0-SNAPSHOT</qdar.api.version>
 	</properties>
 	<modules>
 		<module>file-parser</module>
@@ -23,5 +20,6 @@
         <module>lucene-index</module>
         <module>fake-record-generator</module>
         <module>crypto-helper</module>
+		<module>spring-auth</module>
     </modules>
 </project>
