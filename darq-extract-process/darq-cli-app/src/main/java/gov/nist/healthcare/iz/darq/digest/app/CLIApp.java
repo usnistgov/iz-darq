@@ -74,8 +74,19 @@ public class CLIApp {
 		String build = properties.getProperty("app.date");
 		String mqeVersion = properties.getProperty("mqe.version");
 		CryptoKey cryptoKey = context.getBean(CryptoKey.class);
-		String publicKeyHash = cryptoKey.getPublicKey() == null ? "Not Found" : DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash());
-		String tag = String.format("v%s (%s) [MQE v%s] [Key MD5 %s]", version, build, mqeVersion, publicKeyHash);
+		String publicKeyHash = "";
+
+		if(cryptoKey instanceof PublicOnlyCryptoKey) {
+			try {
+				((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromResource();
+				publicKeyHash = DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash());
+			} catch (Exception e) {
+				System.out.println("! No public key found in bundle");
+				logger.error("! No public found in bundle", e);
+			}
+		}
+
+		String tag = String.format("v%s (%s) [MQE v%s] " + (!Strings.isNullOrEmpty(publicKeyHash) ? "[Key MD5 " + publicKeyHash + "]" : "") , version, build, mqeVersion);
 
 		//--- OPTIONS
 		Options options = new Options();
@@ -157,13 +168,12 @@ public class CLIApp {
 						} else {
 							throw new Exception("Public Key parameter (pub) is not supported");
 						}
-					} else {
-						if(cryptoKey instanceof PublicOnlyCryptoKey) {
-							((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromResource();
-							System.out.println("* Using bundled public key " + DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash()) + "(MD5)");
-						} else {
-							throw new Exception("Public Key is not supported (please report error)");
-						}
+					}
+
+					if(cryptoKey.getPublicKey() == null) {
+						System.out.println("! No public key provided or bundled");
+						logger.error("! No public key provided or bundled");
+						throw new Exception("No public key provided or bundled");
 					}
 
 					System.out.println(ConsoleColors.YELLOW_BRIGHT + "Analysis Progress" + ConsoleColors.RESET);
