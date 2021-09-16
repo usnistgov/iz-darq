@@ -2,11 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { IFraction } from '../../../report/model/report.model';
 import { IThreshold, Comparator } from '../../../report-template/model/report-template.model';
 
-export interface IBarArea {
-  width: number;
-  danger: boolean;
-  value: number;
-  barWidth: number;
+export enum BarStyle {
+  NEUTRAL = 'NEUTRAL',
+  SUCCESS = 'SUCCESS',
+  FAIL = 'FAILS',
 }
 
 @Component({
@@ -15,54 +14,24 @@ export interface IBarArea {
   styleUrls: ['./visual-bar.component.scss']
 })
 export class VisualBarComponent implements OnInit {
-  inStart: boolean;
-  inEnd: boolean;
-  failed: boolean;
-  @Input()
-  showValue: boolean;
-  hasThreshold;
+  hasThreshold: boolean;
+  style: BarStyle;
+  bar: number;
+  threshold: number;
+  BarStyle = BarStyle;
 
   @Input()
-  set value(data: { value: IFraction, threshold: IThreshold }) {
-    const barWidth = this.barWidth(data.value);
-    const threshold = data.threshold || {
-      comparator: Comparator.GT,
-      value: 0,
-    };
+  set value(data: { value: IFraction, threshold: IThreshold, pass: boolean }) {
+    this.bar = this.barWidth(data.value);
     this.hasThreshold = !!data.threshold;
-
-    this.start = {
-      width: threshold.value,
-      danger: threshold.comparator === Comparator.GT,
-      value: barWidth > threshold.value ? threshold.value : barWidth,
-      barWidth: barWidth > threshold.value ? 100 : this.scale(threshold.value, barWidth),
-    };
-
-    this.end = {
-      width: 100 - threshold.value,
-      danger: threshold.comparator === Comparator.LT,
-      value: barWidth < threshold.value ? 0 : barWidth - threshold.value,
-      barWidth: barWidth < threshold.value ? 0 : this.scale(100 - threshold.value, barWidth - threshold.value),
-    };
-
-    this.inEnd = this.end.barWidth > 0;
-    this.inStart = !this.inEnd;
-    const failedInStart = (this.inStart && (this.start.danger || barWidth === threshold.value));
-    const failedInEnd = (this.inEnd && (this.end.danger || barWidth === threshold.value));
-    this.failed = failedInStart || failedInEnd;
+    this.style = this.hasThreshold ? data.pass ? BarStyle.SUCCESS : BarStyle.FAIL : BarStyle.NEUTRAL;
+    this.threshold = this.hasThreshold ? data.threshold.value : 0;
   }
-
-  start: IBarArea;
-  end: IBarArea;
 
   constructor() { }
 
   barWidth(fraction: IFraction) {
     return (fraction.count / fraction.total) * 100;
-  }
-
-  scale(area: number, value: number) {
-    return 100 / (area / value);
   }
 
   ngOnInit(): void {

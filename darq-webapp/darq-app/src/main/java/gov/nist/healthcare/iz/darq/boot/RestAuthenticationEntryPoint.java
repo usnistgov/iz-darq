@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import gov.nist.healthcare.auth.exception.PendingVerificationException;
 import gov.nist.healthcare.domain.OpAck;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -18,6 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
 	private final ObjectMapper mapper = new ObjectMapper();
+	@Value( "${gov.nist.healthcare.iz.auth.cookie.name}" )
+	String COOKIE_NAME;
 
 	@Override
 	public final void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException {
@@ -45,7 +48,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 			removeCookie = true;
 			response.setStatus(403);
 		} else if (e instanceof CredentialsExpiredException) {
-			message = "Token Expired";
+			message = "Session Expired";
 			removeCookie = true;
 			response.setStatus(403);
 		} else if (e instanceof AccountExpiredException) {
@@ -58,8 +61,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		} else if (e instanceof InsufficientAuthenticationException) {
 			message = "Unauthorized request, no authentication found";
 			response.setStatus(401);
-		}
-        else {
+		} else {
 			message = e.getLocalizedMessage();
 			response.setStatus(400);
 		}
@@ -67,7 +69,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         if(removeCookie) {
-			Cookie authCookie = new Cookie("authCookie", "");
+			Cookie authCookie = new Cookie(COOKIE_NAME, "");
 			authCookie.setPath("/");
 			authCookie.setMaxAge(0);
 			authCookie.setHttpOnly(true);

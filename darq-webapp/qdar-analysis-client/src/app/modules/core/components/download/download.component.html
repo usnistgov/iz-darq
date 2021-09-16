@@ -7,12 +7,12 @@
   </div>
   <div class="page-content upload-page-content">
     <div style="width: 100%; padding: 0 50px;">
-      <table class="table table-sm table-bordered table-striped" style="width: 100%;" *ngIf="(cliInfo$ | async) as cli">
+      <table class="table table-sm table-bordered table-striped" style="width: 100%; margin-bottom: 30px;" *ngIf="(cliInfo$ | async) as cli">
         <thead>
           <tr>
             <th colspan="2">
               <div style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
-                <strong> qDAR Command Line Tool </strong>
+                <strong><i class="fa fa-terminal" style="color: blue"></i> qDAR Command Line Tool </strong>
                 <a [href]="cliDownloadLink" target="_blank" class="btn btn-sm btn-primary">
                   Download
                 </a>
@@ -40,20 +40,20 @@
         </tbody>
       </table>
       <ng-container *ngIf="(files$ | async) as files">
-        <h4> Files </h4>
+        <h5 *ngIf="files && files.length > 0"><i class="fa fa-file-o" style="color: blue;"></i>  Files </h5>
         <table class="table table-sm table-bordered table-striped" style="width: 100%;" *ngIf="files && files.length > 0">
           <thead>
             <tr>
               <th>Name</th>
               <th>Description</th>
-              <th></th>
+              <th style="width: 100px;"></th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let item of files">
               <td> {{ item.name }} </td>
               <td> {{ item.description }} </td>
-              <td>
+              <td style="border-left: 0;">
                 <div style="width: 100%; display: flex; align-items: center; justify-content: flex-end;">
                   <a [href]="getDownloadLink(item.id)" target="_blank" class="btn btn-sm btn-primary">
                     Download

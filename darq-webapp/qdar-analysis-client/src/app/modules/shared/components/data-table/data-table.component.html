@@ -119,8 +119,6 @@
             </p-dropdown>
           </div>
           <div *ngSwitchCase="ColumnType.BAR">
-            <input type="checkbox" style="margin-right: 10px;" id="pc" name="pc" [(ngModel)]="search.showValue">
-            <label class="form-check-label" style="font-weight: normal;" for="pc">Show Percentages</label>
           </div>
         </div>
       </th>
@@ -155,10 +153,10 @@
           </div>
           <div *ngSwitchCase="ColumnType.BAR" style="height: 100%;  padding: 0 !important; vertical-align:middle;">
             <app-visual-bar
-              [showValue]="search.showValue"
               [value]="{
                 value: value.fraction,
-                threshold: value.threshold
+                threshold: value.threshold,
+                pass: value.pass
               }"
             >
             </app-visual-bar>
@@ -288,8 +286,6 @@
             </p-dropdown>
           </div>
           <div *ngSwitchCase="ColumnType.BAR">
-            <input type="checkbox" style="margin-right: 10px;" id="pc" name="pc" [(ngModel)]="search.showValue">
-            <label class="form-check-label" style="font-weight: normal;" for="pc">Show Percentages</label>
           </div>
         </div>
       </th>
@@ -325,10 +321,10 @@
           </div>
           <div *ngSwitchCase="ColumnType.BAR" style="height: 100%;  padding: 0 !important; vertical-align:middle;">
             <app-visual-bar
-              [showValue]="search.showValue"
               [value]="{
                 value: value.fraction,
-                threshold: value.threshold
+                threshold: value.threshold,
+                pass: value.pass
               }"
             >
             </app-visual-bar>

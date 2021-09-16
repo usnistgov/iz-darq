@@ -1,14 +1,8 @@
-<div style="display: flex; justify-content: flex-start; align-items: stretch; width: 100%; height: 40px;">
-  <div class="zone" [ngClass]="{ 'threshold-aira' : hasThreshold  }" [ngStyle]="{ 'width' : start.width + '%' }">
-    <span class="value"  *ngIf="showValue && start.value"> {{start.value ? (start.value | number:'.1') + '%' : '' }}</span>
-    <div class="bar bar-start" [ngClass]="{ 'danger-bar-aira' : failed && hasThreshold, 'ok-bar-aira' : !failed && hasThreshold, 'neutral-bar-aira': !hasThreshold,  'bar-end' : end.barWidth === 0 && start.barWidth !== 100  }" [ngStyle]="{ 'width' : start.barWidth + '%' }">
-
-    </div>
-  </div>
-  <div class="zone" [ngStyle]="{ 'width' : end.width + '%' }">
-    <span class="value" *ngIf="showValue && end.value" >{{end.value ? (end.value | number:'.1') + '%' : '' }}</span>
-    <div class="bar bar-end" [ngClass]="{ 'danger-bar-aira' : failed, 'ok-bar-aira' : !failed }" [ngStyle]="{ 'width' : end.barWidth + '%' }">
-
-    </div>
-  </div>
+<div style="display: flex; justify-content: flex-start; align-items: center; width: 100%; height: 40px; position: relative;">
+  <div style="position: absolute; left: 0;" [ngStyle]="{ 'width' : bar + '%' }" class="bar bar-end" [ngClass]="{
+    'danger-bar-aira' : BarStyle.FAIL === style,
+    'ok-bar-aira' : BarStyle.SUCCESS === style,
+    'neutral-bar-aira' : BarStyle.NEUTRAL === style
+   }"></div>
+   <div *ngIf="hasThreshold" style="position: absolute; left: 0; height: 100%;" [ngStyle]="{ 'width' : threshold + '%' }" class="threshold-aira"></div>
 </div>

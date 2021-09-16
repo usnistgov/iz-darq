@@ -224,6 +224,8 @@ public class SimpleDownloadService implements DownloadService {
 				this.fileDescriptorMapCreationIssue = "Some files in manifest have invalid locations";
 			}
 			this.fileDescriptorMap = valid.stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+		} else {
+			this.fileDescriptorMap = new HashMap<>();
 		}
 	}
 

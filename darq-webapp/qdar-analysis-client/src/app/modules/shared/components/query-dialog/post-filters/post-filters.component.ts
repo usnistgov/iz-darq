@@ -30,7 +30,7 @@ export class PostFiltersComponent extends QueryDialogTabComponent<IQueryResultFi
   options: IFieldInputOptions;
   vSub: Subscription;
   @Input()
-  groupBy: Field[];
+  fields: Field[];
 
   constructor() {
     super();

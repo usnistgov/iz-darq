@@ -6,6 +6,7 @@ import { IFieldInputOptions } from '../../field-input/field-input.component';
 import { UserMessage } from 'ngx-dam-framework';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Field } from 'src/app/modules/report-template/model/analysis.values';
 
 @Component({
   selector: 'app-query-threshold',
@@ -27,6 +28,8 @@ export class QueryThresholdComponent extends QueryDialogTabComponent<IDataViewQu
   @Input()
   options: IFieldInputOptions;
   vSub: Subscription;
+  @Input()
+  fields: Field[];
 
   constructor() {
     super();

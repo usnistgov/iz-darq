@@ -1,6 +1,7 @@
 package gov.nist.healthcare.auth.config;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import gov.nist.healthcare.auth.domain.Authority;
 import gov.nist.healthcare.auth.service.AuthenticationService;
@@ -33,5 +34,9 @@ public class JWTTokenAuthenticationService<T extends Account<E>, E extends Autho
 		} else {
 			return null;
 		}
+	}
+
+	public void clearAuthCookie(HttpServletResponse response) {
+		this.authenticationService.clearLoginCookie(response);
 	}
 }

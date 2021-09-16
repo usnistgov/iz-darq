@@ -57,6 +57,7 @@
         <p-tabPanel header="Thresholds" [headerStyleClass]="!tabsValid.thresholds.valid ? 'invalid-tab' : 'valid-tab'">
           <app-query-threshold
             [(value)]="value"
+            [fields]="getAllFields(value)"
             (valid)="setValidStatus('thresholds', $event)"
             (messages)="setMessages('thresholds', $event)"
             [options]="options"
@@ -69,7 +70,7 @@
   <p-tabPanel header="Post Process Row Filters"  [headerStyleClass]="!tabsValid.filters.valid ? 'invalid-tab' : 'valid-tab'">
     <app-post-filters
       [(value)]="value.filter"
-      [groupBy]="getAllFields(value)"
+      [fields]="getAllFields(value)"
       (valid)="setValidStatus('filters', $event)"
       (messages)="setMessages('filters', $event)"
       [options]="options"
