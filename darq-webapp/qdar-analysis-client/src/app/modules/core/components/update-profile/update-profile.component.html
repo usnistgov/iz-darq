@@ -6,8 +6,8 @@
     <h4 class="title-text title-heading" ><i class="fa fa-user" style="color: blue;"></i> Update profile {{ user.screenName }}  </h4>
   </div>
   <div class="page-content upload-page-content">
-    <div>
-      <app-user-profile [user]="user" (profileUpdate)="update($event)" [admin]="false" ></app-user-profile>
+    <div style="min-width: 500px">
+      <app-user-profile [user]="user" (profileUpdate)="update($event)" [admin]="isAdmin$ | async" ></app-user-profile>
       <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
         <button class="btn btn-sm btn-primary" [disabled]="!valid" (click)="submit()">
           Update Profile

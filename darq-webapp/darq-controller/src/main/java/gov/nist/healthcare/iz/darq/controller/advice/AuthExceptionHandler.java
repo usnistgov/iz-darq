@@ -6,6 +6,7 @@ import gov.nist.healthcare.iz.darq.adf.service.exception.InvalidFileFormat;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.service.exception.JobRunningException;
+import gov.nist.healthcare.iz.darq.service.exception.OperationPartialFailureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -51,6 +52,13 @@ public class AuthExceptionHandler {
     @ResponseBody
     public OpAck<String> handleOperationFailureException(OperationFailureException e) {
         return new OpAck<>(OpAck.AckStatus.FAILED, e.getMessage(), e.getMessage(), "error");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(OperationPartialFailureException.class)
+    @ResponseBody
+    public OpAck<String> handleOperationPartialFailureException(OperationPartialFailureException e) {
+        return new OpAck<>(OpAck.AckStatus.WARNING, e.getMessage(), e.getMessage(), "warning");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

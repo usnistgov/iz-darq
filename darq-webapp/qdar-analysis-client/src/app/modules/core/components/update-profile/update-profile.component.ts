@@ -1,12 +1,20 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { RxjsStoreHelperService, DAM_AUTH_USER_TRANSFORMER, UserTransformer, IDamUser, MessageType, UpdateAuthStatus } from 'ngx-dam-framework';
+import {
+  RxjsStoreHelperService,
+  DAM_AUTH_USER_TRANSFORMER,
+  UserTransformer, IDamUser,
+  MessageType,
+  UpdateAuthStatus,
+  selectIsAdmin,
+  AuthenticationService
+} from 'ngx-dam-framework';
 import { of, Observable } from 'rxjs';
 import { ICurrentUser } from '../../model/user.model';
 import { UserService } from '../../services/user.service';
-import { selectCurrentUser } from '../../store/core.selectors';
 import { IProfileUpdate } from '../../../shared/components/user-profile/user-profile.component';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-update-profile',
@@ -16,6 +24,7 @@ import { IProfileUpdate } from '../../../shared/components/user-profile/user-pro
 export class UpdateProfileComponent implements OnInit {
 
   user$: Observable<ICurrentUser>;
+  isAdmin$: Observable<boolean>;
   profileUpdate: IProfileUpdate = undefined;
   valid: boolean;
 
@@ -23,10 +32,16 @@ export class UpdateProfileComponent implements OnInit {
     private userService: UserService,
     private store: Store<any>,
     private router: Router,
+    private authService: AuthenticationService,
     private helper: RxjsStoreHelperService,
     @Inject(DAM_AUTH_USER_TRANSFORMER) private userTransformer: UserTransformer<any, IDamUser>,
   ) {
-    this.user$ = this.store.select(selectCurrentUser);
+    this.user$ = this.authService.checkAuthStatus().pipe(
+      map((user: any) => {
+        return (this.userTransformer(user) as any).payload as ICurrentUser;
+      })
+    );
+    this.isAdmin$ = this.store.select(selectIsAdmin);
   }
 
   update(event) {

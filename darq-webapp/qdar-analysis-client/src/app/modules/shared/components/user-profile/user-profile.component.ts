@@ -99,10 +99,22 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
 
     this.profilesubs = this.profileForm.valueChanges.subscribe((change) => {
-      this.profileUpdate.emit({ updates: { ...change, ...this.passwordForm.getRawValue() }, valid: this.isValid() });
+      this.profileUpdate.emit({
+        updates: {
+          ...this.profileForm.getRawValue(),
+          ...this.passwordForm.getRawValue()
+        },
+        valid: this.isValid()
+      });
     });
     this.passwordsubs = this.passwordForm.valueChanges.subscribe((change) => {
-      this.profileUpdate.emit({ updates: { ...change, ...this.profileForm.getRawValue() }, valid: this.isValid() });
+      this.profileUpdate.emit({
+        updates: {
+          ...this.profileForm.getRawValue(),
+          ...this.passwordForm.getRawValue()
+        },
+        valid: this.isValid()
+      });
     });
   }
 

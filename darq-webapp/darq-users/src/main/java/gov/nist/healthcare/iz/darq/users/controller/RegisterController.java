@@ -6,6 +6,7 @@ import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.access.domain.CreateCredentialsRequest;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.service.exception.OperationPartialFailureException;
 import gov.nist.healthcare.iz.darq.users.domain.*;
 import gov.nist.healthcare.iz.darq.users.exception.FieldValidationException;
 import gov.nist.healthcare.iz.darq.users.exception.RequestValidationException;
@@ -39,14 +40,16 @@ public class RegisterController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public OpAck<User> register(@RequestBody RegistrationRequest request) throws OperationFailureException {
+    public OpAck<User> register(@RequestBody RegistrationRequest request) throws OperationFailureException, OperationPartialFailureException {
         try {
             User user = this.userManagementService.registerAccount(request);
             this.accountNotificationService.notifyAdminAccountCreated(user);
             this.userTokenizedEditService.requestToken(user, UserEditTokenType.EMAIL_VERIFICATION);
             return new OpAck<>(OpAck.AckStatus.SUCCESS, "Account Created Successfully", user, "REGISTER");
-        } catch (RequestValidationException | MessagingException | TemplateException | NotFoundException | IOException e) {
+        } catch (RequestValidationException e) {
             throw new OperationFailureException(e.getMessage());
+        } catch (MessagingException | IOException | TemplateException | NotFoundException e) {
+            throw new OperationPartialFailureException("Failed to send email verification link, please contact admin to verify your email address");
         }
     }
 
