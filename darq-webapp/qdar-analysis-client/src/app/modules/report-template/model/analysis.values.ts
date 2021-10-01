@@ -37,10 +37,10 @@ export const names = {
   VACCINCATIONS: 'Vaccination Events',
   VACCINCATIONS_DETECTIONS: 'Vaccination Related Detections',
   VACCINCATIONS_VOCABULARY: 'Vaccination Related Code Table',
-  PATIENTS_DETECTIONS: 'Patient Related Detections (General)',
-  PATIENTS_VOCABULARY: 'Patient Related Code Table (General)',
-  PATIENTS_PROVIDER_DETECTIONS: 'Patient Related Detections (By Reporting Group)',
-  PATIENTS_PROVIDER_VOCABULARY: 'Patient Related Code Table (By Reporting Group)',
+  PATIENTS_DETECTIONS: 'Patient Record Related Detections (General)',
+  PATIENTS_VOCABULARY: 'Patient Record Related Code Table (General)',
+  PATIENTS_PROVIDER_DETECTIONS: 'Patient Record Related Detections (By Reporting Group)',
+  PATIENTS_PROVIDER_VOCABULARY: 'Patient Record Related Code Table (By Reporting Group)',
 };
 
 export const fieldDisplayName = {
