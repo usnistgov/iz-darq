@@ -10,7 +10,7 @@
 	<version>3.0.0</version>
 	<packaging>pom</packaging>
 	<properties>
-		<qdar.api.version>2.0.0-SNAPSHOT</qdar.api.version>
+		<qdar.api.version>2.0.0</qdar.api.version>
 	</properties>
 	<modules>
 		<module>darq-configuration</module>
