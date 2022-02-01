@@ -107,6 +107,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         valid: this.isValid()
       });
     });
+    // tslint:disable-next-line: no-identical-functions
     this.passwordsubs = this.passwordForm.valueChanges.subscribe((change) => {
       this.profileUpdate.emit({
         updates: {
