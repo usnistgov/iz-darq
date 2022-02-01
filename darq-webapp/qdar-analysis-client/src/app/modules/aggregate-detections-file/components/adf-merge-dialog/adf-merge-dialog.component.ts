@@ -16,6 +16,9 @@ export class AdfMergeDialogComponent implements OnInit {
   facilities: SelectItem[];
   facilityMap: Record<string, string> = {};
   fileSelection: IADFDescriptor[] = [];
+  compatibilityVersions = [
+    ['2.0.0', '2.0.0-SNAPSHOT'],
+  ];
 
   name: string;
   facilityId: string;
@@ -38,18 +41,28 @@ export class AdfMergeDialogComponent implements OnInit {
   }
 
   selectionChanged(selection: IADFDescriptor[]) {
-    console.log(selection);
     if (selection && selection.length > 0) {
       const version = selection[0].version;
       if (version) {
         this.filtered$.next(this.files.filter((file) => {
-          return file.version === version;
+          return this.areCompatible(selection[0], file);
         }));
       } else {
         this.filtered$.next(selection);
       }
     } else {
       this.filtered$.next(this.files);
+    }
+  }
+
+  areCompatible(a: IADFDescriptor, b: IADFDescriptor) {
+    if (!a.cliVersion || !b.cliVersion) { return false; }
+
+    const compatibleVersions = this.compatibilityVersions.find((l) => l.includes(a.cliVersion));
+    if (compatibleVersions) {
+      return a.mqeVersion === b.mqeVersion && compatibleVersions.includes(a.cliVersion) && compatibleVersions.includes(b.cliVersion);
+    } else {
+      return a.mqeVersion === b.mqeVersion && a.cliVersion === b.cliVersion;
     }
   }
 

@@ -1,3 +1,7 @@
+:host {
+  overflow: hidden;
+}
+
 .facilities {
   grid-gap: 2px;
   display: grid;
@@ -7,6 +11,7 @@
   height: 100%;
   background-color: #d6d6d6e3;
   border-bottom: 1px solid #d6d6d6e3;
+  overflow: hidden;
 }
 
 .facility-title {
@@ -32,4 +37,5 @@
   grid-column: 1;
   background-color: #fff6e9;
   grid-row: facility-content;
+  overflow: scroll;
 }

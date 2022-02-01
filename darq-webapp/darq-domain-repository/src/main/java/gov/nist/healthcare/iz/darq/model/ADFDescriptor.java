@@ -21,6 +21,9 @@ public class ADFDescriptor {
 	String size;
 	String keyHash;
 	private String version;
+	private String cliVersion;
+	private String build;
+	private String mqeVersion;
 	List<ConfigurationDescriptor> compatibilities;
 	String facilityId;
 	boolean composed;
@@ -54,6 +57,9 @@ public class ADFDescriptor {
 		this.facilityId = facilityId;
 		this.composed = components != null && components.size() > 1;
 		this.components = components;
+		this.cliVersion = version;
+		this.mqeVersion = mqeVersion;
+		this.build = build;
 	}
 
 	public String getFacilityId() {
@@ -162,4 +168,23 @@ public class ADFDescriptor {
 		this.components = components;
 	}
 
+	public String getCliVersion() {
+		return cliVersion;
+	}
+
+	public void setCliVersion(String cliVersion) {
+		this.cliVersion = cliVersion;
+	}
+
+	public String getBuild() {
+		return build;
+	}
+
+	public void setBuild(String build) {
+		this.build = build;
+	}
+
+	public String getMqeVersion() {
+		return mqeVersion;
+	}
 }

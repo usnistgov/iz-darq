@@ -14,6 +14,9 @@ export interface IADFDescriptor extends IDamResource {
   version: string;
   compatibilities: IConfigurationDescriptor[];
   facilityId: string;
+  cliVersion: string;
+  build: string;
+  mqeVersion: string;
 }
 
 export interface IADFMetadata extends IDamResource {

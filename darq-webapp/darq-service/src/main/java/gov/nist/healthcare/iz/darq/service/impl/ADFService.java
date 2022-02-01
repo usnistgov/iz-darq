@@ -31,6 +31,12 @@ public class ADFService {
     @Autowired
     private MergeService mergeService;
 
+    private final HashMap<String, HashSet<String>> compatibilityVersions = new HashMap<String, HashSet<String>>() {{
+        put("COMPATIBILITY_1", new HashSet<>(Arrays.asList(
+                "2.0.0-SNAPSHOT", "2.0.0"
+        )));
+    }};
+
     UserUploadedFile create(String name, String facility, String ownerId, byte[] content, ADFile file, List<ADFileComponent> components) throws InvalidFileFormat {
         try {
             String uid = UUID.randomUUID().toString();
@@ -92,8 +98,12 @@ public class ADFService {
 
     public String compatibilityVersion(ADFile file) {
         String version = Optional.ofNullable(file.getVersion()).orElse(RandomStringUtils.random(5));
+        String compatibilityVersion = this.compatibilityVersions.entrySet().stream().filter(
+                (entry) -> entry.getValue().contains(version)
+        ).findFirst().map(Map.Entry::getKey).orElse(version);
+
         String mqe = Optional.ofNullable(file.getMqeVersion()).orElse(RandomStringUtils.random(5));
-        return version + " - " + mqe;
+        return compatibilityVersion + " - " + mqe;
     }
 
     public UserUploadedFile merge(String name, String facility, String ownerId, Set<UserUploadedFile> metadataList) throws Exception {

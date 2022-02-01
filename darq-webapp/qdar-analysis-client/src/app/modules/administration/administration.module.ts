@@ -13,6 +13,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { UserProfileDialogComponent } from './components/user-profile-dialog/user-profile-dialog.component';
 import { UserRoleDialogComponent } from './components/user-role-dialog/user-role-dialog.component';
 import { ConfigurationEditorComponent } from './components/configuration-editor/configuration-editor.component';
+import { ConfigurationLoadingDialogComponent } from './components/configuration-loading-dialog/configuration-loading-dialog.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 @NgModule({
@@ -25,13 +27,16 @@ import { ConfigurationEditorComponent } from './components/configuration-editor/
     UserProfileDialogComponent,
     UserRoleDialogComponent,
     ConfigurationEditorComponent,
+    ConfigurationLoadingDialogComponent,
   ],
   imports: [
     CommonModule,
     AdministrationRoutingModule,
+    MatProgressSpinnerModule,
     SharedModule,
     DamFrameworkModule,
     EffectsModule.forFeature([CoreEffects]),
-  ]
+  ],
+  entryComponents: [ConfigurationLoadingDialogComponent]
 })
 export class AdministrationModule { }
