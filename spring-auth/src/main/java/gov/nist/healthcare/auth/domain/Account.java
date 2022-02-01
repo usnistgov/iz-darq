@@ -5,6 +5,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ public class Account<P extends Authority> implements UserDetails {
 
 	@Id
 	private String id;
+	@Indexed(unique = true)
 	private String username;
 	@JsonIgnore
 	private String password;

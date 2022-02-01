@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -196,8 +197,8 @@ public class SimpleDownloadService implements DownloadService {
 		// Initialize Jar Location
 		File jar = useDefaultJar ? target.toPath().resolve("base.jar").toFile() : Paths.get(jarFileLocation).toFile();
 
-		if(!jar.exists()){
-			Files.copy(SimpleDownloadService.class.getResourceAsStream("/" + RESOURCES_JAR_FILE), jar.toPath());
+		if(useDefaultJar || !jar.exists()) {
+			Files.copy(SimpleDownloadService.class.getResourceAsStream("/" + RESOURCES_JAR_FILE), jar.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}
 
 		this.makeCLIWithCurrentPublicKey(jar.toPath(), target.toPath());

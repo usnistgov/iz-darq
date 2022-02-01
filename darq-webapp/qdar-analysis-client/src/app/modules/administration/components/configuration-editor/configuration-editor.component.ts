@@ -7,6 +7,8 @@ import { Observable, Subscription, throwError, Subject } from 'rxjs';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { flatMap, map, takeUntil, filter, catchError, take, tap } from 'rxjs/operators';
 import { IToolConfigurationKey } from '../../model/tool-config.model';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfigurationLoadingDialogComponent } from '../configuration-loading-dialog/configuration-loading-dialog.component';
 
 export const ADMIN_CONFIG_EDITOR_METADATA: IEditorMetadata = {
   id: 'ADMIN_CONFIG_EDITOR_METADATA',
@@ -28,6 +30,7 @@ export class ConfigurationEditorComponent extends DamAbstractEditorComponent imp
   constructor(
     actions$: Actions,
     store: Store<any>,
+    private dialog: MatDialog,
     private adminService: AdminService,
     private message: MessageService,
   ) {
@@ -86,12 +89,18 @@ export class ConfigurationEditorComponent extends DamAbstractEditorComponent imp
       take(1),
       flatMap((current) => {
         if (current.valid) {
+          const loading = this.dialog.open(ConfigurationLoadingDialogComponent, {
+            hasBackdrop: true,
+            disableClose: true,
+          });
           return this.adminService.setToolConfKeys(current.data.properties).pipe(
             tap((value) => this.display$.next({ status: [...value.data] })),
+            tap(() => loading.close()),
             flatMap((value) => ([
               this.message.userMessageToAction(new UserMessage<any>(MessageType.SUCCESS, 'Properties Save Success'))
             ])),
             catchError((error) => {
+              loading.close();
               return throwError(this.message.actionFromError(error));
             })
           );
