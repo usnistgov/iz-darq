@@ -15,6 +15,6 @@ import gov.nist.healthcare.iz.darq.digest.domain.Range;
 
 public interface ExportADChunk {
 	
-	void export(ConfigurationPayload payload, ADChunk chunk, String version, String build, String mqeVersion, boolean excludeAdfFromSummary) throws Exception;
+	void export(ConfigurationPayload payload, ADChunk chunk, String version, String build, String mqeVersion, long elapsed, boolean excludeAdfFromSummary) throws Exception;
 
 }

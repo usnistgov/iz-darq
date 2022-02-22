@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
+import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.users.domain.User;
@@ -63,7 +64,7 @@ public class ConfigurationController {
     	return (DigestConfiguration) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
 	}
 
-	// Get All Accessible Report Templates
+	// Get All Accessible Configurations
 	@RequestMapping(value = "/{id}/descriptor", method = RequestMethod.GET)
 	@ResponseBody
 	@PreAuthorize("AccessResource(#request, CONFIGURATION, VIEW, #id)")
@@ -73,7 +74,7 @@ public class ConfigurationController {
 		return this.descriptorService.getConfigurationDescriptor((DigestConfiguration) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE));
 	}
 
-	//  Clone Report Template by Id (Owned or Published)
+	//  Clone Configuration by Id (Owned or Published)
 	@RequestMapping(value="/{id}/clone", method=RequestMethod.POST)
 	@ResponseBody
 	@PreAuthorize("AccessResource(#request, CONFIGURATION, CLONE, #id)")
@@ -128,6 +129,12 @@ public class ConfigurationController {
 			}
 		}
 		config.setLastUpdated(new Date());
+		try {
+			this.configService.validateConfigurationPayload(config.getPayload());
+			this.configService.validateAgeGroups(config.getPayload().getAgeGroups(), false);
+		} catch (InvalidConfigurationPayload invalidConfigurationPayload) {
+			throw new OperationFailureException(invalidConfigurationPayload.getMessage());
+		}
 		DigestConfiguration saved = this.confRepo.save(config);
 		return new OpAck<>(AckStatus.SUCCESS, "Configuration Successfully Saved", saved,"config-save");
 	}

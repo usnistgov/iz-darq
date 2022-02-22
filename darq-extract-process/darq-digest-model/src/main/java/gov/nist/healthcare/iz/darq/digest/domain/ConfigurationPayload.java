@@ -12,6 +12,7 @@ public class ConfigurationPayload {
 	private List<String> detections;
 	private String asOf;
 	private Map<String, String> vaxCodeAbstraction;
+	private final Date now = new Date();
 
 	public List<Range> getAgeGroups() {
 		return ageGroups;
@@ -45,7 +46,7 @@ public class ConfigurationPayload {
 		if(this.asOf != null && !this.asOf.isEmpty()) {
 			return  (new SimpleDateFormat("MM/dd/yyyy")).parse(this.asOf);
 		} else {
-			return new Date();
+			return now;
 		}
 	}
 

@@ -21,5 +21,6 @@
         <module>fake-record-generator</module>
         <module>crypto-helper</module>
 		<module>spring-auth</module>
+        <module>darq-shared</module>
     </modules>
 </project>

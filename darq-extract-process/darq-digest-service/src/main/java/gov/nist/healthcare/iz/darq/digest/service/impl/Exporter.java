@@ -41,7 +41,7 @@ public class Exporter implements ExportADChunk {
 	
 	
 	@Override
-	public void export(ConfigurationPayload payload, ADChunk chunk, String version, String build, String mqeVersion, boolean printAdf) throws Exception {
+	public void export(ConfigurationPayload payload, ADChunk chunk, String version, String build, String mqeVersion, long elapsed, boolean printAdf) throws Exception {
 		
 		Summary summary = new Summary(chunk, payload);
 		ADFile file = new ADFile(
@@ -53,7 +53,8 @@ public class Exporter implements ExportADChunk {
 				version,
 				build,
 				mqeVersion,
-				this.getInactiveDetections(payload.getDetections())
+				this.getInactiveDetections(payload.getDetections()),
+				elapsed
 		);
 		
 		File output = new File("./darq-analysis/");

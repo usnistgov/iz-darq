@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
+import gov.nist.healthcare.iz.darq.configuration.validation.ConfigurationPayloadValidator;
 import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
@@ -32,12 +33,16 @@ public class SimpleDigestRunner implements DigestRunner {
 	private final static Logger logger = LoggerFactory.getLogger(SimpleDigestRunner.class.getName());
 	@Autowired
 	MergeService merge;
+	@Autowired
+	ConfigurationPayloadValidator configurationPayloadValidator;
 	private LucenePatientRecordIterator iterator;
 	private int size = 0;
 	ADChunk file;
 
 	@Override
 	public ADChunk digest(ConfigurationPayload configuration, String patient, String vaccines, DqDateFormat dateFormat, Optional<String> directory) throws Exception {
+		logger.info("[PREPROCESS] Validating Configuration");
+		configurationPayloadValidator.validateConfigurationPayload(configuration);
 		logger.info("[START] Processing Extract");
 		size = (int) Files.lines(Paths.get(patient)).parallel().count();
 		logger.info("Number of patient records : "+size);

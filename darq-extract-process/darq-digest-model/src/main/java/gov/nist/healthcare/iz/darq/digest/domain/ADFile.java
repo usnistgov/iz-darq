@@ -32,7 +32,7 @@ public class ADFile {
 		}
 	}
 	
-	
+	private long totalAnalysisTime;
 	private Date analysisDate;
 	private Map<String, PatientPayload> generalPatientPayload;
 	private Map<String, Map<String, ADPayload>> reportingGroupPayload;
@@ -66,6 +66,31 @@ public class ADFile {
 		this.build = build;
 		this.mqeVersion = mqeVersion;
 		this.inactiveDetections = inactiveDetections;
+	}
+
+	public ADFile(
+			Map<String, PatientPayload> generalPatientPayload,
+			Map<String, Map<String, ADPayload>> reportingGroupPayload,
+			ConfigurationPayload configuration,
+			Summary summary,
+			Vocabulary vocabulary,
+			String version,
+			String build,
+			String mqeVersion,
+			Set<String> inactiveDetections,
+			long elapsed
+	) {
+		this(
+				generalPatientPayload,
+				reportingGroupPayload,
+				configuration, summary,
+				vocabulary,
+				version,
+				build,
+				mqeVersion,
+				inactiveDetections
+		);
+		this.totalAnalysisTime = elapsed;
 	}
 	
 	
@@ -144,5 +169,13 @@ public class ADFile {
 
 	public void setMqeVersion(String mqeVersion) {
 		this.mqeVersion = mqeVersion;
+	}
+
+	public long getTotalAnalysisTime() {
+		return totalAnalysisTime;
+	}
+
+	public void setTotalAnalysisTime(long totalAnalysisTime) {
+		this.totalAnalysisTime = totalAnalysisTime;
 	}
 }

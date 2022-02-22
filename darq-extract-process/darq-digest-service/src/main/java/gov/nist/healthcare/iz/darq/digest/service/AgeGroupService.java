@@ -12,11 +12,7 @@ import gov.nist.healthcare.iz.darq.digest.domain.Range;
 public interface AgeGroupService {
 
 	List<String> getGroups();
-
 	String getGroup(LocalDate from, LocalDate to);
-
 	boolean inside(Period period, Range range);
-
-	Map<String, Range> ageGroups();
 
 }

@@ -11,14 +11,9 @@
     <artifactId>darq-digest-service</artifactId>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mqe.version>2021.9-BETA</mqe.version>
+        <qdar.api.version>2.0.0</qdar.api.version>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>gov.nist.healthcare.iz</groupId>
-            <artifactId>darq-digest-model</artifactId>
-            <version>${qdar.api.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.j2html</groupId>
             <artifactId>j2html</artifactId>
@@ -31,18 +26,13 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>
-            <artifactId>darq-adf-utils</artifactId>
-            <version>${qdar.api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.healthcare.iz</groupId>
             <artifactId>lucene-index</artifactId>
             <version>${qdar.api.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.immregistries</groupId>
-            <artifactId>mqe-validator</artifactId>
-            <version>${mqe.version}</version>
+            <groupId>gov.nist.healthcare.iz</groupId>
+            <artifactId>darq-shared</artifactId>
+            <version>${qdar.api.version}</version>
         </dependency>
     </dependencies>
 </project>

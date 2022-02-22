@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
 import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
@@ -184,21 +185,24 @@ public class CLIApp {
 		        		running = true;
 		        		Thread t = progress(runner);
 		        		t.start();
+						long start = System.currentTimeMillis();
 		            	ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, Optional.ofNullable(tmpDirLocation));
 		            	t.join();
-		            	System.out.println(ConsoleColors.GREEN_BRIGHT + "Analysis Finished" + ConsoleColors.RESET);
-		            	export.export(configurationPayload, chunk, version, build, mqeVersion, printAdf);
-		            
-		        	}
+		            	System.out.println(ConsoleColors.GREEN_BRIGHT + "Analysis Finished - Exporting Results" + ConsoleColors.RESET);
+		            	long elapsed = System.currentTimeMillis() - start;
+		            	export.export(configurationPayload, chunk, version, build, mqeVersion, elapsed, printAdf);
+						System.out.println(ConsoleColors.GREEN_BRIGHT + "Results Exported - END" + ConsoleColors.RESET);
+					}
 				}
 			}
-			
-			
-			
 		}
 		catch (ParseException exp) {
 			System.err.println("Parsing failed.  Reason: " + exp.getMessage());
 			logger.error("Parsing failed.  Reason: ", exp);
+		}
+		catch (InvalidConfigurationPayload exp) {
+			System.err.println(exp.getMessage());
+			logger.error("[CONFIGURATION ERROR] " + exp.getMessage(), exp);
 		}
 		catch (Exception exp) {
 			System.err.println("Execution Failed due to exception ");

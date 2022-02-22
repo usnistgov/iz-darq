@@ -20,18 +20,13 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>
-            <artifactId>darq-adf-utils</artifactId>
+            <artifactId>darq-shared</artifactId>
             <version>${qdar.api.version}</version>
         </dependency>
         <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>
             <artifactId>file-parser</artifactId>
             <version>${qdar.api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.immregistries</groupId>
-            <artifactId>mqe-validator</artifactId>
-            <version>${mqe.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

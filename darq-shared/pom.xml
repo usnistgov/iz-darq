@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>darq</artifactId>
+        <groupId>gov.nist.healthcare.iz</groupId>
+        <version>2.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>darq-shared</artifactId>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mqe.version>2021.9-BETA</mqe.version>
+        <qdar.api.version>2.0.0</qdar.api.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>gov.nist.healthcare.iz</groupId>
+            <artifactId>darq-adf-utils</artifactId>
+            <version>${qdar.api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.immregistries</groupId>
+            <artifactId>mqe-validator</artifactId>
+            <version>${mqe.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.healthcare.iz</groupId>
+            <artifactId>darq-digest-model</artifactId>
+            <version>${qdar.api.version}</version>
+        </dependency>
+    </dependencies>
+</project>

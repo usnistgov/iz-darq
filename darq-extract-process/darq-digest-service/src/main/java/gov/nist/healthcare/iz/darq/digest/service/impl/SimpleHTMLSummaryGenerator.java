@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -34,6 +35,18 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 	    	    		navBar(summary.getAsOfDate() , new LocalDate()),
 	    	    		div(
 	    	    				attrs(".content-area"),
+								card("",
+										"Metadata",
+										table(
+												attrs(".table.table-sm.table-striped"),
+												tbody(
+														tr(th("CLI Version"), td(file.getVersion())),
+														tr(th("CLI Build Date"), td(file.getBuild())),
+														tr(th("MQE Version"), td(file.getMqeVersion())),
+														tr(td("Total Analysis Time"), td(humanReadableTime(file.getTotalAnalysisTime())))
+												)
+										)
+								),
 	    	    				card("",
 	    		    	    			"Summary Counts",
 	    			    	    		table(
@@ -210,6 +223,22 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 						content
 				)
 		);
+	}
+
+	private String humanReadableTime(long time) {
+		if(time == 0) {
+			return "N/A";
+		}
+		try {
+			long hours = TimeUnit.MILLISECONDS.toHours(time);
+			long minutes = TimeUnit.MILLISECONDS.toMinutes(time - TimeUnit.HOURS.toMillis(hours));
+			long seconds = TimeUnit.MILLISECONDS.toSeconds(time - TimeUnit.HOURS.toMillis(hours) - TimeUnit.MINUTES.toMillis(minutes));
+			long milliseconds = time - TimeUnit.HOURS.toMillis(hours) - TimeUnit.MINUTES.toMillis(minutes) - TimeUnit.SECONDS.toMillis(seconds);
+
+			return String.format("%02d hours %02d minutes %02d seconds %d milliseconds", hours, minutes, seconds, milliseconds);
+		} catch (Exception exception) {
+			return "N/A";
+		}
 	}
 
 

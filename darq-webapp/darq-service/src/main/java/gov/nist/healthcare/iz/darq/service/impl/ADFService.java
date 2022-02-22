@@ -8,6 +8,7 @@ import gov.nist.healthcare.iz.darq.digest.domain.*;
 import gov.nist.healthcare.iz.darq.model.ADFileComponent;
 import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,8 @@ public class ADFService {
     private CryptoUtils crypto;
     @Autowired
     private MergeService mergeService;
+    @Autowired
+    private ConfigurationService configService;
 
     private final HashMap<String, HashSet<String>> compatibilityVersions = new HashMap<String, HashSet<String>>() {{
         put("COMPATIBILITY_1", new HashSet<>(Arrays.asList(
@@ -39,6 +42,7 @@ public class ADFService {
 
     UserUploadedFile create(String name, String facility, String ownerId, byte[] content, ADFile file, List<ADFileComponent> components) throws InvalidFileFormat {
         try {
+            this.configService.validateConfigurationPayload(file.getConfiguration());
             String uid = UUID.randomUUID().toString();
             Path dir = Files.createDirectory(Paths.get(PATH+"/"+uid));
             if (dir.toFile().exists()) {
@@ -68,7 +72,7 @@ public class ADFService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new InvalidFileFormat("Invalid ADF File Format");
+            throw new InvalidFileFormat("Could not upload ADF due to : " + e.getMessage());
         }
     }
 
