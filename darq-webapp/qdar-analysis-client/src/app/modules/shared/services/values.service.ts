@@ -72,6 +72,11 @@ export class ValuesService {
         value: elm.id,
       };
     };
+    const ageGroups = data.ageGroups || [];
+
+    ageGroups.sort((a, b) => {
+      return this.ageGroupService.compare(a.min, b.min);
+    });
 
     return {
       vaccinationDetectionOptions: data.detections.filter(d => d.target === 'VACCINATION').map(detectionTransform),
@@ -84,15 +89,15 @@ export class ValuesService {
       }),
       reportingGroupOptions: Object.keys(data.reportingGroups || {}).map((hash) => ({ label: data.reportingGroups[hash], value: hash })),
       ageGroupOptions: [
-        ...data.ageGroups.map((elm, i) => {
+        ...ageGroups.map((elm, i) => {
           return {
             label: this.ageGroupService.getAgeGroupLabel(elm),
             value: i + 'g',
           };
         }),
         {
-          label: this.ageGroupService.getBracketLabel(this.ageGroupService.openBracket(data.ageGroups)) + ' -> + infinity',
-          value: data.ageGroups.length + 'g',
+          label: this.ageGroupService.getBracketLabel(this.ageGroupService.openBracket(ageGroups)) + ' -> + infinity',
+          value: ageGroups.length + 'g',
         }
       ],
       vaccinationTableOptions: data.tables.vaccinationTables.map(standardTransform),

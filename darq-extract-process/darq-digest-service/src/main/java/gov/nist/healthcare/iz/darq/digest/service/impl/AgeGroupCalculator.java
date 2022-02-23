@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,23 +15,26 @@ import gov.nist.healthcare.iz.darq.digest.service.AgeGroupService;
 
 public class AgeGroupCalculator implements AgeGroupService {
 
-	List<Range> ranges;
+	private final int numberOfAgeGroups;
 	private final Map<String, Range> ageGroupsById;
 	private final String overflowGroupId;
 
 	public AgeGroupCalculator(List<Range> ranges){
-		this.ranges = ranges;
-		this.ranges.sort(null);
-		this.ageGroupsById = new HashMap<>();
-		for(int i = 0; i < this.ranges.size(); i++){
-			ageGroupsById.put(i+"g", this.ranges.get(i));
+		if(ranges == null) {
+			ranges = Collections.emptyList();
 		}
-		this.overflowGroupId = this.ranges.size() + "g";
+		ranges.sort(null);
+		this.ageGroupsById = new HashMap<>();
+		for(int i = 0; i < ranges.size(); i++){
+			ageGroupsById.put(i+"g", ranges.get(i));
+		}
+		this.numberOfAgeGroups = ranges.size();
+		this.overflowGroupId = this.numberOfAgeGroups + "g";
 	}
 
 	@Override
 	public List<String> getGroups(){
-		return Stream.iterate(0, i -> i + 1).limit(this.ranges.size() + 1)
+		return Stream.iterate(0, i -> i + 1).limit(this.numberOfAgeGroups + 1)
 			   .map(i -> i + "g")
 			   .collect(Collectors.toList());
 	}

@@ -20,6 +20,7 @@ public class ADFMetaData {
 	String build;
 	String mqeVersion;
 	Set<String> inactiveDetections;
+	long totalAnalysisTime;
 
 	public ADFMetaData(
 			String name,
@@ -35,7 +36,8 @@ public class ADFMetaData {
 			String version,
 			String build,
 			String mqeVersion,
-			Set<String> inactiveDetections
+			Set<String> inactiveDetections,
+			long totalAnalysisTime
 	) {
 		super();
 		this.name = name;
@@ -52,6 +54,7 @@ public class ADFMetaData {
 		this.build = build;
 		this.mqeVersion = mqeVersion;
 		this.inactiveDetections = inactiveDetections;
+		this.totalAnalysisTime = totalAnalysisTime;
 	}
 	
 	public ADFMetaData() {
@@ -162,5 +165,13 @@ public class ADFMetaData {
 
 	public void setInactiveDetections(Set<String> inactiveDetections) {
 		this.inactiveDetections = inactiveDetections;
+	}
+
+	public long getTotalAnalysisTime() {
+		return totalAnalysisTime;
+	}
+
+	public void setTotalAnalysisTime(long totalAnalysisTime) {
+		this.totalAnalysisTime = totalAnalysisTime;
 	}
 }

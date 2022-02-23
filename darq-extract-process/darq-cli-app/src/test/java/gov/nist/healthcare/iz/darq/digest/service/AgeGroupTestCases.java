@@ -35,12 +35,13 @@ public class AgeGroupTestCases {
     }
 
     @Test
-    public void ageGroupsAreNotEmpty() {
+    public void ageGroupsCanBeEmpty() {
         ConfigurationPayloadValidator validator = this.getValidator();
         List<String> errors = validator.validateAgeGroups(Collections.emptyList(), true);
-        assertEquals(1, errors.size());
-        assertTrue(errors.contains("Configuration Age Groups List is empty"));
+        assertEquals(0, errors.size());
     }
+
+
 
     @Test
     public void ageGroupsStartWithBirth() {
@@ -300,7 +301,61 @@ public class AgeGroupTestCases {
         assertEquals(calculator.getGroup(LocalDate.parse("2019-12-01"), to),"8g");
         assertEquals(calculator.getGroup(LocalDate.parse("2019-05-15"), to),"8g");
         assertEquals(calculator.getGroup(LocalDate.parse("2017-01-02"), to),"8g");
+    }
 
+    @Test
+    public void whenEmptyAllAre0g() {
+        ConfigurationPayloadValidator validator = this.getValidator();
+        List<Range> ranges = Collections.emptyList();
+        assertEquals(validator.validateAgeGroups(ranges, true).size(), 0);
+
+        AgeGroupCalculator calculator = new AgeGroupCalculator(ranges);
+        LocalDate to = LocalDate.parse("2022-01-01");
+
+        //r1 0,0,0 -> 0,5,0
+        assertEquals(calculator.getGroup(LocalDate.parse("2022-01-01"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2021-10-15"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2021-08-02"), to),"0g");
+
+        //r2 0,5,0 -> 0,10,0
+        assertEquals(calculator.getGroup(LocalDate.parse("2021-08-01"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2021-05-15"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2021-03-02"), to),"0g");
+
+        //r3 0,10,0 -> 0,12,0
+        assertEquals(calculator.getGroup(LocalDate.parse("2021-03-01"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2021-02-01"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2021-01-02"), to),"0g");
+
+        //r4 0,12,0 -> 0,13,0
+        assertEquals(calculator.getGroup(LocalDate.parse("2021-01-01"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-12-15"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-12-02"), to),"0g");
+
+        //r5 0,13,0 -> 0,14,0
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-12-01"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-11-15"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-11-02"), to),"0g");
+
+        //r6 1,2,0 -> 0,19,0
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-11-01"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-08-15"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-06-02"), to),"0g");
+
+        //r7 0,19,0 -> 0,24,0
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-06-01"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-03-15"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-01-02"), to),"0g");
+
+        //r8 0,24,0 -> 2,0,0
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-01-01"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2019-12-15"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2019-12-02"), to),"0g");
+
+        //+
+        assertEquals(calculator.getGroup(LocalDate.parse("2019-12-01"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2019-05-15"), to),"0g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2017-01-02"), to),"0g");
     }
 
     @Test
@@ -341,6 +396,46 @@ public class AgeGroupTestCases {
         assertEquals(r2_1, r2);
         assertEquals(r4_1, r4);
         assertNotEquals(new HashSet(a_1), new HashSet(b_1));
+    }
+
+    @Test
+    public void test() {
+        Range r1 = range(bracket(0,0,0), bracket(0, 1, 0));
+        Range r2 = range(bracket(0,1,0), bracket(0, 2, 0));
+        Range r3 = range(bracket(0,2,0), bracket(0, 3, 0));
+        Range r4 = range(bracket(0,3,0), bracket(0, 4, 0));
+        Range r5 = range(bracket(0,4,0), bracket(0, 5, 0));
+        Range r6 = range(bracket(0,5,0), bracket(0, 6, 0));
+        Range r7 = range(bracket(0,6,0), bracket(0, 7, 0));
+        Range r8 = range(bracket(0,7,0), bracket(0, 8, 0));
+        Range r9 = range(bracket(0,8,0), bracket(0, 9, 0));
+        Range r10 = range(bracket(0,9,0), bracket(0, 10, 0));
+        Range r11 = range(bracket(0,10,0), bracket(0, 11, 0));
+        Range r12 = range(bracket(0,11,0), bracket(0, 12, 0));
+        Range r13 = range(bracket(0,12,0), bracket(0, 13, 0));
+        Range r14 = range(bracket(0,13,0), bracket(0, 14, 0));
+        Range r15 = range(bracket(0,14,0), bracket(0, 15, 0));
+        Range r16 = range(bracket(0,15,0), bracket(0, 16, 0));
+        Range r17 = range(bracket(0,16,0), bracket(0, 17, 0));
+        Range r18 = range(bracket(0,17,0), bracket(0, 18, 0));
+        Range r19 = range(bracket(0,18,0), bracket(0, 19, 0));
+        Range r20 = range(bracket(0,19,0), bracket(0, 20, 0));
+        Range r21 = range(bracket(0,20,0), bracket(0, 21, 0));
+        Range r22 = range(bracket(0,21,0), bracket(0, 22, 0));
+        Range r23 = range(bracket(0,22,0), bracket(0, 23, 0));
+        Range r24 = range(bracket(0,23,0), bracket(2, 0, 0));
+
+        ConfigurationPayloadValidator validator = this.getValidator();
+        List<Range> ranges = Arrays.asList(r3,r2,r4,r5,r1, r6, r7, r8, r24, r20, r10, r9, r11, r12, r13, r17, r16, r14, r15, r18, r22, r23, r19, r21);
+        assertEquals(validator.validateAgeGroups(ranges, true).size(), 0);
+
+        AgeGroupCalculator calculator = new AgeGroupCalculator(ranges);
+        LocalDate to = LocalDate.parse("2020-12-31");
+
+        assertEquals(calculator.getGroup(LocalDate.parse("2020-07-31"), to),"5g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2019-07-31"), to),"17g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2019-01-01"), to),"23g");
+        assertEquals(calculator.getGroup(LocalDate.parse("2012-01-05"), to),"24g");
     }
 
 

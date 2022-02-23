@@ -1,5 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 
 public class Bracket implements Comparable<Bracket>{
@@ -34,6 +36,7 @@ public class Bracket implements Comparable<Bracket>{
 		return x.isEmpty() ? "birth" : x;
 	}
 
+	@JsonIgnore
 	public int getMonthsValue() {
 		return year * 12 + month;
 	}

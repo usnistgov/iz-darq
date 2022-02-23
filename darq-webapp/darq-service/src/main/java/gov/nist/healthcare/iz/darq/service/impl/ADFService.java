@@ -62,7 +62,8 @@ public class ADFService {
                         file.getMqeVersion(),
                         file.getInactiveDetections(),
                         facility,
-                        components
+                        components,
+                        file.getTotalAnalysisTime()
                 );
                 storage.store(metadata);
                 Files.write(Paths.get(dir.toString(), "/" + ADFStorage.ADF_FILENAME), content);
@@ -145,7 +146,8 @@ public class ADFService {
                 first.getVersion(),
                 first.getBuild(),
                 first.getMqeVersion(),
-                first.getInactiveDetections()
+                first.getInactiveDetections(),
+                0
         );
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

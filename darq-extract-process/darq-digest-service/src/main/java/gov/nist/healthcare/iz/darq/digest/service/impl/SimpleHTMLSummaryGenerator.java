@@ -43,7 +43,7 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 														tr(th("CLI Version"), td(file.getVersion())),
 														tr(th("CLI Build Date"), td(file.getBuild())),
 														tr(th("MQE Version"), td(file.getMqeVersion())),
-														tr(td("Total Analysis Time"), td(humanReadableTime(file.getTotalAnalysisTime())))
+														tr(th("Total Analysis Time"), td(humanReadableTime(file.getTotalAnalysisTime())))
 												)
 										)
 								),

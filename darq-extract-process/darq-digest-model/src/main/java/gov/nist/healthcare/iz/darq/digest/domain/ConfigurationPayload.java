@@ -15,12 +15,19 @@ public class ConfigurationPayload {
 	private final Date now = new Date();
 
 	public List<Range> getAgeGroups() {
+		if(this.ageGroups == null) {
+			this.ageGroups = new ArrayList<>();
+		}
 		return ageGroups;
 	}
 	public void setAgeGroups(List<Range> ageGroups) {
 		this.ageGroups = ageGroups;
 	}
+
 	public List<String> getDetections() {
+		if(this.detections == null) {
+			this.detections = new ArrayList<>();
+		}
 		return detections;
 	}
 	public void setDetections(List<String> detections) {

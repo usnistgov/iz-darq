@@ -38,7 +38,7 @@ export class AgeGroupsComponent implements OnInit {
     this.form = new FormGroup({
       year: new FormControl(0, [Validators.required, Validators.min(0)]),
       month: new FormControl(0, [Validators.required, Validators.min(0)]),
-      day: new FormControl(0, [Validators.required, Validators.min(0)]),
+      // day: new FormControl(0, [Validators.required, Validators.min(0)]),
     });
   }
 

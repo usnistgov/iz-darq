@@ -45,6 +45,7 @@ export interface IADFMetadata extends IDamResource {
     summary: IADFSummary;
     facilityId: string;
   }[];
+  totalAnalysisTime: number;
 }
 
 export interface IADFSummary {

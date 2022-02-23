@@ -22,10 +22,7 @@ export class AgeGroupService {
       ...bracket.month ? [bracket.month,
       this.plural(bracket.year, 'month'),
       ] : [],
-      ...bracket.day ? [bracket.day,
-      this.plural(bracket.year, 'day'),
-      ] : [],
-      (bracket.month + bracket.day + bracket.year) === 0 ? 'Birth' : '',
+      (bracket.month + bracket.year) === 0 ? 'Birth' : '',
     ].join(' ');
   }
 
@@ -43,7 +40,7 @@ export class AgeGroupService {
   }
 
   bracketWeight(bracket: IBracket): number {
-    return bracket.year * 365 + bracket.month * 30 + bracket.day;
+    return bracket.year * 12 + bracket.month;
   }
 
   rangeWeight(range: IRange): number {
@@ -97,8 +94,8 @@ export class AgeGroupService {
             max: bracket,
           }
         ] : [
-            ...ranges,
-          ];
+          ...ranges,
+        ];
       }
     } else {
       return [
@@ -114,7 +111,6 @@ export class AgeGroupService {
       return {
         year: 0,
         month: 0,
-        day: 0,
       };
     }
   }

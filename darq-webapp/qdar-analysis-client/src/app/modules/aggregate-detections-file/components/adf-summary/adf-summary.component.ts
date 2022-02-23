@@ -4,7 +4,7 @@ import { IADFMetadata, IExtractPercent } from '../../model/adf.model';
 import { Store } from '@ngrx/store';
 import { selectOpenFileMetadata, selectUserFacilities } from '../../store/core.selectors';
 import { AgeGroupService } from '../../../shared/services/age-group.service';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { selectDetectionById } from '../../../shared/store/core.selectors';
 import { IDetectionResource } from '../../../shared/model/public.model';
 import { ActivatedRoute } from '@angular/router';
@@ -26,12 +26,25 @@ export class AdfSummaryComponent implements OnInit, OnDestroy {
   dSub: Subscription;
   dashboardRoute$: Observable<string[]>;
   facilityMap$: Observable<Record<string, string>>;
+  humanReadableDuration: string;
+  MS_HOURS = 3600000;
+  MS_MINUTES = 60000;
+  MS_SECONDS = 1000;
 
   constructor(
     private store: Store<any>,
     public agService: AgeGroupService,
     private activatedRoute: ActivatedRoute) {
-    this.adfMeta$ = this.store.select(selectOpenFileMetadata);
+    this.adfMeta$ = this.store.select(selectOpenFileMetadata).pipe(
+      tap((meta) => {
+        if (meta && meta.totalAnalysisTime && meta.totalAnalysisTime > 0) {
+          this.humanReadableDuration = this.humanReadable(meta.totalAnalysisTime);
+        } else {
+          this.humanReadableDuration = undefined;
+        }
+      })
+    );
+
     this.extractItems$ = this.store.select(selectOpenFileMetadata).pipe(
       map((meta) => {
         return Object.keys(meta.summary.extract).map((key) => {
@@ -91,6 +104,26 @@ export class AdfSummaryComponent implements OnInit, OnDestroy {
     if (this.dSub) {
       this.dSub.unsubscribe();
     }
+  }
+
+  humanReadable(ms: number) {
+    const hours = Math.floor(ms / this.MS_HOURS);
+    const minutes = Math.floor((ms - (hours * this.MS_HOURS)) / this.MS_MINUTES);
+    const seconds = Math.floor((ms - (hours * this.MS_HOURS) - (minutes * this.MS_MINUTES)) / this.MS_SECONDS);
+    const milliseconds = (ms - (hours * this.MS_HOURS) - (minutes * this.MS_MINUTES) - (seconds * this.MS_SECONDS));
+
+    const parts = [
+      ...hours > 0 ? [`${hours} ${this.plural(hours, 'hour')}`] : [],
+      ...minutes > 0 ? [`${minutes} ${this.plural(minutes, 'minute')}`] : [],
+      ...seconds > 0 ? [`${seconds} ${this.plural(seconds, 'second')}`] : [],
+      ...milliseconds > 0 ? [`${milliseconds} ${this.plural(milliseconds, 'millisecond')}`] : [],
+    ];
+
+    return parts.join(' ');
+  }
+
+  plural(i: number, text: string): string {
+    return i > 1 ? `${text}s` : text;
   }
 
   ngOnInit(): void {

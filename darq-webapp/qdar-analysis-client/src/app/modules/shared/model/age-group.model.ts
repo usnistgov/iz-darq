@@ -6,5 +6,5 @@ export interface IRange {
 export interface IBracket {
   year: number;
   month: number;
-  day: number;
+  // day: number;
 }

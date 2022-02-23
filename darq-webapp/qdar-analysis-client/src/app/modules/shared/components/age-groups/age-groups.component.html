@@ -1,44 +1,44 @@
 <form [formGroup]="form">
   <table class="table table-sm table-striped table-bordered">
-    <tbody *ngIf="!viewOnly">
+    <tbody *ngIf="!viewOnly" style="border-bottom: 2px solid black;">
       <tr>
         <th>Years</th>
+        <th></th>
         <th>Months</th>
-        <th>Days</th>
         <th></th>
       </tr>
       <tr>
         <th>
           <input type="number" class="form-control" formControlName="year" id="years">
         </th>
+        <th style="text-align: center; vertical-align: middle;"> and </th>
         <th>
           <input type="number" class="form-control" formControlName="month" id="months">
         </th>
-        <th>
-          <input type="number" class="form-control" formControlName="day" id="days">
-        </th>
         <th style="vertical-align: middle;">
-          <button class="btn btn-sm btn-primary float-right" (click)="addBracket()" [disabled]="form.invalid">
-            <i class="fa fa-plus"></i> Add Bracket
-          </button>
+          <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center">
+            <button class="btn btn-sm btn-primary" (click)="addBracket()" [disabled]="form.invalid">
+              <i class="fa fa-plus"></i> Add Bracket
+            </button>
+          </div>
         </th>
       </tr>
     </tbody>
     <tr>
-      <th>From</th>
+      <th style="text-align: right;">From (Included)</th>
       <th></th>
-      <th>To</th>
+      <th style="text-align: left;">To (Excluded)</th>
       <th *ngIf="!viewOnly"></th>
     </tr>
     <tbody>
       <tr *ngFor="let group of ranges; let i = index">
-        <td>
+        <td style="text-align: right;">
           <app-age-bracket [bracket]="group.min" ></app-age-bracket>
         </td>
-        <td>
+        <td style="text-align: center;">
           <i class="fa fa-arrow-right"></i>
         </td>
-        <td>
+        <td style="text-align: left;">
           <app-age-bracket [bracket]="group.max" ></app-age-bracket>
         </td>
         <td *ngIf="!viewOnly">
@@ -48,13 +48,13 @@
         </td>
       </tr>
       <tr>
-        <td>
+        <td style="text-align: right;">
           <app-age-bracket [bracket]="openBracket" ></app-age-bracket>
         </td>
-        <td>
+        <td style="text-align: center;">
           <i class="fa fa-arrow-right"></i>
         </td>
-        <td>
+        <td style="text-align: left;">
           <i class="fa fa-plus-circle"></i> Infinity
         </td>
         <td *ngIf="!viewOnly"></td>

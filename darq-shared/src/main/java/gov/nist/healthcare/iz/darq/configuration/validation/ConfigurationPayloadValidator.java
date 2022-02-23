@@ -35,10 +35,6 @@ public class ConfigurationPayloadValidator {
             errors.add("Configuration Age Groups is not defined");
             return errors;
         }
-        if(ageGroups.size() == 0) {
-            errors.add("Configuration Age Groups List is empty");
-            return errors;
-        }
 
         for (int i = 0; i < ageGroups.size(); i++) {
             Range range = ageGroups.get(i);

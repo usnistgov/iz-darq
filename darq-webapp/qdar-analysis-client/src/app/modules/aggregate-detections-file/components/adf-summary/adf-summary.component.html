@@ -72,19 +72,29 @@
         <table class="table table-bordered table-sm table-striped">
           <tbody>
             <tr>
-              <th>Version</th>
+              <th style="width: 250px;">Version</th>
               <td>{{adfMeta.version ? 'v' + adfMeta.version : 'pre-1.5.0'}}</td>
             </tr>
             <tr *ngIf="adfMeta.build">
-              <th>Build</th>
+              <th style="width: 250px;">Build</th>
               <td>{{adfMeta.build}}</td>
             </tr>
             <tr *ngIf="adfMeta.mqeVersion">
-              <th>Mqe Version</th>
+              <th style="width: 250px;">Mqe Version</th>
               <td>{{adfMeta.mqeVersion}}</td>
             </tr>
           </tbody>
           </table>
+      </div>
+      <div *ngIf="humanReadableDuration" style="flex-grow: 1; margin-bottom: 15px;">
+        <table class="table table-bordered table-sm table-striped">
+          <tbody>
+            <tr>
+              <th style="width: 250px;">Total Analysis Time</th>
+              <td>{{humanReadableDuration}}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <hr>
       <div style="display: flex; width: 100%; justify-content: stretch;">
