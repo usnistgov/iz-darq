@@ -171,7 +171,7 @@ public class Summary {
 		result.setCountByAgeGroup(source.countByAgeGroup.stream().map((countByAgeGroup) -> {
 			AgeGroupCount count = new AgeGroupCount();
 			count.setRange(countByAgeGroup.range);
-			count.setNb(count.nb + target.countByAgeGroup.stream().filter((t) -> t.getRange().equals(count.range)).findFirst().map(AgeGroupCount::getNb).get());
+			count.setNb(countByAgeGroup.nb + target.countByAgeGroup.stream().filter((t) -> t.getRange().equals(count.range)).findFirst().map(AgeGroupCount::getNb).get());
 			return count;
 		}).collect(Collectors.toList()));
 		Map<String, ExtractPercent> extractPercentMap = new HashMap<>();
