@@ -116,6 +116,8 @@ public class ConfigurationPayloadValidator {
                 (new SimpleDateFormat("MM/dd/yyyy")).parse(asOf);
             } catch (ParseException e) {
                 errors.add("Configuration AsOf Date : Invalid AsOf Date '"+ asOf +"', valid format is MM/dd/yyyy");
+            } catch (Exception e) {
+                errors.add("Configuration AsOf Date : Invalid AsOf Date '"+ e.getMessage() +"'");
             }
             return errors;
         } else {
