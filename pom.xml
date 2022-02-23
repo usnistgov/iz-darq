@@ -3,12 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gov.nist.healthcare.iz</groupId>
 	<artifactId>darq</artifactId>
-	<version>2.0.0</version>
+	<version>2.0.1</version>
 	<packaging>pom</packaging>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<qdar.api.version>2.0.0</qdar.api.version>
 	</properties>
 	<modules>
 		<module>file-parser</module>
