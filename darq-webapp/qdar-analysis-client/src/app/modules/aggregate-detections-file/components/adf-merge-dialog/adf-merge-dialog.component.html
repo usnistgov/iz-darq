@@ -1,93 +1,95 @@
 <h2 mat-dialog-title>Merge Files</h2>
-<form>
-  <div class="form-group">
-    <label for="name"><strong>Name</strong></label>
-    <input type="text" placeholder="Name" class="form-control" [(ngModel)]="name" name="name" id="name" required>
-  </div>
-  <div class="form-group">
-    <label for="facility"><strong>IIS</strong></label>
-    <p-dropdown [(ngModel)]="facilityId" [autoDisplayFirst]="false" [showClear]="true" [options]="facilities" [style]="{ width : '100%'}" name="facility" id="facility" ></p-dropdown>
-  </div>
-  <div class="form-group">
-    <label><strong>Files </strong> <span class="badge badge-primary">{{ fileSelection.length }}</span></label>
-    <table class="table table-sm table-striped">
-      <tbody>
-        <tr *ngFor="let item of fileSelection">
+<div mat-dialog-content>
+  <form>
+    <div class="form-group">
+      <label for="name"><strong>Name</strong></label>
+      <input type="text" placeholder="Name" class="form-control" [(ngModel)]="name" name="name" id="name" required>
+    </div>
+    <div class="form-group">
+      <label for="facility"><strong>IIS</strong></label>
+      <p-dropdown [(ngModel)]="facilityId" [autoDisplayFirst]="false" [showClear]="true" [options]="facilities" [style]="{ width : '100%'}" name="facility" id="facility" ></p-dropdown>
+    </div>
+    <div class="form-group">
+      <label><strong>Files </strong> <span class="badge badge-primary">{{ fileSelection.length }}</span></label>
+      <table class="table table-sm table-striped">
+        <tbody>
+          <tr *ngFor="let item of fileSelection">
+            <td>
+              {{ item.name }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p-table
+    [value]="filtered$ | async"
+    [paginator]="true"
+    [rows]="10"
+    [frozenColumns]
+    [(selection)]="fileSelection" dataKey="id"
+    class="ui-table-dash"
+    sortMode="multiple"
+    (onRowSelect)="selectionChanged(fileSelection)"
+    (onRowUnselect)="selectionChanged(fileSelection)"
+    [styleClass]="'table table-sm table-striped'">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="vertical-align: middle; width: 50px;">
+          </th>
+          <th style="vertical-align: middle; width: 240px;" pSortableColumn="name">
+            Name
+            <p-sortIcon field="name"></p-sortIcon>
+          </th>
+          <th style="vertical-align: middle; width: 240px;">
+            Version
+          </th>
+          <th style="vertical-align: middle; width: 150px;" pSortableColumn="owner">
+            Uploaded By
+            <p-sortIcon field="owner"></p-sortIcon>
+          </th>
+          <th style="vertical-align: middle; width: 150px;" pSortableColumn="uploadedOn">
+            Uploaded On
+            <p-sortIcon field="uploadedOn"></p-sortIcon>
+          </th>
+          <th style="vertical-align: middle; width: 150px;" pSortableColumn="analysedOn">
+            Analysed On
+            <p-sortIcon field="analysedOn"></p-sortIcon>
+          </th>
+          <th style="vertical-align: middle; width: 100px;">
+            Size
+          </th>
+          <th style="vertical-align: middle; width: 100px;">
+            Facility (IIS)
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData>
+        <tr>
           <td>
-            {{ item.name }}
+            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+          </td>
+          <td>
+            <i class="fa fa-file" style="color: blue; margin-right: 10px;"></i>
+            <i *ngIf="rowData.composed" class="fa fa-compress" style="color: #a71ba7; margin-right: 10px;"></i>
+            <strong>{{ rowData.name }}</strong>
+          </td>
+          <td>
+            {{ rowData.version }}
+          </td>
+          <td><i class="fa fa-user" style="color: rgb(255, 0, 119);"></i> {{ rowData.ownerDisplayName }}</td>
+          <td>{{ rowData.uploadedOn | date:'MM-dd-yyyy HH:mm' }}</td>
+          <td>{{ rowData.analysedOn | date:'MM-dd-yyyy HH:mm'  }}</td>
+          <td>
+            {{rowData.size }}
+          </td>
+          <td>
+            {{ facilityMap[rowData.facilityId] }}
           </td>
         </tr>
-      </tbody>
-    </table>
-  </div>
-  <p-table
-  [value]="filtered$ | async"
-  [paginator]="true"
-  [rows]="10"
-  [frozenColumns]
-  [(selection)]="fileSelection" dataKey="id"
-  class="ui-table-dash"
-  sortMode="multiple"
-  (onRowSelect)="selectionChanged(fileSelection)"
-  (onRowUnselect)="selectionChanged(fileSelection)"
-  [styleClass]="'table table-sm table-striped'">
-    <ng-template pTemplate="header">
-      <tr>
-        <th style="vertical-align: middle; width: 50px;">
-        </th>
-        <th style="vertical-align: middle; width: 240px;" pSortableColumn="name">
-          Name
-          <p-sortIcon field="name"></p-sortIcon>
-        </th>
-        <th style="vertical-align: middle; width: 240px;">
-          Version
-        </th>
-        <th style="vertical-align: middle; width: 150px;" pSortableColumn="owner">
-          Uploaded By
-          <p-sortIcon field="owner"></p-sortIcon>
-        </th>
-        <th style="vertical-align: middle; width: 150px;" pSortableColumn="uploadedOn">
-          Uploaded On
-          <p-sortIcon field="uploadedOn"></p-sortIcon>
-        </th>
-        <th style="vertical-align: middle; width: 150px;" pSortableColumn="analysedOn">
-          Analysed On
-          <p-sortIcon field="analysedOn"></p-sortIcon>
-        </th>
-        <th style="vertical-align: middle; width: 100px;">
-          Size
-        </th>
-        <th style="vertical-align: middle; width: 100px;">
-          Facility (IIS)
-        </th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowData>
-      <tr>
-        <td>
-          <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-        </td>
-        <td>
-          <i class="fa fa-file" style="color: blue; margin-right: 10px;"></i>
-          <i *ngIf="rowData.composed" class="fa fa-compress" style="color: #a71ba7; margin-right: 10px;"></i>
-          <strong>{{ rowData.name }}</strong>
-        </td>
-        <td>
-          {{ rowData.version }}
-        </td>
-        <td><i class="fa fa-user" style="color: rgb(255, 0, 119);"></i> {{ rowData.ownerDisplayName }}</td>
-        <td>{{ rowData.uploadedOn | date:'MM-dd-yyyy HH:mm' }}</td>
-        <td>{{ rowData.analysedOn | date:'MM-dd-yyyy HH:mm'  }}</td>
-        <td>
-          {{rowData.size }}
-        </td>
-        <td>
-          {{ facilityMap[rowData.facilityId] }}
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-</form>
+      </ng-template>
+    </p-table>
+  </form>
+</div>
 <mat-dialog-actions style="justify-content: flex-end;">
   <button [mat-dialog-close]="" class="btn btn-sm btn-secondary" style="margin-right: 5px;">Cancel</button>
   <button [disabled]="!valid()" (click)="merge()" class="btn btn-sm btn-success">Merge</button>

@@ -112,8 +112,10 @@ public class ConfigurationPayloadValidator {
     public List<String> validateAsOfDate(String asOf) {
         if(asOf != null && !asOf.isEmpty()) {
             ArrayList<String> errors = new ArrayList<>();
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            sdf.setLenient(false);
             try {
-                (new SimpleDateFormat("MM/dd/yyyy")).parse(asOf);
+                sdf.parse(asOf);
             } catch (ParseException e) {
                 errors.add("Configuration AsOf Date : Invalid AsOf Date '"+ asOf +"', valid format is MM/dd/yyyy");
             } catch (Exception e) {
