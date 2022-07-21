@@ -1,15 +1,24 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import gov.nist.healthcare.iz.darq.digest.domain.mapper.InputStreamDeserializer;
+import gov.nist.healthcare.iz.darq.digest.domain.mapper.InputStreamSerializer;
+
+import java.io.InputStream;
+
 public class EncryptedADF {
 	public byte[] key;
-	public byte[] content;
+	@JsonSerialize(using = InputStreamSerializer.class)
+	@JsonDeserialize(using = InputStreamDeserializer.class)
+	public InputStream content;
 	public byte[] keyHash;
 	
 	public EncryptedADF() {
 		super();
 	}
 
-	public EncryptedADF(byte[] key, byte[] content, byte[] keyHash) {
+	public EncryptedADF(byte[] key, InputStream content, byte[] keyHash) {
 		super();
 		this.key = key;
 		this.content = content;
@@ -22,10 +31,10 @@ public class EncryptedADF {
 	public void setKey(byte[] key) {
 		this.key = key;
 	}
-	public byte[] getContent() {
+	public InputStream getContent() {
 		return content;
 	}
-	public void setContent(byte[] content) {
+	public void setContent(InputStream content) {
 		this.content = content;
 	}
 	public byte[] getKeyHash() {

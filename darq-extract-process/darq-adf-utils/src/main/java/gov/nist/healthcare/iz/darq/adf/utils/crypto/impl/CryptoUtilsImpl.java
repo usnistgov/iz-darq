@@ -3,19 +3,16 @@ package gov.nist.healthcare.iz.darq.adf.utils.crypto.impl;
 import java.io.*;
 import java.security.*;
 import java.util.Arrays;
-import java.util.Base64;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
+import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.*;
+import de.undercouch.bson4jackson.BsonGenerator;
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.undercouch.bson4jackson.BsonFactory;
 import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
@@ -29,7 +26,7 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	@Autowired
 	@Qualifier("ADF_KEYS")
 	private CryptoKey keys;
-	private final ObjectMapper mapper = new ObjectMapper(new BsonFactory()).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	private final ObjectMapper mapper = new ObjectMapper(new BsonFactory().enable(BsonGenerator.Feature.ENABLE_STREAMING)).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	@Override
 	public boolean checkAdfStore(InputStream fileInputStream) throws Exception {
@@ -40,13 +37,18 @@ public class CryptoUtilsImpl implements CryptoUtils {
 
 	@Override
 	public void encryptContentToFile(ADFile file, OutputStream outputStream) throws Exception {
+
+		//----------------- Create TEMP File -------------
+		File tempFile = File.createTempFile("enc", ".adf");
+		tempFile.deleteOnExit();
+		System.out.println(tempFile.getAbsoluteFile());
 		
 		//----------------- AES ENCRYPT ------------------
 		SecretKeySpec aesKey = password();
 		final Cipher aes = Cipher.getInstance("AES");
 	    aes.init(Cipher.ENCRYPT_MODE, aesKey);
-	    byte[] fileContent = serialize(ADFile.class, file);
-	    byte[] encryptedContent = aes.doFinal(fileContent);
+		CipherOutputStream aesOut = new CipherOutputStream(new FileOutputStream(tempFile), aes);
+		mapper.writeValue(aesOut, file);
 	    
 	    //------------------ ENCRYPT KEY -----------------
 		PublicKey publicKey = keys.getPublicKey();
@@ -54,7 +56,9 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	    cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 	    byte[] encryptedKey = cipher.doFinal(aesKey.getEncoded());
 
-		mapper.writeValue(outputStream, new EncryptedADF(encryptedKey, encryptedContent, this.keys.getPublicKeyHash()));
+		mapper.writeValue(outputStream, new EncryptedADF(encryptedKey, new FileInputStream(tempFile), this.keys.getPublicKeyHash()));
+
+		tempFile.delete();
 	}
 
 	@Override
@@ -64,14 +68,12 @@ public class CryptoUtilsImpl implements CryptoUtils {
 		final Cipher cipher = Cipher.getInstance("RSA");
 	    cipher.init(Cipher.DECRYPT_MODE, keys.getPrivateKey());
 	    byte[] decryptedKey = cipher.doFinal(encryptedADF.getKey());
-	    
 		//----------------- DECRYPT FILE -----------------
 	    SecretKeySpec secretKeySpec = new SecretKeySpec(decryptedKey, "AES");
 	    Cipher cipherAes = Cipher.getInstance("AES");
 	    cipherAes.init(Cipher.DECRYPT_MODE, secretKeySpec);
-	    byte[] decryptedBytes = cipherAes.doFinal(encryptedADF.content);
-	    
-		return deserialize(ADFile.class, decryptedBytes);
+		CipherInputStream aesIn = new CipherInputStream(encryptedADF.content, cipherAes);
+		return deserialize(ADFile.class, aesIn);
 	}
 
 	@Override
@@ -85,15 +87,9 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	    SecretKey skey = keyGen.generateKey();
 		return new SecretKeySpec(skey.getEncoded(), "AES");
 	}
-	
-	private <T> byte[] serialize(Class<T> type, T adf) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		mapper.writeValue(baos, adf);
-		return baos.toByteArray();
-	}
-	
-	private <T> T deserialize(Class<T> type, byte[] bytes) throws IOException {
-		return mapper.readValue(bytes, type);
+
+	private <T> T deserialize(Class<T> type, InputStream is) throws IOException {
+		return mapper.readValue(is, type);
 	}
 
 }
