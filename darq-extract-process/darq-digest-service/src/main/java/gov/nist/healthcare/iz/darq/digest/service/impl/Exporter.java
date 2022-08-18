@@ -61,7 +61,7 @@ public class Exporter implements ExportADChunk {
 	    output.mkdirs();
 	    
 	    //---- ENCRYPT and write ADF
-	    this.cryptoUtils.encryptContentToFile(file, new FileOutputStream(new File("./darq-analysis/ADF.data")));
+	    this.cryptoUtils.encryptContentToFileWithoutTemporaryFile(file, new FileOutputStream(new File("./darq-analysis/ADF.data")));
 
 	    //---- HTML
 	    summaryGenerator.generateSummary(file, summary, chunk.getProviders(), "./darq-analysis/summary/", printAdf);

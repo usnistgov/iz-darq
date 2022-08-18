@@ -41,8 +41,7 @@ public class CryptoUtilsImpl implements CryptoUtils {
 		//----------------- Create TEMP File -------------
 		File tempFile = File.createTempFile("enc", ".adf");
 		tempFile.deleteOnExit();
-		System.out.println(tempFile.getAbsoluteFile());
-		
+
 		//----------------- AES ENCRYPT ------------------
 		SecretKeySpec aesKey = password();
 		final Cipher aes = Cipher.getInstance("AES");
@@ -57,8 +56,26 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	    byte[] encryptedKey = cipher.doFinal(aesKey.getEncoded());
 
 		mapper.writeValue(outputStream, new EncryptedADF(encryptedKey, new FileInputStream(tempFile), this.keys.getPublicKeyHash()));
-
 		tempFile.delete();
+	}
+
+	@Override
+	public void encryptContentToFileWithoutTemporaryFile(ADFile file, OutputStream outputStream) throws Exception {
+		//----------------- AES ENCRYPT ------------------
+		SecretKeySpec aesKey = password();
+		final Cipher aes = Cipher.getInstance("AES");
+		aes.init(Cipher.ENCRYPT_MODE, aesKey);
+		byte[] fileContent = serialize(ADFile.class, file);
+		byte[] encryptedContent = aes.doFinal(fileContent);
+
+		//------------------ ENCRYPT KEY -----------------
+		PublicKey publicKey = keys.getPublicKey();
+		final Cipher cipher = Cipher.getInstance("RSA");
+		cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+		byte[] encryptedKey = cipher.doFinal(aesKey.getEncoded());
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(encryptedContent);
+
+		mapper.writeValue(outputStream, new EncryptedADF(encryptedKey, byteArrayInputStream, this.keys.getPublicKeyHash()));
 	}
 
 	@Override
@@ -90,6 +107,12 @@ public class CryptoUtilsImpl implements CryptoUtils {
 
 	private <T> T deserialize(Class<T> type, InputStream is) throws IOException {
 		return mapper.readValue(is, type);
+	}
+
+	private <T> byte[] serialize(Class<T> type, T adf) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		mapper.writeValue(baos, adf);
+		return baos.toByteArray();
 	}
 
 }

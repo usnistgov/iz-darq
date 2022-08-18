@@ -14,6 +14,7 @@ public interface CryptoUtils {
 
 	boolean checkAdfStore(InputStream fileInputStream) throws Exception;
 	void encryptContentToFile(ADFile file, OutputStream writer) throws Exception;
+	void encryptContentToFileWithoutTemporaryFile(ADFile file, OutputStream writer) throws Exception;
 	ADFile decryptFile(InputStream reader) throws Exception;
 	ObjectMapper getObjectMapper();
 
