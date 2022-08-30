@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @org.springframework.context.annotation.Configuration
 public class Configuration {
@@ -39,6 +40,11 @@ public class Configuration {
 			@Override
 			public ADFile getFile(String id) throws Exception {
 				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public InputStream getFileInputStream(String id) throws Exception {
 				return null;
 			}
 

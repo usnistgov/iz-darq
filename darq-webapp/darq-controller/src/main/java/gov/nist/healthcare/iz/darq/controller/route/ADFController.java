@@ -18,6 +18,7 @@ import gov.nist.healthcare.iz.darq.service.impl.ADFService;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import gov.nist.healthcare.iz.darq.users.facility.service.FacilityService;
 import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
@@ -33,6 +34,7 @@ import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api")
@@ -157,6 +159,19 @@ public class ADFController {
 			HttpServletRequest request,
 			@PathVariable("id") String id) throws Exception {
 		return (UserUploadedFile) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+	}
+
+	@RequestMapping(value="/adf/{id}/download", method=RequestMethod.GET)
+	@PreAuthorize("isAdmin() && AccessResource(#request, ADF, VIEW, #id)")
+	public void download(
+			HttpServletRequest request,
+			HttpServletResponse rsp,
+			@PathVariable("id") String id) throws Exception {
+		UserUploadedFile file = (UserUploadedFile) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+
+		rsp.setContentType("application/json");
+		rsp.setHeader("Content-disposition", "attachment;filename="+file.getName().replace(" ", "_")+".data");
+		IOUtils.copy(this.storage.getFileInputStream(file.getPath()), rsp.getOutputStream());
 	}
 
 	@RequestMapping(value="/adf/merge", method=RequestMethod.POST)

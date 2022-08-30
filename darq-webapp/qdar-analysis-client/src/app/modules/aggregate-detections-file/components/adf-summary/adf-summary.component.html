@@ -15,7 +15,14 @@
       </li>
     </ul>
     <div style="display: flex; margin: 0px auto; align-items: flex-end;">
-      <h4 class="title-text title-heading"><i class="fa fa-list" style="color: rgb(223, 148, 10);"></i> {{ adfMeta.name}} [Summary] </h4>
+      <h4 class="title-text title-heading">
+        <a download style="margin-right: 10px;" [href]="'api/adf/'+adfMeta.id+'/download'" *ngIf="isAdmin$ | async" >
+          <button  class="btn btn-sm btn-dark">
+            <i class="fa fa-download"></i>
+          </button>
+        </a>
+        <i class="fa fa-list" style="color: rgb(223, 148, 10);"></i>
+        {{ adfMeta.name}} [Summary] </h4>
       <div style="height: 100%; display: flex; align-items: flex-end;">
         <span class="badge badge" style="margin-right: 5px; font-weight: 300; color: #afafaf;">Uploaded On {{ adfMeta.uploadedOn | date:'MM-dd-yyyy HH:mm' }}</span>
         <span class="badge badge" style="margin-right: 5px; font-weight: 300; color: #afafaf;">Analysed On {{ adfMeta.analysedOn | date:'MM-dd-yyyy HH:mm' }}</span>

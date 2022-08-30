@@ -1,6 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.app.config;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
@@ -41,6 +42,11 @@ public class DigestConfiguration {
 			@Override
 			public ADFile getFile(String id) throws Exception {
 				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public InputStream getFileInputStream(String id) throws Exception {
 				return null;
 			}
 

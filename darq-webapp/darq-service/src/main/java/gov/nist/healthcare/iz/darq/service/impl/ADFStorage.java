@@ -54,9 +54,14 @@ public class ADFStorage implements ADFStore<UserUploadedFile> {
 	public ADFile getFile(String id) throws Exception {
 		UserUploadedFile md = this.get(id);
 		if(md != null){
-			return crypto.decryptFile(new FileInputStream(Paths.get(PATH+"/"+md.getPath() + "/" + ADF_FILENAME).toFile()));
+			return crypto.decryptFile(this.getFileInputStream(md.getPath()));
 		}
 		return null;
+	}
+
+	@Override
+	public InputStream getFileInputStream(String pathId) throws Exception {
+		return new FileInputStream(Paths.get(PATH + "/" + pathId + "/" + ADF_FILENAME).toFile());
 	}
 
 }
