@@ -11,10 +11,10 @@ import gov.nist.healthcare.iz.darq.access.service.EmailService;
 import gov.nist.healthcare.iz.darq.controller.domain.ADFMergeRequest;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
-import gov.nist.healthcare.iz.darq.repository.AnalysisReportRepository;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.service.impl.ADFService;
+import gov.nist.healthcare.iz.darq.service.impl.AnalysisReportService;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import gov.nist.healthcare.iz.darq.users.facility.service.FacilityService;
 import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
@@ -53,7 +53,7 @@ public class ADFController {
 	@Autowired
 	private FacilityService facilityService;
 	@Autowired
-	private AnalysisReportRepository analysisReportRepository;
+	private AnalysisReportService analysisReportService;
 	@Autowired
 	private DescriptorService descriptorService;
 	@Autowired
@@ -73,7 +73,7 @@ public class ADFController {
 			try {
 				Facility facility = this.facilityService.getFacilityById(facilityId);
 				int files = this.repo.findByFacilityId(facilityId).size();
-				int reports = this.analysisReportRepository.findByPublishedAndFacilityId(true, facilityId).size();
+				int reports = this.analysisReportService.findByPublishedAndFacilityId(true, facilityId).size();
 				return new UserFacilityView(facilityId, facility.getName(), reports, files);
 			} catch (NotFoundException e) {
 				return null;

@@ -122,11 +122,18 @@ public class ConfigurationController {
 		if(config.getId() == null || config.getId().isEmpty()){
 			config.setOwner(user.getUsername());
 			config.setOwnerId(user.getId());
+			config.setPublished(false);
+			config.setLocked(false);
 		} else {
 			DigestConfiguration existing = (DigestConfiguration) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
 			if(existing.isLocked()) {
 				throw new OperationFailureException("Configuration "+config.getId()+" is locked");
 			}
+			// Non Overridable fields
+			config.setOwnerId(existing.getOwnerId());
+			config.setOwner(existing.getOwner());
+			config.setPublished(existing.isPublished());
+			config.setLocked(existing.isLocked());
 		}
 		config.setLastUpdated(new Date());
 		try {

@@ -10,13 +10,14 @@ import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Component
+@Service
 public class UserAccountAndRoleDataIntegrityInitializer {
 
     @Value("${darq.admin.default}")
@@ -28,7 +29,6 @@ public class UserAccountAndRoleDataIntegrityInitializer {
     @Autowired
     private UserManagementService userManagementService;
 
-    @PostConstruct
     public void initializeAndFixAccounts() {
         //---------------------- USER ROLES ----------------------
         UserRole BASIC = this.userRoleRepository.findByRole("BASIC");

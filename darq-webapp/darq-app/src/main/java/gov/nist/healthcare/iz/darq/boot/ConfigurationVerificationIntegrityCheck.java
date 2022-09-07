@@ -10,10 +10,11 @@ import gov.nist.healthcare.iz.darq.repository.TemplateRepository;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
-@Component
+@Service
 public class ConfigurationVerificationIntegrityCheck {
 
     @Autowired
@@ -25,7 +26,6 @@ public class ConfigurationVerificationIntegrityCheck {
     @Autowired
     TemplateRepository templateRepository;
 
-    @PostConstruct
     void check() throws Exception {
         checkADFs();
         checkConfigurations();

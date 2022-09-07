@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AnalysisReportRepository extends MongoRepository<AnalysisReport, String> {
+public interface PartialAnalysisReportRepository extends MongoRepository<AnalysisReport, String> {
 
     AnalysisReport findByIdAndOwnerId(String id, String ownerId);
     AnalysisReport findByIdAndOwnerIdAndPublished(String id, String ownerId, boolean published);

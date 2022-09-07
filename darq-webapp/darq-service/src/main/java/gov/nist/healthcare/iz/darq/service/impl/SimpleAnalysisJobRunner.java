@@ -9,12 +9,10 @@ import gov.nist.healthcare.iz.darq.model.AnalysisJob;
 import gov.nist.healthcare.iz.darq.model.JobStatus;
 import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 import gov.nist.healthcare.iz.darq.repository.AnalysisJobRepository;
-import gov.nist.healthcare.iz.darq.repository.AnalysisReportRepository;
 import gov.nist.healthcare.iz.darq.repository.TemplateRepository;
 import gov.nist.healthcare.iz.darq.service.analysis.AnalysisJobRunner;
 import gov.nist.healthcare.iz.darq.service.analysis.RunnableJob;
 import gov.nist.healthcare.iz.darq.service.exception.JobRunningException;
-import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,7 +36,7 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
     @Autowired
     AnalysisJobRepository analysisJobRepository;
     @Autowired
-    AnalysisReportRepository reportRepository;
+    AnalysisReportService analysisReportService;
     @Autowired
     ReportService analysisService;
     @Autowired
@@ -99,7 +97,7 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
         report.setFacilityId(job.getFacilityId());
         report.setAdfName(job.getAdfName());
         report.setReportTemplate(job.getTemplate());
-        this.reportRepository.save(report);
+        this.analysisReportService.save(report);
         job.setReportId(report.getId());
         job.setEndTime(new Date());
         job.setStatus(JobStatus.FINISHED);
@@ -143,7 +141,7 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
                 AnalysisJob job = this.analysisJobRepository.findOne(id);
                 if(job != null) {
                     if(!Strings.isNullOrEmpty(job.getReportId())) {
-                        this.reportRepository.delete(job.getReportId());
+                        this.analysisReportService.delete(job.getReportId());
                     }
                     this.analysisJobRepository.delete(id);
                 } else {
@@ -159,7 +157,7 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
             AnalysisJob job = this.analysisJobRepository.findOne(id);
             if(job != null) {
                 if(!Strings.isNullOrEmpty(job.getReportId())) {
-                    this.reportRepository.delete(job.getReportId());
+                    this.analysisReportService.delete(job.getReportId());
                 }
                 this.analysisJobRepository.delete(id);
                 return true;

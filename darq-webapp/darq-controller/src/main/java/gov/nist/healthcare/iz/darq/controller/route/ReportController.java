@@ -1,7 +1,6 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
 import com.google.common.base.Strings;
-import freemarker.template.TemplateException;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisReport;
@@ -9,9 +8,8 @@ import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
 import gov.nist.healthcare.iz.darq.repository.AnalysisJobRepository;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
-import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
-import gov.nist.healthcare.iz.darq.repository.AnalysisReportRepository;
+import gov.nist.healthcare.iz.darq.service.impl.AnalysisReportService;
 import gov.nist.healthcare.iz.darq.service.impl.SimpleEmailService;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import gov.nist.healthcare.iz.darq.users.domain.User;
@@ -22,11 +20,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
@@ -34,7 +30,7 @@ import java.util.stream.Stream;
 public class ReportController {
 
     @Autowired
-    private AnalysisReportRepository analysisReportRepository;
+    private AnalysisReportService analysisReportService;
     @Autowired
     private AnalysisJobRepository jobRepository;
     @Autowired
@@ -66,12 +62,18 @@ public class ReportController {
     @PreAuthorize("AccessResource(#request, REPORT, COMMENT, #report.id)")
     public OpAck<AnalysisReport> save(
             HttpServletRequest request,
-            @RequestBody AnalysisReport report) throws OperationFailureException {
+            @RequestBody AnalysisReport report) throws OperationFailureException, IOException {
         AnalysisReport existing = (AnalysisReport) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
         if(existing.isPublished()) {
             throw new OperationFailureException("Report "+report.getId()+" is published and can't be edited");
         }
-        AnalysisReport saved = this.analysisReportRepository.save(report);
+        // Non Overridable fields
+        report.setOwnerId(existing.getOwnerId());
+        report.setOwner(existing.getOwner());
+        report.setPublished(existing.isPublished());
+        report.setPublishDate(existing.getPublishDate());
+        report.setLastUpdated(new Date());
+        AnalysisReport saved = this.analysisReportService.save(report);
         return new OpAck<>(OpAck.AckStatus.SUCCESS, "Report Successfully Saved", saved, "report-save");
     }
 
@@ -82,7 +84,7 @@ public class ReportController {
     public List<ReportDescriptor> published(
             @AuthenticationPrincipal User user,
             @PathVariable("facilityId") String id) {
-        return getReportDescriptorList(analysisReportRepository.findByPublishedAndFacilityId(true, id), user);
+        return getReportDescriptorList(analysisReportService.findByPublishedAndFacilityId(true, id), user);
     }
 
     //  Publish Report Template (Owned and not Locked or New)
@@ -91,14 +93,14 @@ public class ReportController {
     @PreAuthorize("AccessResource(#request, REPORT, PUBLISH, #id)")
     public OpAck<AnalysisReport> publish(
             HttpServletRequest request,
-            @PathVariable("reportId") String id) throws OperationFailureException {
+            @PathVariable("reportId") String id) throws OperationFailureException, IOException {
         AnalysisReport report = (AnalysisReport) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
         if(report.isPublished()) {
             throw new OperationFailureException("Report "+report.getId()+" is published and can't be edited");
         }
         report.setPublished(true);
         report.setPublishDate(new Date());
-        AnalysisReport saved = this.analysisReportRepository.save(report);
+        AnalysisReport saved = this.analysisReportService.save(report);
         List<AnalysisJob> jobs = this.jobRepository.findByReportId(report.getId());
         jobs.forEach((j) -> this.jobRepository.delete(j.getId()));
 
@@ -135,7 +137,7 @@ public class ReportController {
     public OpAck<AnalysisReport> delete(
             HttpServletRequest request,
             @PathVariable("reportId") String id) {
-        this.analysisReportRepository.delete(id);
+        this.analysisReportService.delete(id);
         return new OpAck<>(OpAck.AckStatus.SUCCESS, "Report Successfully Deleted", null, "report-delete");
     }
 

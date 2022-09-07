@@ -6,11 +6,11 @@ import gov.nist.healthcare.domain.trait.Owned;
 import gov.nist.healthcare.domain.trait.Publishable;
 import gov.nist.healthcare.iz.darq.access.domain.*;
 import gov.nist.healthcare.iz.darq.repository.AnalysisJobRepository;
-import gov.nist.healthcare.iz.darq.repository.AnalysisReportRepository;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
 import gov.nist.healthcare.iz.darq.repository.TemplateRepository;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.impl.ADFStorage;
+import gov.nist.healthcare.iz.darq.service.impl.AnalysisReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class SimpleResourceQualifier {
     @Autowired
     AnalysisJobRepository analysisJobRepository;
     @Autowired
-    AnalysisReportRepository reportRepository;
+    AnalysisReportService analysisReportService;
 
     public ResourceSecurityWrapper getSecurityQualifiedResource(ResourceType type, String id) throws NotFoundException {
         Object resource = this.getResource(type, id);
@@ -53,7 +53,7 @@ public class SimpleResourceQualifier {
             case ANALYSIS_JOB:
                 return this.analysisJobRepository.findOne(id);
             case REPORT:
-                return this.reportRepository.findOne(id);
+                return this.analysisReportService.findOne(id);
         }
         return null;
     }

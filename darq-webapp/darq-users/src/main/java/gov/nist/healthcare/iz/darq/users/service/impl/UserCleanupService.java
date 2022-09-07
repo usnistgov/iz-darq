@@ -9,6 +9,7 @@ import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 import gov.nist.healthcare.iz.darq.repository.*;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.impl.ADFStorage;
+import gov.nist.healthcare.iz.darq.service.impl.AnalysisReportService;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import gov.nist.healthcare.iz.darq.users.domain.UserEditToken;
 import gov.nist.healthcare.iz.darq.users.repository.UserAccountRepository;
@@ -36,7 +37,7 @@ public class UserCleanupService {
     @Autowired
     AnalysisJobRepository analysisJobRepository;
     @Autowired
-    AnalysisReportRepository reportRepository;
+    AnalysisReportService analysisReportService;
     @Autowired
     UserManagementService userManagementService;
     @Autowired
@@ -55,7 +56,7 @@ public class UserCleanupService {
             List<ReportTemplate> reportTemplates = this.templateRepository.findByOwnerId(userId);
             List<UserUploadedFile> userUploadedFiles = this.adfMetaDataRepository.findByOwnerIdAndFacilityIdIsNull(userId);
             List<AnalysisJob> analysisJobs = this.analysisJobRepository.findByOwnerIdAndFacilityIdIsNull(userId);
-            List<AnalysisReport> analysisReports = this.reportRepository.findByOwnerIdAndFacilityIdIsNull(userId);
+            List<AnalysisReport> analysisReports = this.analysisReportService.findByOwnerIdAndFacilityIdIsNull(userId);
             List<UserEditToken> userTokens = this.userEditTokenRepository.findByUserId(userId);
 
             this.digestConfigurationRepository.delete(configurations);
@@ -69,7 +70,7 @@ public class UserCleanupService {
             });
             this.adfMetaDataRepository.delete(userUploadedFiles);
             this.analysisJobRepository.delete(analysisJobs);
-            this.reportRepository.delete(analysisReports);
+            this.analysisReportService.delete(analysisReports);
             List<Facility> facilities = this.facilityRepository.findByMembersContaining(userId);
             facilities.forEach((facility) -> facility.getMembers().remove(userId));
             this.facilityRepository.save(facilities);
