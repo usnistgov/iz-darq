@@ -10,17 +10,20 @@ import gov.nist.healthcare.iz.darq.model.Facility;
 import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 import gov.nist.healthcare.iz.darq.repository.*;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.service.impl.AnalysisReportService;
 import gov.nist.healthcare.iz.darq.users.domain.UserAccount;
 import gov.nist.healthcare.iz.darq.users.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Component
+@Service
 public class SetUserIdIDataIntegrityInitializer {
 
     @Autowired
@@ -32,14 +35,13 @@ public class SetUserIdIDataIntegrityInitializer {
     @Autowired
     AnalysisJobRepository analysisJobRepository;
     @Autowired
-    AnalysisReportRepository reportRepository;
+    AnalysisReportService analysisReportService;
     @Autowired
     FacilityRepository facilityRepository;
     @Autowired
     UserAccountRepository userAccountRepository;
 
-    @PostConstruct
-    public void setUserId() throws OperationFailureException {
+    public void setUserId() throws OperationFailureException, IOException {
         //--- ADF
         List<UserUploadedFile> userUploadedFileList = adfMetaDataRepository.findAll();
         for(UserUploadedFile file: userUploadedFileList) {
@@ -67,11 +69,11 @@ public class SetUserIdIDataIntegrityInitializer {
         }
 
         //--- Report
-        List<AnalysisReport> reports = reportRepository.findAll();
+        List<AnalysisReport> reports = analysisReportService.findAll();
         for(AnalysisReport report: reports) {
             ReportTemplate reportTemplate = this.handleResource(report.getReportTemplate(), report.getReportTemplate().getOwner(), "Report Template", report.getReportTemplate().getId());
             report.setReportTemplate(reportTemplate);
-            this.reportRepository.save(this.handleResource(report, report.getOwner(), "Analysis Report", report.getId()));
+            this.analysisReportService.save(this.handleResource(report, report.getOwner(), "Analysis Report", report.getId()));
         }
 
         //--- Facilities

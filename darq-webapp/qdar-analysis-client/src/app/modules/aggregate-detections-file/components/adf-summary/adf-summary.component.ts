@@ -8,6 +8,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { selectDetectionById } from '../../../shared/store/core.selectors';
 import { IDetectionResource } from '../../../shared/model/public.model';
 import { ActivatedRoute } from '@angular/router';
+import { selectIsAdmin } from 'ngx-dam-framework';
 
 @Component({
   selector: 'app-adf-summary',
@@ -17,6 +18,7 @@ import { ActivatedRoute } from '@angular/router';
 export class AdfSummaryComponent implements OnInit, OnDestroy {
 
   adfMeta$: Observable<IADFMetadata>;
+  isAdmin$: Observable<boolean>;
   extractItems$: Observable<{
     [P in keyof IExtractPercent]?: IExtractPercent[P];
   } & { label: string }[]>;
@@ -35,6 +37,7 @@ export class AdfSummaryComponent implements OnInit, OnDestroy {
     private store: Store<any>,
     public agService: AgeGroupService,
     private activatedRoute: ActivatedRoute) {
+    this.isAdmin$ = this.store.select(selectIsAdmin);
     this.adfMeta$ = this.store.select(selectOpenFileMetadata).pipe(
       tap((meta) => {
         if (meta && meta.totalAnalysisTime && meta.totalAnalysisTime > 0) {

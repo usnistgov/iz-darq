@@ -11,13 +11,14 @@ import gov.nist.healthcare.iz.darq.access.service.EmailService;
 import gov.nist.healthcare.iz.darq.controller.domain.ADFMergeRequest;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
-import gov.nist.healthcare.iz.darq.repository.AnalysisReportRepository;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.service.impl.ADFService;
+import gov.nist.healthcare.iz.darq.service.impl.AnalysisReportService;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import gov.nist.healthcare.iz.darq.users.facility.service.FacilityService;
 import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
@@ -33,6 +34,7 @@ import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api")
@@ -51,7 +53,7 @@ public class ADFController {
 	@Autowired
 	private FacilityService facilityService;
 	@Autowired
-	private AnalysisReportRepository analysisReportRepository;
+	private AnalysisReportService analysisReportService;
 	@Autowired
 	private DescriptorService descriptorService;
 	@Autowired
@@ -71,7 +73,7 @@ public class ADFController {
 			try {
 				Facility facility = this.facilityService.getFacilityById(facilityId);
 				int files = this.repo.findByFacilityId(facilityId).size();
-				int reports = this.analysisReportRepository.findByPublishedAndFacilityId(true, facilityId).size();
+				int reports = this.analysisReportService.findByPublishedAndFacilityId(true, facilityId).size();
 				return new UserFacilityView(facilityId, facility.getName(), reports, files);
 			} catch (NotFoundException e) {
 				return null;
@@ -157,6 +159,19 @@ public class ADFController {
 			HttpServletRequest request,
 			@PathVariable("id") String id) throws Exception {
 		return (UserUploadedFile) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+	}
+
+	@RequestMapping(value="/adf/{id}/download", method=RequestMethod.GET)
+	@PreAuthorize("isAdmin() && AccessResource(#request, ADF, VIEW, #id)")
+	public void download(
+			HttpServletRequest request,
+			HttpServletResponse rsp,
+			@PathVariable("id") String id) throws Exception {
+		UserUploadedFile file = (UserUploadedFile) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+
+		rsp.setContentType("application/json");
+		rsp.setHeader("Content-disposition", "attachment;filename="+file.getName().replace(" ", "_")+".data");
+		IOUtils.copy(this.storage.getFileInputStream(file.getPath()), rsp.getOutputStream());
 	}
 
 	@RequestMapping(value="/adf/merge", method=RequestMethod.POST)

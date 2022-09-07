@@ -1,6 +1,7 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
@@ -93,6 +94,15 @@ public class TemplateController {
 			template.setId(null);
 			template.setOwner(user.getUsername());
 			template.setOwnerId(user.getId());
+			template.setPublished(false);
+			template.setLastUpdated(new Date());
+		} else {
+			ReportTemplate existing = (ReportTemplate) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+			// Non Overridable fields
+			template.setOwnerId(existing.getOwnerId());
+			template.setOwner(existing.getOwner());
+			template.setPublished(existing.isPublished());
+			template.setLastUpdated(new Date());
 		}
 		ReportTemplate saved = this.templateRepo.save(template);
 		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Saved", saved, "report-template-save");

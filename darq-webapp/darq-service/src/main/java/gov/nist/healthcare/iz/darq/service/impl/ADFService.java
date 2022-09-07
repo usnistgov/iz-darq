@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.service.impl;
 
+import gov.nist.healthcare.iz.darq.adf.service.ADFMergeService;
 import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
 import gov.nist.healthcare.iz.darq.adf.service.MergeService;
 import gov.nist.healthcare.iz.darq.adf.service.exception.InvalidFileFormat;
@@ -30,15 +31,9 @@ public class ADFService {
     @Autowired
     private CryptoUtils crypto;
     @Autowired
-    private MergeService mergeService;
-    @Autowired
     private ConfigurationService configService;
-
-    private final HashMap<String, HashSet<String>> compatibilityVersions = new HashMap<String, HashSet<String>>() {{
-        put("COMPATIBILITY_1", new HashSet<>(Arrays.asList(
-                "2.0.0-SNAPSHOT", "2.0.0", "2.0.1", "2.0.2"
-        )));
-    }};
+    @Autowired
+    private ADFMergeService adfMergeService;
 
     UserUploadedFile create(String name, String facility, String ownerId, byte[] content, ADFile file, List<ADFileComponent> components) throws InvalidFileFormat {
         try {
@@ -77,40 +72,6 @@ public class ADFService {
         }
     }
 
-    public boolean mergeable(List<ADFile> files) throws OperationFailureException {
-        // Check CLI/MQE version
-        String version = this.compatibilityVersion(files.get(0));
-        if(files.stream().anyMatch(file -> {
-            String cc = this.compatibilityVersion(file);
-            return !cc.equals(version);
-        })) {
-            throw new OperationFailureException("Files don't have the same compatibility version");
-        }
-
-        // Check Configuration
-        ConfigurationPayload configuration = files.get(0).getConfiguration();
-        if(files.stream().anyMatch(file -> !file.getConfiguration().equals(configuration))) {
-            throw new OperationFailureException("Files don't have the same configuration");
-        }
-
-        // Check Inactive
-        Set<String> inactive = files.get(0).getInactiveDetections();
-        if(files.stream().anyMatch(file -> !file.getInactiveDetections().equals(inactive))) {
-            throw new OperationFailureException("Files don't have the same active/inactive detections");
-        }
-        return true;
-    }
-
-    public String compatibilityVersion(ADFile file) {
-        String version = Optional.ofNullable(file.getVersion()).orElse(RandomStringUtils.random(5));
-        String compatibilityVersion = this.compatibilityVersions.entrySet().stream().filter(
-                (entry) -> entry.getValue().contains(version)
-        ).findFirst().map(Map.Entry::getKey).orElse(version);
-
-        String mqe = Optional.ofNullable(file.getMqeVersion()).orElse(RandomStringUtils.random(5));
-        return compatibilityVersion + " - " + mqe;
-    }
-
     public UserUploadedFile merge(String name, String facility, String ownerId, Set<UserUploadedFile> metadataList) throws Exception {
         if(metadataList == null) {
             throw new OperationFailureException("Invalid number of ADF to merge : none");
@@ -124,31 +85,7 @@ public class ADFService {
             files.add(storage.getFile(metadata.getId()));
         }
 
-        this.mergeable(files);
-
-        ADFile first = files.get(0);
-        Map<String, PatientPayload> generalPatientSection = first.getGeneralPatientPayload();
-        Map<String, Map<String, ADPayload>> reportingGroupPayload = first.getReportingGroupPayload();
-        Summary summary = first.getSummary();
-
-        for(int i = 1; i < files.size(); i++) {
-            generalPatientSection = this.mergeService.mergePatientAgeGroup(generalPatientSection, files.get(i).getGeneralPatientPayload());
-            reportingGroupPayload = this.mergeService.mergeADPayloadProvider(reportingGroupPayload, files.get(i).getReportingGroupPayload());
-            summary = Summary.merge(summary, files.get(i).getSummary());
-        }
-
-        ADFile file = new ADFile(
-                generalPatientSection,
-                reportingGroupPayload,
-                first.getConfiguration(),
-                summary,
-                null,
-                first.getVersion(),
-                first.getBuild(),
-                first.getMqeVersion(),
-                first.getInactiveDetections(),
-                0
-        );
+        ADFile file = this.adfMergeService.mergeADFiles(files);
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         this.crypto.encryptContentToFile(file, byteArrayOutputStream);

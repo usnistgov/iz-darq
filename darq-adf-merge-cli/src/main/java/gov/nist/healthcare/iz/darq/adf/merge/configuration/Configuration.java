@@ -1,25 +1,23 @@
-package gov.nist.healthcare.iz.darq.digest.app.config;
+package gov.nist.healthcare.iz.darq.adf.merge.configuration;
+
+import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.iz.darq.adf.merge.model.LoadableCryptoKey;
+import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
+import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
+import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import gov.nist.healthcare.crypto.service.CryptoKey;
-import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
-
-@Configuration
-public class DigestConfiguration {
+@org.springframework.context.annotation.Configuration
+public class Configuration {
 
 	@Bean
 	@Qualifier("ADF_KEYS")
 	public CryptoKey getAdfCryptoKey() throws Exception {
-		return new PublicOnlyCryptoKey();
+		return new LoadableCryptoKey();
 	}
 
 	@Bean
