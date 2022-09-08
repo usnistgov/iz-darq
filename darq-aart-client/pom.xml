@@ -5,15 +5,15 @@
     <parent>
         <groupId>gov.nist.healthcare.iz</groupId>
         <artifactId>darq</artifactId>
-        <version>2.0.2</version>
+        <version>2.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>darq-aart-client</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <qdar.webtool.version>3.0.2</qdar.webtool.version>
+        <qdar.webtool.version>3.0.3</qdar.webtool.version>
     </properties>
     <dependencies>
         <dependency>

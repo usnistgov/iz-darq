@@ -15,7 +15,7 @@ public class ADFMergeServiceImpl implements ADFMergeService {
 
     private final HashMap<String, HashSet<String>> compatibilityVersions = new HashMap<String, HashSet<String>>() {{
         put("COMPATIBILITY_1", new HashSet<>(Arrays.asList(
-                "2.0.0-SNAPSHOT", "2.0.0", "2.0.1", "2.0.2"
+                "2.0.0-SNAPSHOT", "2.0.0", "2.0.1", "2.0.2", "2.0.3"
         )));
     }};
 

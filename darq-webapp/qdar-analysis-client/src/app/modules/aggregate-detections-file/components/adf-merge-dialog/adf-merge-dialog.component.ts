@@ -17,7 +17,7 @@ export class AdfMergeDialogComponent implements OnInit {
   facilityMap: Record<string, string> = {};
   fileSelection: IADFDescriptor[] = [];
   compatibilityVersions = [
-    ['2.0.0', '2.0.0-SNAPSHOT', '2.0.1', '2.0.2'],
+    ['2.0.0', '2.0.0-SNAPSHOT', '2.0.1', '2.0.2', '2.0.3'],
   ];
 
   name: string;
