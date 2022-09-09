@@ -36,23 +36,26 @@ public class JWTAuthenticationFilter<T extends Account<E>, E extends Authority, 
 		try {
 			AbstractAuthenticationToken authentication = tokenService.getAuthentication((HttpServletRequest) request);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-			filterChain.doFilter(request, response);
 		}
 		catch (AuthenticationException exception) {
 			exception.printStackTrace();
 			this.handler.commence((HttpServletRequest) request, (HttpServletResponse)  response, exception);
 			SecurityContextHolder.clearContext();
+			return;
 		}
 		catch (JwtException e) {
 			e.printStackTrace();
 			SecurityContextHolder.clearContext();
 			this.tokenService.clearAuthCookie((HttpServletResponse) response);
 			filterChain.doFilter(request, response);
+			return;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 			this.handler.commence((HttpServletRequest) request, (HttpServletResponse)  response, new AuthenticationServiceException("Invalid authentication token", e));
 			SecurityContextHolder.clearContext();
+			return;
 		}
+		filterChain.doFilter(request, response);
 	}
 }

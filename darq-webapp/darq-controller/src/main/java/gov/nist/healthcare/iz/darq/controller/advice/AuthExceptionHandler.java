@@ -89,6 +89,14 @@ public class AuthExceptionHandler {
         return new OpAck<>(OpAck.AckStatus.FAILED, "User does not have permission to access/perform action", e.getMessage(), "error");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    public OpAck<String> handleException(Exception e) {
+        return new OpAck<>(OpAck.AckStatus.FAILED, e.getMessage(), e.getMessage(), "error");
+    }
+
+
     @ExceptionHandler(IllegalArgumentException.class)
     public void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
         e.printStackTrace();
