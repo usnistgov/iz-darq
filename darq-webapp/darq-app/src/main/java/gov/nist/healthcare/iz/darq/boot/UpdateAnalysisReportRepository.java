@@ -35,7 +35,7 @@ public class UpdateAnalysisReportRepository {
     public void update() throws IOException {
         List<AnalysisReport> reportList = partialAnalysisReportRepository.findAll();
         for(AnalysisReport report: reportList) {
-            GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("metadata.id").is(report.getId())));
+            GridFSFile file = gridFsTemplate.findOne(this.analysisReportService.getQueryById(report.getId()));
             if(file == null) {
                 analysisReportService.save(report);
             }
