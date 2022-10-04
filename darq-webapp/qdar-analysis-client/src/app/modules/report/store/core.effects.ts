@@ -65,7 +65,7 @@ export class CoreEffects extends DamWidgetEffect {
                   pass: true,
                 },
                 fields: {
-                  keep: false,
+                  keep: true,
                   active: false,
                   fields: {
                     PROVIDER: [],

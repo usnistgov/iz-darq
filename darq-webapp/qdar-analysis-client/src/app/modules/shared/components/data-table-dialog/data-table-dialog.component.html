@@ -1,6 +1,6 @@
 <p-tabView>
   <p-tabPanel header="Data Analysis" headerStyleClass="valid-tab">
-    <app-data-table [table]="table" [labelizer]="labelizer"></app-data-table>
+    <app-data-table #dataTable [table]="table" [labelizer]="labelizer"></app-data-table>
   </p-tabPanel>
   <p-tabPanel header="Query" headerStyleClass="valid-tab">
     <app-query-display [query]="table.query" [labelizer]="labelizer"></app-query-display>
@@ -18,5 +18,13 @@
         </tr>
       </tbody>
     </table>
+  </p-tabPanel>
+  <p-tabPanel headerStyleClass="table-export-btn" [disabled]="true">
+    <ng-template pTemplate="header">
+      <span class="export-btn" (click)="dataTable.downloadCSV()">
+        <i class="fa fa-download"></i>
+        Export CSV
+      </span>
+    </ng-template>
   </p-tabPanel>
 </p-tabView>

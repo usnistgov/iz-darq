@@ -93,6 +93,8 @@ export class FieldInputComponent implements ControlValueAccessor, OnInit {
   @Input()
   field: Field;
   @Input()
+  multi: boolean;
+  @Input()
   id: string;
   @Input()
   analysis: AnalysisType;

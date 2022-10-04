@@ -72,7 +72,7 @@ export class ValuesService {
         value: elm.id,
       };
     };
-    const ageGroups = data.ageGroups || [];
+    const ageGroups = [...(data.ageGroups || [])];
 
     ageGroups.sort((a, b) => {
       return this.ageGroupService.compare(a.min, b.min);

@@ -1,3 +1,5 @@
+import { ValuesService } from 'src/app/modules/shared/services/values.service';
+import { Labelizer } from './../../services/values.service';
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SelectItem } from 'primeng/api/selectitem';
@@ -51,13 +53,16 @@ export class QueryDialogComponent implements OnInit {
       messages: [],
     }
   };
+  labelizer: Labelizer;
 
   constructor(
     public dialogRef: MatDialogRef<QueryDialogComponent>,
     private queryService: QueryService,
+    private valuesService: ValuesService,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.options = data.options;
+    this.labelizer = valuesService.getQueryValuesLabel(this.options);
     this.value = _.cloneDeep(data.query);
     this.backUp = _.cloneDeep(this.value);
     this.paths = Object.keys(AnalysisType).map((key) => {

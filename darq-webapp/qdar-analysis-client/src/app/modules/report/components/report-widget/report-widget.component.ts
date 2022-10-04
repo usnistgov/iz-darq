@@ -49,6 +49,7 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
   nodes$: Observable<ITocNode[]>;
   isViewOnly$: Observable<boolean>;
   generalFilter$: Observable<IReportFilter>;
+  dashboardRoute$: Observable<string[]>;
   labelizer$: Observable<IFieldInputOptions>;
   facility$: Observable<IUserFacilityDescriptor>;
   reportingGroupCsvFile: File;
@@ -77,6 +78,11 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
 
     this.facility$ = this.report$.pipe(
       flatMap((report) => this.store.select(selectUserFacilityById, { id: report.facilityId ? report.facilityId : PRIVATE_FACILITY_ID })),
+    );
+    this.dashboardRoute$ = this.facility$.pipe(
+      map((facility) => {
+        return facility.id ? ['/', 'adf', 'dashboard', facility.id] : ['/', 'adf', 'dashboard'];
+      })
     );
     this.nodes$ = this.store.select(selectReportTocNodes);
     this.labelizer$ = combineLatest([
@@ -116,7 +122,6 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
         take(1),
         map((value) => {
           this.reportingGroupCsvFile = event?.target?.files[0];
-          console.log(this.reportingGroupCsvFile);
           this.store.dispatch(new SetValue({
             reportingGroups: value,
           }));

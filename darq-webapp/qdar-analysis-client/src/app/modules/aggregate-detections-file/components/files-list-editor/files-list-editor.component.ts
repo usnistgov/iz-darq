@@ -6,7 +6,9 @@ import {
   ConfirmDialogComponent,
   MessageType,
   RxjsStoreHelperService,
-  EditorUpdate
+  EditorUpdate,
+  TurnOnLoader,
+  TurnOffLoader
 } from 'ngx-dam-framework';
 import { Action, Store } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
@@ -122,8 +124,10 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
         }).afterClosed().pipe(
           flatMap((data) => {
             if (data) {
+              this.store.dispatch(new TurnOnLoader({ blockUI: true }));
               return this.analysisService.executeQuery(fileId, data).pipe(
                 map((result) => {
+                  this.store.dispatch(new TurnOffLoader(true));
                   this.dialog.open(DataTableDialogComponent, {
                     minWidth: '70vw',
                     maxWidth: '93vw',

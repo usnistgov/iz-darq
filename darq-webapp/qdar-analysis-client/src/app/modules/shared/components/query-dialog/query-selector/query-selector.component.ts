@@ -1,3 +1,4 @@
+import { Labelizer } from './../../../services/values.service';
 import { Component, OnInit, Input, ViewChild, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { Field, fieldsForAnalysis, AnalysisType } from '../../../../report-template/model/analysis.values';
 import { IDataSelector } from '../../../../report-template/model/report-template.model';
@@ -16,6 +17,8 @@ import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.co
 export class QuerySelectorComponent extends QueryDialogTabComponent<IDataSelector[]> implements OnInit, OnDestroy, OnChanges {
   @Input()
   options: IFieldInputOptions;
+  @Input()
+  labelizer: Labelizer;
   @ViewChild('form', { static: true })
   form: NgForm;
   fieldsList: Field[];
@@ -31,8 +34,11 @@ export class QuerySelectorComponent extends QueryDialogTabComponent<IDataSelecto
     });
   }
 
-  removeValue(list: any[], i: number) {
-    list.splice(i, 1);
+  removeValue(selector: IDataSelector, i: number) {
+    selector.values.splice(i, 1);
+    selector.values = [
+      ...selector.values
+    ];
   }
 
   removeSelector(i: number) {
@@ -41,14 +47,21 @@ export class QuerySelectorComponent extends QueryDialogTabComponent<IDataSelecto
     this.value.splice(i, 1);
   }
 
+  isSelectField(field: Field): boolean {
+    return [
+      Field.AGE_GROUP,
+      Field.TABLE,
+      Field.DETECTION,
+      Field.VACCINE_CODE,
+    ].includes(field);
+  }
+
   addSelector(field: Field) {
     const index = this.fieldsList.indexOf(field);
     this.fieldsList.splice(index, 1);
     this.value.push({
       field,
-      values: [{
-        value: undefined,
-      }],
+      values: [],
     });
   }
 

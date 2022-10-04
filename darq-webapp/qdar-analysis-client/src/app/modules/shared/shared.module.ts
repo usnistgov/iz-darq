@@ -48,6 +48,7 @@ import { QueryOccurrencesComponent } from './components/query-dialog/query-occur
 import { CheckboxModule } from 'primeng/checkbox';
 import { SimpleQueryComponent } from './components/query-dialog/simple-query/simple-query.component';
 import { TreeTableModule } from 'primeng/treetable';
+import { MultiFieldInputComponent } from './components/multi-field-input/multi-field-input.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +80,7 @@ import { TreeTableModule } from 'primeng/treetable';
     CustomLabelDialogComponent,
     QueryOccurrencesComponent,
     SimpleQueryComponent,
+    MultiFieldInputComponent,
   ],
   imports: [
     CommonModule,

@@ -1,3 +1,4 @@
+import { IThreshold } from 'src/app/modules/report-template/model/report-template.model';
 import { Component, Input, OnChanges } from '@angular/core';
 import { IDataTable } from '../../../report/model/report.model';
 import { Labelizer } from '../../services/values.service';
@@ -140,10 +141,39 @@ export class DataTableComponent implements OnChanges {
     const { rows, values } = this.dataTableService.getTableRows(this.table, this.labelizer);
     this.rows = rows;
     this.tree = this.dataTableService.getTreeFromRows(rows, this.columns);
-    console.log(this.tree);
     this.searchOptions = this.dataTableService.getSearchOptions(values, this.table.query.type);
     this.searchFields = this.columns.map((c) => c.key);
     this.initialized = true;
   }
+
+
+  public writeCSV(): string {
+    const rows = this.rows;
+    const columns = this.columns;
+    const hasGroup = columns.findIndex((c) => c.key === 'group') !== -1;
+    const fields = columns.filter((c) => c.type === ColumnType.FIELD);
+    const header = `${hasGroup ? 'GROUP_ID,' : ''}${fields.reduce((acc, f) => `${acc}${f.denominator ? 'GROUP_FIELD:' : 'FIELD:'}${f.key},`, '')}NUMERATOR,DENOMINATOR,PERCENTAGE,THRESHOLD_TYPE,THRESHOLD_VALUE,THRESHOLD_EVALUATION`
+    const rowsValues = rows.map((r) => `${hasGroup ? `${r.group},` : ''}${fields.reduce((acc, f) => `${acc}${this.escapeValue(r[f.key])},`, '')}${r.count},${r.total},${Number(r.percentage).toFixed(2)},${r.threshold ? (r.threshold as IThreshold).comparator : 'NONE'},${r.threshold ? (r.threshold as IThreshold).value : 'NONE'},${r.threshold ? (r.pass ? 'PASS' : 'FAIL') : 'NONE'}`)
+    return [header, ...rowsValues].join('\n');
+  }
+
+  public downloadCSV() {
+    const value = this.writeCSV();
+    console.log(value);
+    const file = new window.Blob([value], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    const fileURL = URL.createObjectURL(file);
+    a.href = fileURL;
+    a.download = `qdar_table.csv`;
+    a.click();
+    a.remove();
+  }
+
+  public escapeValue(value: string) {
+    const needsEscape = value.includes(",") || value.includes(",");
+    return needsEscape ? `"${value.replace(/"/g, '""')}"` : value;
+  }
+
 
 }

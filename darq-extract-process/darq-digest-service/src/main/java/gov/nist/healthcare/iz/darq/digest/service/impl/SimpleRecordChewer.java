@@ -60,7 +60,18 @@ public class SimpleRecordChewer implements RecordChewer {
 			providers.put(provider, hash);
 		}
 
-		return new ADChunk(providers, patientSection, deIdentifiedSection, extraction, apr.history.size(), 1, validator.vocabulary(), collector.codes());
+
+		return new ADChunk(
+				providers,
+				patientSection,
+				deIdentifiedSection,
+				extraction,
+				apr.history.size(),
+				1,
+				validator.vocabulary(),
+				collector.codes(),
+				validator.getHistorical(),
+				validator.getAdministered());
 	}
 
 }

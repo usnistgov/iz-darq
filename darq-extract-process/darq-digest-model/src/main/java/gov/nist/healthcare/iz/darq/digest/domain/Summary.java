@@ -162,6 +162,8 @@ public class Summary {
 		counts.avgVaccinationsPerRecord = counts.totalReadPatientRecords > 0 ? counts.totalReadVaccinations / counts.totalReadPatientRecords : 0;
 		counts.numberOfProviders = chunk.getProviders().size();
 		counts.minVaccinationsPerRecord = chunk.getMinVaccination();
+		counts.historical = chunk.getHistorical();
+		counts.administered = chunk.getAdministered();
 	}
 
 	public static Summary merge(Summary source, Summary target) {

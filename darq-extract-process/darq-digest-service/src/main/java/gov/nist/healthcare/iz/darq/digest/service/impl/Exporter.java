@@ -54,7 +54,9 @@ public class Exporter implements ExportADChunk {
 				build,
 				mqeVersion,
 				this.getInactiveDetections(payload.getDetections()),
-				elapsed
+				elapsed,
+				chunk.getHistorical(),
+				chunk.getAdministered()
 		);
 		
 		File output = new File("./darq-analysis/");

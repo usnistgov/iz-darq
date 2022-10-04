@@ -59,11 +59,13 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 	    			    	    				tbody(
 	    			        						tr(td("Total Read Patient Records"), td(summary.getCounts().totalReadPatientRecords+"")),
 	    			        						tr(td("Total Skipped Patient Records Due To Errors"), td(summary.getCounts().totalSkippedPatientRecords+"")),
-														tr(td("Total Skipped Vaccination Records Due To Errors"), td(summary.getCounts().totalSkippedVaccinationRecords+"")),
+													tr(td("Total Skipped Vaccination Records Due To Errors"), td(summary.getCounts().totalSkippedVaccinationRecords+"")),
 	    			        						tr(td("Total Read Vaccination Records"), td(summary.getCounts().totalReadVaccinations+"")),
 	    			        						tr(td("Minimum Vaccinations per Patient"), td(summary.getCounts().minVaccinationsPerRecord+"")),
 	    			        						tr(td("Maximum Vaccinations per Patient"), td(summary.getCounts().maxVaccinationsPerRecord+"")),
 	    			        						tr(td("Average Vaccinations per Patient"), td(summary.getCounts().avgVaccinationsPerRecord+"")),
+													tr(td("Total Historical Vaccinations"), td(summary.getCounts().historical+"")),
+													tr(td("Total Administered Vaccinations"), td(summary.getCounts().administered+"")),
 	    			        						tr(td("Total Number of Providers"), td(summary.getCounts().numberOfProviders+""))
 	    			    	    				)
 	    			    	    		)

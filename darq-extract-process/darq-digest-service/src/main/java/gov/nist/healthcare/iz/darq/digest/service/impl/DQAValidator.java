@@ -39,7 +39,8 @@ public class DQAValidator {
 	private final DetectionFilter filter;
 	private final VaxGroupMapper vaxMapper;
 	private final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyyMMdd");
-
+	private int historical;
+	private int administered;
 
 	public DQAValidator(AgeGroupService ageGroupCalculator, DetectionFilter filter, VaxGroupMapper vaxMapper) {
 		super();
@@ -53,7 +54,9 @@ public class DQAValidator {
 	}
 
 	void validateRecord(AggregatePatientRecord apr, LocalDate date){
-		
+		this.historical = 0;
+		this.administered = 0;
+
 		// Transform APR
 		TransformResult<VaccineRecord, MqeVaccination, MqeMessageReceived> tresult = this.transformer.transform(apr);
 		MqeMessageReceived msg = tresult.getPayload();
@@ -73,6 +76,12 @@ public class DQAValidator {
 			
 			// Adding vaccination to vaccine list
 			this.vx.add(new VxInfo(tresult.getAFromB(vx.getPositionId()+"").reporting_group.getValue(), vaccinationAtAgeGroup, this.vaxMapper.translate(vx.getAdminCvxCode()), msg.getPatient().getSex(), vx.getAdminDateString().substring(0,4), vx.getInformationSourceCode()));
+
+			if(vx.isAdministered()) {
+				this.administered++;
+			} else {
+				this.historical++;
+			}
 		}
 		
 		List<ValidationRuleResult> results = new ArrayList<>();
@@ -130,7 +139,7 @@ public class DQAValidator {
 			
 			for(Detection d : possible){
 				
-				// Check if detection is is configuration
+				// Check if detection is configuration
 				if(this.filter.in(d.getMqeMqeCode())){
 					
 					// Create an issue
@@ -275,5 +284,12 @@ public class DQAValidator {
 						)
 				).keySet();
 	}
-	
+
+	public int getHistorical() {
+		return historical;
+	}
+
+	public int getAdministered() {
+		return administered;
+	}
 }

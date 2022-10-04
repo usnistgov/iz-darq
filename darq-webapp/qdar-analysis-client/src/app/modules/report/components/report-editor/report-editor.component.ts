@@ -90,13 +90,16 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
       }),
     ).subscribe();
 
-    this.filtered$ = this.generalFilter$.pipe(
+    this.filtered$ = combineLatest([
+      this.generalFilter$,
+      this.store.select(selectReportingGroups),
+    ]).pipe(
       skipUntil(this.report$),
-      map((general) => {
+      map(([general, reportingGroups]) => {
         if (!general) {
           return this.report;
         } else {
-          return this.reportService.postProcessFilter(this.report, general);
+          return this.reportService.postProcessFilter(this.report, this.reportService.replaceReportingGroupWithHashedValue(general, reportingGroups));
         }
       })
     );

@@ -22,6 +22,7 @@
 <ng-template #dropdownInput let-fieldInfo="fieldInfo" let-discrimator="discrimator">
   <div class="value-container">
     <p-dropdown
+      *ngIf="!multi"
       [options]="fieldInfo.options[analysis] || fieldInfo.options.default || []"
       [autoDisplayFirst]="false"
       [filter]="true"
@@ -34,5 +35,18 @@
       [style]="{ 'width' : '100%' }"
       (onChange)="valueChange($event.value)">
     </p-dropdown>
+    <p-multiSelect
+      *ngIf="multi"
+      [options]="fieldInfo.options[analysis] || fieldInfo.options.default || []"
+      [filter]="true"
+      [defaultLabel]="'Select Values'"
+      [id]="fieldInfo.id + '-' + discrimator"
+      [name]="fieldInfo.id + '-' + discrimator"
+      appendTo="body"
+      [ngModel]="value"
+      [style]="{ 'width' : '100%' }"
+      [maxSelectedLabels]="0"
+      (onChange)="valueChange($event.value)">
+    </p-multiSelect>
   </div>
 </ng-template>

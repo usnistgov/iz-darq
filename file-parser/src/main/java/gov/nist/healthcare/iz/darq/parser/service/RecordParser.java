@@ -74,7 +74,8 @@ public class RecordParser {
     private <T> void  parseField(java.lang.reflect.Field field, T container, String[] payloads, int startIndex, List<Issue> issues, String name) {
         Field metadata = field.getAnnotation(Field.class);
         if(isPrimitive(field)) {
-            String value = payloads[startIndex + metadata.index()];
+            String raw = payloads[startIndex + metadata.index()];
+            String value = metadata.transform().transform(raw);
             DataUnit<?> dataUnit;
             try {
 

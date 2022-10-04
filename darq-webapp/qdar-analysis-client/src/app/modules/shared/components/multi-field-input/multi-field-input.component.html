@@ -1,0 +1,13 @@
+<app-field-input
+    [analysis]="analysis"
+    [options]="options"
+    [field]="field"
+    [multi]="true"
+    [id]="id"
+    [name]="field + '-' + id"
+    [ngModel]="value"
+    (ngModelChange)="valueChange($event)"
+    required
+    style="flex-grow: 1;"
+    >
+</app-field-input>

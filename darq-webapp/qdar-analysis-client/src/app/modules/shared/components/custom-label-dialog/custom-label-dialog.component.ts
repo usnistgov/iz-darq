@@ -39,6 +39,7 @@ export class CustomLabelDialogComponent implements OnInit {
     this.dialogRef.close({
       target: this.target,
       custom: this.custom,
+      valid: true,
       default: this.editMode ? this.default : this.getLabel(this.target),
     });
   }

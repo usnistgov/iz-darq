@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class ADFile {
-	
+
 	public static class Vocabulary {
 		private Map<Field, Set<String>> byField;
 		private Map<String, Set<String>> byTable;
-		
+
 		public Vocabulary() {
 			super();
 		}
@@ -31,7 +31,7 @@ public class ADFile {
 			this.byTable = byTable;
 		}
 	}
-	
+
 	private long totalAnalysisTime;
 	private Date analysisDate;
 	private Map<String, PatientPayload> generalPatientPayload;
@@ -43,6 +43,8 @@ public class ADFile {
 	private String build;
 	private String mqeVersion;
 	private Set<String> inactiveDetections;
+	private int historical = 0;
+	private int administered = 0;
 
 	public ADFile(
 			Map<String, PatientPayload> generalPatientPayload,
@@ -53,7 +55,9 @@ public class ADFile {
 			String version,
 			String build,
 			String mqeVersion,
-			Set<String> inactiveDetections
+			Set<String> inactiveDetections,
+			int historical,
+			int administered
 	) {
 		super();
 		this.generalPatientPayload = generalPatientPayload;
@@ -66,6 +70,8 @@ public class ADFile {
 		this.build = build;
 		this.mqeVersion = mqeVersion;
 		this.inactiveDetections = inactiveDetections;
+		this.historical = historical;
+		this.administered = administered;
 	}
 
 	public ADFile(
@@ -78,7 +84,9 @@ public class ADFile {
 			String build,
 			String mqeVersion,
 			Set<String> inactiveDetections,
-			long elapsed
+			long elapsed,
+			int historical,
+			int administered
 	) {
 		this(
 				generalPatientPayload,
@@ -88,7 +96,9 @@ public class ADFile {
 				version,
 				build,
 				mqeVersion,
-				inactiveDetections
+				inactiveDetections,
+				historical,
+				administered
 		);
 		this.totalAnalysisTime = elapsed;
 	}
@@ -177,5 +187,21 @@ public class ADFile {
 
 	public void setTotalAnalysisTime(long totalAnalysisTime) {
 		this.totalAnalysisTime = totalAnalysisTime;
+	}
+
+	public int getHistorical() {
+		return historical;
+	}
+
+	public void setHistorical(int historical) {
+		this.historical = historical;
+	}
+
+	public int getAdministered() {
+		return administered;
+	}
+
+	public void setAdministered(int administered) {
+		this.administered = administered;
 	}
 }

@@ -27,11 +27,15 @@ public class ADFMergeServiceImpl implements ADFMergeService {
         Map<String, PatientPayload> generalPatientSection = first.getGeneralPatientPayload();
         Map<String, Map<String, ADPayload>> reportingGroupPayload = first.getReportingGroupPayload();
         Summary summary = first.getSummary();
+        int historical = first.getHistorical();
+        int administered = first.getAdministered();
 
         for(int i = 1; i < files.size(); i++) {
             generalPatientSection = this.mergeService.mergePatientAgeGroup(generalPatientSection, files.get(i).getGeneralPatientPayload());
             reportingGroupPayload = this.mergeService.mergeADPayloadProvider(reportingGroupPayload, files.get(i).getReportingGroupPayload());
             summary = Summary.merge(summary, files.get(i).getSummary());
+            historical += files.get(i).getHistorical();
+            administered += files.get(i).getAdministered();
         }
 
         return new ADFile(
@@ -44,7 +48,9 @@ public class ADFMergeServiceImpl implements ADFMergeService {
                 first.getBuild(),
                 first.getMqeVersion(),
                 first.getInactiveDetections(),
-                0
+                0,
+                historical,
+                administered
         );
     }
 

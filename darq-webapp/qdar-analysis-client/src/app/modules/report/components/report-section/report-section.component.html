@@ -8,10 +8,18 @@
     <ng-container *ngFor="let data of (filtered ? filtered.data : value.data)">
       <p-tabView *ngIf="!filterActive || data?.values?.length > 0" >
         <p-tabPanel header="Data Analysis" headerStyleClass="valid-tab">
-          <app-data-table [table]="data" [labelizer]="labelizer"></app-data-table>
+          <app-data-table #dataTable [table]="data" [labelizer]="labelizer"></app-data-table>
         </p-tabPanel>
         <p-tabPanel header="Query" headerStyleClass="valid-tab">
           <app-query-display [query]="data.query" [labelizer]="labelizer"></app-query-display>
+        </p-tabPanel>
+        <p-tabPanel headerStyleClass="table-export-btn" [disabled]="true">
+          <ng-template pTemplate="header">
+            <span class="export-btn" (click)="dataTable.downloadCSV()">
+              <i class="fa fa-download"></i>
+              Export CSV
+            </span>
+          </ng-template>
         </p-tabPanel>
         <p-tabPanel *ngIf="data.issues" header="Issues" headerStyleClass="invalid-tab">
           <table *ngIf="data.issues.inactiveDetections && data.issues.inactiveDetections.length > 0" class="table table-sm table-striped table-bordered">

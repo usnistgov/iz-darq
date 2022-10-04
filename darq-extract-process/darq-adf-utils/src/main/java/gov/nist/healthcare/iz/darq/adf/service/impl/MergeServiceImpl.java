@@ -27,6 +27,8 @@ public class MergeServiceImpl implements MergeService {
 		a.setMinVaccination(b.getNbVaccinations());
 		a.setCodes(mergeCodeValues(a.getCodes(), b.getCodes()));
 		a.setValues(mergeFieldValues(a.getValues(), b.getValues()));
+		a.setAdministered(a.getAdministered() + b.getAdministered());
+		a.setHistorical(a.getHistorical() + b.getHistorical());
 		return a;
 	}
 	

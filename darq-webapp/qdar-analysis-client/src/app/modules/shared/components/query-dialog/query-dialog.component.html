@@ -32,6 +32,7 @@
             [(value)]="value.selectors"
             (valid)="setValidStatus('selectors', $event)"
             (messages)="setMessages('selectors', $event)"
+            [labelizer]="labelizer"
             [options]="options"
             [analysis]="value.type"
           ></app-query-selector>

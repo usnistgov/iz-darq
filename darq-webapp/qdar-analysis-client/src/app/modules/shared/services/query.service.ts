@@ -80,7 +80,7 @@ export class QueryService {
         pass: true,
       },
       groups: {
-        keep: false,
+        keep: true,
         active: false,
         values: [],
       }

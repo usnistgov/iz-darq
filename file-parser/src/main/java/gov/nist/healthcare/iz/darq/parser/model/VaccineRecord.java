@@ -1,6 +1,7 @@
 package gov.nist.healthcare.iz.darq.parser.model;
 
 import gov.nist.healthcare.iz.darq.parser.annotation.Field;
+import gov.nist.healthcare.iz.darq.parser.service.model.FieldTransformer;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import gov.nist.healthcare.iz.darq.parser.type.DqDate;
@@ -19,7 +20,7 @@ public class VaccineRecord extends gov.nist.healthcare.iz.darq.parser.service.mo
 	public DqString sending_organization;
 	@Field(name="Responsible Organization",index = 4)
 	public DqString responsible_organization;
-	@Field(name="Vaccine Type CVX",index = 7, coded = true, table = "CVX")
+	@Field(name="Vaccine Type CVX",index = 7, coded = true, table = "CVX", transform = FieldTransformer.CVX_LEADING_ZERO)
 	public DqString vaccine_type_cvx;
 	@Field(name="Vaccine Type NDC",index = 8, coded = true, table = "NDC")
 	public DqString vaccine_type_ndc;

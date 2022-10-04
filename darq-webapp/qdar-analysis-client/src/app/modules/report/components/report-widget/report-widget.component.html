@@ -6,6 +6,17 @@
 
   <ng-template #titleBar>
     <div style="width: 100%; display: flex; justify-content: space-between;">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="dashboardRoute$ | async" >
+            <h5 class="title-text">
+              <i class="fa fa-chevron-left" style="margin-right: 15px;"></i>
+              <i class="fa fa-database" style="color: crimson;"></i>
+              Dashboard
+            </h5>
+          </a>
+        </li>
+      </ul>
       <div style="display: flex; justify-content: center; align-items: center;">
         <div *ngIf="facility$ | async as facility" style="display: flex; align-items: baseline;">
           <i *ngIf="!facility._private" style="color: #795548; font-size: 1.5em; margin-right: 10px;" class="fa fa-building" aria-hidden="true"></i>
@@ -19,7 +30,7 @@
           <i class="fa fa-pie-chart" style="color: darkgreen; margin-right: 10px;"></i>
           {{report.name}}
         </h4>
-        <span class="badge badge" style="margin-right: 5px; font-weight: 300; color: #afafaf;">Updated On {{ report.lastUpdated | date:'MM-dd-yyyy HH:mm' }}</span>
+        <span class="badge badge" style="margin-right: 5px; margin-top: 12px; margin-left: 10px; font-weight: 300; color: #afafaf;">Updated On {{ report.lastUpdated | date:'MM-dd-yyyy HH:mm' }}</span>
       </div>
       <dam-fullscreen-button></dam-fullscreen-button>
     </div>

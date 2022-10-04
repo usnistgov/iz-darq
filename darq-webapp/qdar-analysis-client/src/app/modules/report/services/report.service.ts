@@ -65,6 +65,30 @@ export class ReportService {
     );
   }
 
+  replaceReportingGroupWithHashedValue(filter: IReportFilter, reportingGroups: Record<string, string>) {
+    const reverseReportingGroupMap = Object.keys(reportingGroups || {}).reduce((acc, k) => {
+      return {
+        ...acc,
+        [reportingGroups[k]]: k
+      }
+    }, {});
+
+    if (filter.fields && filter.fields.active && Object.keys(filter.fields.fields).includes(Field.PROVIDER) && filter.fields.fields[Field.PROVIDER].length > 0) {
+      const replaced = {
+        ...filter,
+        fields: {
+          ...filter.fields,
+          fields: {
+            ...filter.fields.fields,
+            [Field.PROVIDER]: filter.fields.fields[Field.PROVIDER].map((cnt) => ({ value: reverseReportingGroupMap[cnt.value] || cnt.value }))
+          }
+        }
+      }
+      return replaced;
+    }
+    return filter;
+  }
+
   filterIsActive(filter: IReportFilter): boolean {
     return filter && (filter.denominator.active || filter.fields.active || filter.percentage.active || filter.threshold.active);
   }

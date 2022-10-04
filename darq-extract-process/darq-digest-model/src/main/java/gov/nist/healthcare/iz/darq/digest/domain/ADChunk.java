@@ -12,6 +12,8 @@ public class ADChunk {
 	private int nbPatients = 0;
 	private int maxVaccination = 0;
 	private int minVaccination = 99999;
+	private int historical = 0;
+	private int administered = 0;
 	private IssueList issues;
 	private Map<String, String> providers;
 	private Map<String, PatientPayload> generalPatientPayload;
@@ -28,7 +30,9 @@ public class ADChunk {
 			int nbVaccinations,
 			int nbPatients,
 			Map<Field, Set<String>> values,
-			Map<String, Set<String>> codes) {
+			Map<String, Set<String>> codes,
+			int historical,
+			int administered) {
 		super();
 		this.providers = providers;
 		this.generalPatientPayload = generalPatientPayload;
@@ -38,6 +42,8 @@ public class ADChunk {
 		this.nbPatients = nbPatients;
 		this.values = values;
 		this.codes = codes;
+		this.administered = administered;
+		this.historical = historical;
 	}
 	
 	
@@ -176,5 +182,21 @@ public class ADChunk {
 
 	public void setUnreadVaccinations(int unreadVaccinations) {
 		this.unreadVaccinations = unreadVaccinations;
+	}
+
+	public int getHistorical() {
+		return historical;
+	}
+
+	public void setHistorical(int historical) {
+		this.historical = historical;
+	}
+
+	public int getAdministered() {
+		return administered;
+	}
+
+	public void setAdministered(int administered) {
+		this.administered = administered;
 	}
 }

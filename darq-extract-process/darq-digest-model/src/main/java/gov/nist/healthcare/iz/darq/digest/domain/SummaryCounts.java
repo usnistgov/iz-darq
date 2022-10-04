@@ -13,7 +13,8 @@ public class SummaryCounts {
 	public int maxVaccinationsPerProvider;
 	public int minVaccinationsPerProvider;
 	public int avgVaccinationsPerProvider;
-	
+	public int historical;
+	public int administered;
 	
 	public SummaryCounts() {
 		super();
@@ -24,7 +25,7 @@ public class SummaryCounts {
 						 int totalSkippedVaccinationRecords,
 			int maxVaccinationsPerRecord, int minVaccinationsPerRecord, int numberOfProviders,
 			int avgVaccinationsPerRecord, int maxVaccinationsPerProvider, int minVaccinationsPerProvider,
-			int avgVaccinationsPerProvider) {
+			int avgVaccinationsPerProvider, int historical, int administered) {
 		super();
 		this.totalReadVaccinations = totalReadVaccinations;
 		this.totalReadPatientRecords = totalReadPatientRecords;
@@ -37,6 +38,8 @@ public class SummaryCounts {
 		this.maxVaccinationsPerProvider = maxVaccinationsPerProvider;
 		this.minVaccinationsPerProvider = minVaccinationsPerProvider;
 		this.avgVaccinationsPerProvider = avgVaccinationsPerProvider;
+		this.historical = historical;
+		this.administered = administered;
 	}
 	
 	
@@ -53,6 +56,8 @@ public class SummaryCounts {
 		result.maxVaccinationsPerProvider = Math.max(source.maxVaccinationsPerProvider, target.maxVaccinationsPerProvider);
 		result.minVaccinationsPerProvider = Math.min(source.minVaccinationsPerProvider, target.minVaccinationsPerProvider);
 		result.avgVaccinationsPerProvider = (source.avgVaccinationsPerProvider + target.avgVaccinationsPerProvider) / 2;
+		result.historical = source.historical + target.historical;
+		result.administered = source.administered + target.administered;
 		return result;
 	}
 

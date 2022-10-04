@@ -43,14 +43,15 @@
                       <button class="btn btn-sm btn-danger pull-right" (click)="removeSelector(is)">
                         <i class="fa fa-times"></i>
                       </button>
-                      <button class="btn btn-sm btn-primary pull-right"  style="margin-right: 5px;" *ngIf="selector.field !== 'TABLE'" (click)="addValue(selector)">
+                      <button class="btn btn-sm btn-primary pull-right"  style="margin-right: 5px;" *ngIf="selector.field !== 'TABLE' && !isSelectField(selector.field)" (click)="addValue(selector)">
                         <i class="fa fa-plus"></i>
                         Add Value
                       </button>
                     </th>
                   </tr>
                 </thead>
-                <tbody style="background-color: #f4f4f4;">
+                <tbody style="background-color: #f4f4f4;" *ngIf="!isSelectField(selector.field)">
+                  
                   <tr *ngFor="let item of selector.values; let iv = index" style="display: flex; align-items: center; padding-right: 4.8px;">
                     <app-field-input
                       [analysis]="analysis"
@@ -62,9 +63,32 @@
                       required
                       style="flex-grow: 1;"
                     ></app-field-input>
-                    <button *ngIf="iv !== 0" class="btn btn-sm btn-danger"  (click)="removeValue(selector.values, iv)">
+                    <button *ngIf="iv !== 0" class="btn btn-sm btn-danger"  (click)="removeValue(selector, iv)">
                       <i class="fa fa-minus"></i>
                     </button>
+                  </tr>
+                
+                </tbody>
+                <tbody style="background-color: #f4f4f4;" *ngIf="isSelectField(selector.field)">
+                  <tr *ngFor="let item of selector.values; let iv = index">
+                    <td style="display: flex; align-items: center; justify-content: space-between; padding-right: 4.8px; padding-left: 15px;">
+                      {{labelizer.for(selector.field, selector.values[iv].value)}}
+                      <button class="btn btn-sm btn-danger"  (click)="removeValue(selector, iv)">
+                        <i class="fa fa-minus"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <app-multi-field-input
+                      [analysis]="analysis"
+                      [options]="options"
+                      [field]="selector.field"
+                      [id]="is"
+                      [name]="selector.field + '-' + is"
+                      [(ngModel)]="selector.values"
+                      required
+                      style="flex-grow: 1;"
+                    ></app-multi-field-input>
                   </tr>
                 </tbody>
               </table>
