@@ -1,6 +1,6 @@
 import { Labelizer } from './../../../services/values.service';
 import { Component, OnInit, Input, ViewChild, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
-import { Field, fieldsForAnalysis, AnalysisType } from '../../../../report-template/model/analysis.values';
+import { Field, fieldsForAnalysis } from '../../../../report-template/model/analysis.values';
 import { IDataSelector } from '../../../../report-template/model/report-template.model';
 import { IFieldInputOptions } from '../../field-input/field-input.component';
 import { NgForm } from '@angular/forms';

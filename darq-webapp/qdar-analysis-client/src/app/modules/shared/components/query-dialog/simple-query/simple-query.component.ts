@@ -1,5 +1,5 @@
 import { Component, OnInit, SimpleChanges, OnChanges } from '@angular/core';
-import { AnalysisType, Field, fieldsForAnalysis } from 'src/app/modules/report-template/model/analysis.values';
+import { AnalysisType, Field } from 'src/app/modules/report-template/model/analysis.values';
 import { Comparator, IThreshold } from 'src/app/modules/report-template/model/report-template.model';
 import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
 import { ISimpleViewQuery } from '../../../../report-template/model/report-template.model';
@@ -69,9 +69,7 @@ export class SimpleQueryComponent extends QueryDialogTabComponent<ISimpleViewQue
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['value'].isFirstChange()) {
-      this.emitValid(this.value);
-    }
+    this.emitValid(this.value);
   }
 
   triggerValid() {

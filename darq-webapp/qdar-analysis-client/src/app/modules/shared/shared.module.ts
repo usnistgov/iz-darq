@@ -21,6 +21,7 @@ import { DescriptorDisplayComponent } from './components/descriptor-display/conf
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeModule } from 'angular-tree-component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { QueryDialogComponent } from './components/query-dialog/query-dialog.component';
 import { GeneralQueryDataComponent } from './components/query-dialog/general-query-data/general-query-data.component';
 import { QuerySelectorComponent } from './components/query-dialog/query-selector/query-selector.component';
@@ -49,6 +50,9 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { SimpleQueryComponent } from './components/query-dialog/simple-query/simple-query.component';
 import { TreeTableModule } from 'primeng/treetable';
 import { MultiFieldInputComponent } from './components/multi-field-input/multi-field-input.component';
+import { QueryListDialogComponent } from './components/query-list-dialog/query-list-dialog.component';
+import { QuerySaveDialogComponent } from './components/query-save-dialog/query-save-dialog.component';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 @NgModule({
   declarations: [
@@ -81,6 +85,8 @@ import { MultiFieldInputComponent } from './components/multi-field-input/multi-f
     QueryOccurrencesComponent,
     SimpleQueryComponent,
     MultiFieldInputComponent,
+    QueryListDialogComponent,
+    QuerySaveDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -98,12 +104,14 @@ import { MultiFieldInputComponent } from './components/multi-field-input/multi-f
     NgbModule,
     TreeModule,
     MatDialogModule,
+    MatSidenavModule,
     TabViewModule,
     DragDropModule,
     AccordionModule,
     TooltipModule,
     CheckboxModule,
     TreeTableModule,
+    RadioButtonModule,
   ],
   exports: [
     // Modules,
@@ -126,6 +134,7 @@ import { MultiFieldInputComponent } from './components/multi-field-input/multi-f
     TabViewModule,
     TreeTableModule,
     CheckboxModule,
+    RadioButtonModule,
     // Components,
     AgeGroupsComponent,
     DetectionsListComponent,
@@ -148,6 +157,7 @@ import { MultiFieldInputComponent } from './components/multi-field-input/multi-f
     MustMatchDirective,
     PeAutoscrollFixDirective,
     CustomLabelDialogComponent,
+    QueryListDialogComponent,
   ],
   entryComponents: [CustomLabelDialogComponent]
 })

@@ -1,3 +1,4 @@
+import { IConfigurationPayload } from './../../../configuration/model/configuration.model';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DamAbstractEditorComponent, MessageService, IEditorMetadata, EditorSave, LoadPayloadData, SetValue } from 'ngx-dam-framework';
 import { Store, Action } from '@ngrx/store';
@@ -36,6 +37,7 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
   viewOnly$: Observable<boolean>;
   generalFilter$: Observable<IReportFilter>;
   report$: BehaviorSubject<IReport>;
+  configuration$: Observable<IConfigurationPayload>;
 
   constructor(
     store: Store<any>,
@@ -58,6 +60,9 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
       map(([ability, report]) => {
         return ability.onResourceCant(_Action.COMMENT, ResourceType.REPORT, report);
       })
+    );
+    this.configuration$ = this.store.select(selectReportPayload).pipe(
+      map((report) => report.configuration)
     );
     this.labelizer$ = combineLatest([
       this.store.select(selectReportPayload),
@@ -99,7 +104,10 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
         if (!general) {
           return this.report;
         } else {
-          return this.reportService.postProcessFilter(this.report, this.reportService.replaceReportingGroupWithHashedValue(general, reportingGroups));
+          return this.reportService.postProcessFilter(
+            this.report,
+            this.reportService.replaceReportingGroupWithHashedValue(general, reportingGroups)
+          );
         }
       })
     );

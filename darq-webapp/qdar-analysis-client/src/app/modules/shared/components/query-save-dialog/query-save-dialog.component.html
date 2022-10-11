@@ -1,0 +1,14 @@
+<h4 mat-dialog-title>Save Query {{query ? ': ' + query.name : ''}}</h4>
+<div *ngIf="existing" style="display: flex; flex-direction: column;">
+    <p-radioButton label="Update Existing Saved Query" name="choice" [value]="true" [(ngModel)]="replace" (ngModelChange)="changeReplace($event)"></p-radioButton>
+    <p-radioButton label="Save As New Query" name="choice" [value]="false" [(ngModel)]="replace" (ngModelChange)="changeReplace($event)"></p-radioButton>
+</div>
+<input style="margin-top: 10px; margin-bottom: 10px;" *ngIf="!replace" placeholder="Query Name" class="form-control" id="name" name="Name" type="text" [(ngModel)]="name" (ngModelChange)="changeName($event)">
+
+<mat-dialog-actions style="justify-content: flex-end;">
+    <button class="btn btn-sm btn-secondary" style="margin-right: 5px;" [mat-dialog-close]="" >Cancel</button>
+    <button class="btn btn-sm btn-success" [disabled]="!valid" [mat-dialog-close]="{ replace: replace, name: name }" >Save</button>
+</mat-dialog-actions>
+  
+  
+  

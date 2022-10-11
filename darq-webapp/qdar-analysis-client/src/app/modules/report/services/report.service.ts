@@ -70,21 +70,27 @@ export class ReportService {
       return {
         ...acc,
         [reportingGroups[k]]: k
-      }
+      };
     }, {});
 
-    if (filter.fields && filter.fields.active && Object.keys(filter.fields.fields).includes(Field.PROVIDER) && filter.fields.fields[Field.PROVIDER].length > 0) {
-      const replaced = {
+    if (
+      filter.fields &&
+      filter.fields.active &&
+      Object.keys(filter.fields.fields).includes(Field.PROVIDER) &&
+      filter.fields.fields[Field.PROVIDER].length > 0
+    ) {
+      return {
         ...filter,
         fields: {
           ...filter.fields,
           fields: {
             ...filter.fields.fields,
-            [Field.PROVIDER]: filter.fields.fields[Field.PROVIDER].map((cnt) => ({ value: reverseReportingGroupMap[cnt.value] || cnt.value }))
+            [Field.PROVIDER]: filter.fields.fields[Field.PROVIDER].map((cnt) => ({
+              value: reverseReportingGroupMap[cnt.value] || cnt.value
+            }))
           }
         }
-      }
-      return replaced;
+      };
     }
     return filter;
   }

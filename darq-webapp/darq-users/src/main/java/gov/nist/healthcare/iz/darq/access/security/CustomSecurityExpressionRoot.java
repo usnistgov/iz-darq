@@ -39,6 +39,7 @@ public abstract class CustomSecurityExpressionRoot extends SecurityExpressionRoo
     public final ResourceType REPORT_TEMPLATE = ResourceType.REPORT_TEMPLATE;
     public final ResourceType ANALYSIS_JOB = ResourceType.ANALYSIS_JOB;
     public final ResourceType REPORT = ResourceType.REPORT;
+    public final ResourceType QUERY = ResourceType.QUERY;
     // Action
     public final Action VIEW = Action.VIEW;
     public final Action CREATE = Action.CREATE;

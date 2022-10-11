@@ -66,6 +66,8 @@ export class MultiFieldInputComponent implements ControlValueAccessor, OnInit {
   writeValue(obj: IValueContainer[]): void {
     if (obj) {
       this.value = this.valueContainerListToValueList(obj);
+    } else {
+      this.value = undefined;
     }
   }
 

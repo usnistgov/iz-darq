@@ -3,5 +3,5 @@
     <span style="font-weight: bold; color: lightgray;"> NO REPORT SECTION MATCHES THE FILTERS</span>
   </div>
   <div *ngIf="report.description" style="padding: 10px;" [innerHTML]="report.description"></div>
-  <app-report-section [filterActive]="filterIsActive$ | async" [viewOnly]="viewOnly$ | async" *ngFor="let section of report.sections; let i = index" [value]="section" [filtered]="filtered.sections[i]" [labelizer]="labelizer$ | async" (valueChange)="childChange($event, i)" ></app-report-section>
+  <app-report-section [configuration]="configuration$ | async" [filterActive]="filterIsActive$ | async" [viewOnly]="viewOnly$ | async" *ngFor="let section of report.sections; let i = index" [value]="section" [filtered]="filtered.sections[i]" [labelizer]="labelizer$ | async" (valueChange)="childChange($event, i)" ></app-report-section>
 </div>

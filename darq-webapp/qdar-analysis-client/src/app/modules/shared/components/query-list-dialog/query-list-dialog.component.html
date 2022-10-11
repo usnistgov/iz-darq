@@ -1,0 +1,36 @@
+<dam-alerts (close)="closeNotification($event)" [messages]="messages"></dam-alerts>
+<div class="main">
+    <div class="query-list">
+        <div class="list-title">
+            <span>Query List</span>
+        </div>
+        <div class="filter">
+            <div class="input-group" style="min-width: 300px;">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-filter"></i></span>
+                </div>
+                <input type="text" class="form-control" placeholder="filter" aria-label="filter" [ngModel]="filterText" (ngModelChange)="filter($event)">
+            </div>
+        </div>
+        <div class="list-content">
+            <ul *ngIf="filtered$ | async as queryList" class="list-group">
+                <li class="list-group-item cursor-pointer" *ngFor="let item of queryList" [ngClass]="{'active': query && query.id === item.id }" (click)="selectQuery(item)"> {{ item.name }} </li>
+            </ul>
+        </div>
+    </div>
+    <div class="query">
+        <div class="query-title">
+            <span style="flex-grow: 1; text-align: center;" *ngIf="query">{{query.name}}</span>
+            <button *ngIf="query" [disabled]="current && current.id === query.id" class="btn btn-sm btn-danger" (click)="deleteQuery(query)" ><i class="fa fa-trash"></i></button>
+        </div>
+        <div class="query-content">
+            <app-query-display *ngIf="query" [query]="query.query" [labelizer]="labelizer"></app-query-display>
+            <span style="color: gray;" *ngIf="!query">Please Select A Query</span>
+        </div>
+        <div class="dialog-btns">
+            <button class="btn btn-sm btn-secondary" style="margin-right: 5px;" [mat-dialog-close]="" >Cancel</button>
+            <button class="btn btn-sm btn-success" [disabled]="!query" [mat-dialog-close]="query" >Select</button>
+        </div>
+    </div>
+</div>
+    

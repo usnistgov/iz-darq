@@ -1,0 +1,86 @@
+:host {
+    display: contents;
+    height: 100%;
+}
+
+.main {
+    display: grid;
+    grid-template-columns: [qlist] 1fr [query] 2.5fr;
+    grid-template-rows: auto;
+    gap: 2px;
+    background-color: lightgray;
+    min-height: 400px;
+    height: 100%;
+}
+
+.query-list {
+    grid-column: qlist;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: [list-title] minmax(min-content, 50px)  [filtr] minmax(min-content, 40px) [list-content] auto;
+    gap: 2px;
+    border-right: 1px solid gray;
+}
+
+.list-title {
+    grid-row: list-title;
+    display: flex;
+    align-items: center;    
+    background-color: white;
+    justify-content: center;
+}
+
+.filter {
+    grid-row: filtr;
+    grid-column: 1;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list-content {
+    grid-column: 1;
+    background-color: #f8f8f8;
+    grid-row: list-content;
+    overflow: scroll;
+}
+
+.query {
+    grid-column: query;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: [query-title] 50px [query-content] auto [dialog-btns] minmax(min-content, 50px);
+    gap: 2px;
+    border-left: 1px solid gray;
+    height: 100%;
+}
+
+.query-title {
+    grid-row: query-title;
+    padding: 10px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.query-content {
+    grid-row: query-content;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    justify-content: center;
+}
+
+.dialog-btns {
+    grid-row: dialog-btns;
+    background-color: white;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+}
+
+

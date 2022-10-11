@@ -9,4 +9,5 @@ export enum EntityType {
   FACILITY = 'FACILITY',
   USER = 'USER',
   REPORT = 'REPORT',
+  QUERY = 'QUERY',
 }

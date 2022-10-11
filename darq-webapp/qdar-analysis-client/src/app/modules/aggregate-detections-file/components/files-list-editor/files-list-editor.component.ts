@@ -98,20 +98,23 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
       this.store.select(selectVaccinationTables),
     ]).pipe(
       map(([file, detections, cvxCodes, patientTables, vaccinationTables]) => {
-        return this.valueService.getFieldOptions({
-          detections: detections.filter((d) => file.configuration.detections.includes(d.id)),
-          ageGroups: file.configuration.ageGroups,
-          cvxs: cvxCodes,
-          reportingGroups: {},
-          tables: {
-            vaccinationTables,
-            patientTables,
-          }
-        }, {});
+        return {
+          options: this.valueService.getFieldOptions({
+            detections: detections.filter((d) => file.configuration.detections.includes(d.id)),
+            ageGroups: file.configuration.ageGroups,
+            cvxs: cvxCodes,
+            reportingGroups: {},
+            tables: {
+              vaccinationTables,
+              patientTables,
+            }
+          }, {}),
+          configuration: file.configuration,
+        };
       }),
     ).pipe(
       take(1),
-      flatMap((options) => {
+      flatMap(({ options, configuration }) => {
         return this.dialog.open(QueryDialogComponent, {
           disableClose: true,
           minWidth: '70vw',
@@ -119,6 +122,7 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
           maxHeight: '95vh',
           data: {
             options,
+            configuration,
             query: this.rt.getEmptyDataViewQuery(),
           }
         }).afterClosed().pipe(
@@ -135,6 +139,7 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
                     data: {
                       labelizer: this.valueService.getQueryValuesLabel(options),
                       table: result,
+                      configuration,
                     }
                   });
                   return result;

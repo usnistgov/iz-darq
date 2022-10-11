@@ -6,4 +6,5 @@ public enum ResourceType {
     REPORT_TEMPLATE,
     ANALYSIS_JOB,
     REPORT,
+    QUERY
 }

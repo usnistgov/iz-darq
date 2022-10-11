@@ -40,6 +40,17 @@ public class DescriptorService {
         );
     }
 
+    public QueryDescriptor getQueryDescriptor(Query query, List<DigestConfiguration> compatibilities) {
+        return new QueryDescriptor(
+                query.getId(),
+                query.getName(),
+                query.getOwner(),
+                query.getOwnerId(),
+                this.userManagementService.getUserDisplayName(query.getOwnerId()),
+                compatibilities.stream().map(this::getConfigurationDescriptor).collect(Collectors.toList())
+        );
+    }
+
     public ADFDescriptor getADFDescriptor(UserUploadedFile userUploadedFile, List<DigestConfiguration> compatibilities) {
         return new ADFDescriptor(
                 userUploadedFile.getId(),

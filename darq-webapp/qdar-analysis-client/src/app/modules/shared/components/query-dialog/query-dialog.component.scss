@@ -1,3 +1,14 @@
 p-dropdown {
   flex: 1;
 }
+
+.loaded-query {
+  display: flex; 
+  background-color: #e4edff; 
+  margin: 0.25em; 
+  padding: 10px; 
+  border: 1px solid lightgray; 
+  border-radius: 3px;
+  align-items: center;
+  justify-content: space-between;
+}

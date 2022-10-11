@@ -1,3 +1,5 @@
+<dam-alerts (close)="closeNotification($event)" [messages]="messages"></dam-alerts>
+
 <p-tabView>
   <p-tabPanel header="Data Analysis" headerStyleClass="valid-tab">
     <app-data-table #dataTable [table]="table" [labelizer]="labelizer"></app-data-table>
@@ -24,6 +26,14 @@
       <span class="export-btn" (click)="dataTable.downloadCSV()">
         <i class="fa fa-download"></i>
         Export CSV
+      </span>
+    </ng-template>
+  </p-tabPanel>
+  <p-tabPanel headerStyleClass="table-export-btn" [disabled]="true">
+    <ng-template pTemplate="header">
+      <span class="export-btn" (click)="saveQuery()">
+        <i class="fa fa-save"></i>
+        Save Query
       </span>
     </ng-template>
   </p-tabPanel>

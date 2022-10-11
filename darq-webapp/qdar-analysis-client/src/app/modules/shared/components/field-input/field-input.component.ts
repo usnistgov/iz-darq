@@ -115,9 +115,7 @@ export class FieldInputComponent implements ControlValueAccessor, OnInit {
     this.disabled = isDisabled;
   }
   writeValue(obj: any): void {
-    if (obj) {
-      this.value = obj;
-    }
+    this.value = obj;
   }
 
   valueChange(value) {

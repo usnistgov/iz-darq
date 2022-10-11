@@ -7,6 +7,7 @@ import gov.nist.healthcare.domain.trait.Publishable;
 import gov.nist.healthcare.iz.darq.access.domain.*;
 import gov.nist.healthcare.iz.darq.repository.AnalysisJobRepository;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
+import gov.nist.healthcare.iz.darq.repository.QueryRepository;
 import gov.nist.healthcare.iz.darq.repository.TemplateRepository;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.impl.ADFStorage;
@@ -27,6 +28,8 @@ public class SimpleResourceQualifier {
     AnalysisJobRepository analysisJobRepository;
     @Autowired
     AnalysisReportService analysisReportService;
+    @Autowired
+    QueryRepository queryRepository;
 
     public ResourceSecurityWrapper getSecurityQualifiedResource(ResourceType type, String id) throws NotFoundException {
         Object resource = this.getResource(type, id);
@@ -54,6 +57,8 @@ public class SimpleResourceQualifier {
                 return this.analysisJobRepository.findOne(id);
             case REPORT:
                 return this.analysisReportService.findOne(id);
+            case QUERY:
+                return this.queryRepository.findOne(id);
         }
         return null;
     }

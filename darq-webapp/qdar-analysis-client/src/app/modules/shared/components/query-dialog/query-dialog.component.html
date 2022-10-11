@@ -1,5 +1,21 @@
-<h2 mat-dialog-title>Data Table Query Builder</h2>
-<dam-alerts [messages]="messages"></dam-alerts>
+
+<div mat-dialog-title style="display: flex; justify-content: space-between;">
+  <h4>Data Table Query Builder</h4>
+  <div>
+    <button class="btn btn-sm btn-primary" style="margin-right: 5px;" (click)="loadSavedQuery()">
+      Load Saved Query
+    </button>
+    <button [disabled]="!valid" (click)="saveQuery()" class="btn btn-sm btn-success">
+      Save Query
+    </button>
+  </div>
+</div>
+<dam-alerts (close)="closeNotification($event)" [messages]="messages"></dam-alerts>
+<div class="loaded-query" *ngIf="query">
+  <strong>Loaded Query : </strong>
+  <span>{{query.name}}</span>
+  <button class="btn btn-sm btn-danger" (click)="clearLoadedQuery()" ><i class="fa fa-times"></i></button>
+</div>
 <p-tabView>
   <p-tabPanel header="Query" [headerStyleClass]="!tabsValid.simple.valid || (
     !tabsValid.selectors.valid || !tabsValid.occurrences.valid || !tabsValid.groupBy.valid || !tabsValid.thresholds.valid

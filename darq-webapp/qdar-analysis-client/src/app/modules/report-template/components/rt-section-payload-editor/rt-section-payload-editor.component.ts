@@ -124,9 +124,12 @@ export class RtSectionPayloadEditorComponent extends DamAbstractEditorComponent 
   }
 
   openDialog(value: QueryType, i?: number) {
-    this.options$.pipe(
+    combineLatest([
+      this.options$,
+      this.store.select(selectReportTemplateConfiguration),
+    ]).pipe(
       take(1),
-      flatMap((options) => {
+      flatMap(([options, configuration]) => {
         return this.dialog.open(QueryDialogComponent, {
           disableClose: true,
           minWidth: '70vw',
@@ -134,6 +137,7 @@ export class RtSectionPayloadEditorComponent extends DamAbstractEditorComponent 
           maxHeight: '95vh',
           data: {
             options,
+            configuration,
             query: value,
           }
         }).afterClosed().pipe(

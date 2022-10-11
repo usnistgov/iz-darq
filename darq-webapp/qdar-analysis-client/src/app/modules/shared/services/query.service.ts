@@ -1,6 +1,11 @@
+import { IConfigurationPayload } from './../../configuration/model/configuration.model';
+import { IQuery } from './../model/query.model';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AnalysisType, Field } from '../../report-template/model/analysis.values';
 import { ISimpleViewQuery, IDataViewQuery, Comparator, IQueryResultFilter, IQueryPayload, QueryPayloadType } from '../../report-template/model/report-template.model';
+import { IMessage } from 'ngx-dam-framework';
 
 export interface IQueryFlag {
   detections: boolean;
@@ -9,12 +14,41 @@ export interface IQueryFlag {
   provider: boolean;
 }
 
+export interface IQuerySaveRequest {
+  id?: string;
+  name: string;
+  query: IQueryPayload;
+  configuration: IConfigurationPayload;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class QueryService {
 
-  constructor() { }
+  readonly URL = '/api/query/';
+
+  constructor(private http: HttpClient) { }
+
+  getQueries(): Observable<IQuery[]> {
+    return this.http.get<IQuery[]>(this.URL);
+  }
+
+  getQueriesForConfiguration(config: IConfigurationPayload): Observable<IQuery[]> {
+    return this.http.post<IQuery[]>(this.URL + 'for-configuration', config);
+  }
+
+  getQuery(id: string): Observable<IQuery> {
+    return this.http.get<IQuery>(this.URL + id);
+  }
+
+  deleteQuery(id: string): Observable<IMessage<IQuery>> {
+    return this.http.delete<IMessage<IQuery>>(this.URL + id);
+  }
+
+  saveQuery(query: IQuerySaveRequest): Observable<IMessage<IQuery>> {
+    return this.http.post<IMessage<IQuery>>(this.URL, query);
+  }
 
   getEmptySimpleQuery(type: AnalysisType): ISimpleViewQuery {
     const flags = this.getQueryFlags(type);

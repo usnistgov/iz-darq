@@ -3,6 +3,22 @@ package gov.nist.healthcare.iz.darq.access.domain;
 
 public enum Permission {
     SUPER(),
+    QUERY_PRIVATE_AUTHOR(
+      Scope(
+              Scope.GLOBAL,
+              ActionOn(
+                      ResourceType.QUERY,
+                      ANY(
+                              Action.CREATE
+                      ),
+                      OWNED(
+                              Action.VIEW,
+                              Action.EDIT,
+                              Action.DELETE
+                      )
+              )
+      )
+    ),
     CONFIG_PUBLIC_VIEW(
         Scope(
                 Scope.GLOBAL,

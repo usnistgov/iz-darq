@@ -37,6 +37,7 @@ public class UserAccountAndRoleDataIntegrityInitializer {
         }
         BASIC.setRole("BASIC");
         BASIC.setPermissions(new HashSet<>(Arrays.asList(
+                Permission.QUERY_PRIVATE_AUTHOR,
                 Permission.CONFIG_PUBLIC_VIEW,
                 Permission.RT_PUBLIC_VIEW
         )));

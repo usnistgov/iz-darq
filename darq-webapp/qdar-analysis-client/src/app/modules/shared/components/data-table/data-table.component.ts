@@ -152,8 +152,18 @@ export class DataTableComponent implements OnChanges {
     const columns = this.columns;
     const hasGroup = columns.findIndex((c) => c.key === 'group') !== -1;
     const fields = columns.filter((c) => c.type === ColumnType.FIELD);
-    const header = `${hasGroup ? 'GROUP_ID,' : ''}${fields.reduce((acc, f) => `${acc}${f.denominator ? 'GROUP_FIELD:' : 'FIELD:'}${f.key},`, '')}NUMERATOR,DENOMINATOR,PERCENTAGE,THRESHOLD_TYPE,THRESHOLD_VALUE,THRESHOLD_EVALUATION`
-    const rowsValues = rows.map((r) => `${hasGroup ? `${r.group},` : ''}${fields.reduce((acc, f) => `${acc}${this.escapeValue(r[f.key])},`, '')}${r.count},${r.total},${Number(r.percentage).toFixed(2)},${r.threshold ? (r.threshold as IThreshold).comparator : 'NONE'},${r.threshold ? (r.threshold as IThreshold).value : 'NONE'},${r.threshold ? (r.pass ? 'PASS' : 'FAIL') : 'NONE'}`)
+    const fieldsHeader = fields.reduce((acc, f) => `${acc}${f.denominator ? 'GROUP_FIELD:' : 'FIELD:'}${f.key},`, '');
+    const header = `${hasGroup ? 'GROUP_ID,' : ''}${fieldsHeader}NUMERATOR,DENOMINATOR,PERCENTAGE,THRESHOLD_TYPE,THRESHOLD_VALUE,THRESHOLD_EVALUATION`;
+
+    const rowsValues = rows.map((r) => {
+      const group = hasGroup ? `${r.group},` : '';
+      const fieldsValue = fields.reduce((acc, f) => `${acc}${this.escapeValue(r[f.key])},`, '');
+      const thresholdType = r.threshold ? (r.threshold as IThreshold).comparator : 'NONE';
+      const thresholdValue = r.threshold ? (r.threshold as IThreshold).value : 'NONE';
+      const thresholdActivation = r.threshold ? (r.pass ? 'PASS' : 'FAIL') : 'NONE';
+      return `${group}${fieldsValue}${r.count},${r.total},${Number(r.percentage).toFixed(2)},${thresholdType},${thresholdValue},${thresholdActivation}`;
+    });
+
     return [header, ...rowsValues].join('\n');
   }
 
@@ -171,7 +181,7 @@ export class DataTableComponent implements OnChanges {
   }
 
   public escapeValue(value: string) {
-    const needsEscape = value.includes(",") || value.includes(",");
+    const needsEscape = value.includes(',') || value.includes('"');
     return needsEscape ? `"${value.replace(/"/g, '""')}"` : value;
   }
 
