@@ -83,6 +83,8 @@ export interface ISummaryCounts {
   maxVaccinationsPerProvider: number;
   minVaccinationsPerProvider: number;
   avgVaccinationsPerProvider: number;
+  historical: number;
+  administered: number;
 }
 
 export interface IAgeGroupCount {

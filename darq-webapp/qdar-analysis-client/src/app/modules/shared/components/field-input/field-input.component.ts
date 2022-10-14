@@ -119,6 +119,7 @@ export class FieldInputComponent implements ControlValueAccessor, OnInit {
   }
 
   valueChange(value) {
+    this.value = value;
     this.onChange(value);
   }
 

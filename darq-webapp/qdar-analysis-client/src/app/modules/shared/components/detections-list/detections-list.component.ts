@@ -58,10 +58,11 @@ export class DetectionsListComponent implements OnInit {
     this.triggerChange();
   }
 
-  filter(text) {
+  filter(text: string) {
     this.filtered = this.value.filter((id) => {
       const d = this.detectionsMap[id];
-      return d && (d.id.includes(text) || d.target.includes(text) || d.description.includes(text));
+      const txt = (text || '').toLowerCase();
+      return d && (d.id.includes(txt) || d.target.toLowerCase().includes(txt) || d.description.toLowerCase().includes(txt));
     });
   }
 
