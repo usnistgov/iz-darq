@@ -1,3 +1,5 @@
+import { FacilityService } from './../../facility/services/facility.service';
+import { ExternalVariableService } from './../services/external-variables.service';
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { map, concatMap, flatMap, catchError } from 'rxjs/operators';
@@ -10,6 +12,7 @@ import {
   OpenWebContentEditor,
   OpenEmailTemplateEditor,
   OpenConfigurationEditor,
+  OpenExternalVariablesEditor,
 } from './core.actions';
 import {
   DamWidgetEffect,
@@ -30,6 +33,7 @@ import { AdminTabs } from '../components/admin-sidebar/admin-sidebar.component';
 import { AdminService } from '../services/admin.service';
 import { of, combineLatest, Observable } from 'rxjs';
 import { Action } from '@ngrx/store';
+import { IFacilityDescriptor } from '../../facility/model/facility.model';
 
 
 
@@ -160,6 +164,43 @@ export class CoreEffects extends DamWidgetEffect {
     })
   );
 
+  @Effect()
+  openExternalVariableEditor$ = this.actions$.pipe(
+    ofType(CoreActionTypes.OpenExternalVariablesEditor),
+    concatMap((action: OpenExternalVariablesEditor) => {
+      return combineLatest([
+        this.externalVariableService.getVariables(),
+        this.facilityService.getList(),
+      ]).pipe(
+        flatMap(([variables, facilities]) => {
+          return [
+            new LoadResourcesInRepository<IFacilityDescriptor>({
+              collections: [{
+                key: 'facilities',
+                values: facilities,
+              }]
+            }),
+            new SetValue({
+              adminActiveTab: AdminTabs.VALUES,
+            }),
+            new OpenEditor({
+              id: action.payload.editor.id,
+              editor: action.payload.editor,
+              initial: {
+                variables,
+              },
+              display: {},
+            })
+          ];
+        }),
+        catchError((error) => {
+          return this.handleError(error, action);
+        })
+      );
+    })
+  );
+
+
   handleError(error, action): Observable<Action> {
     return of(
       this.messageService.actionFromError(error),
@@ -172,6 +213,8 @@ export class CoreEffects extends DamWidgetEffect {
     actions$: Actions<CoreActions>,
     private adminServce: AdminService,
     private userService: UserService,
+    private externalVariableService: ExternalVariableService,
+    private facilityService: FacilityService,
     private messageService: MessageService,
   ) {
     super(ADMIN_WIDGET, actions$);

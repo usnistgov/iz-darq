@@ -5,6 +5,7 @@ export enum AdminTabs {
   EMAILS = 'EMAILS',
   NARRATIVES = 'NARRATIVES',
   CONFIG = 'CONFIG',
+  VALUES = 'VALUES',
 }
 
 @Component({

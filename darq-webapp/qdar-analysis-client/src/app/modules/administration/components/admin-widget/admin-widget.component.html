@@ -30,8 +30,11 @@
       <div *ngSwitchCase="'CONFIG'">
         <h4 class="title-text title-heading" ><i class="fa fa-wrench" style="color: gray;"></i> Configuration </h4>
       </div>
+      <div *ngSwitchCase="'VALUES'">
+        <h4 class="title-text title-heading" ><i class="fa fa-hashtag" style="color: blue;"></i> External Variables </h4>
+      </div>
     </div>
-    <div *ngIf="activeTab !== 'USERS'">
+    <div *ngIf="activeTab !== 'USERS' && activeTab !== 'VALUES'">
       <dam-reset-button></dam-reset-button>
       <dam-save-button></dam-save-button>
     </div>

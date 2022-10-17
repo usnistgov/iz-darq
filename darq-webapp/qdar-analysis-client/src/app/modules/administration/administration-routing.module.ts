@@ -1,8 +1,17 @@
+import { ExternalVariableEditorComponent, EXTERNAL_VARIABLE_EDITOR_METADATA } from './components/external-variable-editor/external-variable-editor.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DamWidgetRoute, DataLoaderGuard, EditorActivateGuard, EditorDeactivateGuard } from 'ngx-dam-framework';
 import { ADMIN_WIDGET, AdminWidgetComponent } from './components/admin-widget/admin-widget.component';
-import { LoadAdministrationWidget, CoreActionTypes, LoadUsers, OpenWebContentEditor, OpenEmailTemplateEditor, OpenConfigurationEditor } from './store/core.actions';
+import {
+  LoadAdministrationWidget,
+  CoreActionTypes,
+  LoadUsers,
+  OpenWebContentEditor,
+  OpenEmailTemplateEditor,
+  OpenConfigurationEditor,
+  OpenExternalVariablesEditor
+} from './store/core.actions';
 import { UsersManagementEditorComponent } from './components/users-management-editor/users-management-editor.component';
 import { WebContentEditorComponent, WEB_CONTENT_EDITOR_METADATA } from './components/web-content-editor/web-content-editor.component';
 import { EmailsTemplateEditorComponent, EMTAIL_TEMPLATE_EDITOR_METADATA } from './components/emails-template-editor/emails-template-editor.component';
@@ -75,6 +84,22 @@ const routes: Routes = [
             saveTableOfContent: true,
           },
           action: OpenConfigurationEditor,
+          idKey: '',
+          redirectTo: ['/', 'error'],
+        },
+      },
+      {
+        path: 'external-variables',
+        component: ExternalVariableEditorComponent,
+        canActivate: [EditorActivateGuard],
+        canDeactivate: [EditorDeactivateGuard],
+        data: {
+          editorMetadata: EXTERNAL_VARIABLE_EDITOR_METADATA,
+          onLeave: {
+            saveEditor: true,
+            saveTableOfContent: true,
+          },
+          action: OpenExternalVariablesEditor,
           idKey: '',
           redirectTo: ['/', 'error'],
         },

@@ -10,6 +10,7 @@ export enum CoreActionTypes {
   OpenWebContentEditor = '[Administration] Open Web Content Editor',
   OpenEmailTemplateEditor = '[Administration] Open Email Template Editor',
   OpenConfigurationEditor = '[Administration] Open Configuration Editor',
+  OpenExternalVariablesEditor = '[Administration] Open External Variables Editor',
 
   LoadUsers = '[Administration User Management] Load Users',
   LoadUsersSuccess = '[Administration User Management] Load Users Success',
@@ -55,6 +56,15 @@ export class OpenEmailTemplateEditor extends OpenEditorBase {
     super();
   }
 }
+export class OpenExternalVariablesEditor extends OpenEditorBase {
+  readonly type = CoreActionTypes.OpenExternalVariablesEditor;
+  constructor(readonly payload: {
+    id: string;
+    editor: IEditorMetadata;
+  }) {
+    super();
+  }
+}
 export class OpenConfigurationEditor extends OpenEditorBase {
   readonly type = CoreActionTypes.OpenConfigurationEditor;
   constructor(readonly payload: {
@@ -70,6 +80,7 @@ export type CoreActions =
   LoadAdministrationWidget
   | OpenWebContentEditor
   | OpenEmailTemplateEditor
+  | OpenExternalVariablesEditor
   | LoadAdministrationWidgetSuccess
   | LoadAdministrationWidgetFailure
   | LoadUsers

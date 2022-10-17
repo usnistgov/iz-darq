@@ -1,0 +1,85 @@
+<div style="display: flex; margin-bottom: 20px;">
+    <div class="input-group" style="margin-right: 5px; flex: 1;">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fa fa-search"></i></span>
+        </div>
+        <input class="form-control" style="background-color: #fafafa;" [(ngModel)]="txt" (ngModelChange)="filterTxtChange($event)" type="text" placeholder="Search">
+    </div>
+    <button (click)="openAddVariableDialog()" class="btn btn-sm btn-primary" style="margin-right: 5px;">
+        <i class="fa fa-plus"></i> Add Variable
+    </button>
+    <button class="btn btn-sm btn-secondary" style="margin-right: 5px;">
+        <i class="fa fa-upload"></i> Import From CSV
+    </button>
+    <button class="btn btn-sm btn-secondary">
+        <i class="fa fa-download"></i> Download as CSV
+    </button>
+</div>
+<table class="table table-sm table-bordered table-stripped">
+    <thead>
+        <tr>
+            <th>Variable Information</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let value of filteredValues$ | async">
+            <td>
+                <div style="display: flex;">
+                    <div style="display: flex; flex-direction: column; padding-top: 5px;">
+                        <button (click)="editVariable(value)" class="btn btn-sm btn-primary" style="margin-bottom: 5px;"><i class="fa fa-pencil"></i></button>
+                        <button (click)="deleteVariable(value)" class="btn btn-sm btn-danger" style="margin-bottom: 5px;"><i class="fa fa-trash"></i></button>
+                    </div>
+                    <div style="margin-left: 10px;">
+                        <span class="badge badge-primary">ID : {{value.id}}</span><br>
+                        <span *ngIf="value.scope === 'GLOBAL'" class="badge badge-success">GLOBAL</span><br *ngIf="value.scope === 'GLOBAL'">
+                        <span *ngIf="value.scope === 'IIS'" class="badge badge-danger">FACILITY</span><br *ngIf="value.scope === 'IIS'">
+                        <strong>{{value.name}}</strong><br>
+                        <span>{{value.description}}</span><br>
+                        <ng-container *ngIf="value.tags" >
+                            <span class="badge badge-dark" *ngFor="let item of value.tags">{{item}}</span><br>
+                        </ng-container>
+                        <span style="color: lightgray;">Added in {{value.dateCreated | date:'short'}}</span>
+                        <span style="color: lightgray;">, </span>
+                        <span style="color: lightgray;">Updated in {{value.dateUpdated | date:'short'}}</span><br>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <ng-container *ngIf="value.scope === 'GLOBAL'">
+                    <span style="font-size: large;">{{value.value | number:'1.0':'en-US' }}</span><br>
+                    <span *ngIf="value.comment"><i class="fa fa-comment"></i> {{value.comment}}</span><br>
+                    <span style="color: lightgray;">Value Updated in {{value.dateValueUpdated | date:'short'}}</span><br>
+                    <span style="color: lightgray;">Last Updated in {{value.dateUpdated | date:'short'}}</span>
+                </ng-container>
+                <ng-container *ngIf="value.scope === 'IIS'">
+                    <button class="btn btn-sm btn-dark" (click)="toggleShowIISValues(value.id)">
+                        <i *ngIf="!facilityValueCollapse[value.id]" class="fa fa-chevron-right"></i>
+                        <i *ngIf="facilityValueCollapse[value.id]" class="fa fa-chevron-down"></i>
+                    </button>
+                    <span> {{value.values.length}} value(s) have been defined.</span>
+                    <table style="margin-top: 3px;" class="table table-sm table-bordered table-stripped" *ngIf="facilityValueCollapse[value.id]">
+                        <tr>
+                            <th>Facility</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr *ngFor="let fv of value.values">
+                            <td>
+                                <span *ngIf="facilityNameMap[fv.facilityId]">{{facilityNameMap[fv.facilityId]}}</span>
+                                <span *ngIf="!facilityNameMap[fv.facilityId]">
+                                    <i style="color: red;" class="fa fa-exclamation-triangle"></i> [DELETED]
+                                </span>
+                            </td>
+                            <td>
+                                <span style="font-size: large;">{{fv.value | number:'1.0':'en-US' }}</span><br>
+                                <span *ngIf="fv.comment"><i class="fa fa-comment"></i> {{fv.comment}}</span><br>
+                                <span style="color: lightgray;">Value Updated in {{fv.dateValueUpdated | date:'short'}}</span><br>
+                                <span style="color: lightgray;">Last Updated in {{fv.dateUpdated | date:'short'}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </ng-container>
+            </td>
+        </tr>
+    </tbody>
+</table>

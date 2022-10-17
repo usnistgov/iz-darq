@@ -15,6 +15,9 @@ import { UserRoleDialogComponent } from './components/user-role-dialog/user-role
 import { ConfigurationEditorComponent } from './components/configuration-editor/configuration-editor.component';
 import { ConfigurationLoadingDialogComponent } from './components/configuration-loading-dialog/configuration-loading-dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ExternalVariableEditorComponent } from './components/external-variable-editor/external-variable-editor.component';
+import { ExternalVariableDialogComponent } from './components/external-variable-dialog/external-variable-dialog.component';
+import { ChipsModule } from 'primeng/chips';
 
 
 @NgModule({
@@ -28,6 +31,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     UserRoleDialogComponent,
     ConfigurationEditorComponent,
     ConfigurationLoadingDialogComponent,
+    ExternalVariableEditorComponent,
+    ExternalVariableDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -36,6 +41,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     SharedModule,
     DamFrameworkModule,
     EffectsModule.forFeature([CoreEffects]),
+    ChipsModule,
   ],
   entryComponents: [ConfigurationLoadingDialogComponent]
 })

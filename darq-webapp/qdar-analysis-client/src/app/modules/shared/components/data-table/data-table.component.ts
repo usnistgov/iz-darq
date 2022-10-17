@@ -169,7 +169,6 @@ export class DataTableComponent implements OnChanges {
 
   public downloadCSV() {
     const value = this.writeCSV();
-    console.log(value);
     const file = new window.Blob([value], { type: 'text/csv' });
     const a = document.createElement('a');
     a.style.display = 'none';
