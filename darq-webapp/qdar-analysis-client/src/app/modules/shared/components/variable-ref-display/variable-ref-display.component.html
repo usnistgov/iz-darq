@@ -1,0 +1,20 @@
+<div>
+    <span class="badge id-badge">ID : {{variable.id}}</span><br>
+    <ng-container *ngIf="variable.scope === 'GLOBAL'">
+        <span class="badge badge-success">GLOBAL</span><br>
+    </ng-container>
+    <ng-container *ngIf="variable.scope === 'IIS'">
+        <span class="badge badge-danger">FACILITY</span><br>
+    </ng-container>
+    <ng-container *ngIf="variable.type === 'ADF'">
+        <span class="badge badge-secondary">ADF</span><br>
+    </ng-container>
+    <strong>{{variable.name}}</strong><br>
+    <span>{{variable.description}}</span><br>
+    <div *ngIf="variable.snapshot" style="border-radius: 5px; border: 1px solid lightgray; padding : 5px; margin-top: 5px; background-color: #fafafa; text-align: center;">
+        <strong>Current Value : </strong>
+        <span style="font-size: large;">{{variable.snapshot.value | number:'1.0':'en-US' }}</span><br>
+        <span *ngIf="variable.snapshot.comment"><i class="fa fa-comment"></i> {{variable.snapshot.comment}}</span><br>
+        <span style="color: lightgray;">Value Updated in {{variable.snapshot.timestamp| date:'short'}}</span><br>
+    </div>
+</div>

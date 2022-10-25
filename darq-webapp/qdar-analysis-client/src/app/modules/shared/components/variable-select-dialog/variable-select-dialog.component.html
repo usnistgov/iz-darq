@@ -1,0 +1,26 @@
+<ul class="nav nav-pills" style="margin-bottom: 20px;">
+    <li *ngFor="let item of variableLists" class="nav-item" style="padding: 0 !important;">
+        <a class="nav-link" [ngClass]="{active: item.id === activeList.id}"  (click)="selectList(item)">{{item.title}}</a>
+    </li>
+</ul>
+<ng-container *ngIf="activeList">
+    <p-table [value]="activeList.list" [paginator]="true" [rows]="5">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Variable</th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-variable>
+            <tr>
+                <td>
+                    <app-variable-ref-display [variable]="variable"></app-variable-ref-display>
+                </td>
+                <td style="vertical-align: baseline;">
+                    <button *ngIf="variable.snapshot" (click)="selectSnapshot(variable)" class="btn btn-sm btn-primary" style="margin-right: 5px;">Use Current Value</button>
+                    <button *ngIf="variable.dynamic" (click)="selectDynamic(variable)" class="btn btn-sm btn-success">Use Dynamic Value</button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</ng-container>

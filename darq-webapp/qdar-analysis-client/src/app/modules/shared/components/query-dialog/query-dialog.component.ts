@@ -1,3 +1,5 @@
+import { IQueryVariableDisplay } from './../variable-ref-display/variable-ref-display.component';
+import { QueryVariableService } from './../../services/query-variable.service';
 import { QuerySaveDialogComponent, IQuerySaveDetails } from './../query-save-dialog/query-save-dialog.component';
 import { Store } from '@ngrx/store';
 import { IQuerySaveRequest } from './../../services/query.service';
@@ -60,11 +62,16 @@ export class QueryDialogComponent implements OnInit {
     simple: {
       valid: true,
       messages: [],
-    }
+    },
+    variables: {
+      valid: true,
+      messages: [],
+    },
   };
   labelizer: Labelizer;
   query: IQuery;
   configuration: IConfigurationPayload;
+  variables: IQueryVariableDisplay[];
 
   httpApiErrorMessage: UserMessage[] = [];
 
@@ -73,6 +80,7 @@ export class QueryDialogComponent implements OnInit {
     private dialog: MatDialog,
     private queryService: QueryService,
     private messageService: MessageService,
+    private queryVariableService: QueryVariableService,
     valuesService: ValuesService,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
@@ -87,6 +95,11 @@ export class QueryDialogComponent implements OnInit {
         value: AnalysisType[key],
       };
     });
+    this.queryVariableService.getVariablesDisplay().pipe(
+      map((variables) => {
+        this.variables = variables;
+      })
+    ).subscribe();
   }
 
   clearLoadedQuery() {
@@ -109,6 +122,7 @@ export class QueryDialogComponent implements OnInit {
       ...this.tabsValid.selectors.messages,
       ...this.tabsValid.filters.messages,
       ...this.tabsValid.thresholds.messages,
+      ...this.tabsValid.variables.messages,
       ...this.httpApiErrorMessage,
     ];
   }
@@ -120,7 +134,8 @@ export class QueryDialogComponent implements OnInit {
       this.tabsValid.groupBy.valid &&
       this.tabsValid.selectors.valid &&
       this.tabsValid.filters.valid &&
-      this.tabsValid.thresholds.valid;
+      this.tabsValid.thresholds.valid &&
+      this.tabsValid.variables.valid;
   }
 
   clearValidationInfo() {
@@ -153,7 +168,11 @@ export class QueryDialogComponent implements OnInit {
       simple: {
         valid: true,
         messages: [],
-      }
+      },
+      variables: {
+        valid: true,
+        messages: [],
+      },
     };
   }
 
@@ -294,11 +313,44 @@ export class QueryDialogComponent implements OnInit {
           valid: true,
           messages: [],
         },
+        variables: {
+          valid: true,
+          messages: [],
+        },
       };
     } else if (type === QueryPayloadType.ADVANCED) {
       this.value = this.queryService.getEmptyAdvancedQuery(analysis);
       this.tabsValid = {
         ...this.tabsValid,
+        simple: {
+          valid: true,
+          messages: [],
+        },
+        variables: {
+          valid: true,
+          messages: [],
+        },
+      };
+    } else if (type === QueryPayloadType.VARIABLE) {
+      this.value = this.queryService.getEmptyVariableQuery();
+      this.tabsValid = {
+        ...this.tabsValid,
+        selectors: {
+          valid: true,
+          messages: [],
+        },
+        occurrences: {
+          valid: true,
+          messages: [],
+        },
+        groupBy: {
+          valid: true,
+          messages: [],
+        },
+        thresholds: {
+          valid: true,
+          messages: [],
+        },
         simple: {
           valid: true,
           messages: [],
@@ -309,7 +361,7 @@ export class QueryDialogComponent implements OnInit {
 
   changeMode(type: QueryPayloadType) {
     if (type !== this.value.payloadType) {
-      this.setEmptyValue(type, this.value.type);
+      this.setEmptyValue(type, this.value.type || AnalysisType.VACCINCATIONS_DETECTIONS);
     }
   }
 

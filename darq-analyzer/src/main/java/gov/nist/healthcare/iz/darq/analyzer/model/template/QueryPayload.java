@@ -3,6 +3,7 @@ package gov.nist.healthcare.iz.darq.analyzer.model.template;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import gov.nist.healthcare.iz.darq.analyzer.model.variable.QueryVariableRef;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import java.util.Set;
 
@@ -11,7 +12,8 @@ import java.util.Set;
         property = "payloadType")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = DataViewQuery.class, name = "ADVANCED"),
-        @JsonSubTypes.Type(value = SimpleViewQuery.class, name = "SIMPLE")
+        @JsonSubTypes.Type(value = SimpleViewQuery.class, name = "SIMPLE"),
+        @JsonSubTypes.Type(value = VariableQuery.class, name = "VARIABLE")
 })
 public abstract class QueryPayload {
     private final QueryPayloadType payloadType;
@@ -20,6 +22,8 @@ public abstract class QueryPayload {
     protected boolean paginate;
     protected int rows;
     protected QueryResultFilter filter;
+    protected QueryVariableRef denominatorVariable;
+    protected QueryVariableRef numeratorVariable;
 
     public QueryPayload(QueryPayloadType payloadType) {
         this.payloadType = payloadType;
@@ -33,6 +37,14 @@ public abstract class QueryPayload {
     public abstract Set<DataSelector> getFilterFields();
     @JsonIgnore
     public abstract QueryThreshold getQueryThreshold();
+
+    public QueryVariableRef getDenominatorVariable() {
+        return denominatorVariable;
+    }
+
+    public void setDenominatorVariable(QueryVariableRef denominatorVariable) {
+        this.denominatorVariable = denominatorVariable;
+    }
 
     public QueryPayloadType getPayloadType() {
         return payloadType;
@@ -78,5 +90,11 @@ public abstract class QueryPayload {
         this.filter = filter;
     }
 
+    public QueryVariableRef getNumeratorVariable() {
+        return numeratorVariable;
+    }
 
+    public void setNumeratorVariable(QueryVariableRef numeratorVariable) {
+        this.numeratorVariable = numeratorVariable;
+    }
 }

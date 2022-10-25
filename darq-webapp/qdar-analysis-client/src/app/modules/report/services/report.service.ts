@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Message } from 'ngx-dam-framework';
 import { IReport, IReportDescriptor, IReportSectionResult, IDataTableRow, IDataTable } from '../model/report.model';
 import {
@@ -138,8 +138,8 @@ export class ReportService {
         return activeFieldFilters.includes(field);
       }).includes(true);
     const values = table.values.filter((row) => {
-      return this.comparatorFilter((row.result.count / row.result.total) * 100, filter.percentage) &&
-        this.comparatorFilter(row.result.total, filter.denominator) &&
+      return this.comparatorFilter((row.effectiveResult.count / row.effectiveResult.total) * 100, filter.percentage) &&
+        this.comparatorFilter(row.effectiveResult.total, filter.denominator) &&
         this.thresholdFilter(row, filter.threshold) &&
         (!hasFilterField || this.fieldFilter(row, filter.fields));
     });

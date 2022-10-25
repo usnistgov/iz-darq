@@ -1,3 +1,4 @@
+import { VariablesCsvImportDialogComponent } from './../variables-csv-import-dialog/variables-csv-import-dialog.component';
 import { selectFacilities } from './../../../facility/store/core.selectors';
 import { ExternalVariableDialogComponent } from './../external-variable-dialog/external-variable-dialog.component';
 import { ExternalVariableService } from './../../services/external-variables.service';
@@ -86,6 +87,27 @@ export class ExternalVariableEditorComponent extends DamAbstractEditorComponent 
 
   toggleShowIISValues(id: string) {
     this.facilityValueCollapse[id] = !this.facilityValueCollapse[id];
+  }
+
+  import() {
+    this.dialog.open(VariablesCsvImportDialogComponent, {}).afterClosed().pipe(
+      flatMap((value) => {
+        if (value) {
+          const form = new FormData();
+          form.append('scope', value.scope);
+          form.append('file', value.file);
+
+          return this.externalVariableService.importFromCSV(form).pipe(
+            flatMap((message) => this.notifyAndGetVariableList(message)),
+            catchError((e) => {
+              this.store.dispatch(this.message.actionFromError(e));
+              return throwError(e);
+            })
+          );
+        }
+        return of();
+      })
+    ).subscribe();
   }
 
   openAddVariableDialog() {
@@ -184,7 +206,7 @@ export class ExternalVariableEditorComponent extends DamAbstractEditorComponent 
   }
   ngOnDestroy() {
     if (this.subs) {
-      this.subs.unsubscribe()
+      this.subs.unsubscribe();
     }
   }
   onDeactivate(): void {

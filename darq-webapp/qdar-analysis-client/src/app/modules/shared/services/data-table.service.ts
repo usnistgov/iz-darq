@@ -1,3 +1,4 @@
+import { IAdjustedFraction } from './../../report/model/report.model';
 import { Injectable } from '@angular/core';
 import { Field, AnalysisType } from '../../report-template/model/analysis.values';
 import { IThreshold } from '../../report-template/model/report-template.model';
@@ -16,12 +17,15 @@ export interface IDataTableRowDisplay {
   id: string;
   group?: number;
   fraction: IFraction;
+  adjustedFraction?: IAdjustedFraction;
+  adjustedPercentage?: number;
   count: number;
   total: number;
   percentage: number;
   pass: boolean;
   threshold: IThreshold;
 }
+
 export interface IFieldValue<T> {
   [key: string]: T;
 }
@@ -38,7 +42,7 @@ export interface IRowTreeData extends Record<string, any> {
 export type Row = IDataTableRowDisplay | IFieldValue<string>;
 
 export enum ColumnType {
-  FIELD, BAR, VALUE, THRESHOLD, GROUP
+  FIELD, BAR, VALUE, THRESHOLD, GROUP, NUMERATOR_VARIABLE, DENOMINATOR_VARIABLE
 }
 
 @Injectable({
@@ -68,6 +72,16 @@ export class DataTableService {
           label: field,
         };
       }),
+      ...table.query.numeratorVariable ? [{
+        key: 'numeratorVariable',
+        type: ColumnType.NUMERATOR_VARIABLE,
+        label: 'Numerator Variable',
+      }] : [],
+      ...table.query.denominatorVariable ? [{
+        key: 'denominatorVariable',
+        type: ColumnType.DENOMINATOR_VARIABLE,
+        label: 'Denominator Variable',
+      }] : [],
       {
         key: 'percentage',
         type: ColumnType.VALUE,
@@ -137,10 +151,14 @@ export class DataTableService {
         id: i + '',
         count: row.result.count,
         total: row.result.total,
-        percentage: (row.result.count / row.result.total) * 100,
+        percentage: row.adjustedFraction ?
+          (row.adjustedFraction.count / row.adjustedFraction.total) * 100 :
+          (row.result.count / row.result.total) * 100,
         pass: row.pass,
         threshold: row.threshold,
         fraction: row.result,
+        adjustedFraction: row.adjustedFraction,
+        adjustedPercentage: row.adjustedFraction ? (row.adjustedFraction.count / row.adjustedFraction.total) * 100 : undefined,
       };
     });
 

@@ -1,9 +1,6 @@
 package gov.nist.healthcare.iz.darq.analyzer.service.impl;
 
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Counter;
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTable;
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTableRow;
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray;
+import gov.nist.healthcare.iz.darq.analyzer.model.analysis.*;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.*;
 import gov.nist.healthcare.iz.darq.analyzer.service.DataTableService;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
@@ -20,7 +17,8 @@ import java.util.stream.Collectors;
 public class UnifiedDataTableService implements DataTableService {
 
     Map<Map<Field, String>, List<Tray>> groupTraysBy(Collection<Field> fields, List<Tray> trays) {
-        return trays.stream().collect(																									Collectors.groupingBy(
+        return trays.stream().collect(
+                Collectors.groupingBy(
                 (tray) -> {
                     Map<Field, String> groupBy = new HashMap<>();
                     for(Field group : fields){
@@ -39,7 +37,7 @@ public class UnifiedDataTableService implements DataTableService {
     }
 
     @Override
-    public DataTable createTable(List<Tray> trays, QueryPayload payload) {
+    public DataTable createTable(List<Tray> trays, QueryPayload payload, QueryVariableInstanceHolder variables) {
         DataTable table = new DataTable();
         table.fromQuery(payload);
         Counter groupId = new Counter();
@@ -52,12 +50,24 @@ public class UnifiedDataTableService implements DataTableService {
                                 int nominator = rowTrays.stream().map(Tray::getCount).reduce(0, Integer::sum);
 
                                 DataTableRow row = new DataTableRow();
+                                Fraction rowFraction = new Fraction(nominator, denominator);
                                 row.setGroupId(groupId.i);
                                 row.setValues(makeRowValues(group, values));
-                                row.setResult(new Fraction(nominator, denominator));
+                                row.setResult(rowFraction);
+                                row.setAdjustedFraction(variables.getAdjustedFraction(rowFraction));
                                 table.getValues().add(row);
                             });
                 });
+
+        if(trays.size() == 0 && variables != null && variables.hasNumerator() && variables.hasDenominator()) {
+            DataTableRow row = new DataTableRow();
+            Fraction rowFraction = new Fraction((int) variables.getNumerator().getValue(), (int) variables.getDenominator().getValue());
+            row.setGroupId(groupId.i);
+            row.setValues(new HashMap<>());
+            row.setResult(rowFraction);
+            row.setAdjustedFraction(variables.getAdjustedFraction(rowFraction));
+            table.getValues().add(row);
+        }
 
         this.applyThreshold(table, payload.getQueryThreshold());
         this.applyFilters(table, payload.getFilter());
@@ -87,7 +97,7 @@ public class UnifiedDataTableService implements DataTableService {
     }
 
     public boolean applyThreshold(DataTableRow row, Threshold threshold) {
-        boolean eval = this.eval(threshold.getComparator(), threshold.getValue(), row.getResult().percent());
+        boolean eval = this.eval(threshold.getComparator(), threshold.getValue(), row.getEffectiveResult().percent());
         row.setThreshold(threshold);
         row.setPass(eval);
         return eval;
@@ -123,8 +133,8 @@ public class UnifiedDataTableService implements DataTableService {
     @Override
     public DataTable applyFilters(DataTable table, QueryResultFilter filter) {
         List<DataTableRow> rows = table.getValues().stream().filter((row) ->
-                this.compareFilter(filter.getDenominator(), row.getResult().getTotal()) &&
-                        this.compareFilter(filter.getPercentage(), row.getResult().percent()) &&
+                this.compareFilter(filter.getDenominator(), row.getEffectiveResult().getTotal()) &&
+                        this.compareFilter(filter.getPercentage(), row.getEffectiveResult().percent()) &&
                         this.thresholdFilter(filter.getThreshold(), row) &&
                         this.valueFilter(filter.getGroups(), row)
         ).collect(Collectors.toList());

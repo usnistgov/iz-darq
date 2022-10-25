@@ -10,8 +10,7 @@ import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 
 public interface ReportService {
 
-	DataTable singleQuery(ADFile file, QueryPayload payload);
-
-	AnalysisReport analyse(ADFile file, ReportTemplate template) throws IncompatibleFields;
+	DataTable singleQuery(ADFile file, QueryPayload payload, String facilityId) throws Exception;
+	AnalysisReport analyse(ADFile file, ReportTemplate template, String facilityId) throws IncompatibleFields, Exception;
 	
 }

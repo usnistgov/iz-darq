@@ -2,6 +2,7 @@ package gov.nist.healthcare.iz.darq.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import gov.nist.healthcare.iz.darq.analyzer.model.variable.QueryVariableType;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -11,12 +12,19 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = ADFQueryVariable.class, name = "ADF")
 })
 public abstract class QueryVariable {
-    private String id;
-    private String name;
-    private String description;
-    private QueryVariableType type;
+    protected String id;
+    protected String name;
+    protected String description;
+    protected QueryVariableType type;
 
     public QueryVariable() {
+    }
+
+    public QueryVariable(String id, String name, String description, QueryVariableType type) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.type = type;
     }
 
     public QueryVariable(QueryVariableType type) {

@@ -8,12 +8,26 @@
     <button (click)="openAddVariableDialog()" class="btn btn-sm btn-primary" style="margin-right: 5px;">
         <i class="fa fa-plus"></i> Add Variable
     </button>
-    <button class="btn btn-sm btn-secondary" style="margin-right: 5px;">
+    <button (click)="import()" class="btn btn-sm btn-secondary" style="margin-right: 5px;">
         <i class="fa fa-upload"></i> Import From CSV
     </button>
-    <button class="btn btn-sm btn-secondary">
-        <i class="fa fa-download"></i> Download as CSV
-    </button>
+    <div ngbDropdown style="display: contents;">
+        <button ngbDropdownToggle class="btn btn-sm btn-secondary">
+            <i class="fa fa-download"></i> Download as CSV
+        </button>
+        <div ngbDropdownMenu>
+            <a download href="/api/external-variable/export/GLOBAL">
+                <button class="btn btn-sm">
+                    GLOBAL Variables
+                </button>
+            </a><br>
+            <a download href="/api/external-variable/export/IIS">
+                <button class="btn btn-sm">
+                    IIS Variables
+                </button>
+            </a>
+        </div>
+    </div>
 </div>
 <table class="table table-sm table-bordered table-stripped">
     <thead>

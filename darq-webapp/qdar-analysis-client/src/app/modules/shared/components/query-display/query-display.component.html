@@ -51,6 +51,14 @@
           </td>
         </tr>
     </table>
+    <table *ngIf="query.denominatorVariable" class="table table-sm table-bordered" style="margin-bottom: 0;">
+      <tbody>
+        <tr>
+          <th class="title">Override Denominator Using Variable</th>
+          <td><app-variable-ref [variable]="query.denominatorVariable" ></app-variable-ref></td>
+        </tr>
+      </tbody>
+    </table>
   </p-tabPanel>
 
 
@@ -105,11 +113,35 @@
           </td>
         </tr>
     </table>
+    <table *ngIf="query.denominatorVariable" class="table table-sm table-bordered" style="margin-bottom: 0;">
+      <tbody>
+        <tr>
+          <th class="title">Override Denominator Using Variable</th>
+          <td><app-variable-ref [variable]="query.denominatorVariable" ></app-variable-ref></td>
+        </tr>
+      </tbody>
+    </table>
+  </p-tabPanel>
+
+  <p-tabPanel  headerStyleClass="valid-tab" *ngIf="query.payloadType === QueryPayloadType.VARIABLE" header="Variables Query" >
+    <table *ngIf="query.numeratorVariable" class="table table-sm table-bordered" style="margin-bottom: 0;">
+      <tbody>
+        <tr>
+          <th class="title">Numerator Using Variable</th>
+          <td><app-variable-ref [variable]="query.numeratorVariable" ></app-variable-ref></td>
+        </tr>
+        <tr>
+          <th class="title">Denominator Using Variable</th>
+          <td><app-variable-ref [variable]="query.denominatorVariable" ></app-variable-ref></td>
+        </tr>
+      </tbody>
+    </table>
   </p-tabPanel>
 
   <p-tabPanel  headerStyleClass="valid-tab" header="Threshold"
   *ngIf="query.payloadType === QueryPayloadType.ADVANCED && (query.threshold.global.active || query.threshold.custom.active)
-  || query.payloadType === QueryPayloadType.SIMPLE && (query.threshold.active)"
+  || query.payloadType === QueryPayloadType.SIMPLE && (query.threshold.active)
+  || query.payloadType === QueryPayloadType.VARIABLE && (query.threshold.active)"
   >
     <table class="table table-sm table-bordered" style="margin-bottom: 0;">
       <tbody>
@@ -145,7 +177,7 @@
             </td>
           </tr>
         </ng-container>
-        <ng-container *ngIf="query.payloadType === QueryPayloadType.SIMPLE">
+        <ng-container *ngIf="query.payloadType === QueryPayloadType.SIMPLE || query.payloadType === QueryPayloadType.VARIABLE">
           <tr *ngIf="query.threshold.active">
             <th class="field field-title">Global Threshold</th>
             <td>

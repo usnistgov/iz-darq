@@ -30,7 +30,7 @@ export interface IExternalQueryVariable extends IQueryVariable {
 export interface IGlobalExternalQueryVariable extends IExternalQueryVariable {
     scope: ExternalQueryVariableScope.GLOBAL;
     value: number;
-    dateValueUpdated: string;
+    dateValueUpdated: Date;
     comment?: string;
 }
 
@@ -41,8 +41,34 @@ export interface IIISExternalQueryVariable extends IExternalQueryVariable {
 
 export interface IIISVariableValue {
     value: number;
-    dateValueUpdated: string;
+    dateValueUpdated: Date;
     dateUpdated: Date;
     facilityId: string;
     comment?: string;
+}
+
+export enum QueryVariableRefType {
+    DYNAMIC = 'DYNAMIC',
+    STATIC = 'STATIC',
+}
+
+export interface IQueryVariableRef {
+    id: string;
+    type: QueryVariableType;
+    scope?: ExternalQueryVariableScope;
+    queryValueType: QueryVariableRefType;
+}
+
+export interface IDynamicQueryVariableRef extends IQueryVariableRef {
+    queryValueType: QueryVariableRefType.DYNAMIC;
+}
+
+export interface IQueryVariableRefInstance extends IQueryVariableRef {
+    queryValueType: QueryVariableRefType.STATIC;
+    value: number;
+    timestamp: Date;
+    facilityId?: string;
+    comment?: string;
+    name: string;
+    description: string;
 }

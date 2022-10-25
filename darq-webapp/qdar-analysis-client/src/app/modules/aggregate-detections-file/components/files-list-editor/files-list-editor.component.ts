@@ -8,12 +8,13 @@ import {
   RxjsStoreHelperService,
   EditorUpdate,
   TurnOnLoader,
-  TurnOffLoader
+  TurnOffLoader,
+  MessageService
 } from 'ngx-dam-framework';
 import { Action, Store } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
-import { combineLatest, Observable, of, EMPTY } from 'rxjs';
-import { concatMap, flatMap, map, take, takeUntil, filter } from 'rxjs/operators';
+import { combineLatest, Observable, of, EMPTY, throwError } from 'rxjs';
+import { concatMap, flatMap, map, take, takeUntil, filter, catchError } from 'rxjs/operators';
 import { IADFDescriptor } from '../../model/adf.model';
 import * as moment from 'moment';
 import { DataTableDialogComponent } from 'src/app/modules/shared/components/data-table-dialog/data-table-dialog.component';
@@ -54,6 +55,7 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
     private router: Router,
     private dialog: MatDialog,
     private fileService: FileService,
+    private message: MessageService,
   ) {
     super(
       ADF_FILE_LIST_EDITOR_METADATA,
@@ -144,6 +146,11 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
                   });
                   return result;
                 }),
+                catchError((er) => {
+                  this.store.dispatch(new TurnOffLoader(true));
+                  this.store.dispatch(this.message.actionFromError(er));
+                  return throwError(er);
+                })
               );
             }
             return of();

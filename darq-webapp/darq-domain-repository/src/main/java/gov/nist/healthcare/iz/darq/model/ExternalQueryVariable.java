@@ -2,6 +2,8 @@ package gov.nist.healthcare.iz.darq.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import gov.nist.healthcare.iz.darq.analyzer.model.variable.ExternalQueryVariableScope;
+import gov.nist.healthcare.iz.darq.analyzer.model.variable.QueryVariableType;
 
 import java.util.Date;
 import java.util.HashSet;

@@ -4,17 +4,17 @@ import java.util.Date;
 import java.util.Objects;
 
 public class IISVariableValue {
-    private double value;
+    private int value;
     private String comment;
     private Date dateValueUpdated;
     private Date dateUpdated;
     private String facilityId;
 
-    public double getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(int value) {
         this.value = value;
     }
 

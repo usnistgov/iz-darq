@@ -1,0 +1,9 @@
+package gov.nist.healthcare.iz.darq.model;
+
+public enum ADFQueryVariableID {
+    NUMBER_OF_PATIENTS,
+    NUMBER_OF_VACCINATIONS,
+    NUMBER_OF_ADMINISTERED_VACCINATIONS,
+    NUMBER_OF_HISTORICAL_VACCINATIONS,
+    NUMBER_OF_PROVIDERS
+}

@@ -69,6 +69,7 @@ public class ReportController {
         }
         // Non Overridable fields
         report.setOwnerId(existing.getOwnerId());
+        report.setFacilityId(existing.getFacilityId());
         report.setOwner(existing.getOwner());
         report.setPublished(existing.isPublished());
         report.setPublishDate(existing.getPublishDate());

@@ -89,7 +89,7 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
         job.setStatus(JobStatus.RUNNING);
         job.setStartTime(new Date());
         this.analysisJobRepository.save(job);
-        AnalysisReport report = this.analysisService.analyse(file, job.getTemplate());
+        AnalysisReport report = this.analysisService.analyse(file, job.getTemplate(), job.getFacilityId());
         report.fromTemplate(job.getTemplate());
         report.setName(job.getName());
         report.setOwner(job.getOwner());

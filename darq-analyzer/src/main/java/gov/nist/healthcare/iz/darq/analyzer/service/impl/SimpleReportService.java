@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.*;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.*;
+import gov.nist.healthcare.iz.darq.analyzer.model.variable.QueryVariableRefInstance;
+import gov.nist.healthcare.iz.darq.analyzer.service.QueryValueResolverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +26,33 @@ public class SimpleReportService implements ReportService {
 	TrayProcessorFactory factory;
 	@Autowired
 	private DataTableService tableService;
+	@Autowired
+	QueryValueResolverService queryValueResolverService;
 
 	@Override
-	public DataTable singleQuery(ADFile file, QueryPayload payload) {
+	public DataTable singleQuery(ADFile file, QueryPayload payload, String facilityId) throws Exception {
 		AnalysisQuery query = queryFromPayload(payload);
 		QueryIssues issues = sanitizeQuery(file, query);
-		TrayProcessor processor = factory.create(query.getCompatibilityGroup(), query::take);
-		DataTable table = tableService.createTable(processor.process(file), payload);
+		QueryVariableRefInstance denominatorVariableValue = payload.getDenominatorVariable() != null ?
+				this.queryValueResolverService.resolveInstanceValue(payload.getDenominatorVariable(), file, facilityId) : null;
+		QueryVariableRefInstance numeratorVariableValue = payload.getNumeratorVariable() != null ?
+				this.queryValueResolverService.resolveInstanceValue(payload.getNumeratorVariable(), file, facilityId) : null;
+		QueryVariableInstanceHolder holder = new QueryVariableInstanceHolder();
+		holder.setDenominator(denominatorVariableValue);
+		holder.setNumerator(numeratorVariableValue);
+
+		List<Tray> trays = payload.getPayloadType().equals(QueryPayloadType.VARIABLE) ?
+				new ArrayList<>() :
+				getQueryTrays(file, query);
+
+		DataTable table = tableService.createTable(trays, payload, holder);
 		table.setIssues(issues);
 		return table;
+	}
+
+	List<Tray> getQueryTrays(ADFile file, AnalysisQuery query) {
+		TrayProcessor processor = factory.create(query.getCompatibilityGroup(), query::take);
+		return processor.process(file);
 	}
 
 	QueryIssues sanitizeQuery(ADFile file, AnalysisQuery query) {
@@ -57,12 +77,12 @@ public class SimpleReportService implements ReportService {
 	}
 	
 	@Override
-	public AnalysisReport analyse(ADFile file, ReportTemplate template) {
+	public AnalysisReport analyse(ADFile file, ReportTemplate template, String facilityId) throws Exception {
 		try {
 			AnalysisReport result = new AnalysisReport();
 			result.setName(template.getName());
 			result.setDescription(template.getDescription());
-			result.setSections(this.analyse(file, template.getSections()));
+			result.setSections(this.analyse(file, template.getSections(), facilityId));
 			result.setConfiguration(template.getConfiguration());
 			result.setCustomDetectionLabels(template.getCustomDetectionLabels());
 			return result;
@@ -72,30 +92,27 @@ public class SimpleReportService implements ReportService {
 		}
 	}
 
-	public List<ReportSectionResult> analyse(ADFile file, List<? extends ReportSection> sections) {
-		List<ReportSectionResult> result = new ArrayList<>();
+	private List<ReportSectionResult> analyse(ADFile file, List<? extends ReportSection> sections, String facilityId) throws Exception {
+		if(sections != null) {
+			List<ReportSectionResult> result = new ArrayList<>();
+			for(ReportSection sectionTemplate : sections) {
+				ReportSectionResult section = new ReportSectionResult();
+				section.fromSection(sectionTemplate);
 
-		for(ReportSection sectionTemplate : sections) {
-			ReportSectionResult section = new ReportSectionResult();
-			section.fromSection(sectionTemplate);
-
-			for (QueryPayload payload : sectionTemplate.getData()) {
-				AnalysisQuery query = queryFromPayload(payload);
-				QueryIssues issues = sanitizeQuery(file, query);
-				TrayProcessor processor = factory.create(query.getCompatibilityGroup(), query::take);
-				DataTable table = tableService.createTable(processor.process(file), payload);
-				table.setIssues(issues);
-				if(table.isThresholdViolation()) {
-					section.setThresholdViolation(true);
+				for (QueryPayload payload : sectionTemplate.getData()) {
+					DataTable table = this.singleQuery(file, payload, facilityId);
+					if(table.isThresholdViolation()) {
+						section.setThresholdViolation(true);
+					}
+					section.getData().add(table);
 				}
-				section.getData().add(table);
+
+				section.setChildren(this.analyse(file, sectionTemplate.getChildren(), facilityId));
+				result.add(section);
 			}
-
-			section.setChildren(this.analyse(file, sectionTemplate.getChildren()));
-			result.add(section);
+			return result;
 		}
-
-		return result;
+		return new ArrayList<>();
 	}
 	
 	AnalysisQuery queryFromPayload(QueryPayload payload){

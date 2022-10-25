@@ -57,6 +57,26 @@
         </div>
       </td>
     </tr>
+    <tr [ngClass]="{'not-active': !value.denominatorVariable}">
+      <th colspan="2" style="vertical-align: middle;">
+        Override Denominator Value Using Variable
+      </th>
+      <td>
+        <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;">
+          <div style="flex-grow: 1;">
+            <app-variable-ref *ngIf="value.denominatorVariable" [variable]="value.denominatorVariable"></app-variable-ref>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px; margin-left: 5px;">
+            <button (click)="openDenominatorVariableDialog()" class="btn btn-sm btn-primary">
+              <i class="fa fa-pencil"></i>
+            </button>
+            <button *ngIf="value.denominatorVariable" (click)="removeDenominatorVariable()" class="btn btn-sm btn-danger">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>  
+        </div>
+      </td>
+    </tr>
     <tr [ngClass]="{'not-active': !value.threshold.active}">
       <th style="vertical-align: middle;">
         <p-checkbox label="Threshold" [(ngModel)]="value.threshold.active" (ngModelChange)="triggerValid()" [binary]="true"></p-checkbox>

@@ -31,6 +31,9 @@ export class ExternalVariableService {
         return this.http.delete<IMessage<IExternalQueryVariable>>(this.URL_PREFIX + 'delete/' + id);
     }
 
+    importFromCSV(form: FormData): Observable<IMessage<any>> {
+        return this.http.post<IMessage<any>>(this.URL_PREFIX + 'import', form);
+    }
 
     getVariables(): Observable<IExternalQueryVariable[]> {
         return this.http.get<IExternalQueryVariable[]>(this.URL_PREFIX);

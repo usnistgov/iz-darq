@@ -1,5 +1,7 @@
 package gov.nist.healthcare.iz.darq.model;
 
+import gov.nist.healthcare.iz.darq.analyzer.model.variable.ExternalQueryVariableScope;
+
 import java.util.HashSet;
 import java.util.Set;
 

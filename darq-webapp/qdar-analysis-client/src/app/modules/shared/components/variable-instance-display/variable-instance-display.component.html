@@ -1,0 +1,17 @@
+<div *ngIf="variable">
+    <span class="badge id-badge">ID : {{variable.id}}</span><br>
+    <ng-container *ngIf="variable.scope === 'GLOBAL'">
+        <span class="badge badge-success">GLOBAL</span><br>
+    </ng-container>
+    <ng-container *ngIf="variable.scope === 'IIS'">
+        <span class="badge badge-danger">FACILITY</span><br>
+    </ng-container>
+    <ng-container *ngIf="variable.type === 'ADF'">
+        <span class="badge badge-secondary">ADF</span><br>
+    </ng-container>
+    <strong>{{variable.name}}</strong><br>
+    <span>{{variable.description}}</span><br>
+    <strong>Value : </strong><span style="font-size: large;">{{variable.value | number:'1.0':'en-US' }}</span><br>
+    <span *ngIf="variable.comment"><i class="fa fa-comment"></i> {{variable.comment}}</span><br *ngIf="variable.comment">
+    <span style="color: lightgray;">Value Updated in {{variable.timestamp| date:'short'}}</span><br>
+</div>

@@ -1,9 +1,11 @@
 package gov.nist.healthcare.iz.darq.model;
 
+import gov.nist.healthcare.iz.darq.analyzer.model.variable.ExternalQueryVariableScope;
+
 import java.util.Date;
 
 public class GlobalExternalQueryVariable extends ExternalQueryVariable {
-    private double value;
+    private int value;
     private Date dateValueUpdated;
     private String comment;
 
@@ -11,11 +13,11 @@ public class GlobalExternalQueryVariable extends ExternalQueryVariable {
         super(ExternalQueryVariableScope.GLOBAL);
     }
 
-    public double getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(int value) {
         this.value = value;
     }
 

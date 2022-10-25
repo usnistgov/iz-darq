@@ -1,4 +1,5 @@
-import { IReportTemplate, IReportSection, IDataViewQuery, IThreshold, IReportTemplateDescriptor, ISection, QueryType } from '../../report-template/model/report-template.model';
+import { IQueryVariableRefInstance } from './../../shared/model/query-variable.model';
+import { IReportTemplate, IThreshold, ISection, QueryType } from '../../report-template/model/report-template.model';
 import { Field } from '../../report-template/model/analysis.values';
 import { IDamResource } from 'ngx-dam-framework';
 import { EntityType } from '../../shared/model/entity.model';
@@ -44,13 +45,20 @@ export interface IDataTable {
   thresholdViolation: boolean;
 }
 
+export interface IAdjustedFraction extends IFraction {
+  denominatorVariable: IQueryVariableRefInstance;
+  numeratorVariable: IQueryVariableRefInstance;
+}
+
 export interface IDataTableRow {
   values: {
     [key: string]: string;
   };
   groupId: number;
   result: IFraction;
+  effectiveResult: IFraction;
   threshold: IThreshold;
+  adjustedFraction: IAdjustedFraction;
   pass: boolean;
 }
 

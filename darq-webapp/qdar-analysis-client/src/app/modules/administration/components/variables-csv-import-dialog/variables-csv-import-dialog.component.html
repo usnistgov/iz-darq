@@ -1,0 +1,21 @@
+<h5 style="margin-bottom: 25px; font-weight: bold;">Import Variables From CSV</h5>
+<div class="form-group" style="height: 100px;">
+    <app-file-upload-field [required]="true" (file)="setFile($event)" label="Variables CSV File"></app-file-upload-field>
+</div>
+<div class="form-group">
+    <label for="scope">Variables Type</label>
+    <p-dropdown 
+        required 
+        id="scope" 
+        name="scope" 
+        [options]="options" 
+        [style]="{ 'width' : '100%' }" 
+        [autoDisplayFirst]="false"
+        [(ngModel)]="scope"
+        appendTo="body">
+    </p-dropdown>   
+</div>
+<mat-dialog-actions style="justify-content: flex-end;">
+    <button [mat-dialog-close]="" class="btn btn-sm btn-secondary" style="margin-right: 5px;">Cancel</button>
+    <button [disabled]="!file || !scope" (click)="import()" class="btn btn-sm btn-success">Import</button>
+</mat-dialog-actions>

@@ -1,7 +1,8 @@
+import { IQueryVariableRef } from './../../shared/model/query-variable.model';
 import { EntityType } from '../../shared/model/entity.model';
 import { AnalysisType, Field } from './analysis.values';
 import { IDescriptor } from '../../shared/model/descriptor.model';
-import { IConfigurationPayload, IConfigurationDescriptor } from '../../configuration/model/configuration.model';
+import { IConfigurationDescriptor } from '../../configuration/model/configuration.model';
 import { IDamResource } from 'ngx-dam-framework';
 import { IReportDescriptor } from '../../report/model/report.model';
 
@@ -76,7 +77,7 @@ export interface IReportFilter {
   fields: IReportFieldFilter;
 }
 
-export type QueryType = IDataViewQuery | ISimpleViewQuery;
+export type QueryType = IDataViewQuery | ISimpleViewQuery | IVariableQuery;
 
 export interface IQueryPayload {
   payloadType: QueryPayloadType;
@@ -85,7 +86,20 @@ export interface IQueryPayload {
   paginate: boolean;
   rows: number;
   filter: IQueryResultFilter;
+  denominatorVariable?: IQueryVariableRef;
+  numeratorVariable?: IQueryVariableRef;
 }
+
+export interface IVariableQuery extends IQueryPayload {
+  payloadType: QueryPayloadType.VARIABLE;
+  denominatorVariable: IQueryVariableRef;
+  numeratorVariable: IQueryVariableRef;
+  threshold: {
+    active: boolean,
+    goal: IThreshold,
+  };
+}
+
 
 export interface IDataViewQuery extends IQueryPayload {
   payloadType: QueryPayloadType.ADVANCED;
@@ -153,4 +167,5 @@ export enum Comparator {
 export enum QueryPayloadType {
   SIMPLE = 'SIMPLE',
   ADVANCED = 'ADVANCED',
+  VARIABLE = 'VARIABLE',
 }

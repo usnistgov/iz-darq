@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTable;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTableRow;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.*;
+import gov.nist.healthcare.iz.darq.analyzer.model.variable.QueryVariableRefInstance;
 import org.springframework.stereotype.Service;
 
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray;
@@ -19,7 +20,7 @@ import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 public class SimpleDataTableService implements DataTableService {
 
 	@Override
-	public DataTable createTable(List<Tray> trays, QueryPayload payload) {
+	public DataTable createTable(List<Tray> trays, QueryPayload payload, QueryVariableInstanceHolder holder) {
 		DataTable table = new DataTable();
 		table.fromQuery(payload);
 		Map<Map<Field, String>, Fraction> rowFields = new HashMap<>();

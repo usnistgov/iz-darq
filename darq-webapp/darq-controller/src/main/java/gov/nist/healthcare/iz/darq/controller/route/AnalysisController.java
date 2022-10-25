@@ -1,12 +1,15 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
 import gov.nist.healthcare.domain.OpAck;
+import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTable;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.DataViewQuery;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.QueryPayload;
+import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportTemplate;
 import gov.nist.healthcare.iz.darq.controller.domain.JobCreation;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
+import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
@@ -23,6 +26,7 @@ import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
 import gov.nist.healthcare.iz.darq.analyzer.service.ReportService;
 import gov.nist.healthcare.iz.darq.repository.TemplateRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +34,6 @@ import java.util.List;
 @RequestMapping("/api/analysis")
 public class AnalysisController {
 
-	@Autowired
-	private TemplateRepository templateRepo;
 	@Autowired
 	private ReportService report;
 	@Autowired
@@ -45,15 +47,18 @@ public class AnalysisController {
 	@Autowired
 	private DigestConfigurationRepository configurationRepository;
 
+
 	@RequestMapping(value = "/query/{fId}", method = RequestMethod.POST)
 	@ResponseBody
-	@PreAuthorize("AccessResource(ADF, VIEW, #fId)")
+	@PreAuthorize("AccessResource(#request, ADF, VIEW, #fId)")
 	public DataTable analyze(
+			HttpServletRequest request,
 			@RequestBody QueryPayload query,
 			@PathVariable("fId") String fId) throws Exception {
-    	ADFile file = this.storage.getFile(fId);
+		UserUploadedFile metadata = (UserUploadedFile) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+		ADFile file = this.storage.getFile(fId);
     	if(file != null){
-			return this.report.singleQuery(file, query);
+			return this.report.singleQuery(file, query, metadata.getFacilityId());
     	} else {
     		throw new NotFoundException(" ADF File "+fId+" Not Found");
 		}

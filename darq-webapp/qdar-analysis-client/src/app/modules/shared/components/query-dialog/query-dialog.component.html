@@ -18,7 +18,7 @@
 </div>
 <p-tabView>
   <p-tabPanel header="Query" [headerStyleClass]="!tabsValid.simple.valid || (
-    !tabsValid.selectors.valid || !tabsValid.occurrences.valid || !tabsValid.groupBy.valid || !tabsValid.thresholds.valid
+    !tabsValid.selectors.valid || !tabsValid.occurrences.valid || !tabsValid.groupBy.valid || !tabsValid.thresholds.valid || !tabsValid.variables.valid
   ) ? 'invalid-tab' : 'valid-tab'">
     <ul class="nav nav-pills">
       <li class="nav-item" style="padding: 0 !important;">
@@ -27,10 +27,13 @@
       <li class="nav-item" style="padding: 0 !important; margin-left: 5px;">
         <a class="nav-link" [ngClass]="{active: value.payloadType === QueryPayloadType.ADVANCED}" (click)="changeMode(QueryPayloadType.ADVANCED)" >Advanced</a>
       </li>
+      <li class="nav-item" style="padding: 0 !important; margin-left: 5px;">
+        <a class="nav-link" [ngClass]="{active: value.payloadType === QueryPayloadType.VARIABLE}" (click)="changeMode(QueryPayloadType.VARIABLE)" >Use Variables</a>
+      </li>
     </ul>
-    <div class="form-group" style="display: flex; width: 100%; align-items: center; margin-top: 10px;">
+    <div *ngIf="value.payloadType !== QueryPayloadType.VARIABLE" class="form-group" style="display: flex; width: 100%; align-items: center; margin-top: 10px;">
       <strong for="type" style="margin-right: 20px;"> Query Type <strong style="color: red;">*</strong></strong>
-      <p-dropdown required id="type" name="type" [options]="paths" [(ngModel)]="value.type" (ngModelChange)="changeType($event)" styleClass="type-select" ></p-dropdown>
+      <p-dropdown  required id="type" name="type" [options]="paths" [(ngModel)]="value.type" (ngModelChange)="changeType($event)" styleClass="type-select" ></p-dropdown>
     </div>
     <div [ngSwitch]="value.payloadType">
       <div *ngSwitchCase="QueryPayloadType.SIMPLE">
@@ -38,6 +41,7 @@
           [(value)]="value"
           (valid)="setValidStatus('simple', $event)"
           (messages)="setMessages('simple', $event)"
+          [variables]="variables"
           [options]="options"
           [analysis]="value.type"
         ></app-simple-query>
@@ -70,6 +74,13 @@
             (messages)="setMessages('groupBy', $event)"
             [analysis]="value.type"
           ></app-query-group>
+          <app-query-denominator-override
+            [(value)]="value"
+            [variables]="variables"
+            (valid)="setValidStatus('groupBy', $event)"
+            (messages)="setMessages('groupBy', $event)"
+            [analysis]="value.type"
+          ></app-query-denominator-override>
         </p-tabPanel>
         <p-tabPanel header="Thresholds" [headerStyleClass]="!tabsValid.thresholds.valid ? 'invalid-tab' : 'valid-tab'">
           <app-query-threshold
@@ -82,6 +93,14 @@
           ></app-query-threshold>
         </p-tabPanel>
       </p-tabView>
+      <div *ngSwitchCase="QueryPayloadType.VARIABLE">
+        <app-variable-query
+          [(value)]="value"
+          (valid)="setValidStatus('variables', $event)"
+          (messages)="setMessages('variables', $event)"
+          [variables]="variables"
+      ></app-variable-query>
+      </div>
     </div>
   </p-tabPanel>
   <p-tabPanel header="Post Process Row Filters"  [headerStyleClass]="!tabsValid.filters.valid ? 'invalid-tab' : 'valid-tab'">

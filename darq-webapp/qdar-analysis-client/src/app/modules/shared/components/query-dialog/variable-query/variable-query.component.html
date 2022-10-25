@@ -1,0 +1,82 @@
+<table class="table table-sm table-bordered" style="margin-top: 10px;">
+    <tbody>
+      <tr [ngClass]="{'not-active': !value.numeratorVariable}">
+        <th colspan="2" style="vertical-align: middle;">
+          Numerator Variable
+        </th>
+        <td style="border-bottom: 4px solid black;">
+          <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;">
+            <div style="flex-grow: 1;">
+              <app-variable-ref *ngIf="value.numeratorVariable" [variable]="value.numeratorVariable"></app-variable-ref>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px; margin-left: 5px;">
+              <button (click)="openVariableDialog(false)" class="btn btn-sm btn-primary">
+                <i class="fa fa-pencil"></i>
+              </button>
+              <button *ngIf="value.numeratorVariable" (click)="removeVariable(false)" class="btn btn-sm btn-danger">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>  
+          </div>
+        </td>
+      </tr>
+      <tr [ngClass]="{'not-active': !value.denominatorVariable}">
+        <th colspan="2" style="vertical-align: middle;">
+          Denominator Variable
+        </th>
+        <td>
+          <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;">
+            <div style="flex-grow: 1;">
+              <app-variable-ref *ngIf="value.denominatorVariable" [variable]="value.denominatorVariable"></app-variable-ref>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px; margin-left: 5px;">
+              <button (click)="openVariableDialog(true)" class="btn btn-sm btn-primary">
+                <i class="fa fa-pencil"></i>
+              </button>
+              <button *ngIf="value.denominatorVariable" (click)="removeVariable(true)" class="btn btn-sm btn-danger">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>  
+          </div>
+        </td>
+      </tr>
+      <tr [ngClass]="{'not-active': !value.threshold.active}">
+        <th style="vertical-align: middle;">
+          <p-checkbox label="Threshold" [(ngModel)]="value.threshold.active" (ngModelChange)="triggerValid()" [binary]="true"></p-checkbox>
+        </th>
+        <td style="vertical-align: middle; text-align: end;">
+          <div *ngIf="value.threshold.active">
+            with a target of
+          </div>
+        </td>
+        <td style="vertical-align: middle;">
+          <div style="display: flex; width: 100%; align-items: center; padding: 5px;" *ngIf="value.threshold.active">
+            <p-dropdown
+              [options]="comparatorOptions"
+              [autoDisplayFirst]="false"
+              id="comparator"
+              name="comparator"
+              appendTo="body"
+              required
+              [(ngModel)]="value.threshold.goal.comparator"
+              (ngModelChange)="triggerChange()"
+              [style]="{ 'width' : '100%' }">
+            </p-dropdown>
+            <input
+              style="margin-left: 10px; width: 200px;"
+              [(ngModel)]="value.threshold.goal.value"
+              (ngModelChange)="triggerChange()"
+              required
+              type="number"
+              min="0"
+              placeholder="Value (%)"
+              class="form-control"
+              name="threshold"
+              id="threshold"
+            >
+            <span style="margin-left: 10px;"> % </span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+</table>

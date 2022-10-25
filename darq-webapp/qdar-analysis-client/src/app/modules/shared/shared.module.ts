@@ -53,6 +53,12 @@ import { MultiFieldInputComponent } from './components/multi-field-input/multi-f
 import { QueryListDialogComponent } from './components/query-list-dialog/query-list-dialog.component';
 import { QuerySaveDialogComponent } from './components/query-save-dialog/query-save-dialog.component';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { VariableSelectDialogComponent } from './components/variable-select-dialog/variable-select-dialog.component';
+import { VariableRefDisplayComponent } from './components/variable-ref-display/variable-ref-display.component';
+import { VariableInstanceDisplayComponent } from './components/variable-instance-display/variable-instance-display.component';
+import { QueryDenominatorOverrideComponent } from './components/query-dialog/query-denominator-override/query-denominator-override.component';
+import { VariableRefComponent } from './components/variable-ref/variable-ref.component';
+import { VariableQueryComponent } from './components/query-dialog/variable-query/variable-query.component';
 
 @NgModule({
   declarations: [
@@ -87,6 +93,12 @@ import { RadioButtonModule } from 'primeng/radiobutton';
     MultiFieldInputComponent,
     QueryListDialogComponent,
     QuerySaveDialogComponent,
+    VariableSelectDialogComponent,
+    VariableRefDisplayComponent,
+    VariableInstanceDisplayComponent,
+    QueryDenominatorOverrideComponent,
+    VariableRefComponent,
+    VariableQueryComponent,
   ],
   imports: [
     CommonModule,

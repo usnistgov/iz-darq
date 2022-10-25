@@ -1,0 +1,18 @@
+<ng-container [ngSwitch]="type">
+    <div *ngSwitchCase="'STATIC'">
+        <app-variable-instance-display [variable]="instance"></app-variable-instance-display>
+    </div>
+    <div *ngSwitchCase="'DYNAMIC'">
+        <strong>Dynamic Variable Reference : </strong><br>
+        <ng-container *ngIf="dynamic.scope === 'GLOBAL'">
+            <span class="badge badge-success">GLOBAL</span><br>
+        </ng-container>
+        <ng-container *ngIf="dynamic.scope === 'IIS'">
+            <span class="badge badge-danger">FACILITY</span><br>
+        </ng-container>
+        <ng-container *ngIf="dynamic.type === 'ADF'">
+            <span class="badge badge-secondary">ADF</span><br>
+        </ng-container>
+        <span class="badge id-badge">ID : {{dynamic.id}}</span><br>
+    </div>
+</ng-container>

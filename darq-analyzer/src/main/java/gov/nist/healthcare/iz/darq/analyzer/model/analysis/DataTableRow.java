@@ -11,6 +11,7 @@ public class DataTableRow {
     int groupId;
     Map<Field, String> values;
     Fraction result;
+    AdjustedFraction adjustedFraction;
     Threshold threshold;
     boolean pass;
 
@@ -22,8 +23,12 @@ public class DataTableRow {
         this.values = values;
     }
 
+    public Fraction getEffectiveResult() {
+        return adjustedFraction != null ? adjustedFraction : result;
+    }
+
     public Fraction getResult() {
-        return result;
+       return result;
     }
 
     public void setResult(Fraction result) {
@@ -52,6 +57,14 @@ public class DataTableRow {
 
     public void setGroupId(int groupId) {
         this.groupId = groupId;
+    }
+
+    public AdjustedFraction getAdjustedFraction() {
+        return adjustedFraction;
+    }
+
+    public void setAdjustedFraction(AdjustedFraction adjustedFraction) {
+        this.adjustedFraction = adjustedFraction;
     }
 
     @Override

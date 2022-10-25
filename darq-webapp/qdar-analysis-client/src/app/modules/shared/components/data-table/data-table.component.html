@@ -45,6 +45,12 @@
           <th *ngSwitchCase="ColumnType.BAR" style="width: 340px;">
             {{ header.label }}
           </th>
+          <th *ngSwitchCase="ColumnType.NUMERATOR_VARIABLE" style="width: 340px;">
+            {{ header.label }}
+          </th>
+          <th *ngSwitchCase="ColumnType.DENOMINATOR_VARIABLE" style="width: 340px;">
+            {{ header.label }}
+          </th>
           <th [pSortableColumnDisabled]="rows?.length <= 1" [pSortableColumn]="header.key" pResizableColumn *ngSwitchCase="ColumnType.GROUP" style="width: 100px;">
             {{ header.label }}
             <p-sortIcon *ngIf="rows?.length > 1" [field]="header.key"></p-sortIcon>
@@ -103,6 +109,10 @@
               <i class="fa fa-trash"></i>
             </button>
           </div>
+          <div *ngSwitchCase="ColumnType.NUMERATOR_VARIABLE">
+          </div>
+          <div *ngSwitchCase="ColumnType.DENOMINATOR_VARIABLE">
+          </div>
           <div *ngSwitchCase="ColumnType.THRESHOLD" style="display: flex; align-items: center;">
             <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active' : thresholdFilterIsSet() }" ></i>
             <p-dropdown
@@ -144,17 +154,55 @@
             {{ value.threshold ? labelizer.comparator(value.threshold.comparator) + ' ' + value.threshold.value + '% ' + (value.pass ? '(PASS)' : "(FAIL)") : 'No Threshold'}}
           </div>
           <div *ngSwitchCase="ColumnType.VALUE" style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
-            <div>
-              {{ value.percentage | number:'1.0-1'}}%
+            <ng-container *ngIf="value.adjustedFraction">
+              <div>
+                {{ value.adjustedPercentage | number:'1.0-1'}}%
+              </div>
+              <div>
+                ( <span>{{( value.adjustedFraction.count | number:'.')}}</span> / <span>{{( value.adjustedFraction.total | number:'.')}}</span> )
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!value.adjustedFraction">
+              <div>
+                {{ value.percentage | number:'1.0-1'}}%
+              </div>
+              <div>
+                ( <span>{{( value.count | number:'.')}}</span> / <span>{{( value.total | number:'.')}}</span> )
+              </div>
+            </ng-container>
+          </div>
+          <div *ngSwitchCase="ColumnType.NUMERATOR_VARIABLE">
+            <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
+              <div style="flex-grow: 1;">
+                <span class="badge badge-primary">ID : {{value.adjustedFraction?.numeratorVariable.id}}</span><br>
+                <span>{{value.adjustedFraction?.numeratorVariable.name}}</span><br>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="'Numerator Variable Info'" container="body">
+                <i class="fa fa-question" aria-hidden="true"></i>
+              </button>
+              <ng-template #popContent>
+                <app-variable-instance-display [variable]="value.adjustedFraction?.numeratorVariable"></app-variable-instance-display>
+              </ng-template>
             </div>
-            <div>
-              ( <span>{{( value.count | number:'.')}}</span> / <span>{{( value.total | number:'.')}}</span> )
+          </div>
+          <div *ngSwitchCase="ColumnType.DENOMINATOR_VARIABLE">
+            <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
+              <div style="flex-grow: 1;">
+                <span class="badge badge-primary">ID : {{value.adjustedFraction?.denominatorVariable.id}}</span><br>
+                <span>{{value.adjustedFraction?.denominatorVariable.name}}</span><br>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="'Denominator Variable Info'" container="body">
+                <i class="fa fa-question" aria-hidden="true"></i>
+              </button>
+              <ng-template #popContent>
+                <app-variable-instance-display [variable]="value.adjustedFraction?.denominatorVariable"></app-variable-instance-display>
+              </ng-template>
             </div>
           </div>
           <div *ngSwitchCase="ColumnType.BAR" style="height: 100%;  padding: 0 !important; vertical-align:middle;">
             <app-visual-bar
               [value]="{
-                value: value.fraction,
+                value: value.adjustedFraction ? value.adjustedFraction : value.fraction,
                 threshold: value.threshold,
                 pass: value.pass
               }"
@@ -216,6 +264,12 @@
           </th>
           <th *ngSwitchCase="ColumnType.GROUP" style="width: 50px;">
           </th>
+          <th *ngSwitchCase="ColumnType.NUMERATOR_VARIABLE" style="width: 340px;">
+            {{ header.label }}
+          </th>
+          <th *ngSwitchCase="ColumnType.DENOMINATOR_VARIABLE" style="width: 340px;">
+            {{ header.label }}
+          </th>
           <th [ttSortableColumnDisabled]="rows?.length <= 1" [ttSortableColumn]="header.key" ttResizableColumn *ngSwitchCase="ColumnType.VALUE" style="width: 250px;">
             {{ header.label }}
             <p-treeTableSortIcon *ngIf="rows?.length > 1" [field]="header.key"></p-treeTableSortIcon>
@@ -270,6 +324,10 @@
               <i class="fa fa-trash"></i>
             </button>
           </div>
+          <div *ngSwitchCase="ColumnType.NUMERATOR_VARIABLE">
+          </div>
+          <div *ngSwitchCase="ColumnType.DENOMINATOR_VARIABLE">
+          </div>
           <div *ngSwitchCase="ColumnType.THRESHOLD" style="display: flex; align-items: center;">
             <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active' : thresholdFilterIsSet() }" ></i>
             <p-dropdown
@@ -312,17 +370,55 @@
             {{ value.threshold ? labelizer.comparator(value.threshold.comparator) + ' ' + value.threshold.value + '% ' + (value.pass ? '(PASS)' : "(FAIL)") : 'No Threshold'}}
           </div>
           <div *ngSwitchCase="ColumnType.VALUE" style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
-            <div>
-              {{ value.percentage | number:'1.0-1'}}%
+            <ng-container *ngIf="value.adjustedFraction">
+              <div>
+                {{ value.adjustedPercentage | number:'1.0-1'}}%
+              </div>
+              <div>
+                ( <span>{{( value.adjustedFraction.count | number:'.')}}</span> / <span>{{( value.adjustedFraction.total | number:'.')}}</span> )
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!value.adjustedFraction">
+              <div>
+                {{ value.percentage | number:'1.0-1'}}%
+              </div>
+              <div>
+                ( <span>{{( value.count | number:'.')}}</span> / <span>{{( value.total | number:'.')}}</span> )
+              </div>
+            </ng-container>
+          </div>
+          <div *ngSwitchCase="ColumnType.NUMERATOR_VARIABLE">
+            <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
+              <div style="flex-grow: 1;">
+                <span class="badge badge-primary">ID : {{value.adjustedFraction?.numeratorVariable.id}}</span><br>
+                <span>{{value.adjustedFraction?.numeratorVariable.name}}</span><br>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="'Numerator Variable Info'" container="body">
+                <i class="fa fa-question" aria-hidden="true"></i>
+              </button>
+              <ng-template #popContent>
+                <app-variable-instance-display [variable]="value.adjustedFraction?.numeratorVariable"></app-variable-instance-display>
+              </ng-template>
             </div>
-            <div>
-              ( <span>{{( value.count | number:'.')}}</span> / <span>{{( value.total | number:'.')}}</span> )
+          </div>
+          <div *ngSwitchCase="ColumnType.DENOMINATOR_VARIABLE">
+            <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
+              <div style="flex-grow: 1;">
+                <span class="badge badge-primary">ID : {{value.adjustedFraction?.denominatorVariable.id}}</span><br>
+                <span>{{value.adjustedFraction?.denominatorVariable.name}}</span><br>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="'Denominator Variable Info'" container="body">
+                <i class="fa fa-question" aria-hidden="true"></i>
+              </button>
+              <ng-template #popContent>
+                <app-variable-instance-display [variable]="value.adjustedFraction?.denominatorVariable"></app-variable-instance-display>
+              </ng-template>
             </div>
           </div>
           <div *ngSwitchCase="ColumnType.BAR" style="height: 100%;  padding: 0 !important; vertical-align:middle;">
             <app-visual-bar
               [value]="{
-                value: value.fraction,
+                value: value.adjustedFraction ? value.adjustedFraction : value.fraction,
                 threshold: value.threshold,
                 pass: value.pass
               }"

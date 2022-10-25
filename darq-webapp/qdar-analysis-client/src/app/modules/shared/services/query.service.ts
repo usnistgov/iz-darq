@@ -1,3 +1,4 @@
+import { IVariableQuery } from './../../report-template/model/report-template.model';
 import { IConfigurationPayload } from './../../configuration/model/configuration.model';
 import { IQuery } from './../model/query.model';
 import { Observable } from 'rxjs';
@@ -74,6 +75,22 @@ export class QueryService {
     };
   }
 
+  getEmptyVariableQuery(): IVariableQuery {
+    return {
+      ...this.getDefaultGeneralSettings(QueryPayloadType.VARIABLE),
+      payloadType: QueryPayloadType.VARIABLE,
+      denominatorVariable: undefined,
+      numeratorVariable: undefined,
+      threshold: {
+        active: false,
+        goal: {
+          value: 1,
+          comparator: Comparator.LT,
+        }
+      }
+    };
+  }
+
   getEmptyAdvancedQuery(type: AnalysisType): IDataViewQuery {
     return {
       ...this.getDefaultGeneralSettings(QueryPayloadType.ADVANCED, type),
@@ -121,7 +138,7 @@ export class QueryService {
     };
   }
 
-  getDefaultGeneralSettings(payloadType: QueryPayloadType, type: AnalysisType): IQueryPayload {
+  getDefaultGeneralSettings(payloadType: QueryPayloadType, type?: AnalysisType): IQueryPayload {
     return {
       payloadType,
       type,

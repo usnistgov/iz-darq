@@ -1,3 +1,9 @@
+import { IQueryVariableDisplay } from './../../variable-ref-display/variable-ref-display.component';
+import { IQueryVariableRefInstance, IDynamicQueryVariableRef, QueryVariableRefType } from './../../../model/query-variable.model';
+import { map } from 'rxjs/operators';
+import { QueryVariableService } from './../../../services/query-variable.service';
+import { VariableSelectDialogComponent } from './../../variable-select-dialog/variable-select-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 import { Component, OnInit, SimpleChanges, OnChanges } from '@angular/core';
 import { AnalysisType, Field } from 'src/app/modules/report-template/model/analysis.values';
 import { Comparator, IThreshold } from 'src/app/modules/report-template/model/report-template.model';
@@ -53,6 +59,9 @@ export class SimpleQueryComponent extends QueryDialogTabComponent<ISimpleViewQue
   @Input()
   options: IFieldInputOptions;
   @Input()
+  variables: IQueryVariableDisplay[];
+
+  @Input()
   set analysis(type: AnalysisType) {
     this.type = type;
     this.setQueryFlags(type);
@@ -64,7 +73,10 @@ export class SimpleQueryComponent extends QueryDialogTabComponent<ISimpleViewQue
     provider: boolean;
   };
 
-  constructor(private queryService: QueryService) {
+  constructor(
+    private queryService: QueryService,
+    private dialog: MatDialog,
+  ) {
     super();
   }
 
@@ -80,6 +92,24 @@ export class SimpleQueryComponent extends QueryDialogTabComponent<ISimpleViewQue
     this.emitChange(this.value);
   }
 
+  openDenominatorVariableDialog() {
+    return this.dialog.open(VariableSelectDialogComponent, {
+      data: {
+        variables: this.variables,
+      }
+    }).afterClosed().pipe(
+      map((variable) => {
+        this.value.denominatorVariable = variable;
+        this.emitChange(this.value);
+      })
+    ).subscribe();
+  }
+
+  removeDenominatorVariable() {
+    this.value.denominatorVariable = null;
+    this.emitChange(this.value);
+  }
+
   labelize(fields: Field[]): { value: Field, label: string }[] {
     return fields.map((field) => ({
       value: field,
@@ -89,6 +119,14 @@ export class SimpleQueryComponent extends QueryDialogTabComponent<ISimpleViewQue
 
   validate(value: ISimpleViewQuery): { status: boolean; issues: UserMessage<any>[]; } {
     const issues = this.queryService.validateSimpleQuery(value);
+
+    if (value.denominatorVariable) {
+      const idx = this.variables.findIndex((v) => v.id === value.denominatorVariable.id);
+      if (idx === -1 && value.denominatorVariable.queryValueType === QueryVariableRefType.DYNAMIC) {
+        issues.push('Dynamic Denominator Variable not found');
+      }
+    }
+
     return {
       status: issues.length === 0,
       issues: issues.map((issue) => new UserMessage(MessageType.FAILED, issue)),

@@ -18,6 +18,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ExternalVariableEditorComponent } from './components/external-variable-editor/external-variable-editor.component';
 import { ExternalVariableDialogComponent } from './components/external-variable-dialog/external-variable-dialog.component';
 import { ChipsModule } from 'primeng/chips';
+import { VariablesCsvImportDialogComponent } from './components/variables-csv-import-dialog/variables-csv-import-dialog.component';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { ChipsModule } from 'primeng/chips';
     ConfigurationLoadingDialogComponent,
     ExternalVariableEditorComponent,
     ExternalVariableDialogComponent,
+    VariablesCsvImportDialogComponent,
   ],
   imports: [
     CommonModule,

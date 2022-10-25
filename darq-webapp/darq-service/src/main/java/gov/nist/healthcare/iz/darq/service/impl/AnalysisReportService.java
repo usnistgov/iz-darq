@@ -31,7 +31,7 @@ public class AnalysisReportService {
     @Autowired
     private GridFsTemplate gridFsTemplate;
 
-    private final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+    private final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private final String TYPE = "ANALYSIS_REPORT_SECTIONS";
 
     DBObject createDBObjectMetadata(AnalysisReportMetadata analysisReportMetadata) {
