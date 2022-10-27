@@ -1,4 +1,3 @@
-import { IThreshold } from 'src/app/modules/report-template/model/report-template.model';
 import { Component, Input, OnChanges } from '@angular/core';
 import { IDataTable } from '../../../report/model/report.model';
 import { Labelizer } from '../../services/values.service';
@@ -9,6 +8,7 @@ import { Comparator } from '../../../report-template/model/report-template.model
 import { Table } from 'primeng/table/table';
 import { ColumnType, DataTableService, IColumn, Row, IRowTree, IRowTreeData } from '../../services/data-table.service';
 import { TreeTable } from 'primeng/treetable/treetable';
+import { DataExportCSVService } from '../../services/data-export-csv.service';
 
 @Component({
   selector: 'app-data-table',
@@ -74,7 +74,9 @@ export class DataTableComponent implements OnChanges {
       }
     };
 
-  constructor(private dataTableService: DataTableService) {
+  constructor(
+    private dataTableService: DataTableService,
+    private csvExportService: DataExportCSVService) {
   }
 
   valueFilterIsSet(): boolean {
@@ -146,29 +148,8 @@ export class DataTableComponent implements OnChanges {
     this.initialized = true;
   }
 
-
-  public writeCSV(): string {
-    const rows = this.rows;
-    const columns = this.columns;
-    const hasGroup = columns.findIndex((c) => c.key === 'group') !== -1;
-    const fields = columns.filter((c) => c.type === ColumnType.FIELD);
-    const fieldsHeader = fields.reduce((acc, f) => `${acc}${f.denominator ? 'GROUP_FIELD:' : 'FIELD:'}${f.key},`, '');
-    const header = `${hasGroup ? 'GROUP_ID,' : ''}${fieldsHeader}NUMERATOR,DENOMINATOR,PERCENTAGE,THRESHOLD_TYPE,THRESHOLD_VALUE,THRESHOLD_EVALUATION`;
-
-    const rowsValues = rows.map((r) => {
-      const group = hasGroup ? `${r.group},` : '';
-      const fieldsValue = fields.reduce((acc, f) => `${acc}${this.escapeValue(r[f.key])},`, '');
-      const thresholdType = r.threshold ? (r.threshold as IThreshold).comparator : 'NONE';
-      const thresholdValue = r.threshold ? (r.threshold as IThreshold).value : 'NONE';
-      const thresholdActivation = r.threshold ? (r.pass ? 'PASS' : 'FAIL') : 'NONE';
-      return `${group}${fieldsValue}${r.count},${r.total},${Number(r.percentage).toFixed(2)},${thresholdType},${thresholdValue},${thresholdActivation}`;
-    });
-
-    return [header, ...rowsValues].join('\n');
-  }
-
   public downloadCSV() {
-    const value = this.writeCSV();
+    const value = this.csvExportService.writeCSV(this.rows, this.columns);
     const file = new window.Blob([value], { type: 'text/csv' });
     const a = document.createElement('a');
     a.style.display = 'none';
@@ -178,11 +159,5 @@ export class DataTableComponent implements OnChanges {
     a.click();
     a.remove();
   }
-
-  public escapeValue(value: string) {
-    const needsEscape = value.includes(',') || value.includes('"');
-    return needsEscape ? `"${value.replace(/"/g, '""')}"` : value;
-  }
-
 
 }

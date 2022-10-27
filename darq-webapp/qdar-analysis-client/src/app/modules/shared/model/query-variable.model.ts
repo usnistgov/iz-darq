@@ -66,7 +66,7 @@ export interface IDynamicQueryVariableRef extends IQueryVariableRef {
 export interface IQueryVariableRefInstance extends IQueryVariableRef {
     queryValueType: QueryVariableRefType.STATIC;
     value: number;
-    timestamp: Date;
+    timestamp: number;
     facilityId?: string;
     comment?: string;
     name: string;

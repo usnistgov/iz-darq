@@ -1,3 +1,4 @@
+import { IQueryVariableRefInstance } from './../model/query-variable.model';
 import { IAdjustedFraction } from './../../report/model/report.model';
 import { Injectable } from '@angular/core';
 import { Field, AnalysisType } from '../../report-template/model/analysis.values';
@@ -17,8 +18,8 @@ export interface IDataTableRowDisplay {
   id: string;
   group?: number;
   fraction: IFraction;
-  adjustedFraction?: IAdjustedFraction;
-  adjustedPercentage?: number;
+  denominatorVariable?: IQueryVariableRefInstance;
+  numeratorVariable?: IQueryVariableRefInstance;
   count: number;
   total: number;
   percentage: number;
@@ -149,16 +150,14 @@ export class DataTableService {
         ...labelized,
         group: row.groupId,
         id: i + '',
-        count: row.result.count,
-        total: row.result.total,
-        percentage: row.adjustedFraction ?
-          (row.adjustedFraction.count / row.adjustedFraction.total) * 100 :
-          (row.result.count / row.result.total) * 100,
+        count: row.effectiveResult.count,
+        total: row.effectiveResult.total,
+        percentage: (row.effectiveResult.count / row.effectiveResult.total) * 100,
         pass: row.pass,
         threshold: row.threshold,
-        fraction: row.result,
-        adjustedFraction: row.adjustedFraction,
-        adjustedPercentage: row.adjustedFraction ? (row.adjustedFraction.count / row.adjustedFraction.total) * 100 : undefined,
+        fraction: row.effectiveResult,
+        denominatorVariable: row.adjustedFraction ? row.adjustedFraction.denominatorVariable : undefined,
+        numeratorVariable: row.adjustedFraction ? row.adjustedFraction.numeratorVariable : undefined,
       };
     });
 

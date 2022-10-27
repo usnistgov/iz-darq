@@ -154,55 +154,45 @@
             {{ value.threshold ? labelizer.comparator(value.threshold.comparator) + ' ' + value.threshold.value + '% ' + (value.pass ? '(PASS)' : "(FAIL)") : 'No Threshold'}}
           </div>
           <div *ngSwitchCase="ColumnType.VALUE" style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
-            <ng-container *ngIf="value.adjustedFraction">
-              <div>
-                {{ value.adjustedPercentage | number:'1.0-1'}}%
-              </div>
-              <div>
-                ( <span>{{( value.adjustedFraction.count | number:'.')}}</span> / <span>{{( value.adjustedFraction.total | number:'.')}}</span> )
-              </div>
-            </ng-container>
-            <ng-container *ngIf="!value.adjustedFraction">
-              <div>
-                {{ value.percentage | number:'1.0-1'}}%
-              </div>
-              <div>
-                ( <span>{{( value.count | number:'.')}}</span> / <span>{{( value.total | number:'.')}}</span> )
-              </div>
-            </ng-container>
+            <div>
+              {{ value.percentage | number:'1.0-1'}}%
+            </div>
+            <div>
+              ( <span>{{( value.count | number:'.')}}</span> / <span>{{( value.total | number:'.')}}</span> )
+            </div>
           </div>
           <div *ngSwitchCase="ColumnType.NUMERATOR_VARIABLE">
-            <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
+            <div *ngIf="value.numeratorVariable" style="width: 100%; height: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
               <div style="flex-grow: 1;">
-                <span class="badge badge-primary">ID : {{value.adjustedFraction?.numeratorVariable.id}}</span><br>
-                <span>{{value.adjustedFraction?.numeratorVariable.name}}</span><br>
+                <span class="badge badge-primary">ID : {{value.numeratorVariable.id}}</span><br>
+                <span>{{value.numeratorVariable.name}}</span><br>
               </div>
-              <button type="button" class="btn btn-sm btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="'Numerator Variable Info'" container="body">
+              <button type="button" class="btn btn-sm btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="'Numerator Variable'" container="body">
                 <i class="fa fa-question" aria-hidden="true"></i>
               </button>
               <ng-template #popContent>
-                <app-variable-instance-display [variable]="value.adjustedFraction?.numeratorVariable"></app-variable-instance-display>
+                <app-variable-instance-display [variable]="value.numeratorVariable"></app-variable-instance-display>
               </ng-template>
             </div>
           </div>
           <div *ngSwitchCase="ColumnType.DENOMINATOR_VARIABLE">
-            <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
+            <div *ngIf="value.denominatorVariable" style="width: 100%; height: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
               <div style="flex-grow: 1;">
-                <span class="badge badge-primary">ID : {{value.adjustedFraction?.denominatorVariable.id}}</span><br>
-                <span>{{value.adjustedFraction?.denominatorVariable.name}}</span><br>
+                <span class="badge badge-primary">ID : {{value.denominatorVariable.id}}</span><br>
+                <span>{{value.denominatorVariable.name}}</span><br>
               </div>
-              <button type="button" class="btn btn-sm btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="'Denominator Variable Info'" container="body">
+              <button type="button" class="btn btn-sm btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="'Denominator Variable'" container="body">
                 <i class="fa fa-question" aria-hidden="true"></i>
               </button>
               <ng-template #popContent>
-                <app-variable-instance-display [variable]="value.adjustedFraction?.denominatorVariable"></app-variable-instance-display>
+                <app-variable-instance-display [variable]="value.denominatorVariable"></app-variable-instance-display>
               </ng-template>
             </div>
           </div>
           <div *ngSwitchCase="ColumnType.BAR" style="height: 100%;  padding: 0 !important; vertical-align:middle;">
             <app-visual-bar
               [value]="{
-                value: value.adjustedFraction ? value.adjustedFraction : value.fraction,
+                value: value.fraction,
                 threshold: value.threshold,
                 pass: value.pass
               }"
@@ -370,55 +360,45 @@
             {{ value.threshold ? labelizer.comparator(value.threshold.comparator) + ' ' + value.threshold.value + '% ' + (value.pass ? '(PASS)' : "(FAIL)") : 'No Threshold'}}
           </div>
           <div *ngSwitchCase="ColumnType.VALUE" style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
-            <ng-container *ngIf="value.adjustedFraction">
-              <div>
-                {{ value.adjustedPercentage | number:'1.0-1'}}%
-              </div>
-              <div>
-                ( <span>{{( value.adjustedFraction.count | number:'.')}}</span> / <span>{{( value.adjustedFraction.total | number:'.')}}</span> )
-              </div>
-            </ng-container>
-            <ng-container *ngIf="!value.adjustedFraction">
               <div>
                 {{ value.percentage | number:'1.0-1'}}%
               </div>
               <div>
                 ( <span>{{( value.count | number:'.')}}</span> / <span>{{( value.total | number:'.')}}</span> )
               </div>
-            </ng-container>
           </div>
           <div *ngSwitchCase="ColumnType.NUMERATOR_VARIABLE">
-            <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
+            <div *ngIf="value.numeratorVariable" style="width: 100%; height: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
               <div style="flex-grow: 1;">
-                <span class="badge badge-primary">ID : {{value.adjustedFraction?.numeratorVariable.id}}</span><br>
-                <span>{{value.adjustedFraction?.numeratorVariable.name}}</span><br>
+                <span class="badge badge-primary">ID : {{value.numeratorVariable.id}}</span><br>
+                <span>{{value.numeratorVariable.name}}</span><br>
               </div>
-              <button type="button" class="btn btn-sm btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="'Numerator Variable Info'" container="body">
+              <button type="button" class="btn btn-sm btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="'Numerator Variable'" container="body">
                 <i class="fa fa-question" aria-hidden="true"></i>
               </button>
               <ng-template #popContent>
-                <app-variable-instance-display [variable]="value.adjustedFraction?.numeratorVariable"></app-variable-instance-display>
+                <app-variable-instance-display [variable]="value.numeratorVariable"></app-variable-instance-display>
               </ng-template>
             </div>
           </div>
           <div *ngSwitchCase="ColumnType.DENOMINATOR_VARIABLE">
-            <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
+            <div *ngIf="value.denominatorVariable" style="width: 100%; height: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
               <div style="flex-grow: 1;">
-                <span class="badge badge-primary">ID : {{value.adjustedFraction?.denominatorVariable.id}}</span><br>
-                <span>{{value.adjustedFraction?.denominatorVariable.name}}</span><br>
+                <span class="badge badge-primary">ID : {{value.denominatorVariable.id}}</span><br>
+                <span>{{value.denominatorVariable.name}}</span><br>
               </div>
-              <button type="button" class="btn btn-sm btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="'Denominator Variable Info'" container="body">
+              <button type="button" class="btn btn-sm btn-outline-secondary" [ngbPopover]="popContent" [popoverTitle]="'Denominator Variable'" container="body">
                 <i class="fa fa-question" aria-hidden="true"></i>
               </button>
               <ng-template #popContent>
-                <app-variable-instance-display [variable]="value.adjustedFraction?.denominatorVariable"></app-variable-instance-display>
+                <app-variable-instance-display [variable]="value.denominatorVariable"></app-variable-instance-display>
               </ng-template>
             </div>
           </div>
           <div *ngSwitchCase="ColumnType.BAR" style="height: 100%;  padding: 0 !important; vertical-align:middle;">
             <app-visual-bar
               [value]="{
-                value: value.adjustedFraction ? value.adjustedFraction : value.fraction,
+                value: value.fraction,
                 threshold: value.threshold,
                 pass: value.pass
               }"
