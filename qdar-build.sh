@@ -56,9 +56,9 @@ cd $QDAR/darq-webapp/qdar-analysis-client
 npm run build-prod
 echo "Moving MQE's Latest Compiled.xml file into project"
 echo "- Moving into CLI"
-cp $MQE_VALIDATOR/src/test/resources/Compiled.xml $QDAR/darq-extract-process/darq-cli-app/src/resources/Compiled.xml
+cp $MQE_VALIDATOR/src/test/resources/Compiled.xml $QDAR/darq-extract-process/darq-cli-app/src/main/resources/Compiled.xml
 echo "- Moving into WebApp"
-cp $MQE_VALIDATOR/src/test/resources/Compiled.xml $QDAR/darq-webapp/darq-app/src/resources/Compiled.xml
+cp $MQE_VALIDATOR/src/test/resources/Compiled.xml $QDAR/darq-webapp/darq-app/src/main/resources/Compiled.xml
 echo "Building qDAR Modules"
 cd $QDAR
 mvn clean install -DskipTests
