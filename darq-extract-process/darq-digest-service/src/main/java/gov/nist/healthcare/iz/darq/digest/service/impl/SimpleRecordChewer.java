@@ -68,8 +68,6 @@ public class SimpleRecordChewer implements RecordChewer {
 				extraction,
 				apr.history.size(),
 				1,
-				validator.vocabulary(),
-				collector.codes(),
 				validator.getHistorical(),
 				validator.getAdministered());
 	}

@@ -17,6 +17,11 @@ if [ -z "$QDAR" ]; then
     exit 1
 fi
 
+if [ -z "$MQE_VALIDATOR" ]; then 
+    echo "MQE Validator Path is required. (-qdar)"
+    exit 1
+fi
+
 if [ -z "$OUTPUT" ]; then 
     OUTPUT="$( pwd )"
 fi
@@ -49,6 +54,11 @@ echo "Building qDAR"
 echo "Building qDAR Client"
 cd $QDAR/darq-webapp/qdar-analysis-client
 npm run build-prod
+echo "Moving MQE's Latest Compiled.xml file into project"
+echo "- Moving into CLI"
+cp $MQE_VALIDATOR/src/test/resources/Compiled.xml $QDAR/darq-extract-process/darq-cli-app/src/resources/Compiled.xml
+echo "- Moving into WebApp"
+cp $MQE_VALIDATOR/src/test/resources/Compiled.xml $QDAR/darq-webapp/darq-app/src/resources/Compiled.xml
 echo "Building qDAR Modules"
 cd $QDAR
 mvn clean install -DskipTests

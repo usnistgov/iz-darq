@@ -43,7 +43,6 @@ public class ADFMergeServiceImpl implements ADFMergeService {
                 reportingGroupPayload,
                 first.getConfiguration(),
                 summary,
-                null,
                 first.getVersion(),
                 first.getBuild(),
                 first.getMqeVersion(),

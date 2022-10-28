@@ -8,7 +8,6 @@ public interface MergeService {
 
 	ADChunk mergeChunk(ADChunk a, ADChunk b);
 
-
 	Map<String, Map<String, ADPayload>> mergeADPayloadProvider(Map<String, Map<String, ADPayload>> a, Map<String, Map<String, ADPayload>> b);
 
 	Map<String, ADPayload> mergeADPayloadAgeGroup(Map<String, ADPayload> a, Map<String, ADPayload> b);

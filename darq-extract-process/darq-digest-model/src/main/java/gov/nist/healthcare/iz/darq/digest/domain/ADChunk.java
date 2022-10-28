@@ -19,8 +19,6 @@ public class ADChunk {
 	private Map<String, PatientPayload> generalPatientPayload;
 	private Map<String, Map<String, ADPayload>> reportingGroupPayload;
 	private Map<String, ExtractFraction> extraction;
-	private Map<Field, Set<String>> values;
-	private Map<String, Set<String>> codes;
 	
 	public ADChunk(
 			Map<String, String> providers,
@@ -29,8 +27,6 @@ public class ADChunk {
 			Map<String, ExtractFraction> extraction,
 			int nbVaccinations,
 			int nbPatients,
-			Map<Field, Set<String>> values,
-			Map<String, Set<String>> codes,
 			int historical,
 			int administered) {
 		super();
@@ -40,8 +36,6 @@ public class ADChunk {
 		this.extraction = extraction;
 		this.nbVaccinations = nbVaccinations;
 		this.nbPatients = nbPatients;
-		this.values = values;
-		this.codes = codes;
 		this.administered = administered;
 		this.historical = historical;
 	}
@@ -85,13 +79,8 @@ public class ADChunk {
 		this.providers = providers;
 	}
 
-
 	public void addIssue(String issue) {
 		this.issues.add(issue);
-	}
-
-	public void addIssues(ADChunk chunk) {
-		this.issues.addAllPossible(chunk.issues);
 	}
 
 	public void addIssues(List<String> issues) {
@@ -108,64 +97,36 @@ public class ADChunk {
 				+ this.generalPatientPayload + ", extraction=" + extraction + "]";
 	}
 
-
 	public int getNbVaccinations() {
 		return nbVaccinations;
 	}
-
 
 	public void setNbVaccinations(int nbVaccinations) {
 		this.nbVaccinations = nbVaccinations;
 	}
 
-
 	public int getNbPatients() {
 		return nbPatients;
 	}
-
 
 	public void setNbPatients(int nbPatients) {
 		this.nbPatients = nbPatients;
 	}
 
-
 	public int getMaxVaccination() {
 		return maxVaccination;
 	}
-
 
 	public void setMaxVaccination(int v) {
 		this.maxVaccination = Math.max(v, maxVaccination);
 	}
 
-
 	public int getMinVaccination() {
 		return minVaccination;
 	}
 
-
 	public void setMinVaccination(int v) {
 		this.minVaccination = Math.min(v, minVaccination);
-	}
-
-
-	public Map<Field, Set<String>> getValues() {
-		return values;
-	}
-
-
-	public void setValues(Map<Field, Set<String>> values) {
-		this.values = values;
-	}
-
-
-	public Map<String, Set<String>> getCodes() {
-		return codes;
-	}
-
-
-	public void setCodes(Map<String, Set<String>> codes) {
-		this.codes = codes;
 	}
 
 	public int getUnreadPatients() {

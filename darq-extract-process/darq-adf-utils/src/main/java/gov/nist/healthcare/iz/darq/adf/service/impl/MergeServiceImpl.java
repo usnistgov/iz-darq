@@ -25,8 +25,6 @@ public class MergeServiceImpl implements MergeService {
 		a.setNbVaccinations(a.getNbVaccinations() + b.getNbVaccinations());
 		a.setMaxVaccination(b.getNbVaccinations());
 		a.setMinVaccination(b.getNbVaccinations());
-		a.setCodes(mergeCodeValues(a.getCodes(), b.getCodes()));
-		a.setValues(mergeFieldValues(a.getValues(), b.getValues()));
 		a.setAdministered(a.getAdministered() + b.getAdministered());
 		a.setHistorical(a.getHistorical() + b.getHistorical());
 		return a;
@@ -37,22 +35,6 @@ public class MergeServiceImpl implements MergeService {
 		Map<String, String> x =  a != null ? new HashMap<>(a) : new HashMap<>();
 		if(b != null){
 			b.forEach((k, v) -> x.merge(k, v, this::mergeProvider));
-		}
-		return x;
-	}
-	
-	public Map<String, Set<String>> mergeCodeValues(Map<String, Set<String>> a, Map<String, Set<String>> b){
-		Map<String, Set<String>> x =   a != null ? new HashMap<>(a) : new HashMap<>();
-		if(b != null){
-			b.forEach((k, v) -> x.merge(k, v, this::mergeSet));
-		}
-		return x;
-	}
-	
-	public Map<Field, Set<String>> mergeFieldValues(Map<Field, Set<String>> a, Map<Field, Set<String>> b){
-		Map<Field, Set<String>> x =   a != null ? new HashMap<>(a) : new HashMap<>();
-		if(b != null){
-			b.forEach((k, v) -> x.merge(k, v, this::mergeSet));
 		}
 		return x;
 	}

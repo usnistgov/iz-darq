@@ -180,9 +180,7 @@ public class CodeCollector {
 															Code::getValue,
 															Collectors.collectingAndThen(
 																	Collectors.toList(),
-																	(y) -> {
-																		return y.size();
-																	})
+																	List::size)
 															)	
 														)
 													);
@@ -217,9 +215,7 @@ public class CodeCollector {
 																			Code::getValue,
 																			Collectors.collectingAndThen(
 																					Collectors.toList(),
-																					(y) -> {
-																						return y.size();
-																					})
+																					List::size)
 																			)	
 																		)
 																	);
@@ -231,21 +227,6 @@ public class CodeCollector {
 										)
 								)
 						);
-	}
-	
-	public Map<String, Set<String>> codes(){
-		return this.codes.stream()
-		.collect(
-				Collectors.groupingBy(
-						Code::getTable,
-						Collectors.collectingAndThen(
-								Collectors.groupingBy(Code::getValue),
-								(x) -> {
-									return x.keySet();
-								}
-						)
-				)
-		);
 	}
 
 

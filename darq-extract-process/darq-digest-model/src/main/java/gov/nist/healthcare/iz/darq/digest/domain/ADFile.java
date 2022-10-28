@@ -6,39 +6,12 @@ import java.util.Set;
 
 public class ADFile {
 
-	public static class Vocabulary {
-		private Map<Field, Set<String>> byField;
-		private Map<String, Set<String>> byTable;
-
-		public Vocabulary() {
-			super();
-		}
-		public Vocabulary(Map<Field, Set<String>> byField, Map<String, Set<String>> byTable) {
-			super();
-			this.byField = byField;
-			this.byTable = byTable;
-		}
-		public Map<Field, Set<String>> getByField() {
-			return byField;
-		}
-		public void setByField(Map<Field, Set<String>> byField) {
-			this.byField = byField;
-		}
-		public Map<String, Set<String>> getByTable() {
-			return byTable;
-		}
-		public void setByTable(Map<String, Set<String>> byTable) {
-			this.byTable = byTable;
-		}
-	}
-
 	private long totalAnalysisTime;
 	private Date analysisDate;
 	private Map<String, PatientPayload> generalPatientPayload;
 	private Map<String, Map<String, ADPayload>> reportingGroupPayload;
 	private ConfigurationPayload configuration;
 	private Summary summary;
-	private Vocabulary vocabulary;
 	private String version;
 	private String build;
 	private String mqeVersion;
@@ -51,7 +24,6 @@ public class ADFile {
 			Map<String, Map<String, ADPayload>> reportingGroupPayload,
 			ConfigurationPayload configuration,
 			Summary summary,
-			Vocabulary vocabulary,
 			String version,
 			String build,
 			String mqeVersion,
@@ -65,7 +37,6 @@ public class ADFile {
 		this.configuration = configuration;
 		this.analysisDate = new Date();
 		this.summary = summary;
-		this.vocabulary = vocabulary;
 		this.version = version;
 		this.build = build;
 		this.mqeVersion = mqeVersion;
@@ -79,7 +50,6 @@ public class ADFile {
 			Map<String, Map<String, ADPayload>> reportingGroupPayload,
 			ConfigurationPayload configuration,
 			Summary summary,
-			Vocabulary vocabulary,
 			String version,
 			String build,
 			String mqeVersion,
@@ -92,7 +62,6 @@ public class ADFile {
 				generalPatientPayload,
 				reportingGroupPayload,
 				configuration, summary,
-				vocabulary,
 				version,
 				build,
 				mqeVersion,
@@ -141,12 +110,6 @@ public class ADFile {
 	}
 	public void setSummary(Summary summary) {
 		this.summary = summary;
-	}
-	public Vocabulary getVocabulary() {
-		return vocabulary;
-	}
-	public void setVocabulary(Vocabulary vocabulary) {
-		this.vocabulary = vocabulary;
 	}
 
 	public String getVersion() {
