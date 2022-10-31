@@ -24,6 +24,12 @@
             <groupId>org.immregistries</groupId>
             <artifactId>mqe-validator</artifactId>
             <version>${mqe.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>

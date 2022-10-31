@@ -11,11 +11,11 @@ export class QueryVariableService {
     constructor(private http: HttpClient) { }
 
     getVariables(): Observable<IQueryVariable[]> {
-        return this.http.get<IQueryVariable[]>('/api/query-variable/');
+        return this.http.get<IQueryVariable[]>('api/query-variable/');
     }
 
 
     getVariablesDisplay(): Observable<IQueryVariableDisplay[]> {
-        return this.http.get<IQueryVariableDisplay[]>('/api/query-variable/display');
+        return this.http.get<IQueryVariableDisplay[]>('api/query-variable/display');
     }
 }

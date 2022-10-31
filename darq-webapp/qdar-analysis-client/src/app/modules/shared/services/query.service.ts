@@ -27,7 +27,7 @@ export interface IQuerySaveRequest {
 })
 export class QueryService {
 
-  readonly URL = '/api/query/';
+  readonly URL = 'api/query/';
 
   constructor(private http: HttpClient) { }
 
