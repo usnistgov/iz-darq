@@ -1,7 +1,6 @@
 package gov.nist.healthcare.iz.darq.digest.app;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -10,6 +9,7 @@ import java.util.stream.Collectors;
 import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
+import gov.nist.healthcare.iz.darq.digest.app.exception.*;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
 import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
@@ -19,6 +19,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 import org.immregistries.mqe.validator.detection.MqeCode;
 import org.immregistries.mqe.validator.engine.MessageValidator;
 import org.immregistries.mqe.validator.engine.RulePairBuilder;
@@ -48,71 +49,60 @@ public class CLIApp {
 	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 	private final static Logger logger = LoggerFactory.getLogger(CLIApp.class.getName());
 
-	private static boolean exists(CommandLine cmd, String opt, String name){
-		if(!cmd.hasOption(opt)){
-			System.out.println(name+" is required");
-			return false;
-		}
-		return true;
-	}
-
 	private static boolean running = false;
-	
-    public static String success(String x){
-    	return ConsoleColors.GREEN_BOLD + x + ConsoleColors.RESET;
-    }
-    
-    public static String failure(String x){
-    	return ConsoleColors.RED_BOLD + x + ConsoleColors.RESET;
-    }
-	
-	@SuppressWarnings("resource")
-	public static void main(String[] args) throws Exception {
-		ApplicationContext context = new AnnotationConfigApplicationContext(CLIApp.class);
-		Properties properties = new Properties();
-		properties.load(CLIApp.class.getResourceAsStream("/application.properties"));
-		String version = properties.getProperty("app.version");
-		String build = properties.getProperty("app.date");
-		String mqeVersion = properties.getProperty("mqe.version");
-		CryptoKey cryptoKey = context.getBean(CryptoKey.class);
-		String publicKeyHash = "";
 
-		if(cryptoKey instanceof PublicOnlyCryptoKey) {
-			try {
-				((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromResource();
-				publicKeyHash = DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash());
-			} catch (Exception e) {
-				System.out.println("! No public key found in bundle");
-				logger.error("! No public found in bundle", e);
-			}
-		}
-
-		String tag = String.format("v%s (%s) [MQE v%s] " + (!Strings.isNullOrEmpty(publicKeyHash) ? "[Key MD5 " + publicKeyHash + "]" : "") , version, build, mqeVersion);
-
-		//--- OPTIONS
-		Options options = new Options();
-		options.addOption("help", false, "print help");
-		options.addOption("p", "patients", true, "Patients Extract File");
-		options.addOption("v", "vaccinations", true, "Vaccinations Extract File");
-		options.addOption("c", "configuration", true, "Analysis Configuration");
-		options.addOption("tmpDir", "temporaryDirectory", true, "Location where to create temporary directory");
-		options.addOption("pa", "printAdf", false, "print ADF content");
-		options.addOption("d", "dateFormat", true, "Date Format");
-		options.addOption("pub", "publicKey", true, "qDAR Public Key");
-
-
-		CommandLineParser parser = new DefaultParser();
+	public static void run(String[] args) throws TerminalException {
 		try {
+			ApplicationContext context = new AnnotationConfigApplicationContext(CLIApp.class);
+			Properties properties = new Properties();
+			properties.load(CLIApp.class.getResourceAsStream("/application.properties"));
+			String version = properties.getProperty("app.version");
+			String build = properties.getProperty("app.date");
+			String mqeVersion = properties.getProperty("mqe.version");
+			CryptoKey cryptoKey = context.getBean(CryptoKey.class);
+			String publicKeyHash = "";
+
+			if(cryptoKey instanceof PublicOnlyCryptoKey) {
+				try {
+					((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromResource();
+					publicKeyHash = DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash());
+				} catch (Exception e) {
+					System.out.println("! No public key found in bundle");
+					logger.warn("! No public found in bundle", e);
+				}
+			}
+
+			String tag = String.format("v%s (%s) [MQE v%s] " + (!Strings.isNullOrEmpty(publicKeyHash) ? "[Key MD5 " + publicKeyHash + "]" : "") , version, build, mqeVersion);
+
+			//--- OPTIONS
+			Options options = new Options();
+			options.addOption("help", false, "print help");
+			options.addOption("p", "patients", true, "Patients Extract File");
+			options.addOption("v", "vaccinations", true, "Vaccinations Extract File");
+			options.addOption("c", "configuration", true, "Analysis Configuration");
+			options.addOption("tmpDir", "temporaryDirectory", true, "Location where to create temporary directory");
+			options.addOption("pa", "printAdf", false, "print ADF content");
+			options.addOption("d", "dateFormat", true, "Date Format");
+			options.addOption("pub", "publicKey", true, "qDAR Public Key");
+
+
+			CommandLineParser parser = new DefaultParser();
 			CommandLine cmd = parser.parse(options, args);
 			if(cmd.hasOption("help")){
-				HelpFormatter formater = new HelpFormatter();
-				formater.printHelp("Data At Rest Quality Analysis Command Line Tool "+ tag, options);
+				HelpFormatter formatter = new HelpFormatter();
+				formatter.printHelp("Data At Rest Quality Analysis Command Line Tool "+ tag, options);
 				System.exit(0);
 			}
 			else {
-				if(!exists(cmd, "p", "patients file") | !exists(cmd, "v", "vaccinations file") | !exists(cmd, "c", "configuration file")){
-					System.out.println("Use -help for details");
-					System.exit(0);
+				System.out.println("===================================================================================================");
+				System.out.println(" [NIST] Welcome to Data At Rest Quality Analysis Command Line Tool " + tag + " ");
+				System.out.println("===================================================================================================");
+
+				boolean patientParamMissing = !cmd.hasOption("p");
+				boolean vaxParamMissing = !cmd.hasOption("v");
+				boolean confParamMissing = !cmd.hasOption("c");
+				if(patientParamMissing || vaxParamMissing || confParamMissing){
+					throw new RequiredParameterMissingException(new FileErrorCode(patientParamMissing, vaxParamMissing, confParamMissing));
 				}
 				else {
 					String pFilePath = cmd.getOptionValue("p");
@@ -122,95 +112,111 @@ public class CLIApp {
 					boolean printAdf = cmd.hasOption("pa");
 					String dateFormat = cmd.getOptionValue("d");
 
-					System.out.println(ConsoleColors.BLUE_BRIGHT + "===================================================================================================" + ConsoleColors.RESET);
-			    	System.out.println(ConsoleColors.WHITE_BOLD + " [NIST] Welcome to Data At Rest Quality Analysis Command Line Tool " + tag + " " + ConsoleColors.RESET);
-			    	System.out.println(ConsoleColors.YELLOW_BRIGHT + "===================================================================================================" + ConsoleColors.RESET);
-		    		
-			    	File patients = new File(pFilePath);
-			    	File vaccines = new File(vFilePath);
-			    	File config = new File(cFilePath);
-			    	boolean pFile = patients.exists() && !patients.isDirectory();
-			    	boolean vFile = vaccines.exists() && !vaccines.isDirectory();
-			    	boolean cFile = config.exists() && !config.isDirectory();
-			    	boolean cFileValid = true;
-			    	ConfigurationPayload configurationPayload = null;
-			    	if(cFile){
-			    		try {
-				    		ObjectMapper mapper = new ObjectMapper();
-				    		configurationPayload = mapper.readValue(config,ConfigurationPayload.class);
-				    	}
-			    		catch (Exception e) {
-							cFileValid = false;
+					File patients = new File(pFilePath);
+					File vaccines = new File(vFilePath);
+					File config = new File(cFilePath);
+					boolean pFile = patients.exists() && !patients.isDirectory();
+					boolean vFile = vaccines.exists() && !vaccines.isDirectory();
+					boolean cFile = config.exists() && !config.isDirectory();
+
+
+					System.out.println("Patients File @ "+ pFilePath + " " + (pFile ? "[FOUND]" : "[ERROR]"));
+					System.out.println("Vaccinations File @ "+ vFilePath + " " + (vFile ? "[FOUND]" : "[ERROR]"));
+					System.out.println("Configuration File @ "+ cFilePath + " " + (cFile ? "[FOUND]" : "[ERROR]"));
+					System.out.println("===================================================================================================");
+
+					if(!pFile || !vFile || !cFile) {
+						throw new FileNotFoundException(new FileErrorCode(!pFile, !vFile, !cFile));
+					} else {
+
+						// Read Configuration file
+						ConfigurationPayload configurationPayload;
+						try {
+							ObjectMapper mapper = new ObjectMapper();
+							configurationPayload = mapper.readValue(config,ConfigurationPayload.class);
 						}
-			    	}
-			    	
-			    	System.out.println("Patients File @ "+ pFilePath + " " + (pFile ? success("[FOUND]") : failure("[ERROR]")));
-		        	System.out.println("Vaccinations File @ "+ vFilePath + " " + (vFile ? success("[FOUND]") : failure("[ERROR]")));
-		        	System.out.println("Configuration File @ "+ cFilePath + " " + (cFile ? cFileValid ? success("[FOUND]") : failure("[INVALID]") : failure("[ERROR]")));
-		        	System.out.println("===================================================================================================");
-
-					// Read Date Format
-					DqDateFormat simpleDateFormat = DqDateFormat.forPattern(DEFAULT_DATE_FORMAT);
-					if(!Strings.isNullOrEmpty(dateFormat)) {
-						try{
-							simpleDateFormat = DqDateFormat.forPattern(dateFormat);
-						} catch (Exception e) {
-							System.out.println("Date Format " + dateFormat + " is Invalid ");
-							throw e;
+						catch (Exception e) {
+							throw new InvalidConfigurationFileFormatException(e);
 						}
-					}
 
-					// Read Public Key
-					if(cmd.hasOption("pub")) {
-						String publicKeyLocation = cmd.getOptionValue("pub");
-						if(cryptoKey instanceof PublicOnlyCryptoKey) {
-							((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromLocation(publicKeyLocation);
-							System.out.println("* Using provided public key " + DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash()) + "(MD5)");
-						} else {
-							throw new Exception("Public Key parameter (pub) is not supported");
+						// Read Date Format
+						DqDateFormat simpleDateFormat = DqDateFormat.forPattern(DEFAULT_DATE_FORMAT);
+						if(!Strings.isNullOrEmpty(dateFormat)) {
+							try{
+								simpleDateFormat = DqDateFormat.forPattern(dateFormat);
+							} catch (Exception e) {
+								throw new InvalidDateFormatException(e, "Date Format " + dateFormat + " is Invalid ");
+							}
 						}
-					}
 
-					if(cryptoKey.getPublicKey() == null) {
-						System.out.println("! No public key provided or bundled");
-						logger.error("! No public key provided or bundled");
-						throw new Exception("No public key provided or bundled");
-					}
+						// Read Public Key
+						if(cmd.hasOption("pub")) {
+							String publicKeyLocation = cmd.getOptionValue("pub");
+							if(cryptoKey instanceof PublicOnlyCryptoKey) {
+								((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromLocation(publicKeyLocation);
+								System.out.println("* Using provided public key " + DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash()) + "(MD5)");
+							} else {
+								throw new PublicKeyException("Public Key parameter (pub) is not supported");
+							}
+						}
 
-					System.out.println(ConsoleColors.YELLOW_BRIGHT + "Analysis Progress" + ConsoleColors.RESET);
-					if(pFile && vFile && cFile && cFileValid){
-		        		SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
-		        		Exporter export = context.getBean(Exporter.class);
-		        		configureMqeValidator(configurationPayload.getDetections());
-		        		running = true;
-		        		Thread t = progress(runner);
-		        		t.start();
+						if(cryptoKey.getPublicKey() == null) {
+							throw new PublicKeyException("No public key provided or bundled");
+						}
+
+						System.out.println("Analysis Progress");
+
+						SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
+						Exporter export = context.getBean(Exporter.class);
+						configureMqeValidator(configurationPayload.getDetections());
+						running = true;
+						Thread t = progress(runner);
+						t.start();
 						long start = System.currentTimeMillis();
-		            	ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, Optional.ofNullable(tmpDirLocation));
-		            	t.join();
-		            	System.out.println(ConsoleColors.GREEN_BRIGHT + "Analysis Finished - Exporting Results" + ConsoleColors.RESET);
-		            	long elapsed = System.currentTimeMillis() - start;
-		            	export.export(configurationPayload, chunk, version, build, mqeVersion, elapsed, printAdf);
-						System.out.println(ConsoleColors.GREEN_BRIGHT + "Results Exported - END" + ConsoleColors.RESET);
+						ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, Optional.ofNullable(tmpDirLocation));
+						t.join();
+						System.out.println("Analysis Finished - Exporting Results");
+						long elapsed = System.currentTimeMillis() - start;
+						export.export(configurationPayload, chunk, version, build, mqeVersion, elapsed, printAdf);
+						System.out.println("Results Exported - END");
 					}
 				}
 			}
 		}
 		catch (ParseException exp) {
-			System.err.println("Parsing failed.  Reason: " + exp.getMessage());
-			logger.error("Parsing failed.  Reason: ", exp);
+			throw new InvalidCommandException(exp);
 		}
 		catch (InvalidConfigurationPayload exp) {
-			System.err.println(exp.getMessage());
-			logger.error("[CONFIGURATION ERROR] " + exp.getMessage(), exp);
+			throw new InvalidConfigurationFileContentException(exp);
+		}
+		catch (TerminalException terminalException) {
+			throw terminalException;
 		}
 		catch (Exception exp) {
-			System.err.println("Execution Failed due to exception ");
-			logger.error("Execution Failed due to exception ", exp);
-			exp.printStackTrace();
+			throw new ExecutionException(exp, "Execution Failed due to exception");
 		}
 		finally {
 			running = false;
+		}
+	}
+	
+	@SuppressWarnings("resource")
+	public static void main(String[] args) {
+		try {
+			run(args);
+		} catch (TerminalException exception) {
+			if(!StringUtils.isBlank(exception.getPrint())) {
+				System.err.println();
+				System.err.println(exception.getPrint());
+				System.err.println();
+			}
+			if(!StringUtils.isBlank(exception.getLogs())) {
+				logger.error(exception.getLogs(), exception);
+			}
+			if(exception.isPrintStackTrace()) {
+				exception.printStackTrace();
+			}
+			System.exit(exception.getExitCode());
 		}
 	}
 

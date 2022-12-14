@@ -90,6 +90,7 @@ public class SimpleDigestRunner implements DigestRunner {
 			}
 			catch (Exception e) {
 				logger.error("[UNEXPECTED ISSUE]", e);
+				file.addIssue("[ERROR] Unexpected error while processing record, view logs for more information. message : " + e.getMessage());
 			}
 		}
 
@@ -98,6 +99,7 @@ public class SimpleDigestRunner implements DigestRunner {
 			iterator.close();
 		} catch (Exception e) {
 			logger.error("[END][UNEXPECTED ISSUE]", e);
+			throw e;
 		}
 		return file;
 	}
