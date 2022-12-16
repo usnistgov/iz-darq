@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 public class RecordParser {
-    public static final String SEPARATOR = "\t";
+    public static final char SEPARATOR = '\t';
     private final DqDateFormat dateFormat;
 
     public RecordParser(DqDateFormat dateFormat) {
@@ -39,7 +39,7 @@ public class RecordParser {
             String name = recordAnnotation.name();
 
             // Split and sanity check
-            String[] payloads = line.split(SEPARATOR, -1);
+            String[] payloads = line.split(SEPARATOR + "", -1);
 
             if(payloads.length == size || (payloads.length == size + 1 && payloads[size].isEmpty())) {
                 // Get annotated fields

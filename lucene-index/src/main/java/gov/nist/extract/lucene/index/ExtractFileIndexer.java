@@ -19,55 +19,38 @@ public class ExtractFileIndexer {
     public static final String LINE_NUMBER = "LINE_NUMBER";
     public static final String CONTENT = "CONTENT";
     private final Integer size;
-    private final String separator;
-    private final boolean sanitize;
-    private List<FormatIssue> sanityCheckErrors = new ArrayList<>();
+    private final char separator;
+    private final List<FormatIssue> sanityCheckErrors = new ArrayList<>();
 
-    public ExtractFileIndexer(int size, String separator) {
+    public ExtractFileIndexer(int size, char separator) {
         this.size = size;
         this.separator = separator;
-        this.sanitize = true;
     }
 
-    public ExtractFileIndexer() {
-        this.size = null;
-        this.separator = null;
-        this.sanitize = false;
-    }
-
-    public IndexWriter index(String extract, String directory) throws IOException {
-        IndexWriter index = this.createIndex(directory);
-        try(Stream<String> lines = Files.lines(Paths.get(extract))) {
-            Counter i = new Counter(0);
-            if(!this.sanitize) {
-                lines.forEach(line -> {
-                    try {
-                        index.addDocument(this.createDocument(line, i.inc()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-            } else {
+    public void index(String extract, String directory) throws IOException {
+        try(IndexWriter index = this.createIndex(directory)) {
+            try(Stream<String> lines = Files.lines(Paths.get(extract))) {
+                Counter i = new Counter(1);
                 lines.forEach(line -> {
                     try {
                         if(line == null || line.isEmpty()) {
-                            sanityCheckErrors.add(new FormatIssue(i.value() + 1, "Empty line"));
+                            sanityCheckErrors.add(new FormatIssue(i.value(), "Empty line"));
                         } else {
-                            int fields = line.split(this.separator).length;
+                            int fields = line.split(this.separator + "").length;
                             if(fields == this.size) {
-                                index.addDocument(this.createDocument(line, i.inc()));
+                                index.addDocument(this.createDocument(line, i.value()));
                             } else {
-                                sanityCheckErrors.add(new FormatIssue(i.inc(), "Number of fields expected " + this.size + " found : " + fields + " separator '" + this.separator +"'"));
+                                sanityCheckErrors.add(new FormatIssue(i.value(), "Number of fields expected " + this.size + " found : " + fields + " separator '" + this.separator +"'"));
                             }
                         }
                     } catch (IOException e) {
+                        sanityCheckErrors.add(new FormatIssue(i.value(), "Could not index record due to : " + e.getMessage()));
                         e.printStackTrace();
+                    } finally {
+                        i.inc();
                     }
                 });
             }
-
-            index.close();
-            return index;
         }
     }
 
@@ -78,8 +61,7 @@ public class ExtractFileIndexer {
     private IndexWriter createIndex(String indexDirectoryPath) throws IOException {
         Directory indexDirectory =
                 FSDirectory.open(Paths.get(indexDirectoryPath));
-        IndexWriter writer = new IndexWriter(indexDirectory, new IndexWriterConfig());
-        return writer;
+        return new IndexWriter(indexDirectory, new IndexWriterConfig());
     }
 
     private Document createDocument(String line, int number) {
@@ -100,7 +82,7 @@ public class ExtractFileIndexer {
         int size = line.length();
         int i = 0;
         StringBuilder ID = new StringBuilder();
-        while(size > i && line.charAt(i) != '\t') {
+        while(size > i && line.charAt(i) != this.separator) {
             ID.append(line.charAt(i));
             i++;
         }

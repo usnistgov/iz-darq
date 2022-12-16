@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
@@ -44,11 +45,12 @@ public class SimpleDigestRunner implements DigestRunner {
 		logger.info("[PREPROCESS] Validating Configuration");
 		configurationPayloadValidator.validateConfigurationPayload(configuration);
 		logger.info("[START] Processing Extract");
-		size = (int) Files.lines(Paths.get(patient)).parallel().count();
+		Path patientsFilePath = Paths.get(patient);
+		size = (int) Files.lines(patientsFilePath).parallel().count();
 		logger.info("Number of patient records : "+size);
 
 		ConfigurationProvider config = new SimpleConfigurationProvider(configuration);
-		iterator = new LucenePatientRecordIterator(Paths.get(patient), Paths.get(vaccines), directory, dateFormat);
+		iterator = new LucenePatientRecordIterator(patientsFilePath, Paths.get(vaccines), directory, dateFormat);
 		this.file = new ADChunk();
 		LocalDate date = new LocalDate(configuration.getAsOfDate());
 		iterator.getSanityCheckErrors().forEach(formatIssue -> file.addIssue(
@@ -98,8 +100,9 @@ public class SimpleDigestRunner implements DigestRunner {
 		try {
 			iterator.close();
 		} catch (Exception e) {
-			logger.error("[END][UNEXPECTED ISSUE]", e);
-			throw e;
+			logger.error("[END][ITERATOR CLOSING ERROR]", e);
+			System.err.println("ALERT: Unable to delete temporary directory " + Paths.get(this.iterator.getTmpDir()));
+			System.err.println("Due to - " + e.getMessage());
 		}
 		return file;
 	}

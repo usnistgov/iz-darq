@@ -13,6 +13,7 @@ import gov.nist.healthcare.iz.darq.parser.service.model.AggregateParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParseError;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.search.IndexSearcher;
@@ -41,7 +42,7 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
     private String tmpDir;
     private List<FormatIssue> sanityCheckErrors;
 
-    public LucenePatientRecordIterator(Path patientFile, Path vaccinationFile, Optional<String> directory, DqDateFormat dateFormat) throws IOException {
+    public LucenePatientRecordIterator(Path patientFile, Path vaccinationFile, Optional<String> directory, DqDateFormat dateFormat) throws Exception {
         super(patientFile, vaccinationFile);
         logger.info("[RECORD ITERATOR] Initialization");
         tmpDir = null;
@@ -84,15 +85,15 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
         logger.info("[RECORD ITERATOR] Initialized");
     }
 
-    private ExtractFileIndexer createFileIndexer(Class<?> clazz) {
+    private ExtractFileIndexer createFileIndexer(Class<?> clazz) throws Exception {
         logger.info("Creating Indexer");
 
         Record annotation = clazz.getAnnotation(Record.class);
         if(annotation == null) {
             logger.error("No record annotation in class" + clazz.getName() + " sanity check skipped skipped");
-            return new ExtractFileIndexer();
+            throw new Exception("Invalid class to index " + clazz.getName());
         } else {
-            logger.error("Class " + clazz.getName() + " expects " + annotation.size() + "fields separated by '"+ RecordParser.SEPARATOR +"'");
+            logger.error("Class " + clazz.getName() + " expects " + annotation.size() + " fields separated by '"+ RecordParser.SEPARATOR +"'");
             return new ExtractFileIndexer(annotation.size(), RecordParser.SEPARATOR);
         }
     }
@@ -149,22 +150,15 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
         return lineNumber - 1;
     }
 
+    public String getTmpDir() {
+        return tmpDir;
+    }
 
     @Override
     public void close() throws IOException {
+        this.vaccinations.getIndexReader().close();
         this.lines.close();
-        if(java.nio.file.Files.exists(Paths.get(this.tmpDir))) {
-            java.nio.file.Files.walk(Paths.get(this.tmpDir))
-                    .filter(path -> path.toFile().isFile())
-                    .forEach(path -> {
-                        try {
-                            java.nio.file.Files.delete(path);
-                        } catch (IOException e) {
-                            logger.error("[CLOSING]",e);
-                        }
-                    });
-            java.nio.file.Files.deleteIfExists(Paths.get(this.tmpDir));
-        }
+        FileUtils.deleteDirectory(Paths.get(this.tmpDir).toFile());
     }
 
 }
