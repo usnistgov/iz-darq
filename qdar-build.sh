@@ -59,14 +59,23 @@ echo "- Moving into CLI"
 cp $MQE_VALIDATOR/src/test/resources/Compiled.xml $QDAR/darq-extract-process/darq-cli-app/src/main/resources/Compiled.xml
 echo "- Moving into WebApp"
 cp $MQE_VALIDATOR/src/test/resources/Compiled.xml $QDAR/darq-webapp/darq-app/src/main/resources/Compiled.xml
+echo "- Moving into output directory"
+mkdir $OUTPUT/resources
+mkdir $OUTPUT/resources/WEB-INF
+mkdir $OUTPUT/resources/WEB-INF/classes
+cp $MQE_VALIDATOR/src/test/resources/Compiled.xml $OUTPUT/resources/WEB-INF/classes/Compiled.xml
 echo "Building qDAR Modules"
 cd $QDAR
 mvn clean install -DskipTests
+echo "Update the Compiled.xml file in darq-cli-app-*-with-dependencies.jar"
+jar -uvf $QDAR/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar -C $OUTPUT/resources/WEB-INF/classes Compiled.xml
 echo "Moving CLI into qDAR Webapp Resource"
 cp $QDAR/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar $QDAR/darq-webapp/darq-app/src/main/resources/qdar-cli.jar
 echo "Building qDAR WAR"
 cd $QDAR/darq-webapp/darq-app
 mvn clean install -DskipTests
+echo "Update the Compiled.xml file in qdar.war"
+jar -uvf $QDAR/darq-webapp/darq-app/target/qdar.war -C $OUTPUT/resources WEB-INF/classes/Compiled.xml
 echo "Moving Built artifacts into output directory"
 cp $QDAR/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar $OUTPUT/qdar-cli-nokey.jar
 cp $QDAR/darq-webapp/darq-app/target/qdar.war $OUTPUT/qdar.war
