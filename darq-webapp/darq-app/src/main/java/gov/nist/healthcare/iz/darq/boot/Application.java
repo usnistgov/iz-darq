@@ -18,6 +18,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.immregistries.codebase.client.CodeMap;
+import org.immregistries.codebase.client.CodeMapBuilder;
+import org.immregistries.codebase.client.generated.Code;
+import org.immregistries.codebase.client.reference.CodesetType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -197,22 +201,16 @@ public class Application extends SpringBootServletInitializer{
 	}
 
 	@PostConstruct()
-	public void createCVX() throws IOException{
-		if(this.cvxRepo.count() > 0) return;
-		
-		InputStream file = Application.class.getResourceAsStream("/cvx.xlsx");
-		Workbook workbook = new XSSFWorkbook(file);
-		Sheet sheet = workbook.getSheetAt(0);
-		Iterator<Row> it = sheet.rowIterator();
-		it.next();
-		while(it.hasNext()){
-			Row row = it.next();
-			CVXCode code = new CVXCode();
-			code.setCvx(row.getCell(0).getStringCellValue());
-			code.setName(row.getCell(1).getStringCellValue());
-			this.cvxRepo.save(code);
+	public void createCVX() {
+		CodeMap codeMap = CodeMapBuilder.INSTANCE.getCompiledCodeMap();
+		Collection<Code> codes = codeMap.getCodesForTable(CodesetType.VACCINATION_CVX_CODE);
+
+		for(Code code: codes) {
+			CVXCode cvx = new CVXCode();
+			cvx.setCvx(code.getValue());
+			cvx.setName(code.getLabel());
+			this.cvxRepo.save(cvx);
 		}
-		workbook.close();
 	}
 	
     @PostConstruct
