@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import gov.nist.healthcare.iz.darq.digest.domain.*;
+import gov.nist.healthcare.iz.darq.digest.service.patient.matching.PatientMatchingService;
+import gov.nist.healthcare.iz.darq.patient.matching.model.PatientMatchingDetection;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,7 @@ public class SimpleRecordChewer implements RecordChewer {
 
 	
 	@Override
-	public ADChunk munch(ConfigurationProvider configuration, AggregatePatientRecord apr, LocalDate date) throws Exception {
+	public ADChunk munch(ConfigurationProvider configuration, AggregatePatientRecord apr, LocalDate date, PatientMatchingService matchingService) throws Exception {
 
 		if(apr.patient.date_of_birth.getValue().isAfter(date)) {
 			throw new Exception("Birth date is after Evaluation Date ");
@@ -52,14 +54,27 @@ public class SimpleRecordChewer implements RecordChewer {
 		Map<String, PatientPayload> patientSection = this.groupService.makePatSectionAge(configuration.ageGroupService(), validator.patientDetections(), collector.getPatientCodes());
 		Map<String, ExtractFraction> extraction = collector.getExtract();
 		Map<String, Map<String, ADPayload>> merged = this.groupService.makeADPayloadMap(patientSection, vaccinationSection);
-		
+
+		if(matchingService != null) {
+		  /// TODO Fix This
+		  boolean matches = matchingService.process(apr);
+		  if(matches) {
+			patientSection.values().stream().forEach((payload) -> {
+			  payload.getDetection().put(PatientMatchingDetection.PM001.toString(), new DetectionSum(1, 0));
+			});
+		  } else {
+			patientSection.values().stream().forEach((payload) -> {
+			  payload.getDetection().put(PatientMatchingDetection.PM001.toString(), new DetectionSum(0, 1));
+			});
+		  }
+		}
+
 		Map<String, Map<String, ADPayload>> deIdentifiedSection = new HashMap<>();
 		for(String provider : merged.keySet()){
 			String hash = DigestUtils.md5DigestAsHex(provider.getBytes());
 			deIdentifiedSection.put(hash, merged.get(provider));
 			providers.put(provider, hash);
 		}
-
 
 		return new ADChunk(
 				providers,

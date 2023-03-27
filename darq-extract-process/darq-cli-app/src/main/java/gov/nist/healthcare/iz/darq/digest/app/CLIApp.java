@@ -12,6 +12,7 @@ import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationP
 import gov.nist.healthcare.iz.darq.digest.app.exception.*;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
+import gov.nist.healthcare.iz.darq.digest.service.patient.matching.PatientMatchingService;
 import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -19,6 +20,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.codec.language.Soundex;
 import org.apache.commons.lang3.StringUtils;
 import org.immregistries.mqe.validator.detection.MqeCode;
 import org.immregistries.mqe.validator.engine.MessageValidator;
@@ -84,6 +86,7 @@ public class CLIApp {
 			options.addOption("pa", "printAdf", false, "print ADF content");
 			options.addOption("d", "dateFormat", true, "Date Format");
 			options.addOption("pub", "publicKey", true, "qDAR Public Key");
+			options.addOption("pm", "patientMatching", false, "Activate patient matching");
 
 
 			CommandLineParser parser = new DefaultParser();
@@ -164,20 +167,25 @@ public class CLIApp {
 							throw new PublicKeyException("No public key provided or bundled");
 						}
 
+						// Create Outputs Folder
+						File output = new File("./darq-analysis/");
+						output.mkdirs();
+
 						System.out.println("Analysis Progress");
 
 						SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
+					  	PatientMatchingService matchingService = options.hasOption("pm") ? context.getBean(PatientMatchingService.class) : null;
 						Exporter export = context.getBean(Exporter.class);
 						configureMqeValidator(configurationPayload.getDetections());
 						running = true;
 						Thread t = progress(runner);
 						t.start();
 						long start = System.currentTimeMillis();
-						ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, Optional.ofNullable(tmpDirLocation));
+						ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, matchingService, output.toPath(), Optional.ofNullable(tmpDirLocation));
 						t.join();
 						System.out.println("Analysis Finished - Exporting Results");
 						long elapsed = System.currentTimeMillis() - start;
-						export.export(configurationPayload, chunk, version, build, mqeVersion, elapsed, printAdf);
+						export.export(configurationPayload, output.toPath(),chunk, version, build, mqeVersion, elapsed, printAdf);
 						System.out.println("Results Exported - END");
 					}
 				}

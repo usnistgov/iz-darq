@@ -113,7 +113,7 @@ public class DQAValidator {
 
 			for(ValidationReport vi : r.getIssues()){
 				
-				// Check if detection is is configuration
+				// Check if detection is in configuration
 				if(this.filter.in(vi.getDetection().getMqeMqeCode())){
 				
 					// Remove from affirmatives

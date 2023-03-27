@@ -5,6 +5,10 @@ import java.io.InputStream;
 
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
+import gov.nist.healthcare.iz.darq.digest.service.patient.matching.mismo.MismoPatientMatchingService;
+import gov.nist.healthcare.iz.darq.patient.matching.service.mismo.MismoPatientMatcherService;
+import gov.nist.healthcare.iz.darq.patient.matching.service.mismo.MismoSQLitePatientBlockHandler;
+import org.immregistries.mismo.match.PatientMatcher;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +24,14 @@ public class DigestConfiguration {
 	@Qualifier("ADF_KEYS")
 	public CryptoKey getAdfCryptoKey() throws Exception {
 		return new PublicOnlyCryptoKey();
+	}
+
+	@Bean
+	@Qualifier("MATCHER_SERVICE")
+	public MismoPatientMatchingService patientMatchingService() {
+	  MismoPatientMatcherService matcher = new MismoPatientMatcherService(new PatientMatcher());
+	  MismoSQLitePatientBlockHandler blockHandler = new MismoSQLitePatientBlockHandler();
+	  return new MismoPatientMatchingService(matcher, blockHandler);
 	}
 
 	@Bean

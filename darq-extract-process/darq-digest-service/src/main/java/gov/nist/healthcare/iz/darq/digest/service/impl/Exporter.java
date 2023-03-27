@@ -1,11 +1,10 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.immregistries.mqe.validator.detection.Detection;
@@ -41,7 +40,7 @@ public class Exporter implements ExportADChunk {
 	
 	
 	@Override
-	public void export(ConfigurationPayload payload, ADChunk chunk, String version, String build, String mqeVersion, long elapsed, boolean printAdf) throws Exception {
+	public void export(ConfigurationPayload payload, Path folder, ADChunk chunk, String version, String build, String mqeVersion, long elapsed, boolean printAdf) throws Exception {
 		Summary summary = new Summary(chunk, payload);
 		ADFile file = new ADFile(
 				chunk.getGeneralPatientPayload(),
@@ -57,17 +56,14 @@ public class Exporter implements ExportADChunk {
 				chunk.getAdministered()
 		);
 		
-		File output = new File("./darq-analysis/");
-	    output.mkdirs();
-	    
 	    //---- ENCRYPT and write ADF
-	    this.cryptoUtils.encryptContentToFileWithoutTemporaryFile(file, Files.newOutputStream(new File("./darq-analysis/ADF.data").toPath()));
+	    this.cryptoUtils.encryptContentToFileWithoutTemporaryFile(file, Files.newOutputStream(Paths.get(folder.toAbsolutePath().toString(), "ADF.data").toAbsolutePath()));
 
 	    //---- HTML
-	    summaryGenerator.generateSummary(file, summary, chunk.getProviders(), "./darq-analysis/summary/", printAdf);
+	    summaryGenerator.generateSummary(file, summary, chunk.getProviders(), Paths.get(folder.toAbsolutePath().toString(), "summary").toAbsolutePath().toString(), printAdf);
 
 	    //--- Reporting Group Spreadsheet
-		writeProvidersToCSV(chunk.getProviders(), new FileWriter(new File("./darq-analysis/reporting-groups.csv")));
+		writeProvidersToCSV(chunk.getProviders(), new FileWriter(Paths.get(folder.toAbsolutePath().toString(), "reporting-groups.csv").toFile()));
 	}
 
 	void writeProvidersToCSV(Map<String, String> providers, FileWriter writer) throws IOException {
