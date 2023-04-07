@@ -415,6 +415,7 @@
             </code-status>
             <reference>
                 <link-to codeset="VACCINATION_VIS_VACCINES">228</link-to>
+                <link-to codeset="VACCINATION_VIS_VACCINES">230</link-to>
             </reference>
             <use-date>
                 <not-before>20220601</not-before>
@@ -526,6 +527,7 @@
             </code-status>
             <reference>
                 <link-to codeset="VACCINATION_VIS_VACCINES">219</link-to>
+                <link-to codeset="VACCINATION_VIS_VACCINES">302</link-to>
             </reference>
             <use-date>
                 <not-before>20220301</not-before>
@@ -2084,6 +2086,19 @@
             </reference>
             <use-date>
                 <not-before>20220823</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>253088698300053011221114</value>
+            <label>Smallpox-Monkeypox Vaccine VIS</label>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_VIS_VACCINES">206</link-to>
+            </reference>
+            <use-date>
+                <not-before>20221114</not-before>
             </use-date>
         </code>
         <code>
@@ -4779,6 +4794,17 @@
             </reference>
         </code>
         <code>
+            <value>91317</value>
+            <label>Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, bivalent spike protein, preservative free, 3 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation, for intramuscular use</label>
+            <description>COVID-19 Vaccine - EUA authorized 12/8/2022 bivalent vaccine (Pfizer) for ages 6 mo through 4 yrs</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">302</link-to>
+            </reference>
+        </code>
+        <code>
             <value>91312</value>
             <label>Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, bivalent spike protein, preservative free, 30 mcg/0.3 mL dosage, tris-sucrose formulation, for intramuscular use</label>
             <description>COVID-19 Vaccine - EUA authorized 8/31/2022 bivalent booster ages 12+ yrs</description>
@@ -4787,6 +4813,17 @@
             </code-status>
             <reference>
                 <link-to codeset="VACCINATION_CVX_CODE">300</link-to>
+            </reference>
+        </code>
+        <code>
+            <value>91316</value>
+            <label>Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, bivalent, preservative free, 10 mcg/0.2 mL dosage, for intramuscular use</label>
+            <description>COVID-19 Vaccine - EUA authorized 12/8/2022 bivalent booster (Moderna) for ages 6 mo through 5 yrs</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">230</link-to>
             </reference>
         </code>
         <code>
@@ -8672,6 +8709,48 @@
                     <new-code-value>54868-0734-00</new-code-value>
                     <reason>Use 11-digit format with dashes</reason>
                     <effective-date>20180406</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>00006-4293-01</value>
+            <label>ERVEBO</label>
+            <description>Merck Sharp &amp; Dohme LLC - Ebola Zaire vaccine, live, recombinant, 1mL dose</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">204</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">MSD</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">00006-4293-02</link-to>
+            </reference>
+            <use-date>
+                <not-before>20191219</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>0006-4293-01</value>
+            <label>ERVEBO</label>
+            <description>Merck Sharp &amp; Dohme LLC - Ebola Zaire vaccine, live, recombinant, 1mL dose</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>00006-4293-01</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20230106</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>00006429301</value>
+            <label>ERVEBO</label>
+            <description>Merck Sharp &amp; Dohme LLC - Ebola Zaire vaccine, live, recombinant, 1mL dose</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>00006-4293-01</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20230106</effective-date>
                 </deprecated>
             </code-status>
         </code>
@@ -15001,6 +15080,48 @@
             </code-status>
         </code>
         <code>
+            <value>49281-0379-88</value>
+            <label>FLUZONE High-Dose Quadrivalent Southern Hemisphere</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Single-Dose 0.7 mL (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">231</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">PMC</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0379-50</link-to>
+            </reference>
+            <use-date>
+                <not-before>20230213</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>49281-379-88</value>
+            <label>FLUZONE High-Dose Quadrivalent Southern Hemisphere</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Single-Dose 0.7 mL (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>49281-0379-88</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20230306</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>49281037988</value>
+            <label>FLUZONE High-Dose Quadrivalent Southern Hemisphere</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Single-Dose 0.7 mL (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>49281-0379-88</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20230306</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
             <value>49281-0709-48</value>
             <label>FLUZONE Intradermal</label>
             <description>Sanofi Pasteur Inc. - </description>
@@ -16976,6 +17097,90 @@
                     <new-code-value>49281-0322-88</new-code-value>
                     <reason>Use 11-digit format with dashes</reason>
                     <effective-date>20220311</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>49281-0323-88</value>
+            <label>FLUZONE QUADRIVALENT SOUTHERN HEMISPHERE</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Single-Dose 0.5 mL (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">201</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">PMC</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0323-50</link-to>
+            </reference>
+            <use-date>
+                <not-before>20230213</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>49281-323-88</value>
+            <label>FLUZONE QUADRIVALENT SOUTHERN HEMISPHERE</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Single-Dose 0.5 mL (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>49281-0323-88</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20230306</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>49281032388</value>
+            <label>FLUZONE QUADRIVALENT SOUTHERN HEMISPHERE</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Single-Dose 0.5 mL (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>49281-0323-88</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20230306</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>49281-0355-78</value>
+            <label>FLUZONE QUADRIVALENT SOUTHERN HEMISPHERE</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Multi-Dose 5 mL (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">202</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">PMC</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0355-15</link-to>
+            </reference>
+            <use-date>
+                <not-before>20230213</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>49281-355-78</value>
+            <label>FLUZONE QUADRIVALENT SOUTHERN HEMISPHERE</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Multi-Dose 5 mL (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>49281-0355-78</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20230306</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>49281035578</value>
+            <label>FLUZONE QUADRIVALENT SOUTHERN HEMISPHERE</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Multi-Dose 5 mL (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>49281-0355-78</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20230306</effective-date>
                 </deprecated>
             </code-status>
         </code>
@@ -19762,6 +19967,48 @@
             </code-status>
         </code>
         <code>
+            <value>58160-0827-03</value>
+            <label>Menveo</label>
+            <description>GlaxoSmithKline Biologicals SA - Meningococcal A,C,Y,W-135 oligosaccharide conjugate, single vial</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">136</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">SKB</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">58160-0827-30</link-to>
+            </reference>
+            <use-date>
+                <not-before>20221209</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>58160-827-03</value>
+            <label>Menveo</label>
+            <description>GlaxoSmithKline Biologicals SA - Meningococcal A,C,Y,W-135 oligosaccharide conjugate, single vial</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>58160-0827-03</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20221216</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>58160082703</value>
+            <label>Menveo</label>
+            <description>GlaxoSmithKline Biologicals SA - Meningococcal A,C,Y,W-135 oligosaccharide conjugate, single vial</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>58160-0827-03</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20221216</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
             <value>80777-0273-10</value>
             <label>Moderna COVID-19 Vaccine</label>
             <description>Moderna US, Inc. - SARS-COV-2 (COVID-19) vaccine, mRNA, spike protein, LNP, preservative free, 100 mcg/0.5mL dose</description>
@@ -20066,6 +20313,48 @@
                     <new-code-value>80777-0283-02</new-code-value>
                     <reason>Use 11-digit format with dashes</reason>
                     <effective-date>20221017</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>80631-0102-01</value>
+            <label>NOVAVAX COVID-19 Vaccine, Adjuvanted</label>
+            <description>Novavax, Inc. - SARS-COV-2 (COVID-19) vaccine, Subunit, recombinant spike protein-nanoparticle+Matrix-M1 Adjuvant, preservative free, 0.5mL per dose</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">211</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">NVX</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">80631-0102-10</link-to>
+            </reference>
+            <use-date>
+                <not-before>20230201</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>80631-102-01</value>
+            <label>NOVAVAX COVID-19 Vaccine, Adjuvanted</label>
+            <description>Novavax, Inc. - SARS-COV-2 (COVID-19) vaccine, Subunit, recombinant spike protein-nanoparticle+Matrix-M1 Adjuvant, preservative free, 0.5mL per dose</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>80631-0102-01</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20230222</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>80631010201</value>
+            <label>NOVAVAX COVID-19 Vaccine, Adjuvanted</label>
+            <description>Novavax, Inc. - SARS-COV-2 (COVID-19) vaccine, Subunit, recombinant spike protein-nanoparticle+Matrix-M1 Adjuvant, preservative free, 0.5mL per dose</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>80631-0102-01</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20230222</effective-date>
                 </deprecated>
             </code-status>
         </code>
@@ -21953,6 +22242,48 @@
                     <new-code-value>58160-0851-01</new-code-value>
                     <reason>Use 11-digit format with dashes</reason>
                     <effective-date>20141113</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>58160-0740-02</value>
+            <label>Rotarix</label>
+            <description>GlaxoSmithKline Biologicals SA - ROTAVIRUS VACCINE, LIVE, ORAL, PRE-FILLED APPLICATOR</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">119</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">SKB</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">58160-0740-21</link-to>
+            </reference>
+            <use-date>
+                <not-before>20230201</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>58160-740-02</value>
+            <label>Rotarix</label>
+            <description>GlaxoSmithKline Biologicals SA - ROTAVIRUS VACCINE, LIVE, ORAL, PRE-FILLED APPLICATOR</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>58160-0740-02</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20230213</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>58160074002</value>
+            <label>Rotarix</label>
+            <description>GlaxoSmithKline Biologicals SA - ROTAVIRUS VACCINE, LIVE, ORAL, PRE-FILLED APPLICATOR</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>58160-0740-02</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20230213</effective-date>
                 </deprecated>
             </code-status>
         </code>
@@ -24063,6 +24394,18 @@
             <concept-type>foreign vaccine</concept-type>
         </code>
         <code>
+            <value>518</value>
+            <label>COVID-19 Inactivated, Non-US Vaccine (VLA2001, Valneva)</label>
+            <description>SARS-COV-2 COVID-19 Inactivated, Non-US Vaccine (VLA2001, Valneva) Notes: Pandemic Non-US Vaccine not Authorized by WHO - not counted toward immunity in US</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINE_GROUP">COVID-19</link-to>
+            </reference>
+            <concept-type>foreign vaccine</concept-type>
+        </code>
+        <code>
             <value>510</value>
             <label>COVID-19 IV Non-US Vaccine (BIBP, Sinopharm)</label>
             <description>SARS-COV-2 COVID-19 Inactivated Virus Non-US Vaccine Product (BIBP, Sinopharm) Notes: WHO authorized pandemic vaccine. Recognized towards immunity in US</description>
@@ -24126,6 +24469,32 @@
             <concept-type>foreign vaccine</concept-type>
         </code>
         <code>
+            <value>519</value>
+            <label>COVID-19 mRNA, bivalent, original/Omicron BA.1, Non-US Vaccine (Spikevax Bivalent), Moderna</label>
+            <description>SARS-COV-2 COVID-19 mRNA, bivalent, original/Omicron BA.1, Non-US Vaccine (Spikevax Bivalent), Moderna Notes: Pandemic Non-US Vaccine not Authorized by WHO - Is authorized by EU and counted toward immunity in US</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINE_GROUP">COVID-19</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Moderna COVID-19 Bivalent, Original + BA.1 (Non-US Tradename Spikevax Bivalent)</link-to>
+            </reference>
+            <concept-type>foreign vaccine</concept-type>
+        </code>
+        <code>
+            <value>520</value>
+            <label>COVID-19 mRNA, bivalent, original/Omicron BA.1, Non-US Vaccine Product, Pfizer-BioNTech</label>
+            <description>SARS-COV-2 COVID-19 mRNA, bivalent, original/Omicron BA.1, Non-US Vaccine Product (Comirnaty Bivalent), Pfizer-BioNTech Notes: Pandemic Non-US Vaccine. Authorized by WHO 10/19/2022 - Counted toward immunity in US</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINE_GROUP">COVID-19</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Pfizer COVID-19 Bivalent, Original + BA.1 (Non-US Tradename COMIRNATY Bivalent)</link-to>
+            </reference>
+            <concept-type>foreign vaccine</concept-type>
+        </code>
+        <code>
             <value>500</value>
             <label>COVID-19 Non-US Vaccine, Product Unknown</label>
             <description>SARS-COV-2 COVID-19 Non-US Vaccine, Specific Product Unknown Notes: Pandemic Non-US Covid Administration - specific CVX or product unknown</description>
@@ -24174,6 +24543,18 @@
             <concept-type>foreign vaccine</concept-type>
         </code>
         <code>
+            <value>521</value>
+            <label>COVID-19 SP, protein-based, adjuvanted (VidPrevtyn Beta), Sanofi-GSK</label>
+            <description>SARS-COV-2 (COVID-19) vaccine SP, protein-based, adjuvanted, B.1.351 strain (VidPrevtyn Beta), Sanofi-GSK Notes: Pandemic Non-US Vaccine not Authorized by WHO - not counted toward immunity in US</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINE_GROUP">COVID-19</link-to>
+            </reference>
+            <concept-type>foreign vaccine</concept-type>
+        </code>
+        <code>
             <value>211</value>
             <label>COVID-19 vaccine, Subunit, rS-nanoparticle+Matrix-M1 Adjuvant, PF, 0.5 mL</label>
             <description>SARS-COV-2 (COVID-19) vaccine, Subunit, recombinant spike protein-nanoparticle+Matrix-M1 Adjuvant, preservative free, 0.5mL per dose Notes: Pending FDA EUA Authorization</description>
@@ -24186,6 +24567,9 @@
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">80631-0100-01</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">80631-0100-10</link-to>
                 <link-to codeset="VACCINATION_CPT_CODE">91304</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Novavax COVID-19 Vaccine (Non-US Tradenames NUVAXOVID, COVOVAX)</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">80631-0102-01</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">80631-0102-10</link-to>
             </reference>
             <use-date>
                 <not-before>20210406</not-before>
@@ -24250,6 +24634,7 @@
             </code-status>
             <reference>
                 <link-to codeset="VACCINE_GROUP">COVID-19</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">CONVIDECIA (CanSino Biologics) COVID-19 Vaccine</link-to>
             </reference>
             <concept-type>foreign vaccine</concept-type>
         </code>
@@ -24321,6 +24706,8 @@
                 <link-to codeset="VACCINATION_TRADE_NAME">Moderna COVID-19 Vaccine (non-US Spikevax)</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">80777-0283-02</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">80777-0283-99</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Moderna COVID-19 Bivalent, Original + BA.4/BA.5 (Non-US Tradename Spikevax Bivalent)</link-to>
+                <link-to codeset="VACCINATION_CPT_CODE">91316</link-to>
             </reference>
             <use-date>
                 <not-before>20221014</not-before>
@@ -24340,6 +24727,7 @@
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">59267-0565-01</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">59267-0565-02</link-to>
                 <link-to codeset="VACCINATION_CPT_CODE">91315</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Pfizer-BioNTech COVID-19 Bivalent, Original + BA.4/BA.5 (Non-US Tradename COMIRNATY Bivalent)</link-to>
             </reference>
             <use-date>
                 <not-before>20220817</not-before>
@@ -24366,6 +24754,7 @@
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">59267-0304-02</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">59267-1404-02</link-to>
                 <link-to codeset="VACCINATION_CPT_CODE">91312</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Pfizer-BioNTech COVID-19 Bivalent, Original + BA.4/BA.5 (Non-US Tradename COMIRNATY Bivalent)</link-to>
             </reference>
             <use-date>
                 <not-before>20220817</not-before>
@@ -24389,6 +24778,8 @@
                 <link-to codeset="VACCINATION_TRADE_NAME">Pfizer-BioNTech COVID-19 Vaccine (EUA labeled) COMIRNATY (BLA labeled)</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">59267-0609-01</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">59267-0609-02</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Pfizer-BioNTech COVID-19 Bivalent, Original + BA.4/BA.5 (Non-US Tradename COMIRNATY Bivalent)</link-to>
+                <link-to codeset="VACCINATION_CPT_CODE">91317</link-to>
             </reference>
             <use-date>
                 <not-before>20221019</not-before>
@@ -24409,6 +24800,7 @@
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">80777-0282-99</link-to>
                 <link-to codeset="VACCINATION_CPT_CODE">91314</link-to>
                 <link-to codeset="VACCINATION_CPT_CODE">91313</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Moderna COVID-19 Bivalent, Original + BA.4/BA.5 (Non-US Tradename Spikevax Bivalent)</link-to>
             </reference>
             <use-date>
                 <not-before>20220615</not-before>
@@ -25116,6 +25508,8 @@
             <reference>
                 <link-to codeset="VACCINE_GROUP">Ebola</link-to>
                 <link-to codeset="VACCINATION_TRADE_NAME">ERVEBO (Ebola Zaire Vaccine, Live)</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">00006-4293-01</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">00006-4293-02</link-to>
             </reference>
             <use-date>
                 <not-before>20210406</not-before>
@@ -26596,6 +26990,7 @@
             </reference>
             <use-date>
                 <not-before>20141215</not-before>
+                <not-after>20221215</not-after>
             </use-date>
             <use-age>
                 <not-before-month>204</not-before-month>
@@ -26942,6 +27337,7 @@
             </reference>
             <use-date>
                 <not-before>20130717</not-before>
+                <not-after>20221215</not-after>
             </use-date>
             <use-age>
                 <not-before-month>6</not-before-month>
@@ -26973,6 +27369,7 @@
             </reference>
             <use-date>
                 <not-before>20130717</not-before>
+                <not-after>20221215</not-after>
             </use-date>
             <use-age>
                 <not-before-month>6</not-before-month>
@@ -26995,6 +27392,24 @@
                 <not-after>20200716</not-after>
             </use-date>
             <concept-type>unspecified</concept-type>
+        </code>
+        <code>
+            <value>231</value>
+            <label>influenza, Southern Hemisphere, high-dose, quadrivalent</label>
+            <description>influenza, seasonal, Southern Hemisphere, high-dose, quadrivalent, 0.7mL dose, preservative free Notes: Target population 65 and older, starting Southern Hemisphere season 2023</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINE_GROUP">FLU</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">FLUZONE High-Dose Quadrivalent Southern Hemisphere</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">49281-0379-88</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0379-50</link-to>
+            </reference>
+            <use-date>
+                <not-before>20230314</not-before>
+            </use-date>
+            <concept-type>vaccine</concept-type>
         </code>
         <code>
             <value>200</value>
@@ -27032,6 +27447,8 @@
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0321-50</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">49281-0322-88</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0322-50</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">49281-0323-88</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0323-50</link-to>
             </reference>
             <use-date>
                 <not-before>20200506</not-before>
@@ -27054,6 +27471,8 @@
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0337-15</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">49281-0339-78</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0339-15</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">49281-0355-78</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0355-15</link-to>
             </reference>
             <use-date>
                 <not-before>20200506</not-before>
@@ -27618,6 +28037,8 @@
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">58160-0959-01</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">46028-0208-01</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">58160-0955-09</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">58160-0827-03</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">58160-0827-30</link-to>
             </reference>
             <use-date>
                 <not-before>20100528</not-before>
@@ -28610,6 +29031,8 @@
                 <link-to codeset="VACCINATION_TRADE_NAME">ROTARIX</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">58160-0851-01</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">58160-0854-52</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">58160-0740-02</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">58160-0740-21</link-to>
             </reference>
             <use-date>
                 <not-before>20100528</not-before>
@@ -30447,6 +30870,10 @@
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">58160-0824-15</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">58160-0890-41</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">58160-0890-52</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">58160-0827-03</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">58160-0827-30</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">58160-0740-02</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">58160-0740-21</link-to>
             </reference>
             <use-date>
                 <not-before>20100528</not-before>
@@ -30831,6 +31258,8 @@
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">00006-4329-01</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">00006-4329-02</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">00006-4329-03</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">00006-4293-01</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">00006-4293-02</link-to>
             </reference>
             <use-date>
                 <not-before>20121018</not-before>
@@ -30888,6 +31317,8 @@
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">80777-0282-99</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">80777-0283-02</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">80777-0283-99</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Moderna COVID-19 Bivalent, Original + BA.1 (Non-US Tradename Spikevax Bivalent)</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Moderna COVID-19 Bivalent, Original + BA.4/BA.5 (Non-US Tradename Spikevax Bivalent)</link-to>
             </reference>
             <use-date>
                 <not-before>20201001</not-before>
@@ -31019,6 +31450,9 @@
                 <link-to codeset="VACCINATION_TRADE_NAME">Novavax COVID-19 Vaccine</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">80631-0100-01</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">80631-0100-10</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Novavax COVID-19 Vaccine (Non-US Tradenames NUVAXOVID, COVOVAX)</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">80631-0102-01</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">80631-0102-10</link-to>
             </reference>
             <use-date>
                 <not-before>20100528</not-before>
@@ -31157,6 +31591,8 @@
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">50090-6026-01</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">59267-0609-02</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">50090-6026-00</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Pfizer COVID-19 Bivalent, Original + BA.1 (Non-US Tradename COMIRNATY Bivalent)</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">Pfizer-BioNTech COVID-19 Bivalent, Original + BA.4/BA.5 (Non-US Tradename COMIRNATY Bivalent)</link-to>
             </reference>
             <use-date>
                 <not-before>20100528</not-before>
@@ -31557,6 +31993,13 @@
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0422-50</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0422-10</link-to>
                 <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0637-15</link-to>
+                <link-to codeset="VACCINATION_TRADE_NAME">FLUZONE High-Dose Quadrivalent Southern Hemisphere</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">49281-0379-88</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">49281-0323-88</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">49281-0355-78</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0379-50</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0355-15</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_SALE">49281-0323-50</link-to>
             </reference>
             <use-date>
                 <not-before>20100528</not-before>
@@ -32063,6 +32506,10 @@
                 <link-to codeset="VACCINATION_CVX_CODE">300</link-to>
                 <link-to codeset="VACCINATION_CVX_CODE">230</link-to>
                 <link-to codeset="VACCINATION_CVX_CODE">302</link-to>
+                <link-to codeset="VACCINATION_CVX_CODE">518</link-to>
+                <link-to codeset="VACCINATION_CVX_CODE">519</link-to>
+                <link-to codeset="VACCINATION_CVX_CODE">520</link-to>
+                <link-to codeset="VACCINATION_CVX_CODE">521</link-to>
             </reference>
         </code>
         <code>
@@ -32282,6 +32729,7 @@
                 <link-to codeset="VACCINATION_CVX_CODE">200</link-to>
                 <link-to codeset="VACCINATION_CVX_CODE">201</link-to>
                 <link-to codeset="VACCINATION_CVX_CODE">202</link-to>
+                <link-to codeset="VACCINATION_CVX_CODE">231</link-to>
             </reference>
         </code>
         <code>
@@ -32830,6 +33278,34 @@
             </use-date>
         </code>
         <code>
+            <value>Moderna COVID-19 Bivalent, Original + BA.1 (Non-US Tradename Spikevax Bivalent)</value>
+            <label>COVID-19 mRNA, bivalent, original/Omicron BA.1, Non-US Vaccine (Spikevax Bivalent), Moderna</label>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">519</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">MOD</link-to>
+            </reference>
+            <use-date>
+                <not-before>20221117</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>Pfizer COVID-19 Bivalent, Original + BA.1 (Non-US Tradename COMIRNATY Bivalent)</value>
+            <label>COVID-19 mRNA, bivalent, original/Omicron BA.1, Non-US Vaccine Product, Pfizer-BioNTech</label>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">520</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">PFR</link-to>
+            </reference>
+            <use-date>
+                <not-before>20221117</not-before>
+            </use-date>
+        </code>
+        <code>
             <value>Novavax COVID-19 Vaccine</value>
             <label>COVID-19 vaccine, Subunit, rS-nanoparticle+Matrix-M1 Adjuvant, PF, 0.5 mL</label>
             <code-status>
@@ -32883,6 +33359,19 @@
             </use-date>
         </code>
         <code>
+            <value>CONVIDECIA (CanSino Biologics) COVID-19 Vaccine</value>
+            <label>COVID-19 VVnr Non-US Vaccine (CanSino Biological Inc./Beijing Institute of Biotechnology</label>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">506</link-to>
+            </reference>
+            <use-date>
+                <not-before>20221101</not-before>
+            </use-date>
+        </code>
+        <code>
             <value>Sanofi COVID-19</value>
             <label>COVID-19, D614, recomb, preS dTM, AS03 adjuvant add, PF, 5mcg/0.5mL</label>
             <code-status>
@@ -32895,6 +33384,37 @@
             </reference>
             <use-date>
                 <not-before>20220310</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>Pfizer-BioNTech COVID-19 Bivalent, Original + BA.4/BA.5 (Non-US Tradename COMIRNATY Bivalent)</value>
+            <label>COVID-19, mRNA, LNP-S, bivalent booster, PF, 30 mcg/0.3 mL dose</label>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">300</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">PFR</link-to>
+                <link-to codeset="VACCINATION_CVX_CODE">302</link-to>
+                <link-to codeset="VACCINATION_CVX_CODE">301</link-to>
+            </reference>
+            <use-date>
+                <not-before>20221116</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>Moderna COVID-19 Bivalent, Original + BA.4/BA.5 (Non-US Tradename Spikevax Bivalent)</value>
+            <label>COVID-19, mRNA, LNP-S, bivalent booster, PF, 50 mcg/0.5 mL or 25mcg/0.25 mL dose</label>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">229</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">MOD</link-to>
+                <link-to codeset="VACCINATION_CVX_CODE">230</link-to>
+            </reference>
+            <use-date>
+                <not-before>20221116</not-before>
             </use-date>
         </code>
         <code>
@@ -33019,6 +33539,20 @@
             </reference>
             <use-date>
                 <not-before>20220518</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>Novavax COVID-19 Vaccine (Non-US Tradenames NUVAXOVID, COVOVAX)</value>
+            <label>COVID-19, subunit, rS-nanoparticle+Matrix-M1 Adjuvant, PF, 0.5 mL</label>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">211</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">NVX</link-to>
+            </reference>
+            <use-date>
+                <not-before>20221116</not-before>
             </use-date>
         </code>
         <code>
@@ -33785,6 +34319,7 @@
             </reference>
             <use-date>
                 <not-before>20141215</not-before>
+                <not-after>20221215</not-after>
             </use-date>
         </code>
         <code>
@@ -33947,6 +34482,7 @@
             </reference>
             <use-date>
                 <not-before>20100927</not-before>
+                <not-after>20221215</not-after>
             </use-date>
         </code>
         <code>
@@ -33961,6 +34497,7 @@
             </reference>
             <use-date>
                 <not-before>20170605</not-before>
+                <not-after>20221215</not-after>
             </use-date>
         </code>
         <code>
@@ -33975,6 +34512,7 @@
             </reference>
             <use-date>
                 <not-before>20170612</not-before>
+                <not-after>20221215</not-after>
             </use-date>
         </code>
         <code>
@@ -33989,6 +34527,7 @@
             </reference>
             <use-date>
                 <not-before>20130809</not-before>
+                <not-after>20221215</not-after>
             </use-date>
         </code>
         <code>
@@ -34003,6 +34542,7 @@
             </reference>
             <use-date>
                 <not-before>20130809</not-before>
+                <not-after>20221215</not-after>
             </use-date>
         </code>
         <code>
@@ -34017,6 +34557,21 @@
             </reference>
             <use-date>
                 <not-before>20130809</not-before>
+                <not-after>20221215</not-after>
+            </use-date>
+        </code>
+        <code>
+            <value>FLUZONE High-Dose Quadrivalent Southern Hemisphere</value>
+            <label>influenza, Southern Hemisphere, high-dose, quadrivalent</label>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">231</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">PMC</link-to>
+            </reference>
+            <use-date>
+                <not-before>20230314</not-before>
             </use-date>
         </code>
         <code>
@@ -43554,6 +44109,19 @@
             </use-date>
         </code>
         <code>
+            <value>230</value>
+            <label>COVID-19 Moderna EUA Recipient-Caregiver Fact Sheet - Pediatric 6mo to &lt;6yrs</label>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_VIS_DOC_TYPE">253088698300051611220501</link-to>
+            </reference>
+            <use-date>
+                <not-before>20221207</not-before>
+            </use-date>
+        </code>
+        <code>
             <value>227</value>
             <label>COVID-19 Moderna EUA Recipient-Caregiver Fact Sheet - Pediatric 6yrs to &lt;12yrs</label>
             <code-status>
@@ -43661,6 +44229,19 @@
             </reference>
             <use-date>
                 <not-before>20220301</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>302</value>
+            <label>COVID-19 Pfizer BioNTech EUA Recipient-Caregiver Fact Sheet- Pediatric &lt;5 yrs</label>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_VIS_DOC_TYPE">253088698300048611220101</link-to>
+            </reference>
+            <use-date>
+                <not-before>20221208</not-before>
             </use-date>
         </code>
         <code>
@@ -44900,6 +45481,7 @@
             <reference>
                 <link-to codeset="VACCINATION_VIS_DOC_TYPE">253088698300053011220601</link-to>
                 <link-to codeset="VACCINATION_VIS_DOC_TYPE">253088698300053011220823</link-to>
+                <link-to codeset="VACCINATION_VIS_DOC_TYPE">253088698300053011221114</link-to>
             </reference>
             <use-date>
                 <not-before>20220601</not-before>
@@ -49156,6 +49738,48 @@
                     <new-code-value>54868-0734-00</new-code-value>
                     <reason>Use 11-digit format with dashes</reason>
                     <effective-date>20180406</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>00006-4293-02</value>
+            <label>ERVEBO</label>
+            <description>Merck Sharp &amp; Dohme LLC - Ebola Zaire vaccine, live, recombinant, 1mL dose</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">204</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">MSD</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">00006-4293-01</link-to>
+            </reference>
+            <use-date>
+                <not-before>20191219</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>0006-4293-02</value>
+            <label>ERVEBO</label>
+            <description>Merck Sharp &amp; Dohme LLC - Ebola Zaire vaccine, live, recombinant, 1mL dose</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>00006-4293-02</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20230106</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>00006429302</value>
+            <label>ERVEBO</label>
+            <description>Merck Sharp &amp; Dohme LLC - Ebola Zaire vaccine, live, recombinant, 1mL dose</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>00006-4293-02</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20230106</effective-date>
                 </deprecated>
             </code-status>
         </code>
@@ -55438,6 +56062,48 @@
             </code-status>
         </code>
         <code>
+            <value>49281-0379-50</value>
+            <label>FLUZONE High-Dose Quadrivalent Southern Hemisphere</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Single-dose 0.7 mL SYRINGE  (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">231</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">PMC</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">49281-0379-88</link-to>
+            </reference>
+            <use-date>
+                <not-before>20230213</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>49281-379-50</value>
+            <label>FLUZONE High-Dose Quadrivalent Southern Hemisphere</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Single-dose 0.7 mL SYRINGE  (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>49281-0379-50</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20230306</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>49281037950</value>
+            <label>FLUZONE High-Dose Quadrivalent Southern Hemisphere</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Single-dose 0.7 mL SYRINGE  (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>49281-0379-50</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20230306</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
             <value>49281-0712-40</value>
             <label>fluzone ID quadrivalent</label>
             <description>Sanofi - influenza vaccine quadrivalent ID</description>
@@ -57372,6 +58038,90 @@
                     <new-code-value>49281-0339-15</new-code-value>
                     <reason>Use 11-digit format with dashes</reason>
                     <effective-date>20220304</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>49281-0355-15</value>
+            <label>FLUZONE QUADRIVALENT SOUTHERN HEMISPHERE</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Multi-dose 5 mL VIAL  (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">202</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">PMC</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">49281-0355-78</link-to>
+            </reference>
+            <use-date>
+                <not-before>20230213</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>49281-355-15</value>
+            <label>FLUZONE QUADRIVALENT SOUTHERN HEMISPHERE</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Multi-dose 5 mL VIAL  (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>49281-0355-15</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20230306</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>49281035515</value>
+            <label>FLUZONE QUADRIVALENT SOUTHERN HEMISPHERE</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Multi-dose 5 mL VIAL  (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>49281-0355-15</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20230306</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>49281-0323-50</value>
+            <label>FLUZONE QUADRIVALENT SOUTHERN HEMISPHERE</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Single-dose 0.5 mL SYRINGE  (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">201</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">PMC</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">49281-0323-88</link-to>
+            </reference>
+            <use-date>
+                <not-before>20230213</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>49281-323-50</value>
+            <label>FLUZONE QUADRIVALENT SOUTHERN HEMISPHERE</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Single-dose 0.5 mL SYRINGE  (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>49281-0323-50</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20230306</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>49281032350</value>
+            <label>FLUZONE QUADRIVALENT SOUTHERN HEMISPHERE</label>
+            <description>Sanofi Pasteur Inc. - Influenza, Southern Hemisphere, Single-dose 0.5 mL SYRINGE  (2023 season southern hemisphere)</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>49281-0323-50</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20230306</effective-date>
                 </deprecated>
             </code-status>
         </code>
@@ -60245,6 +60995,48 @@
             </code-status>
         </code>
         <code>
+            <value>58160-0827-30</value>
+            <label>Menveo</label>
+            <description>GlaxoSmithKline Biologicals SA - Meningococcal A,C,Y,W-135 oligosaccharide conjugate, single vial</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">136</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">SKB</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">58160-0827-03</link-to>
+            </reference>
+            <use-date>
+                <not-before>20221209</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>58160-827-30</value>
+            <label>Menveo</label>
+            <description>GlaxoSmithKline Biologicals SA - Meningococcal A,C,Y,W-135 oligosaccharide conjugate, single vial</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>58160-0827-30</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20221216</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>58160082730</value>
+            <label>Menveo</label>
+            <description>GlaxoSmithKline Biologicals SA - Meningococcal A,C,Y,W-135 oligosaccharide conjugate, single vial</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>58160-0827-30</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20221216</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
             <value>80777-0273-99</value>
             <label>Moderna COVID-19 Vaccine</label>
             <description>Moderna US, Inc. - SARS-COV-2 (COVID-19) vaccine, mRNA, spike protein, LNP, preservative free, 100 mcg/0.5mL dose</description>
@@ -60550,6 +61342,48 @@
                     <new-code-value>80777-0283-99</new-code-value>
                     <reason>Use 11-digit format with dashes</reason>
                     <effective-date>20221017</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>80631-0102-10</value>
+            <label>NOVAVAX COVID-19 Vaccine, Adjuvanted</label>
+            <description>Novavax, Inc. - SARS-COV-2 (COVID-19) vaccine, Subunit, recombinant spike protein-nanoparticle+Matrix-M1 Adjuvant, preservative free, 0.5mL per dose</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">211</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">NVX</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">80631-0102-01</link-to>
+            </reference>
+            <use-date>
+                <not-before>20230201</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>80631-102-10</value>
+            <label>NOVAVAX COVID-19 Vaccine, Adjuvanted</label>
+            <description>Novavax, Inc. - SARS-COV-2 (COVID-19) vaccine, Subunit, recombinant spike protein-nanoparticle+Matrix-M1 Adjuvant, preservative free, 0.5mL per dose</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>80631-0102-10</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20230222</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>80631010210</value>
+            <label>NOVAVAX COVID-19 Vaccine, Adjuvanted</label>
+            <description>Novavax, Inc. - SARS-COV-2 (COVID-19) vaccine, Subunit, recombinant spike protein-nanoparticle+Matrix-M1 Adjuvant, preservative free, 0.5mL per dose</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>80631-0102-10</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20230222</effective-date>
                 </deprecated>
             </code-status>
         </code>
@@ -62945,6 +63779,48 @@
                     <new-code-value>58160-0854-52</new-code-value>
                     <reason>Use 11-digit format with dashes</reason>
                     <effective-date>20141113</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>58160-0740-21</value>
+            <label>Rotarix</label>
+            <description>GlaxoSmithKline Biologicals SA - ROTAVIRUS VACCINE, LIVE, ORAL, PRE-FILLED APPLICATOR</description>
+            <code-status>
+                <status>Valid</status>
+            </code-status>
+            <reference>
+                <link-to codeset="VACCINATION_CVX_CODE">119</link-to>
+                <link-to codeset="VACCINATION_MANUFACTURER_CODE">SKB</link-to>
+                <link-to codeset="VACCINATION_NDC_CODE_UNIT_OF_USE">58160-0740-02</link-to>
+            </reference>
+            <use-date>
+                <not-before>20230201</not-before>
+            </use-date>
+        </code>
+        <code>
+            <value>58160-740-21</value>
+            <label>Rotarix</label>
+            <description>GlaxoSmithKline Biologicals SA - ROTAVIRUS VACCINE, LIVE, ORAL, PRE-FILLED APPLICATOR</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>58160-0740-21</new-code-value>
+                    <reason>Use full 11-digit format instead of 10-digit format</reason>
+                    <effective-date>20230213</effective-date>
+                </deprecated>
+            </code-status>
+        </code>
+        <code>
+            <value>58160074021</value>
+            <label>Rotarix</label>
+            <description>GlaxoSmithKline Biologicals SA - ROTAVIRUS VACCINE, LIVE, ORAL, PRE-FILLED APPLICATOR</description>
+            <code-status>
+                <status>Deprecated</status>
+                <deprecated>
+                    <new-code-value>58160-0740-21</new-code-value>
+                    <reason>Use 11-digit format with dashes</reason>
+                    <effective-date>20230213</effective-date>
                 </deprecated>
             </code-status>
         </code>
