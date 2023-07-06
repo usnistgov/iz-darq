@@ -1,18 +1,21 @@
 package gov.nist.healthcare.iz.darq.digest.app;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
+import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
+import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
+import gov.nist.healthcare.iz.darq.detections.DetectionEngineConfiguration;
 import gov.nist.healthcare.iz.darq.digest.app.exception.*;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
-import gov.nist.healthcare.iz.darq.digest.service.patient.matching.PatientMatchingService;
 import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -20,12 +23,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.codec.language.Soundex;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.immregistries.mqe.validator.detection.MqeCode;
-import org.immregistries.mqe.validator.engine.MessageValidator;
-import org.immregistries.mqe.validator.engine.RulePairBuilder;
-import org.immregistries.mqe.validator.engine.ValidationRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -113,6 +112,7 @@ public class CLIApp {
 					String cFilePath = cmd.getOptionValue("c");
 					String tmpDirLocation = cmd.getOptionValue("tmpDir");
 					boolean printAdf = cmd.hasOption("pa");
+					boolean activePatientMatching = cmd.hasOption("pm");
 					String dateFormat = cmd.getOptionValue("d");
 
 					File patients = new File(pFilePath);
@@ -171,17 +171,31 @@ public class CLIApp {
 						File output = new File("./darq-analysis/");
 						output.mkdirs();
 
+						// Create Temporary Directory
+						Path temporaryDirectory = createTemporaryDirectory(Optional.ofNullable(tmpDirLocation));
+
+						// Configure Detection Engine
+						logger.info("Configuring the detection engine");
+						DetectionEngine detectionEngine = context.getBean(DetectionEngine.class);
+						DetectionEngineConfiguration detectionEngineConfiguration = new DetectionEngineConfiguration();
+						detectionEngineConfiguration.setOutputDirectory(output.getAbsolutePath());
+						detectionEngineConfiguration.setTemporaryDirectory(temporaryDirectory.toAbsolutePath().toString());
+						detectionEngineConfiguration.setDetections(new HashSet<>(configurationPayload.getDetections()));
+						detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_MQE);
+						if(configurationPayload.isActivatePatientMatching() || activePatientMatching) {
+							detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_PM);
+						}
+						detectionEngine.configure(detectionEngineConfiguration);
+
 						System.out.println("Analysis Progress");
 
 						SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
-					  	PatientMatchingService matchingService = options.hasOption("pm") ? context.getBean(PatientMatchingService.class) : null;
 						Exporter export = context.getBean(Exporter.class);
-						configureMqeValidator(configurationPayload.getDetections());
 						running = true;
 						Thread t = progress(runner);
 						t.start();
 						long start = System.currentTimeMillis();
-						ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, matchingService, output.toPath(), Optional.ofNullable(tmpDirLocation));
+						ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, output.toPath(), temporaryDirectory);
 						t.join();
 						System.out.println("Analysis Finished - Exporting Results");
 						long elapsed = System.currentTimeMillis() - start;
@@ -228,26 +242,32 @@ public class CLIApp {
 		}
 	}
 
-	public static void configureMqeValidator(List<String> activeMqeCodes) {
-		logger.info("Configuring MQE Validator");
-		MessageValidator.INSTANCE.configure(
-				activeMqeCodes.stream()
-						.map((code) -> {
-							try {
-								return MqeCode.valueOf(code);
-							} catch (Exception e) {
-								return null;
-							}
-						})
-						.filter(Objects::nonNull)
-						.collect(Collectors.toSet())
-		);
-		logger.info("MQE Validator Configured");
-		Set<ValidationRule> rules = RulePairBuilder.INSTANCE.getActiveValidationRules().getRules();
-		logger.info("MQE Active Rules (" + rules.size() + ") :");
-		rules.forEach(
-				(r) -> logger.info("* Active Rules : " + r.getClass())
-		);
+	public static Path createTemporaryDirectory(Optional<String> directory) throws java.io.FileNotFoundException {
+		logger.info("Creating Temporary directory");
+		if(directory.isPresent()) {
+			logger.info("Directory location provided");
+			File location = new File(directory.get());
+			if(!location.exists()) {
+				logger.error("[TMP DIRECTORY] provided location'" + directory.get() + "' does not exist");
+				throw new java.io.FileNotFoundException("provided location'" + directory.get() + "' does not exist");
+			}
+
+			if(!location.isDirectory()) {
+				logger.error("[TMP DIRECTORY] provided location'" + directory.get() + "' is not directory");
+				throw new java.io.FileNotFoundException("provided location'" + directory.get() + "' is not directory");
+			}
+		}
+
+		Path tmpDir = createDirectory(directory);
+		logger.info("Directory created at " + tmpDir);
+		return tmpDir;
+	}
+
+	private static Path createDirectory(Optional<String> location) {
+		String name = RandomStringUtils.random(10, true, true);
+		Path path = location.map(s -> Paths.get(s, name)).orElseGet(() -> Paths.get(name));
+		path.toFile().mkdir();
+		return path.toAbsolutePath();
 	}
 	
 	public static Thread progress(DigestRunner runner){

@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Range;
+import gov.nist.healthcare.iz.darq.patient.matching.model.PatientMatchingDetection;
 import org.immregistries.mqe.validator.detection.MqeCode;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,14 @@ import java.util.stream.Stream;
 
 @Service
 public class ConfigurationPayloadValidator {
+
+    Set<String> allowedDetectionCodes = new HashSet<>();
+
+    // Valid detections codes
+    {
+        Arrays.stream(MqeCode.values()).forEach((mqeCode) -> allowedDetectionCodes.add(mqeCode.name()));
+        allowedDetectionCodes.add(PatientMatchingDetection.PM001.name());
+    }
 
     public void validateConfigurationPayload(ConfigurationPayload configurationPayload) throws InvalidConfigurationPayload {
         ArrayList<String> errors = new ArrayList<>();
@@ -100,10 +109,8 @@ public class ConfigurationPayloadValidator {
         }
 
         for(String code: detections) {
-            try {
-                MqeCode.valueOf(code);
-            } catch (Exception exception) {
-                errors.add("Configuration Detections : Code '" + code + "' is not a valid MQE Code");
+            if(!allowedDetectionCodes.contains(code)) {
+                errors.add("Configuration Detections : Code '" + code + "' is not a valid Detection Code");
             }
         }
         return errors;

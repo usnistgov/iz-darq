@@ -2,8 +2,15 @@ package gov.nist.healthcare.iz.darq.digest.app.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
+import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
+import gov.nist.healthcare.iz.darq.detections.DetectionProvider;
+import gov.nist.healthcare.iz.darq.digest.service.detection.provider.mismo.MismoMatcherDetectionProvider;
+import gov.nist.healthcare.iz.darq.digest.service.detection.provider.mqe.MQEDetectionProvider;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.patient.matching.mismo.MismoPatientMatchingService;
 import gov.nist.healthcare.iz.darq.patient.matching.service.mismo.MismoPatientMatcherService;
@@ -32,6 +39,16 @@ public class DigestConfiguration {
 	  MismoPatientMatcherService matcher = new MismoPatientMatcherService(new PatientMatcher());
 	  MismoSQLitePatientBlockHandler blockHandler = new MismoSQLitePatientBlockHandler();
 	  return new MismoPatientMatchingService(matcher, blockHandler);
+	}
+
+	@Bean
+	public DetectionEngine detectionEngine() {
+		MQEDetectionProvider mqeDetectionProvider = new MQEDetectionProvider();
+		MismoMatcherDetectionProvider mismoMatcherDetectionProvider = new MismoMatcherDetectionProvider(patientMatchingService());
+		Map<String, DetectionProvider> providers = new HashMap<>();
+		providers.put(AvailableDetectionEngines.DP_ID_MQE, mqeDetectionProvider);
+		providers.put(AvailableDetectionEngines.DP_ID_PM, mismoMatcherDetectionProvider);
+		return new DetectionEngine(providers);
 	}
 
 	@Bean

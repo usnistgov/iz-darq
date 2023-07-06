@@ -50,6 +50,15 @@
     <span *ngIf="(viewOnly$ | async)">{{ value.payload.asOf ? value.payload.asOf : 'Analyse as of day of analysis' }}</span>
   </div>
   <div class="form-group">
+    <label for="patientMatching"><strong>Patient Matching</strong></label><br>
+    <p-checkbox
+      id="patientMatching"
+      name="patientMatching"
+      [disabled]="viewOnly$ | async" label="Activate" 
+      [ngModel]="value.payload.activatePatientMatching" (ngModelChange)="pmChange($event)" [binary]="true">
+    </p-checkbox>
+  </div>
+  <div class="form-group">
     <label for="ageGroups"><strong>Age Groups</strong></label>
     <app-age-groups
       id="ageGroups"

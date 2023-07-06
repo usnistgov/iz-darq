@@ -26,11 +26,6 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>
-            <artifactId>darq-patient-matching</artifactId>
-            <version>${qdar.api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.healthcare.iz</groupId>
             <artifactId>lucene-index</artifactId>
             <version>${qdar.api.version}</version>
         </dependency>

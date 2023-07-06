@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface DigestRunner {
 	
-	ADChunk digest(ConfigurationPayload configuration, String patient, String vaccines, DqDateFormat dateFormat, PatientMatchingService matchingService, Path output, Optional<String> directory) throws Exception;
+	ADChunk digest(ConfigurationPayload configuration, String patient, String vaccines, DqDateFormat dateFormat, Path output, Path directory) throws Exception;
 	Fraction spy();
 
 }

@@ -69,13 +69,13 @@ public class DQAValidator {
 		for(MqeVaccination vx : msg.getVaccinations()){
 			this.providers.put(
 					vx.getPositionId() + "",
-					tresult.getAFromB(vx.getPositionId()+"").reporting_group.getValue());
+					tresult.getOriginalFromTargetVaccinationEvent(vx.getPositionId()+"").reporting_group.getValue());
 			
 			// Age Group relative to Administered date 
 			String vaccinationAtAgeGroup = this.ageGroupCalculator.getGroup(DOB, LocalDate.parse(vx.getAdminDateString(), dateFormat));
 			
 			// Adding vaccination to vaccine list
-			this.vx.add(new VxInfo(tresult.getAFromB(vx.getPositionId()+"").reporting_group.getValue(), vaccinationAtAgeGroup, this.vaxMapper.translate(vx.getAdminCvxCode()), msg.getPatient().getSex(), vx.getAdminDateString().substring(0,4), vx.getInformationSourceCode()));
+			this.vx.add(new VxInfo(tresult.getOriginalFromTargetVaccinationEvent(vx.getPositionId()+"").reporting_group.getValue(), vaccinationAtAgeGroup, this.vaxMapper.translate(vx.getAdminCvxCode()), msg.getPatient().getSex(), vx.getAdminDateString().substring(0,4), vx.getInformationSourceCode()));
 
 			if(vx.isAdministered()) {
 				this.administered++;

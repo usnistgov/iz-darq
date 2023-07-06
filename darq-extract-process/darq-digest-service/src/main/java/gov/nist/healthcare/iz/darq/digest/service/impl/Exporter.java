@@ -7,9 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.immregistries.mqe.validator.detection.Detection;
-import org.immregistries.mqe.validator.engine.rules.ValidationRuleEntityLists;
-import org.immregistries.mqe.vxu.TargetType;
+
+import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
@@ -28,13 +27,11 @@ public class Exporter implements ExportADChunk {
 	private CryptoUtils cryptoUtils;
 	@Autowired
 	private HTMLSummaryGenerator summaryGenerator;
+	@Autowired
+	private DetectionEngine detectionEngine;
 
 	Set<String> getInactiveDetections(List<String> fromConfig) {
-		Set<String> active = ValidationRuleEntityLists.activeDetectionsForTargets(new HashSet<>(Arrays.asList(
-				TargetType.Patient,
-				TargetType.NextOfKin,
-				TargetType.Vaccination
-		))).stream().map(Detection::getMqeMqeCode).collect(Collectors.toSet());
+		Set<String> active = detectionEngine.getActiveDetectionCodes();
 		return fromConfig.stream().filter((code) -> !active.contains(code)).collect(Collectors.toSet());
 	}
 	
@@ -55,7 +52,7 @@ public class Exporter implements ExportADChunk {
 				chunk.getHistorical(),
 				chunk.getAdministered()
 		);
-		
+
 	    //---- ENCRYPT and write ADF
 	    this.cryptoUtils.encryptContentToFileWithoutTemporaryFile(file, Files.newOutputStream(Paths.get(folder.toAbsolutePath().toString(), "ADF.data").toAbsolutePath()));
 

@@ -3,6 +3,7 @@ package gov.nist.healthcare.iz.darq.digest.service.impl;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -162,11 +163,11 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 	    );
 
 	    // Create CSS Directory
-		File summaryDir = new File(path+"css");
+		File summaryDir = Paths.get(path, "css").toFile();
 		summaryDir.mkdirs();
 
 		// HTML File Writer
-		FileWriter htmlFileWriter = new FileWriter(new File(path+"/index.html"));
+		FileWriter htmlFileWriter = new FileWriter(path+"/index.html");
 		html.render(htmlFileWriter);
 		htmlFileWriter.flush();
 		htmlFileWriter.close();
@@ -180,8 +181,8 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 
 
 		// Write CSS
-	    FileUtils.copyInputStreamToFile(Exporter.class.getResourceAsStream("/bootstrap.min.css"), new File(path+"css/bootstrap.min.css"));
-	    FileUtils.copyInputStreamToFile(Exporter.class.getResourceAsStream("/custom.css"), new File(path+"css/custom.css"));
+	    FileUtils.copyInputStreamToFile(Exporter.class.getResourceAsStream("/bootstrap.min.css"), Paths.get(path, "css", "bootstrap.min.css").toFile());
+	    FileUtils.copyInputStreamToFile(Exporter.class.getResourceAsStream("/custom.css"), Paths.get(path, "css", "custom.css").toFile());
 	}
 
 

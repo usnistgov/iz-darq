@@ -16,4 +16,5 @@ export interface IConfigurationPayload {
   ageGroups: IRange[];
   detections: string[];
   asOf?: string;
+  activatePatientMatching?: boolean;
 }

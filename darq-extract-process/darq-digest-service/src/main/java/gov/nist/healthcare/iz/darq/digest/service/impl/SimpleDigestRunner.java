@@ -1,32 +1,29 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 import gov.nist.healthcare.iz.darq.configuration.validation.ConfigurationPayloadValidator;
+import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
 import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.service.ConfigurationProvider;
 import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
 import gov.nist.healthcare.iz.darq.adf.service.MergeService;
+import gov.nist.healthcare.iz.darq.digest.service.detection.SimpleDetectionContext;
 import gov.nist.healthcare.iz.darq.digest.service.exception.InvalidPatientRecord;
-import gov.nist.healthcare.iz.darq.digest.service.patient.matching.PatientMatchingService;
 import gov.nist.healthcare.iz.darq.parser.service.model.AggregateParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParseError;
 
 import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,40 +36,15 @@ public class SimpleDigestRunner implements DigestRunner {
 	MergeService merge;
 	@Autowired
 	ConfigurationPayloadValidator configurationPayloadValidator;
+	@Autowired
+	DetectionEngine detectionEngine;
+
 	private LucenePatientRecordIterator iterator;
 	private int size = 0;
 	ADChunk file;
 
-	public Path createTemporaryDirectory(Optional<String> directory) throws FileNotFoundException {
-	  logger.info("Creating Temporary directory");
-	  if(directory.isPresent()) {
-		logger.info("Directory location provided");
-		File location = new File(directory.get());
-		if(!location.exists()) {
-		  logger.error("[TMP DIRECTORY] provided location'" + directory.get() + "' does not exist");
-		  throw new FileNotFoundException("provided location'" + directory.get() + "' does not exist");
-		}
-
-		if(!location.isDirectory()) {
-		  logger.error("[TMP DIRECTORY] provided location'" + directory.get() + "' is not directory");
-		  throw new FileNotFoundException("provided location'" + directory.get() + "' is not directory");
-		}
-	  }
-
-	  Path tmpDir = this.createDirectory(directory);
-	  logger.info("Directory created at " + tmpDir);
-	  return tmpDir;
-	}
-
-	private Path createDirectory(Optional<String> location) {
-	  String name = RandomStringUtils.random(10, true, true);
-	  Path path = location.map(s -> Paths.get(s, name)).orElseGet(() -> Paths.get(name));
-	  path.toFile().mkdir();
-	  return path.toAbsolutePath();
-	}
-
 	@Override
-	public ADChunk digest(ConfigurationPayload configuration, String patient, String vaccines, DqDateFormat dateFormat, PatientMatchingService matchingService, Path output, Optional<String> directory) throws Exception {
+	public ADChunk digest(ConfigurationPayload configuration, String patient, String vaccines, DqDateFormat dateFormat, Path output, Path temporaryDirectory) throws Exception {
 		logger.info("[PREPROCESS] Validating Configuration");
 		configurationPayloadValidator.validateConfigurationPayload(configuration);
 		logger.info("[START] Processing Extract");
@@ -81,19 +53,24 @@ public class SimpleDigestRunner implements DigestRunner {
 		logger.info("Number of patient records : "+size);
 
 		ConfigurationProvider config = new SimpleConfigurationProvider(configuration);
-		Path temporaryDirectory = this.createTemporaryDirectory(directory);
+
 		iterator = new LucenePatientRecordIterator(patientsFilePath, Paths.get(vaccines), temporaryDirectory, dateFormat);
 
-		if(matchingService != null) {
-		  logger.info("Initializing the patient matching service");
-		  matchingService.initialize(temporaryDirectory, output);
-		}
+		LocalDate date = new LocalDate(configuration.getAsOfDate());
+		SimpleDetectionContext context = new SimpleDetectionContext(
+			config.ageGroupService(),
+				config.detectionFilter(),
+				config.vaxGroupMapper(),
+				date,
+				DateTimeFormat.forPattern(dateFormat.getPattern())
+		);
 
 		this.file = new ADChunk();
-		LocalDate date = new LocalDate(configuration.getAsOfDate());
+
 		iterator.getSanityCheckErrors().forEach(formatIssue -> file.addIssue(
 				"[ LINE : "+ formatIssue.getLine()+" ][ RECORD TYPE : VACCINATION ] " + formatIssue.getMessage()
 		));
+
 		while(iterator.hasNext()) {
 			try {
 
@@ -103,7 +80,7 @@ public class SimpleDigestRunner implements DigestRunner {
 					logger.info("[VALID RECORD][PROCESSING RECORD] processing valid record");
 
 					try {
-						ADChunk chunk = chewer.munch(config, parsed.getApr(), date, matchingService);
+						ADChunk chunk = chewer.munch(config, parsed.getApr(), date, context);
 						merge.mergeChunk(file, chunk);
 					}
 					catch (Exception e) {
@@ -137,12 +114,9 @@ public class SimpleDigestRunner implements DigestRunner {
 		logger.info("[END] Closing streams and deleting temp directory");
 
 		try {
-			if(matchingService != null) {
-				logger.info("Closing patient matching service resources");
-				matchingService.close();
-			}
+			this.detectionEngine.close();
 		} catch (Exception e) {
-			logger.error("[END][PATIENT MATCHING CLOSING ERROR]", e);
+			logger.error("[END][DETECTION PROVIDER CLOSING ERROR]", e);
 		}
 
 

@@ -18,18 +18,18 @@ public class TransformResult<A, B, C> {
 		typeB = new HashMap<>();
 	}
 	
-	public void add(String a, String b, A aa, B bb){
+	public void addVaccinationEventMapping(String a, String b, A aa, B bb){
 		vaxID.put(a, b);
 		typeA.put(a, aa);
 		typeB.put(b, bb);
 	}
 	
-	public B getBFromA(String a){
+	public B getTargetFromOriginalVaccinationEvent(String a){
 		String id = vaxID.get(a);
 		return typeB.get(id);
 	}
 	
-	public A getAFromB(String b){
+	public A getOriginalFromTargetVaccinationEvent(String b){
 		String id = vaxID.inverseBidiMap().get(b);
 		return typeA.get(id);
 	}

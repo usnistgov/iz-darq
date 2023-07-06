@@ -53,6 +53,4 @@ public class MismoPatientMatchingService extends PatientMatchingService<Patient,
 	public void onClose() throws Exception {
 		file.close();
 	}
-
-
 }

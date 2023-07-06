@@ -2,7 +2,9 @@ package gov.nist.healthcare.iz.darq.patient.matching.service.mismo;
 
 import gov.nist.healthcare.iz.darq.patient.matching.model.mismo.MismoMatchResult;
 import gov.nist.healthcare.iz.darq.patient.matching.service.PatientMatcherService;
+import org.immregistries.mismo.match.MatchSignatureType;
 import org.immregistries.mismo.match.PatientMatchDetermination;
+import org.immregistries.mismo.match.PatientMatchResult;
 import org.immregistries.mismo.match.PatientMatcher;
 import org.immregistries.mismo.match.model.Patient;
 
@@ -16,9 +18,9 @@ public class MismoPatientMatcherService implements PatientMatcherService<Patient
 
   @Override
   public MismoMatchResult match(Patient patientA, Patient patientB) {
-	PatientMatchDetermination result = this.patientMatcher.match(patientA, patientB);
+	PatientMatchResult result = this.patientMatcher.match(patientA, patientB);
 	boolean match = isMatch(result);
-	String signature = match ? this.patientMatcher.generateSignature(patientA, patientB) : "";
+	String signature = match ? result.getMatchSignature(MatchSignatureType.PRIMARY).toString() : "";
 	return new MismoMatchResult(match, signature);
   }
 
@@ -32,8 +34,8 @@ public class MismoPatientMatcherService implements PatientMatcherService<Patient
 	return value != null && !value.isEmpty();
   }
 
-  public boolean isMatch(PatientMatchDetermination determination) {
-	return determination.equals(PatientMatchDetermination.MATCH) ||
-			determination.equals(PatientMatchDetermination.POSSIBLE_MATCH);
+  public boolean isMatch(PatientMatchResult result) {
+	return result.getDetermination().equals(PatientMatchDetermination.MATCH) ||
+			result.getDetermination().equals(PatientMatchDetermination.POSSIBLE_MATCH);
   }
 }

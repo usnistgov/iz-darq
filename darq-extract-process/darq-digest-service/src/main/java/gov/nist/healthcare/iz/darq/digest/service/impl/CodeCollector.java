@@ -51,9 +51,6 @@ public class CodeCollector {
 		public String getAgeGroup() {
 			return ageGroup;
 		}
-		
-		
-		
 	}
 	
 	public List<Code> codes;

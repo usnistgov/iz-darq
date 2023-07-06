@@ -1,12 +1,13 @@
 set -e
 
-while getopts :v:u:c:l:q:o: flag
+while getopts :v:u:c:l:q:m:o: flag
 do
     case "${flag}" in
         v) MQE_VALIDATOR=${OPTARG};;
         u) MQE_UTILS=${OPTARG};;
         c) MQE_CODEBASE_CLIENT=${OPTARG};;
         l) LONESTAR_FORECASTER=${OPTARG};;
+        m) MISMO=${OPTARG};;
         q) QDAR=${OPTARG};;
         o) OUTPUT=${OPTARG};;
     esac
@@ -24,6 +25,12 @@ fi
 
 if [ -z "$OUTPUT" ]; then 
     OUTPUT="$( pwd )"
+fi
+
+if [[ -n "${MISMO}" ]]; then
+    echo "Building MISMO"
+    cd $MISMO
+    mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip
 fi
 
 if [[ -n "${MQE_CODEBASE_CLIENT}" ]]; then

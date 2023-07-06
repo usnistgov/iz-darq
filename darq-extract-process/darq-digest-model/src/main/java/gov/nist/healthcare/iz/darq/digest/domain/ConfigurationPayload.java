@@ -11,6 +11,7 @@ public class ConfigurationPayload {
 	private List<Range> ageGroups;
 	private List<String> detections;
 	private String asOf;
+	private boolean activatePatientMatching;
 	private Map<String, String> vaxCodeAbstraction;
 	private final Date now = new Date();
 
@@ -38,6 +39,14 @@ public class ConfigurationPayload {
 	}
 	public void setVaxCodeAbstraction(Map<String, String> vaxCodeAbstraction) {
 		this.vaxCodeAbstraction = vaxCodeAbstraction;
+	}
+
+	public boolean isActivatePatientMatching() {
+		return activatePatientMatching;
+	}
+
+	public void setActivatePatientMatching(boolean activatePatientMatching) {
+		this.activatePatientMatching = activatePatientMatching;
 	}
 
 	public String getAsOf() {
@@ -70,12 +79,13 @@ public class ConfigurationPayload {
 		Set<String> targetDetections = new HashSet<>(that.detections);
 		return sourceAgeGroups.equals(targetAgeGroups) &&
 				sourceDetections.equals(targetDetections) &&
+				Objects.equals(activatePatientMatching, that.activatePatientMatching) &&
 				Objects.equals(asOf, that.asOf) &&
 				Objects.equals(vaxCodeAbstraction, that.vaxCodeAbstraction);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(ageGroups, detections, asOf, vaxCodeAbstraction);
+		return Objects.hash(ageGroups, detections, asOf, activatePatientMatching, vaxCodeAbstraction);
 	}
 }

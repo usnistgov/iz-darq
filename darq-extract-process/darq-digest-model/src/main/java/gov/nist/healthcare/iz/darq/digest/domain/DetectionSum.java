@@ -29,6 +29,12 @@ public class DetectionSum {
 	public static DetectionSum merge(DetectionSum a, DetectionSum b){
 		return new DetectionSum(a.positive + b.positive, a.negative + b.negative);
 	}
+	public void addNegative(int i) {
+		this.negative = this.negative + i;
+	}
+	public void addPositive(int i) {
+		this.positive = this.positive + i;
+	}
 	@Override
 	public String toString() {
 		return "DetectionSum [positive=" + positive + ", negative=" + negative + "]";
