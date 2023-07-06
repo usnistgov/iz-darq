@@ -40,7 +40,7 @@ public class SimpleRecordChewer implements RecordChewer {
 			throw new Exception("Birth date is after Evaluation Date ");
 		}
 
-		PreProcessRecord record = preProcessRecord(apr, detectionContext, date);
+		PreProcessRecord record = preProcessRecord(apr, detectionContext);
 
 		// Analyze Record (Detections & Vocabulary & Vaccination Events)
 		AggregatedRecordDetections detections = detectionEngine.processRecordAndGetDetections(record, detectionContext);
@@ -129,10 +129,10 @@ public class SimpleRecordChewer implements RecordChewer {
 	}
 
 
-	PreProcessRecord preProcessRecord(AggregatePatientRecord apr, DetectionContext detectionContext, LocalDate date) {
-		String patientAgeGroup = detectionContext.calculateAgeGroupAsOfEvaluationDate(date);
+	PreProcessRecord preProcessRecord(AggregatePatientRecord apr, DetectionContext detectionContext) {
+		String patientAgeGroup = detectionContext.calculateAgeGroupAsOfEvaluationDate(apr.patient.date_of_birth.getValue());
 		Map<String, String> providersByVaccinationId = apr.history.stream().collect(Collectors.toMap((vx) -> vx.vax_event_id.getValue(), (vx) -> vx.reporting_group.getValue()));
-		Map<String, String> ageGroupAtVaccinationByVaccinationId = apr.history.stream().collect(Collectors.toMap((vx) -> vx.vax_event_id.getValue(), (vx) -> detectionContext.calculateAgeGroup(vx.administration_date.getValue(), date)));
+		Map<String, String> ageGroupAtVaccinationByVaccinationId = apr.history.stream().collect(Collectors.toMap((vx) -> vx.vax_event_id.getValue(), (vx) -> detectionContext.calculateAgeGroup(apr.patient.date_of_birth.getValue(), vx.administration_date.getValue())));
 		return new PreProcessRecord(apr, patientAgeGroup, providersByVaccinationId, ageGroupAtVaccinationByVaccinationId);
 	}
 
