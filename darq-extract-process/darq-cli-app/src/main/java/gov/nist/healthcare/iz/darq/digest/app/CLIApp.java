@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.iz.darq.adf.writer.ADFWriter;
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
 import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
@@ -23,6 +24,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -33,8 +35,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
@@ -51,6 +51,7 @@ public class CLIApp {
 	private final static Logger logger = LoggerFactory.getLogger(CLIApp.class.getName());
 
 	private static boolean running = false;
+	private static Path temporaryDirectory = null;
 
 	public static void run(String[] args) throws TerminalException {
 		try {
@@ -132,7 +133,7 @@ public class CLIApp {
 						throw new FileNotFoundException(new FileErrorCode(!pFile, !vFile, !cFile));
 					} else {
 
-						// Read Configuration file
+						// --- Read Configuration file
 						ConfigurationPayload configurationPayload;
 						try {
 							ObjectMapper mapper = new ObjectMapper();
@@ -142,7 +143,7 @@ public class CLIApp {
 							throw new InvalidConfigurationFileFormatException(e);
 						}
 
-						// Read Date Format
+						// --- Read Date Format
 						DqDateFormat simpleDateFormat = DqDateFormat.forPattern(DEFAULT_DATE_FORMAT);
 						if(!Strings.isNullOrEmpty(dateFormat)) {
 							try{
@@ -152,7 +153,7 @@ public class CLIApp {
 							}
 						}
 
-						// Read Public Key
+						// --- Read Public Key
 						if(cmd.hasOption("pub")) {
 							String publicKeyLocation = cmd.getOptionValue("pub");
 							if(cryptoKey instanceof PublicOnlyCryptoKey) {
@@ -167,14 +168,14 @@ public class CLIApp {
 							throw new PublicKeyException("No public key provided or bundled");
 						}
 
-						// Create Outputs Folder
+						// --- Create Outputs Folder
 						File output = new File("./darq-analysis/");
 						output.mkdirs();
 
-						// Create Temporary Directory
-						Path temporaryDirectory = createTemporaryDirectory(Optional.ofNullable(tmpDirLocation));
+						// --- Create Temporary Directory
+						temporaryDirectory = createTemporaryDirectory(Optional.ofNullable(tmpDirLocation));
 
-						// Configure Detection Engine
+						// --- Configure Detection Engine
 						logger.info("Configuring the detection engine");
 						DetectionEngine detectionEngine = context.getBean(DetectionEngine.class);
 						DetectionEngineConfiguration detectionEngineConfiguration = new DetectionEngineConfiguration();
@@ -187,20 +188,27 @@ public class CLIApp {
 						}
 						detectionEngine.configure(detectionEngineConfiguration);
 
+						// --- Start Analysis
 						System.out.println("Analysis Progress");
-
 						SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
 						Exporter export = context.getBean(Exporter.class);
+						ADFWriter writer = context.getBean(ADFWriter.class);
 						running = true;
 						Thread t = progress(runner);
 						t.start();
 						long start = System.currentTimeMillis();
-						ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, output.toPath(), temporaryDirectory);
+						writer.open(temporaryDirectory.toAbsolutePath().toString());
+						runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, output.toPath(), temporaryDirectory);
 						t.join();
 						System.out.println("Analysis Finished - Exporting Results");
 						long elapsed = System.currentTimeMillis() - start;
-						export.export(configurationPayload, output.toPath(),chunk, version, build, mqeVersion, elapsed, printAdf);
+						export.export(configurationPayload, output.toPath(), null, version, build, mqeVersion, elapsed, printAdf);
+
+						logger.info("[PREPROCESS] Closing ADF Writer");
+						writer.close();
+
 						System.out.println("Results Exported - END");
+						cleanUp();
 					}
 				}
 			}
@@ -219,6 +227,18 @@ public class CLIApp {
 		}
 		finally {
 			running = false;
+			cleanUp();
+		}
+	}
+
+	public static void cleanUp() {
+		try {
+			if(temporaryDirectory != null && temporaryDirectory.toFile().exists()) {
+				FileUtils.deleteDirectory(temporaryDirectory.toFile());
+			}
+		} catch (Exception e) {
+			System.err.println("ALERT: Unable to delete temporary directory " + temporaryDirectory);
+			System.err.println("Due to - " + e.getMessage());
 		}
 	}
 	
@@ -278,17 +298,13 @@ public class CLIApp {
 				Fraction f = new Fraction(0,0);
 				double per;
 				long estimated;
-				long stamp = System.currentTimeMillis();
+				long velocity;
+			    Timer timer = new Timer(runner.spy().getTotal());
 
 				do{
-					long elapsed = System.currentTimeMillis() - stamp;
-					int save = f.getCount();
 					f = runner.spy();
-					stamp = System.currentTimeMillis();
-					int diff = f.getCount() - save;
-					int remaining = f.getTotal() - f.getCount();
-					estimated = diff == 0 ? 0 : (elapsed / diff) * remaining;
 					per = f.percent();
+					timer.setProcessed(f, System.currentTimeMillis());
 					if(f.getCount() == 0 && f.getTotal() == 0){
 						System.out.print("\r-- Preparing " + animation[anime_step++ % animation.length]);
 					}
@@ -302,11 +318,14 @@ public class CLIApp {
 						for(int i = 0; i < empty; i++){
 							progressBar += " ";
 						}
+						estimated = (long) timer.getRemainingEstimate();
+						velocity = (long) timer.getVelocityRecordsPerSecond();
 						progressBar += "] " + animation[anime_step++ % animation.length] + " " + df.format(per) + "% ("+f.getCount()+"/"+f.getTotal()+")";
-						progressBar += String.format("(Estimated Remaining Processing Time %2d min, %2d sec)",
+						progressBar += String.format("(Estimated Remaining Processing Time %2d min, %2d sec - %2d R/s)",
 								TimeUnit.MILLISECONDS.toMinutes(estimated),
 								TimeUnit.MILLISECONDS.toSeconds(estimated) -
-								TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(estimated))
+								TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(estimated)),
+								velocity
 							);
 						System.out.print(progressBar);
 					}

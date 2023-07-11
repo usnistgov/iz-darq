@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.iz.darq.adf.writer.sqlite.SqliteADFWriter;
 import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
 import gov.nist.healthcare.iz.darq.detections.DetectionProvider;
@@ -49,6 +50,11 @@ public class DigestConfiguration {
 		providers.put(AvailableDetectionEngines.DP_ID_MQE, mqeDetectionProvider);
 		providers.put(AvailableDetectionEngines.DP_ID_PM, mismoMatcherDetectionProvider);
 		return new DetectionEngine(providers);
+	}
+
+	@Bean
+	public SqliteADFWriter adfWriter() {
+		return new SqliteADFWriter();
 	}
 
 	@Bean

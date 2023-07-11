@@ -8,131 +8,15 @@ import java.util.stream.Collectors;
 
 public class Summary {
 
-	public static class ExtractPercent {
-		public double valued;
-		public double excluded;
-		public double notCollected;
-		public double notExtracted;
-		public double valuePresent;
-		public double valueNotPresent;
-		public double valueLength;
-		public double empty;
-		public double total;
-
-		public ExtractPercent(ExtractFraction fraction) {
-			this.valued = ((double)fraction.getValued() / fraction.getTotal()) * 100;
-			this.excluded = ((double) fraction.getExcluded() / fraction.getTotal()) * 100;
-			this.notCollected = ((double) fraction.getNotCollected() / fraction.getTotal()) * 100;
-			this.notExtracted = ((double) fraction.getNotExtracted() / fraction.getTotal()) * 100;
-			this.valuePresent = ((double) fraction.getValuePresent() / fraction.getTotal()) * 100;
-			this.valueNotPresent = ((double) fraction.getValueNotPresent() / fraction.getTotal()) * 100;
-			this.valueLength = ((double) fraction.getValueLength() /fraction.getTotal()) * 100;
-			this.empty = ((double) fraction.getEmpty() / fraction.getTotal()) * 100;
-			this.total = fraction.getTotal();
-		}
-
-		public static ExtractPercent merge(ExtractPercent source, ExtractPercent target) {
-			ExtractPercent result = new ExtractPercent();
-			result.valued = (source.valued + target.valued) / 2.0;
-			result.excluded = (source.excluded + target.excluded) / 2.0;
-			result.notCollected = (source.notCollected + target.notCollected) / 2.0;
-			result.notExtracted = (source.notExtracted + target.notExtracted) / 2.0;
-			result.valuePresent = (source.valuePresent + target.valuePresent) / 2.0;
-			result.valueNotPresent = (source.valueNotPresent + target.valueNotPresent) / 2.0;
-			result.valueLength = (source.valueLength + target.valueLength) / 2.0;
-			result.empty = (source.empty + target.empty) / 2.0;
-			result.total = source.total + target.total;
-			return result;
-		}
-
-		public ExtractPercent() {
-			super();
-		}
-
-		public double getValued() {
-			return valued;
-		}
-
-		public void setValued(double valued) {
-			this.valued = valued;
-		}
-
-		public double getExcluded() {
-			return excluded;
-		}
-
-		public void setExcluded(double excluded) {
-			this.excluded = excluded;
-		}
-
-		public double getNotCollected() {
-			return notCollected;
-		}
-
-		public void setNotCollected(double notCollected) {
-			this.notCollected = notCollected;
-		}
-
-		public double getNotExtracted() {
-			return notExtracted;
-		}
-
-		public void setNotExtracted(double notExtracted) {
-			this.notExtracted = notExtracted;
-		}
-
-		public double getValuePresent() {
-			return valuePresent;
-		}
-
-		public void setValuePresent(double valuePresent) {
-			this.valuePresent = valuePresent;
-		}
-
-		public double getValueNotPresent() {
-			return valueNotPresent;
-		}
-
-		public void setValueNotPresent(double valueNotPresent) {
-			this.valueNotPresent = valueNotPresent;
-		}
-
-		public double getValueLength() {
-			return valueLength;
-		}
-
-		public void setValueLength(double valueLength) {
-			this.valueLength = valueLength;
-		}
-
-		public double getEmpty() {
-			return empty;
-		}
-
-		public void setEmpty(double empty) {
-			this.empty = empty;
-		}
-
-		public double getTotal() {
-			return total;
-		}
-
-		public void setTotal(double total) {
-			this.total = total;
-		}
-	}
-
 	private List<String> issues;
 	private List<AgeGroupCount> countByAgeGroup;
 	private int outOfRange = 0; 
 	private SummaryCounts counts;
 	private String asOfDate;
 	private Map<String, ExtractPercent> extract;
-	private Map<String, String> cvxAbstraction;
-	
+
 	public Summary(ADChunk chunk, ConfigurationPayload payload){
 		super();
-		Map<String, String> cvxAbstraction = payload.getVaxCodeAbstraction();
 		List<Range> groups = payload.getAgeGroups();
 		this.asOfDate = payload.getAsOf();
 		this.issues = chunk.issueList();
@@ -153,7 +37,6 @@ public class Summary {
 		this.outOfRange = ageCounts.getOrDefault(groups.size()+"g", 0);
 		this.countByAgeGroup.sort(null);
 		counts = new SummaryCounts();
-		this.cvxAbstraction = cvxAbstraction;
 		counts.totalReadPatientRecords = chunk.getNbPatients();
 		counts.totalReadVaccinations = chunk.getNbVaccinations();
 		counts.totalSkippedPatientRecords = chunk.getUnreadPatients();
@@ -207,6 +90,7 @@ public class Summary {
 	public List<String> getIssues() {
 		return issues;
 	}
+
 	public void setIssues(List<String> issues) {
 		this.issues = issues;
 	}
@@ -226,15 +110,11 @@ public class Summary {
 	public void setOutOfRange(int outOfRange) {
 		this.outOfRange = outOfRange;
 	}
-	public Map<String, String> getCvxAbstraction() {
-		return cvxAbstraction != null ? cvxAbstraction : new HashMap<>();
-	}
-	public void setCvxAbstraction(Map<String, String> cvxAbstraction) {
-		this.cvxAbstraction = cvxAbstraction;
-	}
+
 	public SummaryCounts getCounts() {
 		return counts;
 	}
+
 	public void setCounts(SummaryCounts counts) {
 		this.counts = counts;
 	}

@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
+import gov.nist.healthcare.iz.darq.adf.writer.ADFWriter;
 import gov.nist.healthcare.iz.darq.configuration.validation.ConfigurationPayloadValidator;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
 import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
@@ -38,13 +39,14 @@ public class SimpleDigestRunner implements DigestRunner {
 	ConfigurationPayloadValidator configurationPayloadValidator;
 	@Autowired
 	DetectionEngine detectionEngine;
+	@Autowired
+	ADFWriter writer;
 
 	private LucenePatientRecordIterator iterator;
 	private int size = 0;
-	ADChunk file;
 
 	@Override
-	public ADChunk digest(ConfigurationPayload configuration, String patient, String vaccines, DqDateFormat dateFormat, Path output, Path temporaryDirectory) throws Exception {
+	public void digest(ConfigurationPayload configuration, String patient, String vaccines, DqDateFormat dateFormat, Path output, Path temporaryDirectory) throws Exception {
 		logger.info("[PREPROCESS] Validating Configuration");
 		configurationPayloadValidator.validateConfigurationPayload(configuration);
 		logger.info("[START] Processing Extract");
@@ -65,9 +67,7 @@ public class SimpleDigestRunner implements DigestRunner {
 				DateTimeFormat.forPattern(dateFormat.getPattern())
 		);
 
-		this.file = new ADChunk();
-
-		iterator.getSanityCheckErrors().forEach(formatIssue -> file.addIssue(
+		iterator.getSanityCheckErrors().forEach(formatIssue -> this.writer.addIssue(
 				"[ LINE : "+ formatIssue.getLine()+" ][ RECORD TYPE : VACCINATION ] " + formatIssue.getMessage()
 		));
 
@@ -81,33 +81,34 @@ public class SimpleDigestRunner implements DigestRunner {
 
 					try {
 						ADChunk chunk = chewer.munch(config, parsed.getApr(), date, context);
-						merge.mergeChunk(file, chunk);
+						this.writer.write(chunk);
 					}
 					catch (Exception e) {
 						logger.error("[RECORD PROCESSING ISSUE][ ID "+parsed.getPatient().getID()+"]", e);
-						file.setUnreadPatients(file.getUnreadPatients() + 1);
-						file.setUnreadVaccinations(file.getUnreadVaccinations() + parsed.getVaccinations().size());
-						file.addIssue(new ParseError(parsed.getPatient().getID(), "", "", "Encountered critical issue while processing record : "+e.getMessage()+" see logs for stacktrace", true, parsed.getPatient().getLine()).toString());
+						e.printStackTrace();
+						this.writer.getCounts().addUnreadPatients(1);
+						this.writer.getCounts().addUnreadVaccinations(parsed.getVaccinations().size());
+						this.writer.addIssue(new ParseError(parsed.getPatient().getID(), "", "", "Encountered critical issue while processing record : "+e.getMessage()+" see logs for stacktrace", true, parsed.getPatient().getLine()).toString());
 					}
 
 				} else {
 					logger.info("[INVALID RECORD] record is invalid (contains one or more critical issues see summary)");
 				}
 
-				file.setUnreadPatients(file.getUnreadPatients() + parsed.getSkippedPatient());
-				file.setUnreadVaccinations(file.getUnreadVaccinations() + parsed.getSkippedVaccination());
-				file.addIssues(parsed.getIssues().stream().map(ParseError::toString).collect(Collectors.toList()));
+				this.writer.getCounts().addUnreadPatients(parsed.getSkippedPatient());
+				this.writer.getCounts().addUnreadVaccinations(parsed.getSkippedVaccination());
+				this.writer.addIssues(parsed.getIssues().stream().map(ParseError::toString).collect(Collectors.toList()));
 
 			}
 			catch(InvalidPatientRecord e) {
 				logger.info("[INVALID RECORD] Record can't be processed (record ID not populated)");
-				file.setUnreadPatients(file.getUnreadPatients() + 1);
-				file.addIssues(e.getIssues().stream().map(ParseError::toString).collect(Collectors.toList()));
-				file.addIssue("[WARNING] A patient record was not parsed or ID not found which means that the according vaccinations were not read and not taken into account in summary count skipped vaccinations");
+				this.writer.getCounts().addUnreadPatients(1);
+				this.writer.addIssues(e.getIssues().stream().map(ParseError::toString).collect(Collectors.toList()));
+				this.writer.addIssue("[WARNING] A patient record was not parsed or ID not found which means that the according vaccinations were not read and not taken into account in summary count skipped vaccinations");
 			}
 			catch (Exception e) {
 				logger.error("[UNEXPECTED ISSUE]", e);
-				file.addIssue("[ERROR] Unexpected error while processing record, view logs for more information. message : " + e.getMessage());
+				this.writer.addIssue("[ERROR] Unexpected error while processing record, view logs for more information. message : " + e.getMessage());
 			}
 		}
 
@@ -119,16 +120,11 @@ public class SimpleDigestRunner implements DigestRunner {
 			logger.error("[END][DETECTION PROVIDER CLOSING ERROR]", e);
 		}
 
-
 		try {
 			iterator.close();
-		  	FileUtils.deleteDirectory(temporaryDirectory.toFile());
 		} catch (Exception e) {
 			logger.error("[END][ITERATOR CLOSING ERROR]", e);
-			System.err.println("ALERT: Unable to delete temporary directory " + temporaryDirectory);
-			System.err.println("Due to - " + e.getMessage());
 		}
-		return file;
 	}
 
 
