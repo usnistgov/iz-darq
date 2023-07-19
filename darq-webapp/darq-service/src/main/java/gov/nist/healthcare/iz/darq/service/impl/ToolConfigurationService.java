@@ -175,7 +175,7 @@ public class ToolConfigurationService {
                         )
                 );
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("! Error while configuring service '"+service.getServiceDisplayName()+"'. Exception Message : " + e.getMessage());
             }
         }
     }
