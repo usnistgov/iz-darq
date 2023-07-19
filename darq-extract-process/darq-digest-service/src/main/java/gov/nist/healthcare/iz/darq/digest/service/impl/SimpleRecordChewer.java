@@ -6,10 +6,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import gov.nist.healthcare.iz.darq.digest.domain.ExtractFraction;
 import gov.nist.healthcare.iz.darq.adf.service.MergeService;
 import gov.nist.healthcare.iz.darq.detections.AggregatedRecordDetections;
 import gov.nist.healthcare.iz.darq.detections.DetectionContext;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
+import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
 import gov.nist.healthcare.iz.darq.digest.domain.*;
 import gov.nist.healthcare.iz.darq.digest.service.vocabulary.RecordValuesAnalysisResult;
 import gov.nist.healthcare.iz.darq.digest.service.vocabulary.SimpleRecordValueAnalysisService;
@@ -34,13 +36,11 @@ public class SimpleRecordChewer implements RecordChewer {
 	DetectionEngine detectionEngine;
 
 	@Override
-	public ADChunk munch(ConfigurationProvider configuration, AggregatePatientRecord apr, LocalDate date, DetectionContext detectionContext) throws Exception {
+	public ADChunk munch(PreProcessRecord record, LocalDate date, DetectionContext detectionContext) throws Exception {
 
-		if(apr.patient.date_of_birth.getValue().isAfter(date)) {
+		if(record.getRecord().patient.date_of_birth.getValue().isAfter(date)) {
 			throw new Exception("Birth date is after Evaluation Date ");
 		}
-
-		PreProcessRecord record = preProcessRecord(apr, detectionContext);
 
 		// Analyze Record (Detections & Vocabulary & Vaccination Events)
 		AggregatedRecordDetections detections = detectionEngine.processRecordAndGetDetections(record, detectionContext);
@@ -48,8 +48,8 @@ public class SimpleRecordChewer implements RecordChewer {
 		Map<String, Map<String, Map<String, Map<String, Map<String, TablePayload>>>>> aggregateVaccinationEvents = recordValueAnalysisService.getVaccinationEvents(record, detectionContext);
 
 		// Count Administered & Historical
-		int administered = (int) apr.history.stream().filter((vx) -> "00".equals(vx.event_information_source.getValue())).count();
-		int historical = apr.history.size() - administered;
+		int administered = (int) record.getRecord().history.stream().filter((vx) -> "00".equals(vx.event_information_source.getValue())).count();
+		int historical = record.getRecord().history.size() - administered;
 
 		// Create ADF Sections
 		Map<String, Map<String, VaccinationPayload>> vaccinationSection = makeVaccinationSection(detections, recordValuesAnalysisResult, aggregateVaccinationEvents);
@@ -72,7 +72,7 @@ public class SimpleRecordChewer implements RecordChewer {
 				patientSection,
 				deIdentifiedSection,
 				extraction,
-				apr.history.size(),
+				record.getRecord().history.size(),
 				1,
 				historical,
 				administered
@@ -129,11 +129,6 @@ public class SimpleRecordChewer implements RecordChewer {
 	}
 
 
-	PreProcessRecord preProcessRecord(AggregatePatientRecord apr, DetectionContext detectionContext) {
-		String patientAgeGroup = detectionContext.calculateAgeGroupAsOfEvaluationDate(apr.patient.date_of_birth.getValue());
-		Map<String, String> providersByVaccinationId = apr.history.stream().collect(Collectors.toMap((vx) -> vx.vax_event_id.getValue(), (vx) -> vx.reporting_group.getValue()));
-		Map<String, String> ageGroupAtVaccinationByVaccinationId = apr.history.stream().collect(Collectors.toMap((vx) -> vx.vax_event_id.getValue(), (vx) -> detectionContext.calculateAgeGroup(apr.patient.date_of_birth.getValue(), vx.administration_date.getValue())));
-		return new PreProcessRecord(apr, patientAgeGroup, providersByVaccinationId, ageGroupAtVaccinationByVaccinationId);
-	}
+
 
 }

@@ -1,5 +1,8 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
+import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
+import gov.nist.healthcare.iz.darq.digest.domain.VaccinationPayload;
+
 public class ADPayload {
     PatientPayload patientPayload;
     VaccinationPayload vaccinationPayload;

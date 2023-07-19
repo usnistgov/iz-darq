@@ -4,6 +4,7 @@ import gov.nist.healthcare.crypto.service.CryptoKey;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.file.Files;
 import java.security.*;
 import java.security.cert.Certificate;
 
@@ -14,7 +15,7 @@ public class JKSCryptoKey implements CryptoKey {
 
     public JKSCryptoKey(String jks, String keyAlias, String storePassword, String keyPassword) throws Exception {
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keystore.load(new FileInputStream(new File(jks)), storePassword.toCharArray());
+        keystore.load(Files.newInputStream(new File(jks).toPath()), storePassword.toCharArray());
 
         Certificate cert = keystore.getCertificate(keyAlias);
         // Get public key

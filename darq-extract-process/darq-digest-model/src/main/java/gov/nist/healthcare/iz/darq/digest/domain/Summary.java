@@ -15,38 +15,32 @@ public class Summary {
 	private String asOfDate;
 	private Map<String, ExtractPercent> extract;
 
-	public Summary(ADChunk chunk, ConfigurationPayload payload){
-		super();
-		List<Range> groups = payload.getAgeGroups();
-		this.asOfDate = payload.getAsOf();
-		this.issues = chunk.issueList();
-		this.countByAgeGroup = new ArrayList<>();
-		Map<String, Integer> ageCounts = new HashMap<>();
-		for(String ageGroup : chunk.getGeneralPatientPayload().keySet()){
-			ageCounts.put(ageGroup, chunk.getGeneralPatientPayload().get(ageGroup).getCount());
+	public Summary( List<String> issues,
+	                Map<String, Integer> countByAgeGroup,
+	                SummaryCounts counts,
+	                Map<String, ExtractFraction> extract,
+	                ConfigurationPayload payload
+	) {
+		// -- Set Extract Percentages
+		this.extract = new HashMap<>();
+		for(String e : extract.keySet()){
+			this.extract.put(e, new ExtractPercent(extract.get(e)));
 		}
-		extract = new HashMap<>();
-		for(String e : chunk.getExtraction().keySet()){
-			extract.put(e, new ExtractPercent(chunk.getExtraction().get(e)));
-		}
+
+		// -- Set Age Group Counts
 		int i = 0;
+		this.countByAgeGroup = new ArrayList<>();
+		List<Range> groups = payload.getAgeGroups();
 		for(Range range : groups.stream().sorted().collect(Collectors.toList())){
-			this.countByAgeGroup.add(new AgeGroupCount(range, ageCounts.getOrDefault(i+"g", 0)));
+			this.countByAgeGroup.add(new AgeGroupCount(range, countByAgeGroup.getOrDefault(i+"g", 0)));
 			i++;
 		}
-		this.outOfRange = ageCounts.getOrDefault(groups.size()+"g", 0);
+		this.outOfRange = countByAgeGroup.getOrDefault(groups.size()+"g", 0);
 		this.countByAgeGroup.sort(null);
-		counts = new SummaryCounts();
-		counts.totalReadPatientRecords = chunk.getNbPatients();
-		counts.totalReadVaccinations = chunk.getNbVaccinations();
-		counts.totalSkippedPatientRecords = chunk.getUnreadPatients();
-		counts.totalSkippedVaccinationRecords = chunk.getUnreadVaccinations();
-		counts.maxVaccinationsPerRecord = chunk.getMaxVaccination();
-		counts.avgVaccinationsPerRecord = counts.totalReadPatientRecords > 0 ? counts.totalReadVaccinations / counts.totalReadPatientRecords : 0;
-		counts.numberOfProviders = chunk.getProviders().size();
-		counts.minVaccinationsPerRecord = chunk.getMinVaccination();
-		counts.historical = chunk.getHistorical();
-		counts.administered = chunk.getAdministered();
+
+		this.counts = counts;
+		this.issues = issues;
+		this.asOfDate = payload.getAsOf();
 	}
 
 	public static Summary merge(Summary source, Summary target) {

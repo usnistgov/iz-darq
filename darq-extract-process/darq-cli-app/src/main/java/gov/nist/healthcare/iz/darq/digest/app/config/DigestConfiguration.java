@@ -1,12 +1,11 @@
 package gov.nist.healthcare.iz.darq.digest.app.config;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import gov.nist.healthcare.crypto.service.CryptoKey;
-import gov.nist.healthcare.iz.darq.adf.writer.sqlite.SqliteADFWriter;
+import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
+import gov.nist.healthcare.iz.darq.adf.module.json.BsonADFModule;
 import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
 import gov.nist.healthcare.iz.darq.detections.DetectionProvider;
@@ -20,10 +19,6 @@ import org.immregistries.mismo.match.PatientMatcher;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 
 @Configuration
 public class DigestConfiguration {
@@ -53,46 +48,10 @@ public class DigestConfiguration {
 	}
 
 	@Bean
-	public SqliteADFWriter adfWriter() {
-		return new SqliteADFWriter();
+	public ADFManager adfWriter() throws Exception {
+		ADFManager manager = new ADFManager();
+		manager.register(new BsonADFModule(), true, false);
+		return manager;
 	}
-
-	@Bean
-	public ADFStore store(){
-		return new ADFStore() {
-
-			@Override
-			public String store(ADFMetaData metadata) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public ADFMetaData get(String id) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-
-			@Override
-			public ADFile getFile(String id) throws Exception {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public InputStream getFileInputStream(String id) throws Exception {
-				return null;
-			}
-
-			@Override
-			public boolean delete(String id) throws IOException {
-				// TODO Auto-generated method stub
-				return false;
-			}
-			
-		};
-	}
-	
 	
 }

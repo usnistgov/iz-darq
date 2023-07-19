@@ -1,5 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
+import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
+
 import java.util.Map;
 
 public class VaccinationPayload {

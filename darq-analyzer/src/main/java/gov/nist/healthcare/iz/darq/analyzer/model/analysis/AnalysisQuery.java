@@ -7,18 +7,18 @@ import java.util.stream.Collectors;
 
 import gov.nist.healthcare.iz.darq.digest.domain.Analysis;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
-import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
+import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
 
 public class AnalysisQuery {
-	public static enum Action {
+	public enum Action {
 		CONTINUE, TAKE, KILL 
 	}
 
 	Set<QueryField> fields;
-	_CG compatibilityGroup;
+	AnalysisType compatibilityGroup;
 	
 
-	public AnalysisQuery(Set<QueryField> fields, _CG compatibilityGroup) {
+	public AnalysisQuery(Set<QueryField> fields, AnalysisType compatibilityGroup) {
 		super();
 		this.fields = fields;
 		this.compatibilityGroup = compatibilityGroup;
@@ -39,14 +39,14 @@ public class AnalysisQuery {
 	}
 
 	public QueryField get(Field f){
-		return this.fields.stream().filter(x -> x.getF().equals(f)).findFirst().orElse(null);
+		return this.fields.stream().filter(x -> x.getField().equals(f)).findFirst().orElse(null);
 	}
 	
 	public static boolean validateQuery(Set<QueryField> fields,Analysis type){
 		Field[] fieldTypes = new Field[fields.size()];
 		int i = 0;
 		for(QueryField qf : fields){
-			fieldTypes[i++] = qf.getF();
+			fieldTypes[i++] = qf.getField();
 		}
 		return Field.areCompatible(type, fieldTypes);
 	}
@@ -54,20 +54,18 @@ public class AnalysisQuery {
 	public List<Field> getFields() {
 		List<QueryField> f = new ArrayList<>(fields);
 		Collections.sort(f);
-		return f.stream().map(x -> {
-			return x.getF();
-		}).collect(Collectors.toList());
+		return f.stream().map(QueryField::getField).collect(Collectors.toList());
 	}
 
 	public void setFields(Set<QueryField> fields) {
 		this.fields = fields;
 	}
 	
-	public _CG getCompatibilityGroup() {
+	public AnalysisType getCompatibilityGroup() {
 		return compatibilityGroup;
 	}
 
-	public void setCompatibilityGroup(_CG compatibilityGroup) {
+	public void setCompatibilityGroup(AnalysisType compatibilityGroup) {
 		this.compatibilityGroup = compatibilityGroup;
 	}
 	

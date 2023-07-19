@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import gov.nist.healthcare.iz.darq.analyzer.model.variable.QueryVariableRef;
+import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ import java.util.Set;
 })
 public abstract class QueryPayload {
     private final QueryPayloadType payloadType;
-    protected Field._CG type;
+    protected AnalysisType type;
     protected String caption;
     protected boolean paginate;
     protected int rows;
@@ -50,11 +51,11 @@ public abstract class QueryPayload {
         return payloadType;
     }
 
-    public Field._CG getType() {
+    public AnalysisType getType() {
         return type;
     }
 
-    public void setType(Field._CG type) {
+    public void setType(AnalysisType type) {
         this.type = type;
     }
 

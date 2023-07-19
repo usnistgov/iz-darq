@@ -1,7 +1,6 @@
 package gov.nist.healthcare.iz.darq.digest.service.detection.provider.mqe;
 
 import gov.nist.healthcare.iz.darq.detections.*;
-import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
 import gov.nist.healthcare.iz.darq.digest.domain.TransformResult;
 import gov.nist.healthcare.iz.darq.digest.service.impl.MQETransformService;

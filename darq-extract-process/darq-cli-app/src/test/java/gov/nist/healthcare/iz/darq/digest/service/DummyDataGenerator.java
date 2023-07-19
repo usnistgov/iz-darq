@@ -189,11 +189,4 @@ public class DummyDataGenerator {
 		return vaccines;
 	}
 
-	public static void main(String[] args) throws IOException {
-		String PF = "/Users/hnt5/qDAR_Sandbox/java/p.tsv";
-		String VF = "/Users/hnt5/qDAR_Sandbox/java/v.tsv";
-		DummyDataGenerator generator = new DummyDataGenerator();
-		generator.generate(PF, VF, 1_000_000, 15);
-	}
-
 }

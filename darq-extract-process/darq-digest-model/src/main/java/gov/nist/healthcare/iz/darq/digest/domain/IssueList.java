@@ -2,7 +2,6 @@ package gov.nist.healthcare.iz.darq.digest.domain;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class IssueList {
     String[] issues;

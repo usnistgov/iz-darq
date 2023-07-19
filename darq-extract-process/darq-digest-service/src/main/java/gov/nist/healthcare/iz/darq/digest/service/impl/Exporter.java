@@ -2,20 +2,17 @@ package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import gov.nist.healthcare.iz.darq.adf.model.Metadata;
+import gov.nist.healthcare.iz.darq.adf.module.api.ADFWriter;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
+import gov.nist.healthcare.iz.darq.digest.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
-import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
-import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.Summary;
 import gov.nist.healthcare.iz.darq.digest.service.ExportADChunk;
 import gov.nist.healthcare.iz.darq.digest.service.HTMLSummaryGenerator;
 
@@ -23,8 +20,6 @@ import gov.nist.healthcare.iz.darq.digest.service.HTMLSummaryGenerator;
 @Service
 public class Exporter implements ExportADChunk {
 
-	@Autowired
-	private CryptoUtils cryptoUtils;
 	@Autowired
 	private HTMLSummaryGenerator summaryGenerator;
 	@Autowired
@@ -37,30 +32,35 @@ public class Exporter implements ExportADChunk {
 	
 	
 	@Override
-	public void export(ConfigurationPayload payload, Path folder, ADChunk chunk, String version, String build, String mqeVersion, long elapsed, boolean printAdf) throws Exception {
-		Summary summary = new Summary(chunk, payload);
-		ADFile file = new ADFile(
-				chunk.getGeneralPatientPayload(),
-				chunk.getReportingGroupPayload(),
-				payload,
-				summary,
+	public void export(ConfigurationPayload payload, Path folder, ADFWriter writer, String version, String build, String mqeVersion, long elapsed, boolean printAdf) throws Exception {
+		Metadata metadata = new Metadata(
 				version,
 				build,
 				mqeVersion,
-				this.getInactiveDetections(payload.getDetections()),
 				elapsed,
-				chunk.getHistorical(),
-				chunk.getAdministered()
+				new Date(),
+				getInactiveDetections(payload.getDetections())
 		);
 
-	    //---- ENCRYPT and write ADF
-	    this.cryptoUtils.encryptContentToFileWithoutTemporaryFile(file, Files.newOutputStream(Paths.get(folder.toAbsolutePath().toString(), "ADF.data").toAbsolutePath()));
+		Summary summary = new Summary(
+				writer.getIssues(),
+				writer.getAgeGroupCount(),
+				writer.getSummaryCounts(),
+				writer.getExtractPercent(),
+				payload
+		);
+
+		writer.write_metadata(metadata, payload);
+		writer.setSummary(summary);
 
 	    //---- HTML
-	    summaryGenerator.generateSummary(file, summary, chunk.getProviders(), Paths.get(folder.toAbsolutePath().toString(), "summary").toAbsolutePath().toString(), printAdf);
+	    summaryGenerator.generateSummary(writer, metadata, summary, writer.getProviders(), Paths.get(folder.toAbsolutePath().toString(), "summary").toAbsolutePath().toString(), printAdf);
 
 	    //--- Reporting Group Spreadsheet
-		writeProvidersToCSV(chunk.getProviders(), new FileWriter(Paths.get(folder.toAbsolutePath().toString(), "reporting-groups.csv").toFile()));
+		writeProvidersToCSV(writer.getProviders(), new FileWriter(Paths.get(folder.toAbsolutePath().toString(), "reporting-groups.csv").toFile()));
+
+		//---- Write ADF
+		writer.exportAndClose(Paths.get(folder.toAbsolutePath().toString(), "ADF.data").toAbsolutePath().toString());
 	}
 
 	void writeProvidersToCSV(Map<String, String> providers, FileWriter writer) throws IOException {

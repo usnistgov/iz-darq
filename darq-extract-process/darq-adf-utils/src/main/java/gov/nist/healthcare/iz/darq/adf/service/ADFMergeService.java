@@ -1,6 +1,6 @@
 package gov.nist.healthcare.iz.darq.adf.service;
 
-import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
+import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
 
 import java.util.List;
 

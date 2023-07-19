@@ -1,10 +1,10 @@
 package gov.nist.healthcare.iz.darq.service.impl;
 
 import com.google.common.base.Strings;
+import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisReport;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportTemplate;
 import gov.nist.healthcare.iz.darq.analyzer.service.ReportService;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 import gov.nist.healthcare.iz.darq.model.AnalysisJob;
 import gov.nist.healthcare.iz.darq.model.JobStatus;
 import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
@@ -82,28 +82,30 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
 
     @Override
     public AnalysisJob startJob(AnalysisJob job) throws Exception {
-        ADFile file = this.store.getFile(job.getAdfId());
-        if(job.getStatus() == JobStatus.RUNNING) {
-            throw new JobRunningException("Job " + job.getName() + " Already Running ");
+        try(ADFReader file = this.store.getFile(job.getAdfId())) {
+            if(job.getStatus() == JobStatus.RUNNING) {
+                throw new JobRunningException("Job " + job.getName() + " Already Running ");
+            }
+            job.setStatus(JobStatus.RUNNING);
+            job.setStartTime(new Date());
+            this.analysisJobRepository.save(job);
+            AnalysisReport report = this.analysisService.analyse(file, job.getTemplate(), job.getFacilityId());
+            file.close();
+            report.fromTemplate(job.getTemplate());
+            report.setName(job.getName());
+            report.setOwner(job.getOwner());
+            report.setOwnerId(job.getOwnerId());
+            report.setFacilityId(job.getFacilityId());
+            report.setAdfName(job.getAdfName());
+            report.setReportTemplate(job.getTemplate());
+            this.analysisReportService.save(report);
+            job.setReportId(report.getId());
+            job.setEndTime(new Date());
+            job.setStatus(JobStatus.FINISHED);
+            this.analysisJobRepository.save(job);
+            this.clear(job.getId());
+            return job;
         }
-        job.setStatus(JobStatus.RUNNING);
-        job.setStartTime(new Date());
-        this.analysisJobRepository.save(job);
-        AnalysisReport report = this.analysisService.analyse(file, job.getTemplate(), job.getFacilityId());
-        report.fromTemplate(job.getTemplate());
-        report.setName(job.getName());
-        report.setOwner(job.getOwner());
-        report.setOwnerId(job.getOwnerId());
-        report.setFacilityId(job.getFacilityId());
-        report.setAdfName(job.getAdfName());
-        report.setReportTemplate(job.getTemplate());
-        this.analysisReportService.save(report);
-        job.setReportId(report.getId());
-        job.setEndTime(new Date());
-        job.setStatus(JobStatus.FINISHED);
-        this.analysisJobRepository.save(job);
-        this.clear(job.getId());
-        return job;
     }
 
     public void register(String id, Future<?> future) {

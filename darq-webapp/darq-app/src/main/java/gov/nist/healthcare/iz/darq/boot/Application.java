@@ -4,14 +4,18 @@ import java.io.*;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
-import javax.mail.MessagingException;
 
 import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.crypto.service.impl.JKSCryptoKey;
-import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
+import gov.nist.healthcare.iz.darq.adf.model.ADFVersion;
+import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
+import gov.nist.healthcare.iz.darq.adf.module.json.BsonADFModule;
+import gov.nist.healthcare.iz.darq.adf.module.transformer.BsonSqliteADFTransformer;
+import gov.nist.healthcare.iz.darq.adf.module.transformer.TransformerService;
 import gov.nist.healthcare.iz.darq.model.*;
 import gov.nist.healthcare.iz.darq.repository.EmailTemplateRepository;
+import gov.nist.healthcare.iz.darq.service.impl.ConfigurableSqliteADFModule;
 import gov.nist.healthcare.iz.darq.service.impl.SimpleEmailService;
 import gov.nist.healthcare.iz.darq.service.impl.WebContentService;
 import org.immregistries.codebase.client.CodeMap;
@@ -55,8 +59,6 @@ public class Application extends SpringBootServletInitializer{
 	EmailTemplateRepository emailTemplateRepository;
 	@Autowired
 	WebContentService webContentService;
-	@Autowired
-	CryptoUtils cryptoUtils;
 
 	@Autowired
 	private CVXRepository cvxRepo;
@@ -95,6 +97,19 @@ public class Application extends SpringBootServletInitializer{
     }
 
 	@Bean
+	public ADFVersion currentADFVersion() {
+		return ADFVersion.ADFSQLITE0001;
+	}
+
+	@Bean
+	public TransformerService transformer(ADFManager manager) {
+		TransformerService transformerService = new TransformerService();
+		BsonSqliteADFTransformer transformer = new BsonSqliteADFTransformer(manager);
+		transformerService.register(transformer);
+		return transformerService;
+	}
+
+	@Bean
 	public InternalResourceViewResolver defaultViewResolver() {
 		return new InternalResourceViewResolver();
 	}
@@ -116,7 +131,7 @@ public class Application extends SpringBootServletInitializer{
 
 
 	@Bean
-	public SimpleEmailService emailService() throws MessagingException, IOException {
+	public SimpleEmailService emailService() throws IOException {
 		SimpleEmailService emailService = new SimpleEmailService(this.emailTemplateRepository, this.env);
 		ObjectMapper mapper = new ObjectMapper();
 		TypeReference<List<EmailTemplate>> typeRef = new TypeReference<List<EmailTemplate>>() {};
@@ -179,6 +194,14 @@ public class Application extends SpringBootServletInitializer{
 				throw new Exception("[QDAR_ADF_KEYS] Failed to read ADF Keys", exception);
 			}
 		}
+	}
+
+	@Bean
+	public ADFManager adfManager(ConfigurableSqliteADFModule sqliteADFModule) {
+		ADFManager manager = new ADFManager();
+		manager.register(new BsonADFModule(), true, false);
+		manager.register(sqliteADFModule, false, true);
+		return manager;
 	}
 
 	//-----------------------------------------------------

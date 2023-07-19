@@ -9,7 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
-import gov.nist.healthcare.iz.darq.adf.writer.ADFWriter;
+import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
+import gov.nist.healthcare.iz.darq.adf.module.api.ADFWriter;
+import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFModule;
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
 import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
@@ -188,25 +190,28 @@ public class CLIApp {
 						}
 						detectionEngine.configure(detectionEngineConfiguration);
 
-						// --- Start Analysis
-						System.out.println("Analysis Progress");
+						// --- Configure Services
+						logger.info("Configuring Services");
 						SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
 						Exporter export = context.getBean(Exporter.class);
-						ADFWriter writer = context.getBean(ADFWriter.class);
+						ADFManager adfManager = context.getBean(ADFManager.class);
+						adfManager.register(new SqliteADFModule(temporaryDirectory.toAbsolutePath().toString()), false, true);
+
+						// --- Start Analysis
+						System.out.println("Analysis Progress");
 						running = true;
 						Thread t = progress(runner);
 						t.start();
 						long start = System.currentTimeMillis();
-						writer.open(temporaryDirectory.toAbsolutePath().toString());
-						runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, output.toPath(), temporaryDirectory);
-						t.join();
-						System.out.println("Analysis Finished - Exporting Results");
-						long elapsed = System.currentTimeMillis() - start;
-						export.export(configurationPayload, output.toPath(), null, version, build, mqeVersion, elapsed, printAdf);
-
-						logger.info("[PREPROCESS] Closing ADF Writer");
-						writer.close();
-
+						try(ADFWriter writer = adfManager.getWriter(cryptoKey)) {
+							writer.open(temporaryDirectory.toAbsolutePath().toString());
+							runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, writer, output.toPath(), temporaryDirectory);
+							t.join();
+							System.out.println("Analysis Finished - Exporting Results");
+							long elapsed = System.currentTimeMillis() - start;
+							export.export(configurationPayload, output.toPath(), writer, version, build, mqeVersion, elapsed, printAdf);
+							logger.info("* Closing ADF Writer");
+						}
 						System.out.println("Results Exported - END");
 						cleanUp();
 					}

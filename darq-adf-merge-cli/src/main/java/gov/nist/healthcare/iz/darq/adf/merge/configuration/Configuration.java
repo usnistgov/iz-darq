@@ -4,7 +4,7 @@ import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.merge.model.LoadableCryptoKey;
 import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
+import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 

@@ -173,18 +173,6 @@ public class ADFController {
 		rsp.setHeader("Content-disposition", "attachment;filename="+file.getName().replace(" ", "_")+".data");
 		IOUtils.copy(this.storage.getFileInputStream(file.getPath()), rsp.getOutputStream());
 	}
-
-	@RequestMapping(value="/adf/merge", method=RequestMethod.POST)
-	@ResponseBody
-	@PreAuthorize("isAdmin() && AccessMultipleResource(#request, ADF, VIEW, #mergeRequest.ids)")
-	public OpAck<Void> get(
-			HttpServletRequest request,
-			@AuthenticationPrincipal User user,
-			@RequestBody ADFMergeRequest mergeRequest) throws Exception {
-		Set<UserUploadedFile> files = (Set<UserUploadedFile>) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_SET_ATTRIBUTE);
-		adfService.merge(mergeRequest.getName(), mergeRequest.getFacilityId(), user.getId(), files);
-		return new OpAck<>(AckStatus.SUCCESS,"Merge File Created Successfully", null, "adf-merge");
-	}
 	
 	@RequestMapping(value="/adf/{id}", method=RequestMethod.DELETE)
 	@ResponseBody

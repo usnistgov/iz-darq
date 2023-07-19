@@ -14,12 +14,11 @@ public class ADChunk {
 	private int minVaccination = 99999;
 	private int historical = 0;
 	private int administered = 0;
-	private IssueList issues;
 	private Map<String, String> providers;
 	private Map<String, PatientPayload> generalPatientPayload;
 	private Map<String, Map<String, ADPayload>> reportingGroupPayload;
 	private Map<String, ExtractFraction> extraction;
-	
+
 	public ADChunk(
 			Map<String, String> providers,
 			Map<String, PatientPayload> generalPatientPayload,
@@ -28,7 +27,8 @@ public class ADChunk {
 			int nbVaccinations,
 			int nbPatients,
 			int historical,
-			int administered) {
+			int administered
+	) {
 		super();
 		this.providers = providers;
 		this.generalPatientPayload = generalPatientPayload;
@@ -47,7 +47,6 @@ public class ADChunk {
 		reportingGroupPayload = new HashMap<>();
 		extraction = new HashMap<>();
 		providers = new HashMap<>();
-		this.issues = new IssueList(MAX_ISSUES);
 	}
 
 	public Map<String, PatientPayload> getGeneralPatientPayload() {
@@ -79,17 +78,6 @@ public class ADChunk {
 		this.providers = providers;
 	}
 
-	public void addIssue(String issue) {
-		this.issues.add(issue);
-	}
-
-	public void addIssues(List<String> issues) {
-		this.issues.addAllPossible(issues);
-	}
-
-	public List<String> issueList() {
-		return this.issues.toList();
-	}
 
 	@Override
 	public String toString() {
@@ -160,4 +148,5 @@ public class ADChunk {
 	public void setAdministered(int administered) {
 		this.administered = administered;
 	}
+
 }

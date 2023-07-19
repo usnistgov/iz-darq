@@ -2,13 +2,15 @@ package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import gov.nist.healthcare.iz.darq.adf.model.Metadata;
+import gov.nist.healthcare.iz.darq.adf.module.api.ADFWriter;
+import gov.nist.healthcare.iz.darq.digest.domain.Summary;
 import gov.nist.healthcare.iz.darq.digest.domain.*;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.LocalDate;
@@ -22,10 +24,9 @@ import static j2html.TagCreator.*;
 public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 
 	@Override
-	public void generateSummary(ADFile file, Summary summary, Map<String, String> providers, String path, boolean printAdf) throws IOException {
+	public void generateSummary(ADFWriter writer, Metadata metadata, Summary summary, Map<String, String> providers, String path, boolean printAdf) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
 	    ContainerTag html = html(
 	    		head(
 	    				link().withRel("stylesheet").withHref("./css/bootstrap.min.css"),
@@ -41,10 +42,10 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 										table(
 												attrs(".table.table-sm.table-striped"),
 												tbody(
-														tr(th("CLI Version"), td(file.getVersion())),
-														tr(th("CLI Build Date"), td(file.getBuild())),
-														tr(th("MQE Version"), td(file.getMqeVersion())),
-														tr(th("Total Analysis Time"), td(humanReadableTime(file.getTotalAnalysisTime())))
+														tr(th("CLI Version"), td(metadata.getVersion())),
+														tr(th("CLI Build Date"), td(metadata.getBuild())),
+														tr(th("MQE Version"), td(metadata.getMqeVersion())),
+														tr(th("Total Analysis Time"), td(humanReadableTime(metadata.getTotalAnalysisTime())))
 												)
 										)
 								),
@@ -172,10 +173,10 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 		htmlFileWriter.flush();
 		htmlFileWriter.close();
 
-		if(printAdf) {
+		if(printAdf && writer.supportsPrint()) {
 			// ADF File Writer
 			FileWriter adfFileWriter = new FileWriter(new File(path+"/plain_adf_content.json"));
-			mapper.writeValue(adfFileWriter, file);
+			adfFileWriter.write(writer.getAsString());
 			adfFileWriter.close();
 		}
 

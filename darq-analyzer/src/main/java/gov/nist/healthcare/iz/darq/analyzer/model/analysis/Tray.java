@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
-import gov.nist.healthcare.iz.darq.digest.domain.Field._CG;
+import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
 
 public abstract class Tray implements Cloneable {
 
@@ -27,8 +27,8 @@ public abstract class Tray implements Cloneable {
 		}
 
 		@Override
-		public _CG compatibilityGroup() {
-			return _CG.V;
+		public AnalysisType compatibilityGroup() {
+			return AnalysisType.V;
 		}
 
 		@Override
@@ -53,8 +53,8 @@ public abstract class Tray implements Cloneable {
 		}
 
 		@Override
-		public _CG compatibilityGroup() {
-			return _CG.VD;
+		public AnalysisType compatibilityGroup() {
+			return AnalysisType.VD;
 		}
 
 		@Override
@@ -79,8 +79,8 @@ public abstract class Tray implements Cloneable {
 		}
 
 		@Override
-		public _CG compatibilityGroup() {
-			return _CG.VT;
+		public AnalysisType compatibilityGroup() {
+			return AnalysisType.VT;
 		}
 
 		@Override
@@ -105,8 +105,8 @@ public abstract class Tray implements Cloneable {
 		}
 
 		@Override
-		public _CG compatibilityGroup() {
-			return _CG.PT;
+		public AnalysisType compatibilityGroup() {
+			return AnalysisType.PT;
 		}
 
 		@Override
@@ -131,8 +131,8 @@ public abstract class Tray implements Cloneable {
 		}
 
 		@Override
-		public _CG compatibilityGroup() {
-			return _CG.PD;
+		public AnalysisType compatibilityGroup() {
+			return AnalysisType.PD;
 		}
 
 		@Override
@@ -157,8 +157,8 @@ public abstract class Tray implements Cloneable {
 		}
 
 		@Override
-		public _CG compatibilityGroup() {
-			return _CG.PD;
+		public AnalysisType compatibilityGroup() {
+			return AnalysisType.PD;
 		}
 
 		@Override
@@ -184,7 +184,7 @@ public abstract class Tray implements Cloneable {
 	}
 
 	public abstract boolean full();
-	public abstract _CG compatibilityGroup();
+	public abstract AnalysisType compatibilityGroup();
 	public abstract Tray cloneTray();
 	public boolean has(List<Field> fs){
 		return fields.stream().map(TrayField::getField)

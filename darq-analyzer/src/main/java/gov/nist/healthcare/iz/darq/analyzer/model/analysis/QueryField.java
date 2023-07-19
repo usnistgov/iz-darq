@@ -19,10 +19,10 @@ public class QueryField implements Comparable<QueryField>{
         this.all = true;
     }
 
-    public Field getF() {
+    public Field getField() {
         return f;
     }
-    public void setF(Field f) {
+    public void setField(Field f) {
         this.f = f;
     }
 

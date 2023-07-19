@@ -1,7 +1,7 @@
 package gov.nist.healthcare.iz.darq.service.impl;
 
+import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
 import gov.nist.healthcare.iz.darq.analyzer.model.variable.QueryVariableRefInstance;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
 import gov.nist.healthcare.iz.darq.model.ADFQueryVariable;
 import gov.nist.healthcare.iz.darq.model.ADFQueryVariableID;
 import org.springframework.stereotype.Service;
@@ -57,19 +57,19 @@ public class ADFQueryVariableService {
         }
     }
 
-    public QueryVariableRefInstance getADFValueInstance(ADFQueryVariable variable, ADFile file) throws Exception {
+    public QueryVariableRefInstance getADFValueInstance(ADFQueryVariable variable, ADFReader file) throws Exception {
         ADFQueryVariableID adfVariableId = this.getIDFromString(variable.getId());
         switch (adfVariableId) {
             case NUMBER_OF_PATIENTS:
-                return this.getInstanceOfVariable(variable, file.getAnalysisDate(), file.getSummary().getCounts().totalReadPatientRecords);
+                return this.getInstanceOfVariable(variable, file.getMetadata().getAnalysisDate(), file.getSummary().getCounts().totalReadPatientRecords);
             case NUMBER_OF_VACCINATIONS:
-                return this.getInstanceOfVariable(variable, file.getAnalysisDate(), file.getSummary().getCounts().totalReadVaccinations);
+                return this.getInstanceOfVariable(variable, file.getMetadata().getAnalysisDate(), file.getSummary().getCounts().totalReadVaccinations);
             case NUMBER_OF_HISTORICAL_VACCINATIONS:
-                return this.getInstanceOfVariable(variable, file.getAnalysisDate(), file.getSummary().getCounts().historical);
+                return this.getInstanceOfVariable(variable, file.getMetadata().getAnalysisDate(), file.getSummary().getCounts().historical);
             case NUMBER_OF_ADMINISTERED_VACCINATIONS:
-                return this.getInstanceOfVariable(variable, file.getAnalysisDate(), file.getSummary().getCounts().administered);
+                return this.getInstanceOfVariable(variable, file.getMetadata().getAnalysisDate(), file.getSummary().getCounts().administered);
             case NUMBER_OF_PROVIDERS:
-                return this.getInstanceOfVariable(variable, file.getAnalysisDate(), file.getSummary().getCounts().numberOfProviders);
+                return this.getInstanceOfVariable(variable, file.getMetadata().getAnalysisDate(), file.getSummary().getCounts().numberOfProviders);
             default:
                 throw new Exception("ADF Variable " + adfVariableId + " not recognized");
         }
