@@ -2,7 +2,6 @@ package gov.nist.healthcare.iz.darq.analyzer.model.template;
 
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 

@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-public class AgeGroupTestCases {
+public class AgeGroupTestCase {
 
     ConfigurationPayloadValidator getValidator() {
         return new ConfigurationPayloadValidator();
@@ -40,8 +40,6 @@ public class AgeGroupTestCases {
         List<String> errors = validator.validateAgeGroups(Collections.emptyList(), true);
         assertEquals(0, errors.size());
     }
-
-
 
     @Test
     public void ageGroupsStartWithBirth() {

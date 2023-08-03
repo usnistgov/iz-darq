@@ -15,6 +15,6 @@ public interface DataTableService {
     DataTable applyThreshold(DataTable table, QueryThreshold threshold);
 	DataTable applyFilters(DataTable table, QueryResultFilter filter);
 	QueryVariableInstanceHolder getVariableInstanceHolder(QueryPayload payload, ADFReader file, String facilityId) throws Exception;
-
 	QueryIssues getQueryIssues(ADFReader file, Set<String> detections);
+
 }

@@ -17,26 +17,31 @@ import java.util.stream.Collectors;
 @Service
 public class SimpleDataTableService implements DataTableService {
 
-    @Autowired
     QueryValueResolverService queryValueResolverService;
+
+    public SimpleDataTableService(QueryValueResolverService queryValueResolverService) {
+        this.queryValueResolverService = queryValueResolverService;
+    }
 
     @Override
     public DataTable applyThreshold(DataTable table, QueryThreshold threshold) {
-        for(DataTableRow row : table.getValues()) {
-            if(threshold.getCustom().isActive()) {
-                ComplexThreshold complexThreshold = this.matchCustomThreshold(row, threshold.getCustom());
-                if(complexThreshold != null) {
-                    boolean value = this.applyThreshold(row, complexThreshold.getGoal());
-                    table.addThreshold(value);
-                    continue;
+        if(threshold != null) {
+            for(DataTableRow row : table.getValues()) {
+                if(threshold.getCustom().isActive()) {
+                    ComplexThreshold complexThreshold = this.matchCustomThreshold(row, threshold.getCustom());
+                    if(complexThreshold != null) {
+                        boolean value = this.applyThreshold(row, complexThreshold.getGoal());
+                        table.addThreshold(value);
+                        continue;
+                    }
                 }
-            }
 
-            if(threshold.getGlobal().isActive()) {
-                boolean value = this.applyThreshold(row, threshold.getGlobal().getGoal());
-                table.addThreshold(value);
-            } else {
-                row.setPass(true);
+                if(threshold.getGlobal().isActive()) {
+                    boolean value = this.applyThreshold(row, threshold.getGlobal().getGoal());
+                    table.addThreshold(value);
+                } else {
+                    row.setPass(true);
+                }
             }
         }
         return table;
@@ -78,14 +83,16 @@ public class SimpleDataTableService implements DataTableService {
 
     @Override
     public DataTable applyFilters(DataTable table, QueryResultFilter filter) {
-        List<DataTableRow> rows = table.getValues().stream().filter((row) ->
-                this.compareFilter(filter.getDenominator(), row.getEffectiveResult().getTotal()) &&
-                        this.compareFilter(filter.getPercentage(), row.getEffectiveResult().percent()) &&
-                        this.thresholdFilter(filter.getThreshold(), row) &&
-                        this.valueFilter(filter.getGroups(), row)
-        ).collect(Collectors.toList());
+        if(filter != null) {
+            List<DataTableRow> rows = table.getValues().stream().filter((row) ->
+                    this.compareFilter(filter.getDenominator(), row.getEffectiveResult().getTotal()) &&
+                            this.compareFilter(filter.getPercentage(), row.getEffectiveResult().percent()) &&
+                            this.thresholdFilter(filter.getThreshold(), row) &&
+                            this.valueFilter(filter.getGroups(), row)
+            ).collect(Collectors.toList());
 
-        table.setValues(rows);
+            table.setValues(rows);
+        }
         return table;
     }
 

@@ -13,7 +13,8 @@ import gov.nist.healthcare.iz.darq.digest.domain.Summary;
 import org.apache.commons.io.IOUtils;
 
 import javax.crypto.CipherInputStream;
-import java.io.FileOutputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -41,7 +42,7 @@ public class SqliteADFReader implements ADFReader {
 	private byte[] keyHash;
 	private boolean open = false;
 	private boolean ready = false;
-	private Dictionaries dictionaries = new Dictionaries();
+	private final Dictionaries dictionaries = new Dictionaries();
 
 	public SqliteADFReader(String location, String temporaryInflateDirectory) {
 		this.location = location;
@@ -76,7 +77,7 @@ public class SqliteADFReader implements ADFReader {
 	private Path unzip () throws Exception {
 		String filename = UUID.randomUUID().toString();
 		Path inflateFile = Paths.get(temporaryInflateDirectory, filename);
-		InputStream fis = Files.newInputStream(Paths.get(location));
+		InputStream fis = new BufferedInputStream(Files.newInputStream(Paths.get(location)));
 		// Skip Magic Value (ADF Version)
 		long skipped = fis.skip(getVersion().name().length());
 		byte[] buffer = new byte[1024];
@@ -86,7 +87,7 @@ public class SqliteADFReader implements ADFReader {
 		ZipEntry zipEntry = zis.getNextEntry();
 		while (zipEntry != null) {
 			if(zipEntry.getName().equals("ADF.data")) {
-				FileOutputStream fos = new FileOutputStream(inflateFile.toFile());
+				BufferedOutputStream fos = new BufferedOutputStream(Files.newOutputStream(inflateFile.toFile().toPath()));
 				int len;
 				while ((len = zis.read(buffer)) > 0) {
 					fos.write(buffer, 0, len);

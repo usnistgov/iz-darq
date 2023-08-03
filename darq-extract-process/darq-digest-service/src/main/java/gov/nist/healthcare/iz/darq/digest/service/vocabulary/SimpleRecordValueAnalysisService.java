@@ -46,7 +46,7 @@ public class SimpleRecordValueAnalysisService implements RecordValueAnalysisServ
 		Map<String, Map<String, Map<String, Map<String, Map<String, TablePayload>>>>> events = new HashMap<>();
 		for(VaccineRecord vaccineRecord: record.getRecord().history) {
 			String provider = vaccineRecord.reporting_group.getValue();
-			String ageGroup = record.getProvidersByVaccinationId().get(vaccineRecord.vax_event_id.getValue());
+			String ageGroup = record.getAgeGroupAtVaccinationByVaccinationId().get(vaccineRecord.vax_event_id.getValue());
 			String year = String.valueOf(vaccineRecord.administration_date.getValue().getYear());
 			String gender = record.getRecord().patient.gender.getValue();
 			String source = vaccineRecord.event_information_source.getValue();

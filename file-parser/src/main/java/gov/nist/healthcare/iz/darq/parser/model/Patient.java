@@ -1,5 +1,4 @@
 package gov.nist.healthcare.iz.darq.parser.model;
-import gov.nist.healthcare.iz.darq.parser.annotation.DummyValue;
 import gov.nist.healthcare.iz.darq.parser.annotation.Field;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 

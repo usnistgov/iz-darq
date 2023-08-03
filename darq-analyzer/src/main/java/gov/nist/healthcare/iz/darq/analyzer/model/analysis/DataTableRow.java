@@ -13,7 +13,17 @@ public class DataTableRow {
     Fraction result;
     AdjustedFraction adjustedFraction;
     Threshold threshold;
-    boolean pass;
+    boolean pass = true;
+
+    public DataTableRow(Map<Field, String> values, Fraction result, Threshold threshold, boolean pass) {
+        this.values = values;
+        this.result = result;
+        this.threshold = threshold;
+        this.pass = pass;
+    }
+
+    public DataTableRow() {
+    }
 
     public Map<Field, String> getValues() {
         return values;

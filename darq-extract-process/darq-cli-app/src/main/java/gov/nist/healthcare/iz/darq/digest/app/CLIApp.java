@@ -85,6 +85,7 @@ public class CLIApp {
 			options.addOption("v", "vaccinations", true, "Vaccinations Extract File");
 			options.addOption("c", "configuration", true, "Analysis Configuration");
 			options.addOption("tmpDir", "temporaryDirectory", true, "Location where to create temporary directory");
+			options.addOption("out", "output", true, "Location where to create result directory");
 			options.addOption("pa", "printAdf", false, "print ADF content");
 			options.addOption("d", "dateFormat", true, "Date Format");
 			options.addOption("pub", "publicKey", true, "qDAR Public Key");
@@ -171,7 +172,8 @@ public class CLIApp {
 						}
 
 						// --- Create Outputs Folder
-						File output = new File("./darq-analysis/");
+						String outputRoot = cmd.hasOption("out") ? cmd.getOptionValue("out") : ".";
+						File output = Paths.get(outputRoot, "darq-analysis").toFile();
 						output.mkdirs();
 
 						// --- Create Temporary Directory

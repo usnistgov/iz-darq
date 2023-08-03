@@ -8,6 +8,14 @@ public class DataSingleSelector {
     private Field field;
     private String value;
 
+    public DataSingleSelector(Field field, String value) {
+        this.field = field;
+        this.value = value;
+    }
+
+    public DataSingleSelector() {
+    }
+
     public Field getField() {
         return field;
     }
@@ -18,5 +26,9 @@ public class DataSingleSelector {
 
     public String getValue() {
         return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

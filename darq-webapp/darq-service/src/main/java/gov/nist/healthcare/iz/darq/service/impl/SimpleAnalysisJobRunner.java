@@ -82,13 +82,15 @@ public class SimpleAnalysisJobRunner implements AnalysisJobRunner {
 
     @Override
     public AnalysisJob startJob(AnalysisJob job) throws Exception {
-        try(ADFReader file = this.store.getFile(job.getAdfId())) {
-            if(job.getStatus() == JobStatus.RUNNING) {
-                throw new JobRunningException("Job " + job.getName() + " Already Running ");
-            }
+        if(job.getStatus() == JobStatus.RUNNING) {
+            throw new JobRunningException("Job " + job.getName() + " Already Running ");
+        } else {
             job.setStatus(JobStatus.RUNNING);
             job.setStartTime(new Date());
             this.analysisJobRepository.save(job);
+        }
+
+        try(ADFReader file = this.store.getFile(job.getAdfId())) {
             AnalysisReport report = this.analysisService.analyse(file, job.getTemplate(), job.getFacilityId());
             file.close();
             report.fromTemplate(job.getTemplate());

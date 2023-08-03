@@ -1,5 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
+import java.util.Objects;
+
 public class ExtractPercent {
 	public double valued;
 	public double excluded;
@@ -111,5 +113,33 @@ public class ExtractPercent {
 
 	public void setTotal(double total) {
 		this.total = total;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ExtractPercent that = (ExtractPercent) o;
+		return Double.compare(that.valued, valued) == 0 && Double.compare(that.excluded, excluded) == 0 && Double.compare(that.notCollected, notCollected) == 0 && Double.compare(that.notExtracted, notExtracted) == 0 && Double.compare(that.valuePresent, valuePresent) == 0 && Double.compare(that.valueNotPresent, valueNotPresent) == 0 && Double.compare(that.valueLength, valueLength) == 0 && Double.compare(that.empty, empty) == 0 && Double.compare(that.total, total) == 0;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(valued, excluded, notCollected, notExtracted, valuePresent, valueNotPresent, valueLength, empty, total);
+	}
+
+	@Override
+	public String toString() {
+		return "ExtractPercent{" +
+				"valued=" + valued +
+				", excluded=" + excluded +
+				", notCollected=" + notCollected +
+				", notExtracted=" + notExtracted +
+				", valuePresent=" + valuePresent +
+				", valueNotPresent=" + valueNotPresent +
+				", valueLength=" + valueLength +
+				", empty=" + empty +
+				", total=" + total +
+				'}';
 	}
 }

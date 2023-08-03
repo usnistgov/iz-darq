@@ -116,6 +116,8 @@ public class MQEDetectionProvider implements DetectionProvider {
 
 		// Call MQE Validator
 		List<ValidationRuleResult> results = this.validator.validateMessageNIST(msg);
+		Map<String, Set<VaccineDetection>> detectionsByVaccination = new HashMap<>();
+		Set<PatientRecordDetection> detectionsForPatient = new HashSet<>();
 
 		// Process MQE Rule Results
 		for(ValidationRuleResult r : results) {
@@ -138,9 +140,25 @@ public class MQEDetectionProvider implements DetectionProvider {
 					possible.remove(report.getDetection());
 
 					if (ruleTargetIsVaccination) {
-						this.addVaccineDetection(vaccinations, ageGroup, provider, report.getDetection().getMqeMqeCode(), false);
+						detectionsByVaccination.computeIfAbsent(vaccineId, (k) -> new HashSet<>());
+						detectionsByVaccination
+								.get(vaccineId)
+								.add(
+										new VaccineDetection(
+												provider,
+												ageGroup,
+												report.getDetection().getMqeMqeCode(),
+												false
+										)
+								);
 					} else {
-						this.addPatientDetection(patient, report.getDetection().getMqeMqeCode(), false);
+						detectionsForPatient.add(
+								new PatientRecordDetection(
+										ageGroup,
+										report.getDetection().getMqeMqeCode(),
+										false
+								)
+						);
 					}
 				}
 
@@ -149,13 +167,36 @@ public class MQEDetectionProvider implements DetectionProvider {
 			for (MqeDetection positive : possible) {
 				if (context.keepDetection(positive.getMqeMqeCode())) {
 					if (ruleTargetIsVaccination) {
-						this.addVaccineDetection(vaccinations, ageGroup, provider, positive.getMqeMqeCode(), true);
+						detectionsByVaccination.computeIfAbsent(vaccineId, (k) -> new HashSet<>());
+						detectionsByVaccination
+								.get(vaccineId)
+								.add(
+										new VaccineDetection(
+												provider,
+												ageGroup,
+												positive.getMqeMqeCode(),
+												true
+										)
+								);
 					} else {
-						this.addPatientDetection(patient, positive.getMqeMqeCode(), true);
+						detectionsForPatient.add(
+								new PatientRecordDetection(
+										ageGroup,
+										positive.getMqeMqeCode(),
+										true
+								)
+						);
 					}
 				}
 			}
 		}
+
+		detectionsByVaccination.values().stream()
+				.flatMap(Set::stream)
+				.forEach((detection) -> addVaccineDetection(vaccinations, detection.getAgeGroup(), detection.getReportingGroup(), detection.getCode(), detection.isPositive()));
+
+		detectionsForPatient
+				.forEach((detection) -> addPatientDetection(patient, detection.getCode(), detection.isPositive()));
 
 		return detections;
 	}

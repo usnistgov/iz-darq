@@ -2,9 +2,9 @@ package gov.nist.healthcare.iz.darq.adf.merge.configuration;
 
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.merge.model.LoadableCryptoKey;
+import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
 import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
 import gov.nist.healthcare.iz.darq.digest.domain.ADFMetaData;
-import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 
@@ -38,7 +38,7 @@ public class Configuration {
 
 
 			@Override
-			public ADFile getFile(String id) throws Exception {
+			public ADFReader getFile(String id) throws Exception {
 				// TODO Auto-generated method stub
 				return null;
 			}

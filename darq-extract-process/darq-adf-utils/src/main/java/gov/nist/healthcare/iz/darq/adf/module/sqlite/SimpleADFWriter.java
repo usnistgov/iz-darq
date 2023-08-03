@@ -104,8 +104,8 @@ public abstract class SimpleADFWriter extends ADFWriter {
 		counts.addUnreadVaccinations(chunk.getUnreadVaccinations());
 		counts.addNbPatients(chunk.getNbPatients());
 		counts.addNbVaccinations(chunk.getNbVaccinations());
-		counts.setMaxVaccination(Math.max(this.counts.getMaxVaccination(), chunk.getMaxVaccination()));
-		counts.setMinVaccination(Math.min(this.counts.getMinVaccination(),chunk.getMinVaccination()));
+		counts.setMaxVaccination(Math.max(this.counts.getMaxVaccination(), chunk.getNbVaccinations()));
+		counts.setMinVaccination(Math.min(this.counts.getMinVaccination(), chunk.getNbVaccinations()));
 		counts.addAdministered(chunk.getAdministered());
 		counts.addHistorical(chunk.getHistorical());
 		chunk.getExtraction().forEach((key, chunkValue) -> {

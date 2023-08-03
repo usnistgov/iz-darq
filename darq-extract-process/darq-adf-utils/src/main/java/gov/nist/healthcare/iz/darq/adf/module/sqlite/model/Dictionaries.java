@@ -27,6 +27,10 @@ public class Dictionaries {
 		});
 	}
 
+	public Map<Field, BiMap<String, Integer>> get() {
+		return dictionary;
+	}
+
 	public int findId(Field field, String value) {
 		if(dictionary.containsKey(field)) {
 			if(dictionary.get(field).containsKey(value)) {

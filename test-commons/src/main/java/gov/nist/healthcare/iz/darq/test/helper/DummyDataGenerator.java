@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.digest.service;
+package gov.nist.healthcare.iz.darq.test.helper;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +13,7 @@ public class DummyDataGenerator {
 	private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private final LocalDate TOP_DATE = LocalDate.parse("2020-12-14", DATE_FORMATTER);
 	private final int NB_AGE_GROUPS = 24;
-	private final int NB_REPORTING_GROUPS = 4000;
+	private final int NB_REPORTING_GROUPS = 9000;
 	private final Random random = new Random();
 	private final List<String> VALUES = Arrays.asList("[[VP]]", "[[NP]]");
 	private final int PATIENT_SIZE = 34;

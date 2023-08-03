@@ -23,5 +23,6 @@
         <module>darq-shared</module>
         <module>darq-adf-merge-cli</module>
         <module>darq-patient-matching</module>
+        <module>test-commons</module>
     </modules>
 </project>

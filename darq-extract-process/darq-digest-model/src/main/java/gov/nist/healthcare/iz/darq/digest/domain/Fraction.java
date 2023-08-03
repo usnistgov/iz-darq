@@ -1,5 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
+import java.util.Objects;
+
 public class Fraction {
 	
 	private int count;
@@ -67,7 +69,17 @@ public class Fraction {
 	public String toString() {
 		return "Fraction [count=" + count + ", total=" + total + "]";
 	}
-	
-	
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Fraction fraction = (Fraction) o;
+		return count == fraction.count && total == fraction.total;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(count, total);
+	}
 }

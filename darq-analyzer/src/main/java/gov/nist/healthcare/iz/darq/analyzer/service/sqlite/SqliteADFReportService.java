@@ -16,7 +16,6 @@ import gov.nist.healthcare.iz.darq.analyzer.service.common.QueryValueResolverSer
 import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
@@ -31,10 +30,13 @@ import java.util.stream.Stream;
 @Service
 public class SqliteADFReportService extends ADFReportService<SqliteADFReader> {
 
-	@Autowired
-	private DataTableService tableService;
-	@Autowired
+	DataTableService tableService;
 	QueryValueResolverService queryValueResolverService;
+
+	public SqliteADFReportService(DataTableService tableService, QueryValueResolverService queryValueResolverService) {
+		this.tableService = tableService;
+		this.queryValueResolverService = queryValueResolverService;
+	}
 
 	@Override
 	public DataTable singleQuery(SqliteADFReader file, QueryPayload payload, String facilityId) throws Exception {
@@ -198,8 +200,8 @@ public class SqliteADFReportService extends ADFReportService<SqliteADFReader> {
 				.stream()
 				.filter(v -> v != null && !Strings.isNullOrEmpty(v.getValue()))
 				.map((v) -> translate(file, selector.getField(), v.getValue()))
-//				.filter((i) -> i != -1)
 				.collect(Collectors.toSet());
+
 		if(values.size() > 1) {
 			whereByField
 					.append(translate(selector.getField()))
