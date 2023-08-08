@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class Timer {
 	private final static int TOTAL_TIME_POINTS = 200;
-	private final static int RECORDS_PER_TIME_POINT = 500;
+	private final static int RECORDS_PER_TIME_POINT = 200;
 	int total;
 	int processed;
 	int lastTimePointRecords;
