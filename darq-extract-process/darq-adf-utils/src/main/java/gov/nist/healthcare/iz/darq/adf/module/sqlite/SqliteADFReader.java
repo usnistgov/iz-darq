@@ -131,11 +131,16 @@ public class SqliteADFReader implements ADFReader {
 
 	@Override
 	public void close() throws Exception {
-		if(connection != null) {
-			this.connection.close();
+		try {
+			if(connection != null) {
+				this.connection.close();
+			}
+		} finally {
+			if(inflatedFileLocation != null) {
+				Files.deleteIfExists(Paths.get(inflatedFileLocation));
+			}
+			open = false;
 		}
-		Files.deleteIfExists(Paths.get(inflatedFileLocation));
-		open = false;
 	}
 
 	@Override
