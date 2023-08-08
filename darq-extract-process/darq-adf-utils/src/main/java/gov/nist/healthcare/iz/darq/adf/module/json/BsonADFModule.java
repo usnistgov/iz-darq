@@ -8,9 +8,8 @@ import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFWriter;
 
 import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Paths;
+import java.util.List;
 
 public class BsonADFModule implements ADFModule {
 
@@ -30,12 +29,14 @@ public class BsonADFModule implements ADFModule {
 	}
 
 	@Override
-	public boolean isInstanceOfVersion(BufferedInputStream content) throws UnsupportedADFVersion {
+	public boolean isInstanceOfVersion(String file) throws UnsupportedADFVersion {
 		throw new UnsupportedADFVersion(getVersion());
 	}
 
 	@Override
-	public OutputStream merge(InputStream a, InputStream b) throws UnsupportedADFVersion {
+	public void merge(List<ADFReader> files, CryptoKey key, String target) throws Exception {
 		throw new UnsupportedADFVersion(getVersion());
 	}
+
+
 }

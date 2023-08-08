@@ -43,7 +43,6 @@ public class Exporter implements ExportADChunk {
 		);
 
 		Summary summary = new Summary(
-				writer.getIssues(),
 				writer.getAgeGroupCount(),
 				writer.getSummaryCounts(),
 				writer.getExtractPercent(),
@@ -54,7 +53,7 @@ public class Exporter implements ExportADChunk {
 		writer.setSummary(summary);
 
 	    //---- HTML
-	    summaryGenerator.generateSummary(writer, metadata, summary, writer.getProviders(), Paths.get(folder.toAbsolutePath().toString(), "summary").toAbsolutePath().toString(), printAdf);
+	    summaryGenerator.generateSummary(writer, metadata, summary, writer.getIssues(), writer.getProviders(), Paths.get(folder.toAbsolutePath().toString(), "summary").toAbsolutePath().toString(), printAdf);
 
 	    //--- Reporting Group Spreadsheet
 		writeProvidersToCSV(writer.getProviders(), new FileWriter(Paths.get(folder.toAbsolutePath().toString(), "reporting-groups.csv").toFile()));

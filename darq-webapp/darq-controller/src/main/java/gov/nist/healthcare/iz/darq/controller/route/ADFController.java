@@ -183,6 +183,18 @@ public class ADFController {
 		return new OpAck<>(AckStatus.SUCCESS, "File Deleted Successfully", null, "adf-delete");
 	}
 
+	@RequestMapping(value="/adf/merge", method=RequestMethod.POST)
+	@ResponseBody
+	@PreAuthorize("isAdmin() && AccessMultipleResource(#request, ADF, VIEW, #mergeRequest.ids)")
+	public OpAck<Void> get(
+			HttpServletRequest request,
+			@AuthenticationPrincipal User user,
+			@RequestBody ADFMergeRequest mergeRequest) throws Exception {
+		Set<UserUploadedFile> files = (Set<UserUploadedFile>) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_SET_ATTRIBUTE);
+		adfService.merge(mergeRequest.getName(), mergeRequest.getFacilityId(), user.getId(), files);
+		return new OpAck<>(AckStatus.SUCCESS,"Merge File Created Successfully", null, "adf-merge");
+	}
+
 	List<ADFDescriptor> getADFDescriptorFromFiles(List<UserUploadedFile> files, User user) {
 		List<ADFDescriptor> result = new ArrayList<>();
 		List<DigestConfiguration> configurations = this.confRepo.findAccessibleTo(user.getId());

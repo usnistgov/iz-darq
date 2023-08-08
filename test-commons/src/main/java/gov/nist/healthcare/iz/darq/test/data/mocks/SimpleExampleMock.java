@@ -64,7 +64,7 @@ public class SimpleExampleMock implements DataExtractMock {
 
 	AgeGroupHelper ageGroupHelper;
 
-	private SimpleExampleMock() {
+	protected SimpleExampleMock() {
 		ageGroupHelper = new AgeGroupHelper(LocalDate.parse("2020-12-14", DATE_FORMATTER), 3);
 	}
 

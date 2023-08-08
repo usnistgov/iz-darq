@@ -60,9 +60,9 @@ public class ADFStorage implements ADFStore<UserUploadedFile> {
 
 	@Override
 	public ADFReader getFile(String id) throws Exception {
-		UserUploadedFile md = this.get(id);
-		if(md != null){
-			ADFReader reader = adfManager.getADFReader(getPath(md.getPath()).toString());
+		Path path = this.getFilePath(id);
+		if(path != null){
+			ADFReader reader = adfManager.getADFReader(path.toString());
 			reader.read(keys);
 			return reader;
 		}
@@ -72,6 +72,15 @@ public class ADFStorage implements ADFStore<UserUploadedFile> {
 	@Override
 	public InputStream getFileInputStream(String pathId) throws Exception {
 		return Files.newInputStream(getPath(pathId));
+	}
+
+	@Override
+	public Path getFilePath(String id) {
+		UserUploadedFile md = this.get(id);
+		if(md != null){
+			return getPath(md.getPath());
+		}
+		return null;
 	}
 
 	public Path getPath(String pathId) {

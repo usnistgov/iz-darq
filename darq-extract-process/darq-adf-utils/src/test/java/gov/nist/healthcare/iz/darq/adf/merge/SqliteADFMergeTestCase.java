@@ -1,19 +1,29 @@
-package gov.nist.healthcare.iz.darq.digest.adf;
+package gov.nist.healthcare.iz.darq.adf.merge;
 
+import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.crypto.service.impl.JKSCryptoKey;
 import gov.nist.healthcare.iz.darq.adf.model.Metadata;
+import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
+import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
+import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFModule;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFReader;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.model.Dictionaries;
 import gov.nist.healthcare.iz.darq.digest.domain.ExtractPercent;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.Summary;
-import gov.nist.healthcare.iz.darq.digest.common.CLITestRunnerUtils;
-import gov.nist.healthcare.iz.darq.digest.common.SQLiteADFTestUtils;
 import gov.nist.healthcare.iz.darq.test.data.mocks.SimpleExampleMock;
-import org.junit.*;
+import gov.nist.healthcare.iz.darq.test.helper.Constants;
+import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.springframework.util.DigestUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -23,23 +33,52 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SqliteADFContentTestCase {
+
+public class SqliteADFMergeTestCase {
 	static TemporaryFolder folder = new TemporaryFolder();
 	static SqliteADFReader reader;
-	static SimpleExampleMock mock;
-	static CLITestRunnerUtils utils;
 	static SQLiteADFTestUtils sqliteAdfHelper;
+	static SimpleExampleMock mock;
+	static ADFManager manager;
+	static SqliteADFModule sqliteADFModule;
 
 	@BeforeClass
 	public static void setup() throws Exception {
+		folder = new TemporaryFolder();
 		folder.create();
+		manager = new ADFManager();
 		mock = SimpleExampleMock.get();
-		utils = new CLITestRunnerUtils(mock, folder);
 		sqliteAdfHelper = new SQLiteADFTestUtils();
-		utils.createFiles();
-		utils.runCLI();
-		reader = sqliteAdfHelper.readADF(utils.getCryptoKey(), folder);
+		sqliteADFModule = new SqliteADFModule(folder.getRoot().getAbsolutePath());
+		manager.register(sqliteADFModule, false, true);
+		CryptoKey cryptoKey = new JKSCryptoKey(Constants.class.getResourceAsStream(Constants.TEST_KEY), Constants.TEST_KEY_ALIAS, Constants.TEST_KEY_PASSWORD, Constants.TEST_KEY_PASSWORD);
+
+		ADFReader first = getADF(Constants.SIMPLE_EXAMPLE_PART_ONE_ADF, cryptoKey);
+		ADFReader second = getADF(Constants.SIMPLE_EXAMPLE_PART_TWO_ADF, cryptoKey);
+
+		String location = Paths.get(folder.getRoot().getAbsolutePath(), "merged.adf").toString();
+
+		manager.merge(Arrays.asList(
+				first,
+				second
+		),
+				location,
+				cryptoKey
+		);
+
+		reader = new SqliteADFReader(location, folder.getRoot().getAbsolutePath());
+		reader.read(cryptoKey);
 		assertTrue(reader.isReady() && reader.isOpen());
+	}
+
+	static ADFReader getADF(String path, CryptoKey key) throws Exception {
+		InputStream ADF = SqliteADFMergeTestCase.class.getResourceAsStream(path);
+		Path adfPath = Paths.get(folder.getRoot().getAbsolutePath(), UUID.randomUUID().toString());
+		FileUtils.copyInputStreamToFile(ADF, adfPath.toFile());
+		String root = folder.getRoot().getAbsolutePath();
+		SqliteADFReader reader = new SqliteADFReader(adfPath.toAbsolutePath().toString(), root);
+		reader.read(key);
+		return reader;
 	}
 
 	@Test
@@ -54,7 +93,6 @@ public class SqliteADFContentTestCase {
 		assertEquals(3, summary.getCounts().maxVaccinationsPerRecord);
 		assertEquals(7, summary.getCounts().administered);
 		assertEquals(2, summary.getCounts().historical);
-		assertEquals(null, summary.getIssues());
 		assertEquals("12/14/2020", summary.getAsOfDate());
 	}
 
@@ -141,9 +179,11 @@ public class SqliteADFContentTestCase {
 
 		Map<String, ExtractPercent> actual = reader.getSummary().getExtract();
 
+		double epsilon = 0.000001d;
+
 		for(String key : actual.keySet()) {
 			if(expected.containsKey(key)) {
-				assertEquals(key, expected.get(key), actual.get(key));
+				assertTrue(key, expected.get(key).compareWithEpsilon(actual.get(key), epsilon));
 			} else {
 				assertEquals(key,100, actual.get(key).getExcluded(), 0);
 			}
@@ -154,17 +194,8 @@ public class SqliteADFContentTestCase {
 	@Test
 	public void metadataExpectations() throws IOException {
 		Metadata metadata = reader.getMetadata();
-		Properties properties = new Properties();
-		properties.load(SqliteADFContentTestCase.class.getResourceAsStream("/application.properties"));
-		String version = properties.getProperty("app.version");
-		String build = properties.getProperty("app.date");
-		String mqeVersion = properties.getProperty("mqe.version");
 		SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy");
-
-		assertEquals(version, metadata.getVersion());
-		assertEquals(build, metadata.getBuild());
-		assertEquals(mqeVersion, metadata.getMqeVersion());
-		assertTrue(metadata.getTotalAnalysisTime() > 0);
+		assertTrue(metadata.getTotalAnalysisTime() == 0);
 		assertEquals(0, metadata.getInactiveDetections().size());
 		assertEquals(df.format(metadata.getAnalysisDate()), df.format(new Date()));
 	}
@@ -585,8 +616,6 @@ public class SqliteADFContentTestCase {
 		);
 		sqliteAdfHelper.checkTableContent(search, count, rows);
 	}
-
-
 
 	@AfterClass
 	public static void close() throws Exception {

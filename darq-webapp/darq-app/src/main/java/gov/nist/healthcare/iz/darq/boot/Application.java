@@ -34,6 +34,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.multipart.MultipartResolver;
@@ -197,6 +198,7 @@ public class Application extends SpringBootServletInitializer{
 	}
 
 	@Bean
+	@DependsOn({"toolConfigurationService"})
 	public ADFManager adfManager(ConfigurableSqliteADFModule sqliteADFModule) {
 		ADFManager manager = new ADFManager();
 		manager.register(new BsonADFModule(), true, false);

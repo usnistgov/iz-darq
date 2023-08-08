@@ -1,13 +1,15 @@
 package gov.nist.healthcare.iz.darq.service.impl;
 
+import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
-import gov.nist.healthcare.iz.darq.adf.service.ADFMergeService;
 import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
 import gov.nist.healthcare.iz.darq.adf.service.exception.InvalidFileFormat;
 import gov.nist.healthcare.iz.darq.model.ADFileComponent;
 import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,13 @@ public class ADFService {
     private ADFStore<UserUploadedFile> storage;
     @Autowired
     private ConfigurationService configService;
+    @Autowired
+    private ADFManager adfManager;
+    @Autowired()
+    @Qualifier("ADF_KEYS")
+    private CryptoKey key;
+    @Autowired
+    ADFTemporaryDirectoryProviderService temporaryDirectoryProviderService;
 
     UserUploadedFile create(String name, String facility, String ownerId, ADFReader file, List<ADFileComponent> components) throws InvalidFileFormat {
         try {
@@ -62,6 +71,54 @@ public class ADFService {
             e.printStackTrace();
             throw new InvalidFileFormat("Could not upload ADF due to : " + e.getMessage());
         }
+    }
+
+    public UserUploadedFile merge(String name, String facility, String ownerId, Set<UserUploadedFile> metadataList) throws Exception {
+        if(metadataList == null) {
+            throw new Exception("Invalid number of ADF to merge : none");
+        }
+        if(metadataList.size() <= 1) {
+            throw new Exception("Invalid number of ADF to merge : " + metadataList.size());
+        }
+
+        List<ADFReader> files = new ArrayList<>();
+        for(UserUploadedFile metadata: metadataList) {
+            files.add(storage.getFile(metadata.getId()));
+        }
+
+        Path temporaryDir = temporaryDirectoryProviderService.getADFTemporaryDirectoryPath();
+        String temporaryMergedADFLocation = Paths.get(temporaryDir.toAbsolutePath().toString(), UUID.randomUUID() + "_merged.adf").toString();
+        this.adfManager.merge(files, temporaryMergedADFLocation, key);
+        try(ADFReader merged = adfManager.getADFReader(temporaryMergedADFLocation)) {
+            merged.read(key);
+            return this.create(name, facility, ownerId, merged, this.getComponentsListFrom(metadataList));
+        }
+    }
+
+    List<ADFileComponent> getComponentsListFrom(Set<UserUploadedFile> metadataList) {
+        List<ADFileComponent> adFileComponents = new ArrayList<>();
+        for(UserUploadedFile metadata: metadataList) {
+            if(metadata.isComposed()) {
+                adFileComponents.addAll(metadata.getComponents());
+            } else {
+                adFileComponents.add(this.fileComponentFromMetadata(metadata));
+            }
+        }
+
+        return adFileComponents;
+    }
+
+    ADFileComponent fileComponentFromMetadata(UserUploadedFile metadata) {
+        return new ADFileComponent(
+                metadata.getId(),
+                metadata.getName(),
+                metadata.getOwnerId(),
+                metadata.getAnalysedOn(),
+                metadata.getUploadedOn(),
+                metadata.getSize(),
+                metadata.getSummary(),
+                metadata.getFacilityId()
+        );
     }
 
     public String humanReadableByteCount(long bytes, boolean si) {

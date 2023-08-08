@@ -1,5 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +10,8 @@ import java.util.stream.Collectors;
 
 public class Summary {
 
+	@Deprecated
+	@JsonIgnore
 	private List<String> issues;
 	private List<AgeGroupCount> countByAgeGroup;
 	private int outOfRange = 0; 
@@ -15,8 +19,7 @@ public class Summary {
 	private String asOfDate;
 	private Map<String, ExtractPercent> extract;
 
-	public Summary( List<String> issues,
-	                Map<String, Integer> countByAgeGroup,
+	public Summary( Map<String, Integer> countByAgeGroup,
 	                SummaryCounts counts,
 	                Map<String, ExtractFraction> extract,
 	                ConfigurationPayload payload
@@ -37,9 +40,7 @@ public class Summary {
 		}
 		this.outOfRange = countByAgeGroup.getOrDefault(groups.size()+"g", 0);
 		this.countByAgeGroup.sort(null);
-
 		this.counts = counts;
-		this.issues = issues;
 		this.asOfDate = payload.getAsOf();
 	}
 
@@ -57,6 +58,7 @@ public class Summary {
 		source.getExtract().forEach((k, v) -> {
 			extractPercentMap.put(k, ExtractPercent.merge(v, target.getExtract().get(k)));
 		});
+		result.setAsOfDate(source.asOfDate);
 		result.setExtract(extractPercentMap);
 		return result;
 	}
@@ -81,10 +83,12 @@ public class Summary {
 		this.extract = extract;
 	}
 
+	@Deprecated
 	public List<String> getIssues() {
 		return issues;
 	}
 
+	@Deprecated
 	public void setIssues(List<String> issues) {
 		this.issues = issues;
 	}

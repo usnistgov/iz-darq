@@ -6,6 +6,7 @@ import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.model.ADFVersion;
 import gov.nist.healthcare.iz.darq.adf.model.Metadata;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
+import gov.nist.healthcare.iz.darq.adf.module.archive.ADFArchiveManager;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.model.Dictionaries;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
@@ -13,8 +14,6 @@ import gov.nist.healthcare.iz.darq.digest.domain.Summary;
 import org.apache.commons.io.IOUtils;
 
 import javax.crypto.CipherInputStream;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -23,42 +22,48 @@ import java.nio.file.Paths;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.UUID;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class SqliteADFReader implements ADFReader {
-	private Connection connection;
-	private final String location;
-	private final String temporaryInflateDirectory;
-	private String inflatedFileLocation;
-	private final ObjectMapper mapper = new ObjectMapper();
-	private Metadata metadata;
-	private Summary summary;
-	private ConfigurationPayload configurationPayload;
-	private PreparedStatement KEY;
-	private PreparedStatement DICTIONARY;
-	private PreparedStatement METADATA;
-	private byte[] keyHash;
-	private boolean open = false;
-	private boolean ready = false;
-	private final Dictionaries dictionaries = new Dictionaries();
+	protected Connection connection;
+	protected final String location;
+	protected final String temporaryInflateDirectory;
+	protected String inflatedFileLocation;
+	protected final ObjectMapper mapper = new ObjectMapper();
+	protected Metadata metadata;
+	protected Summary summary;
+	protected ConfigurationPayload configurationPayload;
+	protected PreparedStatement KEY;
+	protected PreparedStatement DICTIONARY;
+	protected PreparedStatement METADATA;
+	protected byte[] keyHash;
+	protected boolean open = false;
+	protected boolean ready = false;
+	protected final Dictionaries dictionaries = new Dictionaries();
 
 	public SqliteADFReader(String location, String temporaryInflateDirectory) {
 		this.location = location;
 		this.temporaryInflateDirectory = temporaryInflateDirectory;
 	}
 
+	public void inflate() throws Exception {
+		String filename = UUID.randomUUID().toString();
+		Path uncompressed = Paths.get(temporaryInflateDirectory, filename);
+		ADFArchiveManager.getInstance().extract(location, uncompressed.toAbsolutePath().toString());
+		this.inflatedFileLocation = uncompressed.toAbsolutePath().toString();
+	}
+
 	@Override
 	public void open(CryptoKey key) throws Exception {
-		Path uncompressed = unzip();
-		this.inflatedFileLocation = uncompressed.toAbsolutePath().toString();
-		connection = DriverManager.getConnection("jdbc:sqlite:" + this.inflatedFileLocation);
+		inflate();
+		Properties config = new Properties();
+		config.setProperty("open_mode", "1");
+		connection = DriverManager.getConnection("jdbc:sqlite:" + this.inflatedFileLocation, config);
 		this.METADATA = connection.prepareStatement("SELECT * FROM METADATA");
 		this.KEY = connection.prepareStatement("SELECT * FROM SEC");
 		this.DICTIONARY = connection.prepareStatement("SELECT DICT FROM DICTIONARY WHERE ID = ?");
-		this.
-		open = true;
+		this.open = true;
 	}
 
 	@Override
@@ -74,35 +79,6 @@ public class SqliteADFReader implements ADFReader {
 		}
 	}
 
-	private Path unzip () throws Exception {
-		String filename = UUID.randomUUID().toString();
-		Path inflateFile = Paths.get(temporaryInflateDirectory, filename);
-		InputStream fis = new BufferedInputStream(Files.newInputStream(Paths.get(location)));
-		// Skip Magic Value (ADF Version)
-		long skipped = fis.skip(getVersion().name().length());
-		byte[] buffer = new byte[1024];
-		ZipInputStream zis = new ZipInputStream(fis);
-
-
-		ZipEntry zipEntry = zis.getNextEntry();
-		while (zipEntry != null) {
-			if(zipEntry.getName().equals("ADF.data")) {
-				BufferedOutputStream fos = new BufferedOutputStream(Files.newOutputStream(inflateFile.toFile().toPath()));
-				int len;
-				while ((len = zis.read(buffer)) > 0) {
-					fos.write(buffer, 0, len);
-				}
-				fos.close();
-				return inflateFile;
-			}
-			zipEntry = zis.getNextEntry();
-		}
-
-		zis.closeEntry();
-		zis.close();
-		throw new Exception("ADF.data not found in archive");
-	}
-
 	private void readDictionaries(byte[] secret) throws Exception {
 		readDictionary(Field.PROVIDER, secret);
 		readDictionary(Field.AGE_GROUP, secret);
@@ -115,7 +91,7 @@ public class SqliteADFReader implements ADFReader {
 		readDictionary(Field.CODE, secret);
 	}
 
-	private void readDictionary(Field field, byte[] secretBytes) throws Exception {
+	protected void readDictionary(Field field, byte[] secretBytes) throws Exception {
 		TypeReference<HashMap<String, Integer>> typeRef  = new TypeReference<HashMap<String, Integer>>() {};
 		this.DICTIONARY.setString(1, field.name());
 		ResultSet metaResultSet = this.DICTIONARY.executeQuery();
@@ -124,7 +100,7 @@ public class SqliteADFReader implements ADFReader {
 		}
 	}
 
-	private void readMetadataTable(byte[] secretBytes) throws Exception {
+	protected void readMetadataTable(byte[] secretBytes) throws Exception {
 		ResultSet metaResultSet = this.METADATA.executeQuery();
 		while (metaResultSet.next()) {
 			this.metadata = decodeAndConvert(metaResultSet.getBinaryStream("INFO"), secretBytes, Metadata.class);
@@ -133,7 +109,7 @@ public class SqliteADFReader implements ADFReader {
 		}
 	}
 
-	private byte[] readKey(CryptoKey key) throws Exception{
+	protected byte[] readKey(CryptoKey key) throws Exception{
 		ResultSet keyResultSet = this.KEY.executeQuery();
 		InputStream secret = null;
 		while (keyResultSet.next()) {
@@ -155,7 +131,9 @@ public class SqliteADFReader implements ADFReader {
 
 	@Override
 	public void close() throws Exception {
-		this.connection.close();
+		if(connection != null) {
+			this.connection.close();
+		}
 		Files.deleteIfExists(Paths.get(inflatedFileLocation));
 		open = false;
 	}

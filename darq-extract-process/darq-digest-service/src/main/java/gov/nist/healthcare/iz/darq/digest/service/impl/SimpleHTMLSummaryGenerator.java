@@ -3,6 +3,7 @@ package gov.nist.healthcare.iz.darq.digest.service.impl;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +25,7 @@ import static j2html.TagCreator.*;
 public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 
 	@Override
-	public void generateSummary(ADFWriter writer, Metadata metadata, Summary summary, Map<String, String> providers, String path, boolean printAdf) throws Exception {
+	public void generateSummary(ADFWriter writer, Metadata metadata, Summary summary, List<String> issues, Map<String, String> providers, String path, boolean printAdf) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 	    ContainerTag html = html(
@@ -83,7 +84,7 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 	    			    	    						)
 	    			    	    				),
 	    			    	    				tbody(
-	    			        						each(summary.getIssues(), x -> tr(
+	    			        						each(issues, x -> tr(
 	    			        	    						td(x)
 	    			        	    				))
 	    			    	    				)

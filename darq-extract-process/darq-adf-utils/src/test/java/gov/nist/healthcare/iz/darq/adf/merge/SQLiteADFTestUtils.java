@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.digest.common;
+package gov.nist.healthcare.iz.darq.adf.merge;
 
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFReader;
