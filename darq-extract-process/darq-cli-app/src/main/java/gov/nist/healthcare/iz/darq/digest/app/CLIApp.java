@@ -195,6 +195,12 @@ public class CLIApp {
 		catch (Exception exp) {
 			throw new ExecutionException(exp, "Execution Failed due to exception");
 		}
+		catch (OutOfMemoryError outOfMemoryError) {
+			throw new TerminalException(outOfMemoryError, 21, "[OUT_OF_MEMORY_ERROR]", "The JVM has run out of memory.", true);
+		}
+		catch (VirtualMachineError virtualMachineError) {
+			throw new TerminalException(virtualMachineError, 22, "[VIRTUAL_MACHINE_ERROR]", "There has been an unexpected virtual machine error", true);
+		}
 		finally {
 			running = false;
 		}
