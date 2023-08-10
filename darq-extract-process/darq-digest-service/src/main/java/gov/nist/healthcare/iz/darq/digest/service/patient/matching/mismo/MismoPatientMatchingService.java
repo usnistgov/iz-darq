@@ -23,6 +23,11 @@ public class MismoPatientMatchingService extends PatientMatchingService<Patient,
 	}
 
 	@Override
+	public void configure(Object configuration) throws Exception {
+		this.matcher.configure(configuration);
+	}
+
+	@Override
 	public void onInit() throws Exception {
 		file = new FileWriter(Paths.get(this.outputs.toAbsolutePath().toString(), MATCH_FILE).toFile());
 	}

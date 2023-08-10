@@ -12,6 +12,7 @@ public class ConfigurationPayload {
 	private List<String> detections;
 	private String asOf;
 	private boolean activatePatientMatching;
+	private String mismoPatientMatchingConfiguration;
 	private Map<String, String> vaxCodeAbstraction;
 	private final Date now = new Date();
 
@@ -57,6 +58,14 @@ public class ConfigurationPayload {
 		this.asOf = asOf;
 	}
 
+	public String getMismoPatientMatchingConfiguration() {
+		return mismoPatientMatchingConfiguration;
+	}
+
+	public void setMismoPatientMatchingConfiguration(String mismoPatientMatchingConfiguration) {
+		this.mismoPatientMatchingConfiguration = mismoPatientMatchingConfiguration;
+	}
+
 	@JsonIgnore
 	public Date getAsOfDate() throws ParseException {
 		if(this.asOf != null && !this.asOf.isEmpty()) {
@@ -80,12 +89,13 @@ public class ConfigurationPayload {
 		return sourceAgeGroups.equals(targetAgeGroups) &&
 				sourceDetections.equals(targetDetections) &&
 				Objects.equals(activatePatientMatching, that.activatePatientMatching) &&
+				Objects.equals(mismoPatientMatchingConfiguration, that.mismoPatientMatchingConfiguration) &&
 				Objects.equals(asOf, that.asOf) &&
 				Objects.equals(vaxCodeAbstraction, that.vaxCodeAbstraction);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(ageGroups, detections, asOf, activatePatientMatching, vaxCodeAbstraction);
+		return Objects.hash(ageGroups, detections, asOf, activatePatientMatching, mismoPatientMatchingConfiguration, vaxCodeAbstraction);
 	}
 }

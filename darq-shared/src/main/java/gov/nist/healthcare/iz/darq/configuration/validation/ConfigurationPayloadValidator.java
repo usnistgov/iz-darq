@@ -5,6 +5,7 @@ import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationP
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Range;
 import gov.nist.healthcare.iz.darq.patient.matching.model.PatientMatchingDetection;
+import org.immregistries.mismo.match.PatientCompare;
 import org.immregistries.mqe.validator.detection.MqeCode;
 import org.springframework.stereotype.Service;
 
@@ -30,10 +31,24 @@ public class ConfigurationPayloadValidator {
         errors.addAll(validateDetections(configurationPayload.getDetections()));
         errors.addAll(validateAsOfDate(configurationPayload.getAsOf()));
         errors.addAll(validateVaxCodeAbstraction(configurationPayload.getVaxCodeAbstraction()));
+        errors.addAll(validateMismoPatientMatcherConfiguration(configurationPayload.getMismoPatientMatchingConfiguration()));
 
         if(errors.size() > 0) {
             throw new InvalidConfigurationPayload(errors);
         }
+    }
+
+    public List<String> validateMismoPatientMatcherConfiguration(String mismoPatientMatcherConfiguration) {
+        List<String> issues = new ArrayList<>();
+        if(mismoPatientMatcherConfiguration != null && !mismoPatientMatcherConfiguration.isEmpty()) {
+            try {
+                PatientCompare patientCompare = new PatientCompare();
+                patientCompare.readScript(mismoPatientMatcherConfiguration);
+            } catch (Exception e) {
+                issues.add("MISMO patient matcher configuration is invalid : " + e.getCause().getMessage());
+            }
+        }
+        return issues;
     }
 
 

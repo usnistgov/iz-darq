@@ -17,4 +17,5 @@ export interface IConfigurationPayload {
   detections: string[];
   asOf?: string;
   activatePatientMatching?: boolean;
+  mismoPatientMatchingConfiguration?: string;
 }

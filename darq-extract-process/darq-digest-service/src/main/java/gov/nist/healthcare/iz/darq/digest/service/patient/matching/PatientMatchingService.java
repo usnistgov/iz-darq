@@ -16,9 +16,9 @@ import java.util.Map;
 
 public abstract class PatientMatchingService<T, E extends MatchResult> {
 
-	private final PatientMatcherService<T, E> matcher;
-	private final PatientBlockHandler<T> blockHandler;
-	private final String matcherDirectoryName = "MATCHER_INDEX";
+	protected final PatientMatcherService<T, E> matcher;
+	protected final PatientBlockHandler<T> blockHandler;
+	protected final String matcherDirectoryName = "MATCHER_INDEX";
 	protected Path outputs;
 
 	public PatientMatchingService(PatientMatcherService<T, E> matcher, PatientBlockHandler<T> blockHandler) {
@@ -33,6 +33,8 @@ public abstract class PatientMatchingService<T, E extends MatchResult> {
 		this.blockHandler.initialize(tmp.toAbsolutePath().toString());
 		this.onInit();
 	}
+
+	public abstract void configure(Object configuration) throws Exception;
 
 	public void close() throws Exception {
 		this.blockHandler.close();

@@ -160,7 +160,19 @@ export class ConfigurationEditorComponent extends DamAbstractEditorComponent imp
     this.emitChange();
   }
 
-  pmChange(value) {
+  mismoConfigChange(value: string) {
+    this.value = {
+      ...this.value,
+      payload: {
+        ...this.value.payload,
+        mismoPatientMatchingConfiguration: value,
+      },
+    };
+
+    this.emitChange();
+  }
+
+  pmChange(value: boolean) {
     this.value = {
       ...this.value,
       payload: {
@@ -168,6 +180,10 @@ export class ConfigurationEditorComponent extends DamAbstractEditorComponent imp
         activatePatientMatching: value,
       }
     };
+
+    if (!value) {
+      this.mismoConfigChange('');
+    }
 
     this.emitChange();
   }

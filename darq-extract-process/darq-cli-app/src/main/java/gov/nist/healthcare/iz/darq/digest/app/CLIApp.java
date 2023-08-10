@@ -185,7 +185,7 @@ public class CLIApp {
 						DetectionEngineConfiguration detectionEngineConfiguration = new DetectionEngineConfiguration();
 						detectionEngineConfiguration.setOutputDirectory(output.getAbsolutePath());
 						detectionEngineConfiguration.setTemporaryDirectory(temporaryDirectory.toAbsolutePath().toString());
-						detectionEngineConfiguration.setDetections(new HashSet<>(configurationPayload.getDetections()));
+						detectionEngineConfiguration.setConfigurationPayload(configurationPayload);
 						detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_MQE);
 						if(configurationPayload.isActivatePatientMatching() || activePatientMatching) {
 							detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_PM);

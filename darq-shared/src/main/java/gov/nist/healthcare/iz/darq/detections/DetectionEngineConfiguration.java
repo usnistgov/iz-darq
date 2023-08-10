@@ -1,20 +1,22 @@
 package gov.nist.healthcare.iz.darq.detections;
 
+import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class DetectionEngineConfiguration {
-	Set<String> detections;
+	ConfigurationPayload configurationPayload;
 	Set<String> activeProviders = new HashSet<>();
 	String temporaryDirectory;
 	String outputDirectory;
 
-	public Set<String> getDetections() {
-		return detections;
+	public ConfigurationPayload getConfigurationPayload() {
+		return configurationPayload;
 	}
 
-	public void setDetections(Set<String> detections) {
-		this.detections = detections;
+	public void setConfigurationPayload(ConfigurationPayload configurationPayload) {
+		this.configurationPayload = configurationPayload;
 	}
 
 	public void addActiveProvider(String providerId) {

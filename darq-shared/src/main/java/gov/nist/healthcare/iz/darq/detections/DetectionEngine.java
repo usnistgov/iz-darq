@@ -25,10 +25,11 @@ public class DetectionEngine {
 
 	public void configure(DetectionEngineConfiguration configuration) throws Exception {
 		activeDetectionProviders.clear();
+		Set<String> detections = new HashSet<>(configuration.getConfigurationPayload().getDetections());
 		for(String providerId: configuration.getActiveProviders()) {
 			if(providers.containsKey(providerId)) {
 				DetectionProvider  provider = providers.get(providerId);
-				boolean isInConfiguration = provider.getEnabledDetectionCodes().stream().anyMatch((pCode) -> configuration.getDetections().contains(pCode));
+				boolean isInConfiguration = provider.getEnabledDetectionCodes().stream().anyMatch(detections::contains);
 				if(isInConfiguration || provider.hasSideEffect()) {
 					provider.configure(configuration);
 					activeDetectionProviders.add(provider);

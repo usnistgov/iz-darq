@@ -59,6 +59,16 @@
     </p-checkbox>
   </div>
   <div class="form-group">
+    <label for="patientMatching"><strong>MISMO Patient Matcher Configuration</strong></label><br>
+    <textarea
+      placeholder="MISMO Configuration" class="form-control" 
+      name="mismo-configuration" id="mismo-configuration" 
+      [ngModel]="value.payload.mismoPatientMatchingConfiguration" 
+      (input)="mismoConfigChange($event.target.value)" 
+      [disabled]="(viewOnly$ | async) || !value.payload.activatePatientMatching">
+    </textarea>
+  </div>
+  <div class="form-group">
     <label for="ageGroups"><strong>Age Groups</strong></label>
     <app-age-groups
       id="ageGroups"

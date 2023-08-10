@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.digest.service.detection.provider.mismo;
 
+import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.detections.*;
 import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
 import gov.nist.healthcare.iz.darq.digest.service.detection.provider.mqe.MQEDetectionProvider;
@@ -30,6 +31,9 @@ public class MismoMatcherDetectionProvider implements DetectionProvider {
 	public void configure(DetectionEngineConfiguration configuration) throws Exception {
 		logger.info("Configuring MISMO Matching Detection Provider");
 		this.patientMatchingService.initialize(Paths.get(configuration.getTemporaryDirectory()), Paths.get(configuration.getOutputDirectory()));
+		if(!Strings.isNullOrEmpty(configuration.getConfigurationPayload().getMismoPatientMatchingConfiguration())) {
+			this.patientMatchingService.configure(configuration.getConfigurationPayload().getMismoPatientMatchingConfiguration());
+		}
 	}
 
 	@Override

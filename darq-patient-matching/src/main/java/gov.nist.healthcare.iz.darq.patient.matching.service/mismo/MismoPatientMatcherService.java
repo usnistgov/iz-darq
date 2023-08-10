@@ -10,10 +10,21 @@ import org.immregistries.mismo.match.model.Patient;
 
 public class MismoPatientMatcherService implements PatientMatcherService<Patient, MismoMatchResult> {
 
-  private final PatientMatcher patientMatcher;
+  private PatientMatcher patientMatcher;
 
   public MismoPatientMatcherService(org.immregistries.mismo.match.PatientMatcher patientMatcher) {
 	this.patientMatcher = patientMatcher;
+  }
+
+  public void configure(Object configuration) throws Exception {
+	  if(configuration instanceof  String) {
+		  String configurationString = (String) configuration;
+		  if(!configurationString.isEmpty()) {
+			  this.patientMatcher = new PatientMatcher(configurationString);
+		  }
+	  } else {
+		  throw new Exception("Invalid MISMO configuration");
+	  }
   }
 
   @Override

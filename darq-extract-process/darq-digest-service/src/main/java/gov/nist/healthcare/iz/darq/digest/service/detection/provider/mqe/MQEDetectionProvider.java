@@ -49,7 +49,7 @@ public class MQEDetectionProvider implements DetectionProvider {
 	public void configure(DetectionEngineConfiguration configuration) {
 		logger.info("Configuring MQE Validator");
 		MessageValidator.INSTANCE.configure(
-				configuration.getDetections().stream()
+				configuration.getConfigurationPayload().getDetections().stream()
 						.map((code) -> {
 							try {
 								return MqeCode.valueOf(code);
