@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.iz.darq.adf.model.ADFVersion;
 import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
 import org.apache.commons.io.FileUtils;
@@ -29,6 +30,8 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 	@Autowired
 	private ADFManager manager;
 	@Autowired
+	private ADFVersion current;
+	@Autowired
 	ADFTemporaryDirectoryProviderService temporaryDirectoryProviderService;
 
 	@Override
@@ -41,7 +44,11 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 			FileUtils.copyInputStreamToFile(stream, temporaryAdf.toFile());
 			try(ADFReader file = manager.getADFReader(temporaryAdf.toAbsolutePath().toString())) {
 				file.read(keys);
-				this.adfService.create(name, facility, ownerId, file, null);
+				if(!file.getVersion().equals(current)) {
+					throw new Exception("ADF version '"+ file.getVersion()+"' not supported, the currently supported ADF version is '" +current);
+				} else {
+					this.adfService.create(name, facility, ownerId, file, null);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
