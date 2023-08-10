@@ -79,7 +79,6 @@ jar -uvf $QDAR/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-depe
 echo "Moving CLI into qDAR Webapp Resource"
 cp $QDAR/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar $QDAR/darq-webapp/darq-app/src/main/resources/qdar-cli.jar
 echo "Building qDAR WAR"
-cd $QDAR/darq-webapp/darq-app
 mvn clean install -pl :darq-app -am
 echo "Update the Compiled.xml file in qdar.war"
 jar -uvf $QDAR/darq-webapp/darq-app/target/qdar.war -C $OUTPUT/resources WEB-INF/classes/Compiled.xml
