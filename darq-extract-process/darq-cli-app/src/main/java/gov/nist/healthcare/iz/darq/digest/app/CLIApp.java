@@ -86,10 +86,11 @@ public class CLIApp {
 			options.addOption("c", "configuration", true, "Analysis Configuration");
 			options.addOption("tmpDir", "temporaryDirectory", true, "Location where to create temporary directory");
 			options.addOption("out", "output", true, "Location where to create result directory");
-			options.addOption("pa", "printAdf", false, "print ADF content");
+			options.addOption("pa", "printAdf", false, "print ADF content (deprecated)");
 			options.addOption("d", "dateFormat", true, "Date Format");
 			options.addOption("pub", "publicKey", true, "qDAR Public Key");
 			options.addOption("pm", "patientMatching", false, "Activate patient matching");
+			options.addOption("npm", "noPatientMatching", false, "Deactivate patient matching");
 
 
 			CommandLineParser parser = new DefaultParser();
@@ -117,6 +118,7 @@ public class CLIApp {
 					String tmpDirLocation = cmd.getOptionValue("tmpDir");
 					boolean printAdf = cmd.hasOption("pa");
 					boolean activePatientMatching = cmd.hasOption("pm");
+					boolean deActivatePatientMatching = cmd.hasOption("npm");
 					String dateFormat = cmd.getOptionValue("d");
 
 					File patients = new File(pFilePath);
@@ -187,7 +189,7 @@ public class CLIApp {
 						detectionEngineConfiguration.setTemporaryDirectory(temporaryDirectory.toAbsolutePath().toString());
 						detectionEngineConfiguration.setConfigurationPayload(configurationPayload);
 						detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_MQE);
-						if(configurationPayload.isActivatePatientMatching() || activePatientMatching) {
+						if(!deActivatePatientMatching && (configurationPayload.isActivatePatientMatching() || activePatientMatching)) {
 							detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_PM);
 						}
 						detectionEngine.configure(detectionEngineConfiguration);
