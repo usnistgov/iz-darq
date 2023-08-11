@@ -88,7 +88,6 @@ public class SimpleDigestRunner implements DigestRunner {
 					}
 					catch (Exception e) {
 						logger.error("[RECORD PROCESSING ISSUE][ ID "+parsed.getPatient().getID()+"]", e);
-						e.printStackTrace();
 						writer.getCounts().addUnreadPatients(1);
 						writer.getCounts().addUnreadVaccinations(parsed.getVaccinations().size());
 						writer.addIssue(new ParseError(parsed.getPatient().getID(), "", "", "Encountered critical issue while processing record : "+e.getMessage()+" see logs for stacktrace", true, parsed.getPatient().getLine()).toString());
