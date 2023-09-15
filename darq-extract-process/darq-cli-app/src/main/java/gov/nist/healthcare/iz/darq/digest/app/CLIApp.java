@@ -273,7 +273,8 @@ public class CLIApp {
 			if(exception.isPrintStackTrace()) {
 				exception.printStackTrace();
 			}
-			System.exit(exception.getExitCode());
+			// Custom exit codes are 100 and above to avoid conflict with system exit codes
+			System.exit(exception.getExitCode() + 100);
 		}
 	}
 
