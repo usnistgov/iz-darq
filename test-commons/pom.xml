@@ -4,11 +4,11 @@
     <parent>
         <groupId>gov.nist.healthcare.iz</groupId>
         <artifactId>darq</artifactId>
-        <version>3.0.0-SNAPSHOT.rev1</version>
+        <version>3.0.0-SNAPSHOT.rev2</version>
     </parent>
     <artifactId>test-commons</artifactId>
     <properties>
-        <qdar.api.version>3.0.0-SNAPSHOT.rev1</qdar.api.version>
+        <qdar.api.version>3.0.0-SNAPSHOT.rev2</qdar.api.version>
     </properties>
     <dependencies>
         <dependency>
