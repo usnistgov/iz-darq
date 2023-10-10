@@ -89,6 +89,7 @@ public class ADFStore {
 								System.out.println(" * All Checks Pass ");
 								return null;
 							} catch (Exception e) {
+								e.printStackTrace();
 								System.out.println(" ! Exception encountered while checking ADF at " + adf.getAbsolutePath() + " " + e.getMessage());
 								return "Exception encountered while checking ADF at " + adf.getAbsolutePath() + " " + e.getMessage();
 							}
