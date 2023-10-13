@@ -37,18 +37,24 @@ public abstract class ADFWriter implements AutoCloseable {
 			for (Map.Entry<String, PatientPayload> e : generalPatientPayload.entrySet()) {
 				String ageGroup = e.getKey();
 				PatientPayload payload = e.getValue();
-				for (Map.Entry<String, DetectionSum> entry : payload.getDetection().entrySet()) {
-					String detection_code = entry.getKey();
-					DetectionSum sum = entry.getValue();
-					this.write_p_detections(ageGroup, detection_code, sum.getPositive(), sum.getNegative());
+				if(payload.getDetection() != null) {
+					for (Map.Entry<String, DetectionSum> entry : payload.getDetection().entrySet()) {
+						String detection_code = entry.getKey();
+						DetectionSum sum = entry.getValue();
+						this.write_p_detections(ageGroup, detection_code, sum.getPositive(), sum.getNegative());
+					}
 				}
-				for (Map.Entry<String, TablePayload> mapEntry : payload.getCodeTable().entrySet()) {
-					String table = mapEntry.getKey();
-					TablePayload codes = mapEntry.getValue();
-					for (Map.Entry<String, Integer> entry : codes.getCodes().entrySet()) {
-						String code = entry.getKey();
-						Integer count = entry.getValue();
-						this.write_p_vocab(ageGroup, table, code, count);
+				if(payload.getCodeTable() != null) {
+					for (Map.Entry<String, TablePayload> mapEntry : payload.getCodeTable().entrySet()) {
+						String table = mapEntry.getKey();
+						TablePayload codes = mapEntry.getValue();
+						if(codes.getCodes() != null) {
+							for (Map.Entry<String, Integer> entry : codes.getCodes().entrySet()) {
+								String code = entry.getKey();
+								Integer count = entry.getValue();
+								this.write_p_vocab(ageGroup, table, code, count);
+							}
+						}
 					}
 				}
 			}
