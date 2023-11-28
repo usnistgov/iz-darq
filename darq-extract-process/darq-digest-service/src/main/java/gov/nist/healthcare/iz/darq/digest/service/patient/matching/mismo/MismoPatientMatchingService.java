@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class MismoPatientMatchingService extends PatientMatchingService<Patient, MismoMatchResult> {
 
@@ -49,8 +48,9 @@ public class MismoPatientMatchingService extends PatientMatchingService<Patient,
 
 	@Override
 	public void onMatchesFound(String record, Map<String, MismoMatchResult> matches) throws IOException {
-		String matchString = matches.keySet().stream().map((k) -> k + ", " + matches.get(k).getSignature()).collect(Collectors.joining(", "));
-		file.write(record + ", " + matchString + "\n");
+		for(String matchId: matches.keySet()) {
+			file.write(record + ", " + matchId + ", " + matches.get(matchId).getSignature() + "\n");
+		}
 		file.flush();
 	}
 
