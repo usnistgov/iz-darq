@@ -242,39 +242,70 @@ public class CLIApp {
 		}
 		finally {
 			running = false;
-			cleanUp();
 		}
 	}
 
-	public static void cleanUp() {
+	public static TerminalException cleanUp() {
 		try {
 			if(temporaryDirectory != null && temporaryDirectory.toFile().exists()) {
 				FileUtils.deleteDirectory(temporaryDirectory.toFile());
 			}
+			return null;
 		} catch (Exception e) {
-			System.err.println("ALERT: Unable to delete temporary directory " + temporaryDirectory);
-			System.err.println("Due to - " + e.getMessage());
+			return new TerminalException(
+					e,
+					23,
+					"[CLEANUP_FOLDERS_ISSUE]",
+					"This DAR command line tool was unable to fully clean up temporary files. Please be sure to delete the following folders and their contents:\n"+ temporaryDirectory.toAbsolutePath(),
+					false
+			);
 		}
 	}
 	
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
+		TerminalException runtimeException = null;
 		try {
 			run(args);
 		} catch (TerminalException exception) {
-			if(!StringUtils.isBlank(exception.getPrint())) {
-				System.err.println();
-				System.err.println(exception.getPrint());
-				System.err.println();
+			runtimeException = exception;
+			handleException(runtimeException);
+		} finally {
+			TerminalException cleanupException = cleanUp();
+			int exitCode = -1;
+
+			// If we have a runtime error, print error and set exit code
+			if(runtimeException != null) {
+				handleException(runtimeException);
+				exitCode = runtimeException.getExitCode();
 			}
-			if(!StringUtils.isBlank(exception.getLogs())) {
-				logger.error(exception.getLogs(), exception);
+			/*  If we have a cleanup error, print error and set exit code only if no runtime error happened.
+				Runtime error exit codes have precedence over cleanup error exit codes	*/
+			if(cleanupException != null) {
+				handleException(cleanupException);
+				if(exitCode == -1) {
+					exitCode = cleanupException.getExitCode();
+				}
 			}
-			if(exception.isPrintStackTrace()) {
-				exception.printStackTrace();
+
+			if(exitCode != -1) {
+				// Custom exit codes are 100 and above to avoid conflict with system exit codes
+				System.exit(exitCode + 100);
 			}
-			// Custom exit codes are 100 and above to avoid conflict with system exit codes
-			System.exit(exception.getExitCode() + 100);
+		}
+	}
+
+	public static void handleException(TerminalException exception) {
+		if(!StringUtils.isBlank(exception.getPrint())) {
+			System.err.println();
+			System.err.println(exception.getPrint());
+			System.err.println();
+		}
+		if(!StringUtils.isBlank(exception.getLogs())) {
+			logger.error(exception.getLogs(), exception);
+		}
+		if(exception.isPrintStackTrace()) {
+			exception.printStackTrace();
 		}
 	}
 
