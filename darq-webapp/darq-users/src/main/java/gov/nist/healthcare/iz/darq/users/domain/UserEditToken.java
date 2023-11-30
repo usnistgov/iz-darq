@@ -14,6 +14,9 @@ public class UserEditToken {
     private double issuedAt;
     private double duration;
 
+    public UserEditToken() {
+    }
+
     public String getId() {
         return id;
     }
