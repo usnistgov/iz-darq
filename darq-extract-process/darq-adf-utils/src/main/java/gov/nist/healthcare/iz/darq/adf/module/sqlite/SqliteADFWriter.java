@@ -61,10 +61,10 @@ public class SqliteADFWriter extends SimpleADFWriter {
 	@Override
 	public void close() throws Exception {
 		dictionaries = null;
-		Files.deleteIfExists(Paths.get(this.DB_LOCATION));
 		if(this.connection != null && !this.connection.isClosed()) {
 			this.connection.close();
 		}
+		Files.deleteIfExists(Paths.get(this.DB_LOCATION));
 	}
 
 	protected void writeMetaAndEncode() throws Exception {

@@ -207,17 +207,21 @@ public class CLIApp {
 						Thread t = progress(runner);
 						t.start();
 						long start = System.currentTimeMillis();
+						boolean hasIssue;
 						try(ADFWriter writer = adfManager.getWriter(cryptoKey)) {
 							writer.open(temporaryDirectory.toAbsolutePath().toString());
 							runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, writer, output.toPath(), temporaryDirectory);
 							t.join();
 							System.out.println("Analysis Finished - Exporting Results");
 							long elapsed = System.currentTimeMillis() - start;
+							hasIssue = writer.getIssues().size() > 0;
 							export.export(configurationPayload, output.toPath(), writer, version, build, mqeVersion, elapsed, printAdf);
+							System.out.println("Results Exported - END");
 							logger.info("* Closing ADF Writer");
 						}
-						System.out.println("Results Exported - END");
-						cleanUp();
+						if(hasIssue) {
+							throw new SummaryIssuesException();
+						}
 					}
 				}
 			}
@@ -245,20 +249,14 @@ public class CLIApp {
 		}
 	}
 
-	public static TerminalException cleanUp() {
+	public static TemporaryFolderCleanupException cleanUp() {
 		try {
 			if(temporaryDirectory != null && temporaryDirectory.toFile().exists()) {
 				FileUtils.deleteDirectory(temporaryDirectory.toFile());
 			}
 			return null;
 		} catch (Exception e) {
-			return new TerminalException(
-					e,
-					23,
-					"[CLEANUP_FOLDERS_ISSUE]",
-					"This DAR command line tool was unable to fully clean up temporary files. Please be sure to delete the following folders and their contents:\n"+ temporaryDirectory.toAbsolutePath(),
-					false
-			);
+			return new TemporaryFolderCleanupException(e, temporaryDirectory);
 		}
 	}
 	
@@ -269,8 +267,8 @@ public class CLIApp {
 			run(args);
 		} catch (TerminalException exception) {
 			runtimeException = exception;
-			handleException(runtimeException);
 		} finally {
+			// Cleanup temporary folders
 			TerminalException cleanupException = cleanUp();
 			int exitCode = -1;
 
