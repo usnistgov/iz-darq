@@ -71,7 +71,11 @@ public class CLITestRunnerUtils {
 		args[2] = "-c=" + configurationFilePath.toAbsolutePath();
 		args[3] = "-pub=" + pkPath.toAbsolutePath();
 		args[4] = "-out=" + folder.getRoot().getAbsolutePath();
-		CLIApp.run(args);
+		try {
+			CLIApp.run(args);
+		} finally {
+			CLIApp.cleanUp();
+		}
 	}
 
 	public Path getPatientsFilePath() {
