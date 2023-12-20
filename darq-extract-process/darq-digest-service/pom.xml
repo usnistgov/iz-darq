@@ -5,13 +5,13 @@
     <parent>
         <groupId>gov.nist.healthcare.iz</groupId>
         <artifactId>darq-extract-process</artifactId>
-        <version>3.0.0-SNAPSHOT.rev5</version>
+        <version>3.0.0-SNAPSHOT.rev6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>darq-digest-service</artifactId>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <qdar.api.version>3.0.0-SNAPSHOT.rev5</qdar.api.version>
+        <qdar.api.version>3.0.0-SNAPSHOT.rev6</qdar.api.version>
     </properties>
     <dependencies>
         <dependency>

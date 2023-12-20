@@ -27,6 +27,12 @@ if [ -z "$OUTPUT" ]; then
     OUTPUT="$( pwd )"
 fi
 
+if [[ -n "${LONESTAR_FORECASTER}" ]]; then
+    echo "Building Lonestar Forecaster"
+    cd $LONESTAR_FORECASTER
+    mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dexec.skip=true
+fi
+
 if [[ -n "${MISMO}" ]]; then
     echo "Building MISMO"
     cd $MISMO
@@ -48,12 +54,6 @@ fi
 if [[ -n "${MQE_VALIDATOR}" ]]; then
     echo "Building MQE Validator"
     cd $MQE_VALIDATOR
-    mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip
-fi
-
-if [[ -n "${LONESTAR_FORECASTER}" ]]; then
-    echo "Building Lonestar Forecaster"
-    cd $LONESTAR_FORECASTER
     mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip
 fi
 
