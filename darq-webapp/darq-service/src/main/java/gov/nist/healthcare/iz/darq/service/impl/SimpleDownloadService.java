@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.domain.OpAck;
-import gov.nist.healthcare.iz.darq.adf.utils.crypto.impl.CryptoUtilsImpl;
+import gov.nist.healthcare.iz.darq.Constants;
 import gov.nist.healthcare.iz.darq.model.*;
 import gov.nist.healthcare.iz.darq.model.FileDescriptor;
 import gov.nist.healthcare.iz.darq.service.utils.DownloadService;
@@ -62,7 +62,7 @@ public class SimpleDownloadService implements DownloadService {
 	public InputStream getFile(String id) {
 		if(this.fileDescriptorMap != null) {
 			try {
-				return new FileInputStream(new File(this.fileDescriptorMap.get(id).getPath()));
+				return new FileInputStream(this.fileDescriptorMap.get(id).getPath());
 			} catch (FileNotFoundException e) {
 				return null;
 			}
@@ -114,7 +114,7 @@ public class SimpleDownloadService implements DownloadService {
 					jarFile.setBuildAt(application.getProperty("app.date"));
 					jarFile.setMqeVersion(application.getProperty("mqe.version"));
 				}
-				if (entry.getName().equals(CryptoUtilsImpl.PUB_KEY_RESOURCE_NAME)) {
+				if (entry.getName().equals(Constants.PUB_KEY_RESOURCE_NAME)) {
 					byte[] key = IOUtils.toByteArray(jar.getInputStream(entry));
 					byte[] hash = MessageDigest.getInstance("MD5").digest(key);
 					jarFile.setKeyHash(DatatypeConverter.printHexBinary(hash));
@@ -127,13 +127,13 @@ public class SimpleDownloadService implements DownloadService {
 	public void makeCLIWithCurrentPublicKey(Path baseJar, Path target) throws Exception {
 		File jarFileDescriptor = baseJar.toFile();
 		Path targetJar = target.resolve(RESOURCES_JAR_FILE);
-		try (ZipInputStream jar = new ZipInputStream(new FileInputStream(jarFileDescriptor))) {
+		try (ZipInputStream jar = new ZipInputStream(Files.newInputStream(jarFileDescriptor.toPath()))) {
 			FileOutputStream output = new FileOutputStream(targetJar.toFile());
 			try (ZipOutputStream updateJar = new ZipOutputStream(output)) {
 				byte[] buffer = new byte[1024];
 				int bytesRead;
 				InputStream publicKeyInputStream = getPublicKeyDER();
-				ZipEntry pubKeyEntry = new ZipEntry(CryptoUtilsImpl.PUB_KEY_RESOURCE_NAME);
+				ZipEntry pubKeyEntry = new ZipEntry(Constants.PUB_KEY_RESOURCE_NAME);
 				updateJar.putNextEntry(pubKeyEntry);
 
 				while ((bytesRead = publicKeyInputStream.read(buffer)) != -1) {
@@ -143,7 +143,7 @@ public class SimpleDownloadService implements DownloadService {
 
 				ZipEntry entry = jar.getNextEntry();
 				while (entry != null){
-					if (!entry.getName().equals(CryptoUtilsImpl.PUB_KEY_RESOURCE_NAME)) {
+					if (!entry.getName().equals(Constants.PUB_KEY_RESOURCE_NAME)) {
 						updateJar.putNextEntry(entry);
 						while ((bytesRead = jar.read(buffer)) != -1) {
 							updateJar.write(buffer, 0, bytesRead);
@@ -341,7 +341,7 @@ public class SimpleDownloadService implements DownloadService {
 		if(file.length() < 4) {
 			return false;
 		}
-		DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
+		DataInputStream in = new DataInputStream(new BufferedInputStream(Files.newInputStream(file.toPath())));
 		int test = in.readInt();
 		in.close();
 		return test == 0x504b0304;

@@ -1,10 +1,10 @@
 package gov.nist.healthcare.iz.darq.service.impl;
 
+import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
 import gov.nist.healthcare.iz.darq.analyzer.model.variable.DynamicQueryVariableRef;
 import gov.nist.healthcare.iz.darq.analyzer.model.variable.QueryVariableRef;
 import gov.nist.healthcare.iz.darq.analyzer.model.variable.QueryVariableRefInstance;
-import gov.nist.healthcare.iz.darq.analyzer.service.QueryValueResolverService;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
+import gov.nist.healthcare.iz.darq.analyzer.service.common.QueryValueResolverService;
 import gov.nist.healthcare.iz.darq.model.*;
 import gov.nist.healthcare.iz.darq.repository.ExternalQueryVariableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +66,7 @@ public class QueryValueService implements QueryValueResolverService {
     }
 
     @Override
-    public QueryVariableRefInstance resolveInstanceValue(QueryVariableRef value, ADFile file, String facilityId) throws Exception {
+    public QueryVariableRefInstance resolveInstanceValue(QueryVariableRef value, ADFReader file, String facilityId) throws Exception {
         switch (value.getQueryValueType()) {
             case STATIC:
                 if(value instanceof QueryVariableRefInstance) {
@@ -94,7 +94,7 @@ public class QueryValueService implements QueryValueResolverService {
         throw new Exception("Unknown variable type");
     }
 
-    public QueryVariableRefInstance getDynamicQueryVariableValue(DynamicQueryVariableRef value, ADFile file, String facilityId) throws Exception {
+    public QueryVariableRefInstance getDynamicQueryVariableValue(DynamicQueryVariableRef value, ADFReader file, String facilityId) throws Exception {
         QueryVariable variable = this.getDynamicQueryVariableRef(value);
         if(variable == null) {
             throw new Exception("Variable (type = "+ value.getType() + ", id = "+ value.getId() + ")");
@@ -167,7 +167,7 @@ public class QueryValueService implements QueryValueResolverService {
         }
     }
 
-    public QueryVariableRefInstance getVariableValue(ADFQueryVariable variable, ADFile file) throws Exception {
+    public QueryVariableRefInstance getVariableValue(ADFQueryVariable variable, ADFReader file) throws Exception {
         return this.adfQueryVariableService.getADFValueInstance(variable, file);
     }
 }

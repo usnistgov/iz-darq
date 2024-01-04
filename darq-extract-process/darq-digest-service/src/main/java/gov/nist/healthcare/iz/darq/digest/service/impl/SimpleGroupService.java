@@ -2,7 +2,6 @@ package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import gov.nist.healthcare.iz.darq.digest.domain.*;
 import org.springframework.stereotype.Component;

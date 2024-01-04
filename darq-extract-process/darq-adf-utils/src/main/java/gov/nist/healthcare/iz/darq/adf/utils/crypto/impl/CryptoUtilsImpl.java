@@ -10,14 +10,15 @@ import javax.crypto.spec.SecretKeySpec;
 import com.fasterxml.jackson.databind.*;
 import de.undercouch.bson4jackson.BsonGenerator;
 import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
+import gov.nist.healthcare.iz.darq.adf.module.json.model.EncryptedADF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import de.undercouch.bson4jackson.BsonFactory;
 import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
-import gov.nist.healthcare.iz.darq.digest.domain.EncryptedADF;
+
 
 @Service
 public class CryptoUtilsImpl implements CryptoUtils {

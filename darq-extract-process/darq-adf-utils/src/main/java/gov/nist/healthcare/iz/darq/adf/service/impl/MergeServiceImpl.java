@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import gov.nist.healthcare.iz.darq.digest.domain.ExtractFraction;
 import gov.nist.healthcare.iz.darq.digest.domain.*;
 import org.springframework.stereotype.Service;
 

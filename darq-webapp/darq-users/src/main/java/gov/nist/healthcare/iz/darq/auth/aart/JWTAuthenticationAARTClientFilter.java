@@ -29,6 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -100,7 +102,7 @@ public class JWTAuthenticationAARTClientFilter extends GenericFilterBean impleme
     @Override
     public void configure(Properties properties) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         this.secret = properties.getProperty(SECRET_KEY);
-        byte[] cert_bytes = IOUtils.toByteArray(new FileInputStream(properties.getProperty(PUBLIC_KEY)));
+        byte[] cert_bytes = IOUtils.toByteArray(Files.newInputStream(Paths.get(properties.getProperty(PUBLIC_KEY))));
         String key = new String(cert_bytes, Charset.defaultCharset());
 
         String publicKeyPEM = key

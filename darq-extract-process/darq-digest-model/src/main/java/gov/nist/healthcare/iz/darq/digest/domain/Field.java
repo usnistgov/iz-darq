@@ -6,53 +6,33 @@ import java.util.Set;
 
 
 public enum Field {
-	PROVIDER(_CG.V, _CG.VD, _CG.VT, _CG.PD_RG, _CG.PT_RG),
-	AGE_GROUP(_CG.values()), 
-	TABLE(_CG.VT, _CG.PT), 
-	CODE(_CG.VT, _CG.PT), 
-	DETECTION(_CG.VD, _CG.PD), 
-	EVENT(_CG.V), 
-	GENDER(_CG.V), 
-	VACCINE_CODE(_CG.V),
-	VACCINATION_YEAR(_CG.V);
-	
-	//-- FIELDS COMPATIBILITY GROUP
-	public static enum _CG {
-		V(Analysis.REPORTING_GROUP_AGG_SECTION),
-		VD(Analysis.REPORTING_GROUP_AGG_SECTION),
-		VT(Analysis.REPORTING_GROUP_AGG_SECTION),
-		PD(Analysis.GENERAL_PATIENT_SECTION),
-		PT(Analysis.GENERAL_PATIENT_SECTION),
-		PD_RG(Analysis.REPORTING_GROUP_AGG_SECTION),
-		PT_RG(Analysis.REPORTING_GROUP_AGG_SECTION);
-		
-		Analysis scope;
-		private _CG(Analysis scope) {
-			this.scope = scope;
-		}
-		
-		public Analysis getScope() {
-			return scope;
-		}
-	}
-	
-	_CG[] compatibilyGroups;
-	private Field(_CG... compatibility) {
-		this.compatibilyGroups = compatibility;
+	PROVIDER(AnalysisType.V, AnalysisType.VD, AnalysisType.VT, AnalysisType.PD_RG, AnalysisType.PT_RG),
+	AGE_GROUP(AnalysisType.values()),
+	TABLE(AnalysisType.VT, AnalysisType.PT),
+	CODE(AnalysisType.VT, AnalysisType.PT),
+	DETECTION(AnalysisType.VD, AnalysisType.PD),
+	EVENT(AnalysisType.V),
+	GENDER(AnalysisType.V),
+	VACCINE_CODE(AnalysisType.V),
+	VACCINATION_YEAR(AnalysisType.V);
+
+	final AnalysisType[] compatibilityGroups;
+	Field(AnalysisType... compatibility) {
+		this.compatibilityGroups = compatibility;
 	}
 		
-	public _CG[] getCompatibilyGroups() {
-		return compatibilyGroups;
+	public AnalysisType[] getCompatibilityGroups() {
+		return compatibilityGroups;
 	}
 	
 	public static boolean areCompatible(Analysis analysis, Field... f){
 		if(f.length == 1) return inAnalysis(f[0], analysis);
 		else {
-			Set<_CG> set = new HashSet<_CG>(Arrays.asList(f[0].getCompatibilyGroups()));
+			Set<AnalysisType> set = new HashSet<>(Arrays.asList(f[0].getCompatibilityGroups()));
 			for(int i = 1; i < f.length; i++){
-				set.retainAll(Arrays.asList(f[i].getCompatibilyGroups()));
+				set.retainAll(Arrays.asList(f[i].getCompatibilityGroups()));
 			}
-			for(_CG cg : set){
+			for(AnalysisType cg : set){
 				if(cg.getScope().equals(analysis))
 					return true;
 			}
@@ -61,7 +41,7 @@ public enum Field {
 	}
 	
 	private static boolean inAnalysis(Field f, Analysis a) {
-		for(_CG cg : f.getCompatibilyGroups()){
+		for(AnalysisType cg : f.getCompatibilityGroups()){
 			if(cg.getScope().equals(a))
 				return true;
 		}

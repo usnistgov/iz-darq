@@ -4,7 +4,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,10 +15,12 @@ public class ExtractFileSearcher {
         List<IndexedDocument> documents = new ArrayList<>();
 
         TermQuery termQuery = new TermQuery(new Term(ExtractFileIndexer.RECORD_ID, id));
-        TopDocs docs = searcher.search(termQuery, Integer.MAX_VALUE);
+        DocumentCollector collector = new DocumentCollector();
+        searcher.search(termQuery, collector);
+        List<Integer> hits = collector.getDocIds();
 
-        for(int i = 0; i < docs.totalHits.value; i++) {
-            Document hit = searcher.doc(docs.scoreDocs[i].doc);
+        for (Integer integer : hits) {
+            Document hit = searcher.doc(integer);
 
             String ID = hit.getField(ExtractFileIndexer.RECORD_ID).stringValue();
             String content = hit.getField(ExtractFileIndexer.CONTENT).stringValue();

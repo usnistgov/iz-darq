@@ -2,7 +2,6 @@ package gov.nist.healthcare.iz.darq.digest.domain;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class IssueList {
     String[] issues;
@@ -16,7 +15,7 @@ public class IssueList {
         this.issues = new String[capacity];
     }
 
-    boolean add(String elm) {
+    public boolean add(String elm) {
         if(head == capacity) {
             return false;
         }
@@ -26,7 +25,7 @@ public class IssueList {
         }
     }
 
-    boolean addAllPossible(IssueList list) {
+    public boolean addAllPossible(IssueList list) {
         for(String issue : list.issues) {
             if(!this.add(issue)) {
                 return false;
@@ -35,7 +34,7 @@ public class IssueList {
         return true;
     }
 
-    boolean addAllPossible(List<String> list) {
+    public boolean addAllPossible(List<String> list) {
         for(String issue : list) {
             if(!this.add(issue)) {
                 return false;

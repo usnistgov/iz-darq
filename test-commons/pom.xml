@@ -1,0 +1,20 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>gov.nist.healthcare.iz</groupId>
+        <artifactId>darq</artifactId>
+        <version>3.0.0</version>
+    </parent>
+    <artifactId>test-commons</artifactId>
+    <properties>
+        <qdar.api.version>3.0.0</qdar.api.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>gov.nist.healthcare.iz</groupId>
+            <artifactId>darq-digest-model</artifactId>
+            <version>${qdar.api.version}</version>
+        </dependency>
+    </dependencies>
+</project>

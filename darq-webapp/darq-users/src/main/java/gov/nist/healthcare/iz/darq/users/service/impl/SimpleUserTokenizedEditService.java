@@ -9,6 +9,7 @@ import gov.nist.healthcare.iz.darq.model.ToolConfigurationKeyValue;
 import gov.nist.healthcare.iz.darq.model.ToolConfigurationProperty;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.service.impl.RandomGenerator;
 import gov.nist.healthcare.iz.darq.service.impl.SimpleEmailService;
 import gov.nist.healthcare.iz.darq.users.domain.*;
 import gov.nist.healthcare.iz.darq.users.exception.FieldValidationException;
@@ -46,6 +47,7 @@ public class SimpleUserTokenizedEditService implements UserTokenizedEditService 
     private String EMAIL_VERIFICATION_URL;
     private String PASSWORD_CHANGE_URL;
     private String HOST;
+    private final RandomGenerator randomGenerator;
 
     public SimpleUserTokenizedEditService(SimpleEmailService emailService, UserEditTokenRepository userEditTokenRepository, UserAccountRepository userAccountRepository, UserManagementService userManagementService, Environment environment) {
         this.emailService = emailService;
@@ -53,6 +55,7 @@ public class SimpleUserTokenizedEditService implements UserTokenizedEditService 
         this.userAccountRepository = userAccountRepository;
         this.userManagementService = userManagementService;
         this.environment = environment;
+        this.randomGenerator = new RandomGenerator();
     }
 
     private String getLink(UserEditToken token) {
@@ -87,6 +90,7 @@ public class SimpleUserTokenizedEditService implements UserTokenizedEditService 
         final double DURATION = tokenType.equals(UserEditTokenType.PASSWORD_CHANGE) ? this.DURATION_PASSWORD_RESET : this.DURATION_EMAIL_VERIFICATION;
         if(existing == null || this.isExpired(existing)) {
             UserEditToken token = new UserEditToken();
+            token.setId(randomGenerator.generate(52));
             token.setUserId(user.getId());
             token.setType(tokenType);
             token.setDuration(DURATION);

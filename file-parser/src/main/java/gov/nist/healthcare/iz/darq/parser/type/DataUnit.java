@@ -86,5 +86,13 @@ public abstract class DataUnit<T> {
 	protected abstract T empty();
 	protected abstract void validatePlaceHolder(DescriptorType placeholder) throws InvalidValueException;
 	public abstract T validate(String payload) throws InvalidValueException;
-	
+
+	public String getPayload() {
+		return payload;
+	}
+
+	public String getValueIfExists() {
+		if(this.extracted) return this.payload;
+		else return "";
+	}
 }

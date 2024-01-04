@@ -39,39 +39,24 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
     private final ExtractFileSearcher searcher;
     private int lineNumber;
     private final Stream<String> lines;
-    private String tmpDir;
     private List<FormatIssue> sanityCheckErrors;
+    private final String indexDirectoryName = "QDAR_INDEX";
 
-    public LucenePatientRecordIterator(Path patientFile, Path vaccinationFile, Optional<String> directory, DqDateFormat dateFormat) throws Exception {
+    public LucenePatientRecordIterator(Path patientFile, Path vaccinationFile, Path directory, DqDateFormat dateFormat) throws Exception {
         super(patientFile, vaccinationFile);
         logger.info("[RECORD ITERATOR] Initialization");
-        tmpDir = null;
         this.sanityCheckErrors = new ArrayList<>();
         // Index Vaccination File
         ExtractFileIndexer vaccinationLuceneIndexer = this.createFileIndexer(VaccineRecord.class);
         logger.info("Created Vaccination Indexer");
-        logger.info("Creating Temporary directory");
-        if(directory.isPresent()) {
-            logger.info("Directory location provided");
-            File location = new File(directory.get());
-            if(!location.exists()) {
-                logger.error("[LUCENE TMP DIRECTORY] provided location'" + directory.get() + "' does not exist");
-                throw new FileNotFoundException("provided location'" + directory.get() + "' does not exist");
-            }
-
-            if(!location.isDirectory()) {
-                logger.error("[LUCENE TMP DIRECTORY] provided location'" + directory.get() + "' is not directory");
-                throw new FileNotFoundException("provided location'" + directory.get() + "' is not directory");
-            }
-        }
-
-        tmpDir = this.createDirectory(directory).toString();
-        logger.info("Directory created at " + tmpDir);
+        Path index = Paths.get(directory.toAbsolutePath().toString(), indexDirectoryName);
+        logger.info("Creating Temporary directory at " + index);
+        index.toFile().mkdirs();
         logger.info("[LUCENE] Indexing Vaccination File");
-        vaccinationLuceneIndexer.index(vaccinationFile.toString(), tmpDir);
+        vaccinationLuceneIndexer.index(vaccinationFile.toString(), index.toAbsolutePath().toString());
         this.sanityCheckErrors = vaccinationLuceneIndexer.getSanityCheckErrors();
         logger.info("[LUCENE] Vaccination File Indexed");
-        vaccinations = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(tmpDir))));
+        vaccinations = new IndexSearcher(DirectoryReader.open(FSDirectory.open(index)));
 
         // Init Attributes
         this.lineNumber = 1;
@@ -100,13 +85,6 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
 
     public List<FormatIssue> getSanityCheckErrors() {
         return sanityCheckErrors;
-    }
-
-    private Path createDirectory(Optional<String> location) {
-        String name = RandomStringUtils.random(10, true, true);
-        Path path = location.map(s -> Paths.get(s, name)).orElseGet(() -> Paths.get(name));
-        path.toFile().mkdir();
-        return path.toAbsolutePath();
     }
 
     @Override
@@ -150,15 +128,10 @@ public class LucenePatientRecordIterator extends PatientRecordIterator {
         return lineNumber - 1;
     }
 
-    public String getTmpDir() {
-        return tmpDir;
-    }
-
     @Override
     public void close() throws IOException {
         this.vaccinations.getIndexReader().close();
         this.lines.close();
-        FileUtils.deleteDirectory(Paths.get(this.tmpDir).toFile());
     }
 
 }

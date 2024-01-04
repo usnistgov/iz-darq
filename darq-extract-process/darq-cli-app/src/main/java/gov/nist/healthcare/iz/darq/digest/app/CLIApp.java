@@ -1,14 +1,21 @@
 package gov.nist.healthcare.iz.darq.digest.app;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
+import gov.nist.healthcare.iz.darq.adf.module.api.ADFWriter;
+import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFModule;
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
+import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
+import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
+import gov.nist.healthcare.iz.darq.detections.DetectionEngineConfiguration;
 import gov.nist.healthcare.iz.darq.digest.app.exception.*;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
@@ -19,11 +26,9 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.immregistries.mqe.validator.detection.MqeCode;
-import org.immregistries.mqe.validator.engine.MessageValidator;
-import org.immregistries.mqe.validator.engine.RulePairBuilder;
-import org.immregistries.mqe.validator.engine.ValidationRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -32,8 +37,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
@@ -50,6 +53,7 @@ public class CLIApp {
 	private final static Logger logger = LoggerFactory.getLogger(CLIApp.class.getName());
 
 	private static boolean running = false;
+	private static Path temporaryDirectory = null;
 
 	public static void run(String[] args) throws TerminalException {
 		try {
@@ -81,9 +85,12 @@ public class CLIApp {
 			options.addOption("v", "vaccinations", true, "Vaccinations Extract File");
 			options.addOption("c", "configuration", true, "Analysis Configuration");
 			options.addOption("tmpDir", "temporaryDirectory", true, "Location where to create temporary directory");
-			options.addOption("pa", "printAdf", false, "print ADF content");
+			options.addOption("out", "output", true, "Location where to create result directory");
+			options.addOption("pa", "printAdf", false, "print ADF content (deprecated)");
 			options.addOption("d", "dateFormat", true, "Date Format");
 			options.addOption("pub", "publicKey", true, "qDAR Public Key");
+			options.addOption("pm", "patientMatching", false, "Activate patient matching");
+			options.addOption("npm", "noPatientMatching", false, "Deactivate patient matching");
 
 
 			CommandLineParser parser = new DefaultParser();
@@ -110,6 +117,8 @@ public class CLIApp {
 					String cFilePath = cmd.getOptionValue("c");
 					String tmpDirLocation = cmd.getOptionValue("tmpDir");
 					boolean printAdf = cmd.hasOption("pa");
+					boolean activePatientMatching = cmd.hasOption("pm");
+					boolean deActivatePatientMatching = cmd.hasOption("npm");
 					String dateFormat = cmd.getOptionValue("d");
 
 					File patients = new File(pFilePath);
@@ -129,7 +138,7 @@ public class CLIApp {
 						throw new FileNotFoundException(new FileErrorCode(!pFile, !vFile, !cFile));
 					} else {
 
-						// Read Configuration file
+						// --- Read Configuration file
 						ConfigurationPayload configurationPayload;
 						try {
 							ObjectMapper mapper = new ObjectMapper();
@@ -139,7 +148,7 @@ public class CLIApp {
 							throw new InvalidConfigurationFileFormatException(e);
 						}
 
-						// Read Date Format
+						// --- Read Date Format
 						DqDateFormat simpleDateFormat = DqDateFormat.forPattern(DEFAULT_DATE_FORMAT);
 						if(!Strings.isNullOrEmpty(dateFormat)) {
 							try{
@@ -149,7 +158,7 @@ public class CLIApp {
 							}
 						}
 
-						// Read Public Key
+						// --- Read Public Key
 						if(cmd.hasOption("pub")) {
 							String publicKeyLocation = cmd.getOptionValue("pub");
 							if(cryptoKey instanceof PublicOnlyCryptoKey) {
@@ -164,21 +173,55 @@ public class CLIApp {
 							throw new PublicKeyException("No public key provided or bundled");
 						}
 
-						System.out.println("Analysis Progress");
+						// --- Create Outputs Folder
+						String outputRoot = cmd.hasOption("out") ? cmd.getOptionValue("out") : ".";
+						File output = Paths.get(outputRoot, "darq-analysis").toFile();
+						output.mkdirs();
 
+						// --- Create Temporary Directory
+						temporaryDirectory = createTemporaryDirectory(Optional.ofNullable(tmpDirLocation));
+
+						// --- Configure Detection Engine
+						logger.info("Configuring the detection engine");
+						DetectionEngine detectionEngine = context.getBean(DetectionEngine.class);
+						DetectionEngineConfiguration detectionEngineConfiguration = new DetectionEngineConfiguration();
+						detectionEngineConfiguration.setOutputDirectory(output.getAbsolutePath());
+						detectionEngineConfiguration.setTemporaryDirectory(temporaryDirectory.toAbsolutePath().toString());
+						detectionEngineConfiguration.setConfigurationPayload(configurationPayload);
+						detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_MQE);
+						if(!deActivatePatientMatching && (configurationPayload.isActivatePatientMatching() || activePatientMatching)) {
+							detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_PM);
+						}
+						detectionEngine.configure(detectionEngineConfiguration);
+
+						// --- Configure Services
+						logger.info("Configuring Services");
 						SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
 						Exporter export = context.getBean(Exporter.class);
-						configureMqeValidator(configurationPayload.getDetections());
+						ADFManager adfManager = context.getBean(ADFManager.class);
+						adfManager.register(new SqliteADFModule(temporaryDirectory.toAbsolutePath().toString()), false, true);
+
+						// --- Start Analysis
+						System.out.println("Analysis Progress");
 						running = true;
 						Thread t = progress(runner);
 						t.start();
 						long start = System.currentTimeMillis();
-						ADChunk chunk = runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, Optional.ofNullable(tmpDirLocation));
-						t.join();
-						System.out.println("Analysis Finished - Exporting Results");
-						long elapsed = System.currentTimeMillis() - start;
-						export.export(configurationPayload, chunk, version, build, mqeVersion, elapsed, printAdf);
-						System.out.println("Results Exported - END");
+						boolean hasIssue;
+						try(ADFWriter writer = adfManager.getWriter(cryptoKey)) {
+							writer.open(temporaryDirectory.toAbsolutePath().toString());
+							runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, writer, output.toPath(), temporaryDirectory);
+							t.join();
+							System.out.println("Analysis Finished - Exporting Results");
+							long elapsed = System.currentTimeMillis() - start;
+							hasIssue = writer.getIssues().size() > 0;
+							export.export(configurationPayload, output.toPath(), writer, version, build, mqeVersion, elapsed, printAdf);
+							System.out.println("Results Exported - END");
+							logger.info("* Closing ADF Writer");
+						}
+						if(hasIssue) {
+							throw new SummaryIssuesException();
+						}
 					}
 				}
 			}
@@ -205,47 +248,91 @@ public class CLIApp {
 			running = false;
 		}
 	}
+
+	public static TemporaryFolderCleanupException cleanUp() {
+		try {
+			if(temporaryDirectory != null && temporaryDirectory.toFile().exists()) {
+				FileUtils.deleteDirectory(temporaryDirectory.toFile());
+			}
+			return null;
+		} catch (Exception e) {
+			return new TemporaryFolderCleanupException(e, temporaryDirectory);
+		}
+	}
 	
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
+		TerminalException runtimeException = null;
 		try {
 			run(args);
 		} catch (TerminalException exception) {
-			if(!StringUtils.isBlank(exception.getPrint())) {
-				System.err.println();
-				System.err.println(exception.getPrint());
-				System.err.println();
+			runtimeException = exception;
+		} finally {
+			// Cleanup temporary folders
+			TerminalException cleanupException = cleanUp();
+			int exitCode = -1;
+
+			// If we have a runtime error, print error and set exit code
+			if(runtimeException != null) {
+				handleException(runtimeException);
+				exitCode = runtimeException.getExitCode();
 			}
-			if(!StringUtils.isBlank(exception.getLogs())) {
-				logger.error(exception.getLogs(), exception);
+			/*  If we have a cleanup error, print error and set exit code only if no runtime error happened.
+				Runtime error exit codes have precedence over cleanup error exit codes	*/
+			if(cleanupException != null) {
+				handleException(cleanupException);
+				if(exitCode == -1) {
+					exitCode = cleanupException.getExitCode();
+				}
 			}
-			if(exception.isPrintStackTrace()) {
-				exception.printStackTrace();
+
+			if(exitCode != -1) {
+				// Custom exit codes are 100 and above to avoid conflict with system exit codes
+				System.exit(exitCode + 100);
 			}
-			System.exit(exception.getExitCode());
 		}
 	}
 
-	public static void configureMqeValidator(List<String> activeMqeCodes) {
-		logger.info("Configuring MQE Validator");
-		MessageValidator.INSTANCE.configure(
-				activeMqeCodes.stream()
-						.map((code) -> {
-							try {
-								return MqeCode.valueOf(code);
-							} catch (Exception e) {
-								return null;
-							}
-						})
-						.filter(Objects::nonNull)
-						.collect(Collectors.toSet())
-		);
-		logger.info("MQE Validator Configured");
-		Set<ValidationRule> rules = RulePairBuilder.INSTANCE.getActiveValidationRules().getRules();
-		logger.info("MQE Active Rules (" + rules.size() + ") :");
-		rules.forEach(
-				(r) -> logger.info("* Active Rules : " + r.getClass())
-		);
+	public static void handleException(TerminalException exception) {
+		if(!StringUtils.isBlank(exception.getPrint())) {
+			System.err.println();
+			System.err.println(exception.getPrint());
+			System.err.println();
+		}
+		if(!StringUtils.isBlank(exception.getLogs())) {
+			logger.error(exception.getLogs(), exception);
+		}
+		if(exception.isPrintStackTrace()) {
+			exception.printStackTrace();
+		}
+	}
+
+	public static Path createTemporaryDirectory(Optional<String> directory) throws java.io.FileNotFoundException {
+		logger.info("Creating Temporary directory");
+		if(directory.isPresent()) {
+			logger.info("Directory location provided");
+			File location = new File(directory.get());
+			if(!location.exists()) {
+				logger.error("[TMP DIRECTORY] provided location'" + directory.get() + "' does not exist");
+				throw new java.io.FileNotFoundException("provided location'" + directory.get() + "' does not exist");
+			}
+
+			if(!location.isDirectory()) {
+				logger.error("[TMP DIRECTORY] provided location'" + directory.get() + "' is not directory");
+				throw new java.io.FileNotFoundException("provided location'" + directory.get() + "' is not directory");
+			}
+		}
+
+		Path tmpDir = createDirectory(directory);
+		logger.info("Directory created at " + tmpDir);
+		return tmpDir;
+	}
+
+	private static Path createDirectory(Optional<String> location) {
+		String name = RandomStringUtils.random(10, true, true);
+		Path path = location.map(s -> Paths.get(s, name)).orElseGet(() -> Paths.get(name));
+		path.toFile().mkdir();
+		return path.toAbsolutePath();
 	}
 	
 	public static Thread progress(DigestRunner runner){
@@ -256,17 +343,13 @@ public class CLIApp {
 				Fraction f = new Fraction(0,0);
 				double per;
 				long estimated;
-				long stamp = System.currentTimeMillis();
+				long velocity;
+			    Timer timer = new Timer(runner.spy().getTotal());
 
 				do{
-					long elapsed = System.currentTimeMillis() - stamp;
-					int save = f.getCount();
 					f = runner.spy();
-					stamp = System.currentTimeMillis();
-					int diff = f.getCount() - save;
-					int remaining = f.getTotal() - f.getCount();
-					estimated = diff == 0 ? 0 : (elapsed / diff) * remaining;
 					per = f.percent();
+					timer.setProcessed(f, System.currentTimeMillis());
 					if(f.getCount() == 0 && f.getTotal() == 0){
 						System.out.print("\r-- Preparing " + animation[anime_step++ % animation.length]);
 					}
@@ -280,11 +363,14 @@ public class CLIApp {
 						for(int i = 0; i < empty; i++){
 							progressBar += " ";
 						}
+						estimated = (long) timer.getRemainingEstimate();
+						velocity = (long) timer.getVelocityRecordsPerSecond();
 						progressBar += "] " + animation[anime_step++ % animation.length] + " " + df.format(per) + "% ("+f.getCount()+"/"+f.getTotal()+")";
-						progressBar += String.format("(Estimated Remaining Processing Time %2d min, %2d sec)",
+						progressBar += String.format("(Estimated Remaining Processing Time %2d min, %2d sec - %2d R/s)",
 								TimeUnit.MILLISECONDS.toMinutes(estimated),
 								TimeUnit.MILLISECONDS.toSeconds(estimated) -
-								TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(estimated))
+								TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(estimated)),
+								velocity
 							);
 						System.out.print(progressBar);
 					}

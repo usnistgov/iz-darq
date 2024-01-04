@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Range;
+import gov.nist.healthcare.iz.darq.patient.matching.model.PatientMatchingDetection;
+import org.immregistries.mismo.match.PatientCompare;
 import org.immregistries.mqe.validator.detection.MqeCode;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +17,38 @@ import java.util.stream.Stream;
 @Service
 public class ConfigurationPayloadValidator {
 
+    Set<String> allowedDetectionCodes = new HashSet<>();
+
+    // Valid detections codes
+    {
+        Arrays.stream(MqeCode.values()).forEach((mqeCode) -> allowedDetectionCodes.add(mqeCode.name()));
+        allowedDetectionCodes.add(PatientMatchingDetection.PM001.name());
+    }
+
     public void validateConfigurationPayload(ConfigurationPayload configurationPayload) throws InvalidConfigurationPayload {
         ArrayList<String> errors = new ArrayList<>();
         errors.addAll(validateAgeGroups(configurationPayload.getAgeGroups(), true));
         errors.addAll(validateDetections(configurationPayload.getDetections()));
         errors.addAll(validateAsOfDate(configurationPayload.getAsOf()));
         errors.addAll(validateVaxCodeAbstraction(configurationPayload.getVaxCodeAbstraction()));
+        errors.addAll(validateMismoPatientMatcherConfiguration(configurationPayload.getMismoPatientMatchingConfiguration()));
 
         if(errors.size() > 0) {
             throw new InvalidConfigurationPayload(errors);
         }
+    }
+
+    public List<String> validateMismoPatientMatcherConfiguration(String mismoPatientMatcherConfiguration) {
+        List<String> issues = new ArrayList<>();
+        if(mismoPatientMatcherConfiguration != null && !mismoPatientMatcherConfiguration.isEmpty()) {
+            try {
+                PatientCompare patientCompare = new PatientCompare();
+                patientCompare.readScript(mismoPatientMatcherConfiguration);
+            } catch (Exception e) {
+                issues.add("MISMO patient matcher configuration is invalid : " + e.getCause().getMessage());
+            }
+        }
+        return issues;
     }
 
 
@@ -100,10 +124,8 @@ public class ConfigurationPayloadValidator {
         }
 
         for(String code: detections) {
-            try {
-                MqeCode.valueOf(code);
-            } catch (Exception exception) {
-                errors.add("Configuration Detections : Code '" + code + "' is not a valid MQE Code");
+            if(!allowedDetectionCodes.contains(code)) {
+                errors.add("Configuration Detections : Code '" + code + "' is not a valid Detection Code");
             }
         }
         return errors;

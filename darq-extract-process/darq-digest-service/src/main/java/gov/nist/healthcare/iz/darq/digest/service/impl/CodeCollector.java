@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
 import gov.nist.healthcare.iz.darq.digest.domain.ExtractFraction;
 import gov.nist.healthcare.iz.darq.parser.service.model.DataElement;
@@ -51,9 +49,6 @@ public class CodeCollector {
 		public String getAgeGroup() {
 			return ageGroup;
 		}
-		
-		
-		
 	}
 	
 	public List<Code> codes;

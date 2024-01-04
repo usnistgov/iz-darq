@@ -173,6 +173,15 @@ public class ADFController {
 		rsp.setHeader("Content-disposition", "attachment;filename="+file.getName().replace(" ", "_")+".data");
 		IOUtils.copy(this.storage.getFileInputStream(file.getPath()), rsp.getOutputStream());
 	}
+	
+	@RequestMapping(value="/adf/{id}", method=RequestMethod.DELETE)
+	@ResponseBody
+	@PreAuthorize("AccessResource(ADF, DELETE, #id)")
+	public OpAck<UserUploadedFile> delete(
+			@PathVariable("id") String id) throws Exception {
+		storage.delete(id);
+		return new OpAck<>(AckStatus.SUCCESS, "File Deleted Successfully", null, "adf-delete");
+	}
 
 	@RequestMapping(value="/adf/merge", method=RequestMethod.POST)
 	@ResponseBody
@@ -184,15 +193,6 @@ public class ADFController {
 		Set<UserUploadedFile> files = (Set<UserUploadedFile>) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_SET_ATTRIBUTE);
 		adfService.merge(mergeRequest.getName(), mergeRequest.getFacilityId(), user.getId(), files);
 		return new OpAck<>(AckStatus.SUCCESS,"Merge File Created Successfully", null, "adf-merge");
-	}
-	
-	@RequestMapping(value="/adf/{id}", method=RequestMethod.DELETE)
-	@ResponseBody
-	@PreAuthorize("AccessResource(ADF, DELETE, #id)")
-	public OpAck<UserUploadedFile> delete(
-			@PathVariable("id") String id) throws Exception {
-		storage.delete(id);
-		return new OpAck<>(AckStatus.SUCCESS, "File Deleted Successfully", null, "adf-delete");
 	}
 
 	List<ADFDescriptor> getADFDescriptorFromFiles(List<UserUploadedFile> files, User user) {

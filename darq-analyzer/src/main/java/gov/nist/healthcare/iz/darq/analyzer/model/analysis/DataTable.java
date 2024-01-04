@@ -6,7 +6,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DataTable {
-    Map<Field, Set<String>> vocabulary;
     QueryPayload query;
     QueryIssues issues;
     boolean thresholdViolation;
@@ -19,7 +18,6 @@ public class DataTable {
         this.denominator = query.getDenominatorFields();
         this.nominator = query.getNominatorFields().stream().filter((v) -> !this.denominator.contains(v)).collect(Collectors.toSet());
         this.values = new ArrayList<>();
-        this.vocabulary = new HashMap<>();
     }
 
     public QueryIssues getIssues() {
@@ -28,21 +26,6 @@ public class DataTable {
 
     public void setIssues(QueryIssues issues) {
         this.issues = issues;
-    }
-
-    public void putFieldValue(Field f, String value) {
-        if(!this.vocabulary.containsKey(f)) {
-            this.vocabulary.put(f, new HashSet<>());
-        }
-        this.vocabulary.get(f).add(value);
-    }
-
-    public Map<Field, Set<String>> getVocabulary() {
-        return vocabulary;
-    }
-
-    public void setVocabulary(Map<Field, Set<String>> vocabulary) {
-        this.vocabulary = vocabulary;
     }
 
     public List<DataTableRow> getValues() {

@@ -117,7 +117,7 @@ public class MQETransformService {
 			vis.setPresentedDateString(formatDate(vr.vis.given_date.getValue()));
 			
 			vax.setVaccinationVis(vis);
-			tr.add(vr.vax_event_id.getValue(), vax.getPositionId() + "", vr, vax);
+			tr.addVaccinationEventMapping(vr.vax_event_id.getValue(), vax.getPositionId() + "", vr, vax);
 			recordAsMessageStruct.getVaccinations().add(vax);
 		}
 

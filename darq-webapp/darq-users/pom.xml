@@ -5,13 +5,13 @@
     <parent>
         <groupId>gov.nist.healthcare.iz</groupId>
         <artifactId>darq-webapp</artifactId>
-        <version>3.1.4</version>
+        <version>4.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>darq-users</artifactId>
     <properties>
-        <qdar.webtool.version>3.1.4</qdar.webtool.version>
-        <qdar.api.version>2.1.3</qdar.api.version>
+        <qdar.webtool.version>4.0.0</qdar.webtool.version>
+        <qdar.api.version>3.0.0</qdar.api.version>
     </properties>
     <dependencies>
         <dependency>

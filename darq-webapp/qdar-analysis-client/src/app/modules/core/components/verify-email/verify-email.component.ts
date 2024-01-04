@@ -1,8 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { RxjsStoreHelperService, DAM_AUTH_USER_TRANSFORMER, UserTransformer, IDamUser, MessageType, UpdateAuthStatus } from 'ngx-dam-framework';
+import { RxjsStoreHelperService, MessageService } from 'ngx-dam-framework';
 import { of, Observable } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { map, flatMap, take } from 'rxjs/operators';
@@ -20,10 +20,9 @@ export class VerifyEmailComponent implements OnInit {
   constructor(
     private userService: UserService,
     private store: Store<any>,
-    private router: Router,
     private activeRoute: ActivatedRoute,
     private helper: RxjsStoreHelperService,
-    @Inject(DAM_AUTH_USER_TRANSFORMER) private userTransformer: UserTransformer<any, IDamUser>,
+    private message: MessageService,
   ) {
     this.form = new FormGroup({
       username: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(10), Validators.pattern('[a-zA-Z0-9_]+')]),
@@ -50,17 +49,8 @@ export class VerifyEmailComponent implements OnInit {
           })
         );
       },
-      (message) => {
-        if (message.status === MessageType.SUCCESS) {
-          this.router.navigate(['/', 'home']);
-        }
-        return of(
-          new UpdateAuthStatus({
-            statusChecked: true,
-            isLoggedIn: true,
-            userInfo: this.userTransformer(message.data),
-          })
-        );
+      (_message) => {
+        return of();
       }
     ).subscribe();
   }

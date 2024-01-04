@@ -8,6 +8,14 @@ public class DataSelector {
     private Field field;
     private List<ValueContainer> values;
 
+    public DataSelector(Field field, List<ValueContainer> values) {
+        this.field = field;
+        this.values = values;
+    }
+
+    public DataSelector() {
+    }
+
     public Field getField() {
         return field;
     }

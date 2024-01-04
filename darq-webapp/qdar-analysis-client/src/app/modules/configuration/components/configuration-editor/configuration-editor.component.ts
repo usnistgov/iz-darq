@@ -160,6 +160,34 @@ export class ConfigurationEditorComponent extends DamAbstractEditorComponent imp
     this.emitChange();
   }
 
+  mismoConfigChange(value: string) {
+    this.value = {
+      ...this.value,
+      payload: {
+        ...this.value.payload,
+        mismoPatientMatchingConfiguration: value,
+      },
+    };
+
+    this.emitChange();
+  }
+
+  pmChange(value: boolean) {
+    this.value = {
+      ...this.value,
+      payload: {
+        ...this.value.payload,
+        activatePatientMatching: value,
+      }
+    };
+
+    if (!value) {
+      this.mismoConfigChange('');
+    }
+
+    this.emitChange();
+  }
+
   asOfChange(value) {
     this.value = {
       ...this.value,

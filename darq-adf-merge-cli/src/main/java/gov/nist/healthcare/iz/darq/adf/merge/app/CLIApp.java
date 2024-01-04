@@ -5,7 +5,7 @@ import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.merge.model.LoadableCryptoKey;
 import gov.nist.healthcare.iz.darq.adf.service.ADFMergeService;
 import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
-import gov.nist.healthcare.iz.darq.digest.domain.ADFile;
+import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
 import org.apache.commons.cli.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
