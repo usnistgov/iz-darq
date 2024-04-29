@@ -27,10 +27,6 @@ export class UserService {
     return this.http.post<Message<IUser>>(this.USER_PREFIX + 'register', account);
   }
 
-  createCredentials(account: ICreateCredentials): Observable<Message<IUser>> {
-    return this.http.post<Message<IUser>>(this.USER_PREFIX + 'create-credentials', account);
-  }
-
   verifyEmail(account: any): Observable<Message<IUser>> {
     return this.http.post<Message<IUser>>(this.USER_PREFIX + 'verify-email', account);
   }

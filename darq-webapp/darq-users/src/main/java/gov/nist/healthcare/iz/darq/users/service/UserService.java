@@ -1,10 +1,8 @@
 package gov.nist.healthcare.iz.darq.users.service;
 
 import gov.nist.healthcare.auth.domain.PasswordChangeRequest;
-import gov.nist.healthcare.iz.darq.access.domain.CreateCredentialsRequest;
 import gov.nist.healthcare.iz.darq.access.domain.UserRole;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
-import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.users.domain.*;
 import gov.nist.healthcare.iz.darq.users.exception.FieldValidationException;
 import gov.nist.healthcare.iz.darq.users.exception.RequestValidationException;
@@ -25,11 +23,8 @@ public interface UserService {
     User grantPrivilege(String username, String role);
     User setPrivilege(String username, String role);
     User changePassword(PasswordChangeRequest passwordChangeRequest) throws FieldValidationException;
-    User createCredentials(CreateCredentialsRequest createCredentialsRequest) throws UsernameNotFoundException, FieldValidationException, RequestValidationException, OperationFailureException;
     User updateProfile(ProfileUpdateRequest updateRequest, User user) throws UsernameNotFoundException, FieldValidationException;
-
     UserAccount internalUpdate(ProfileUpdateRequest updateRequest, UserAccount account) throws UsernameNotFoundException, FieldValidationException;
-
     User changePassword(UserAccount account, String password) throws FieldValidationException;
     User findUserByUsername(String username);
     User findUserByIssuer(String issuer, String issuerId);

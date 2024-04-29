@@ -29,7 +29,6 @@
     <li class="nav-item" routerLink="facility" routerLinkActive="active" *ngIf="(isAdmin$ | async) === true">
       <a class="nav-link">IIS</a>
     </li>
-
     <li class="nav-item" routerLink="administration" routerLinkActive="active" *ngIf="(isAdmin$ | async) === true">
       <a class="nav-link">Administration Panel</a>
     </li>
@@ -53,9 +52,6 @@
       </span>
 
       <div ngbDropdownMenu>
-        <button [routerLink]="['/', 'create-credentials' ]" ngbDropdownItem routerLinkActive="active-dropdown" *ngIf="!user.credentials">
-          <i class="fa fa-pencil"></i> Create qDAR Credentials
-        </button>
         <button [routerLink]="['/', 'update-profile' ]"  *ngIf="!user.source" ngbDropdownItem>
           <i class="fa fa-user"></i> Update User Profile
         </button>

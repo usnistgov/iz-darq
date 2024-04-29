@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 @org.springframework.context.annotation.Configuration
 public class Configuration {
@@ -53,7 +54,12 @@ public class Configuration {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
+			@Override
+			public Path getFilePath(String id) {
+				return null;
+			}
+
 		};
 	}
 	

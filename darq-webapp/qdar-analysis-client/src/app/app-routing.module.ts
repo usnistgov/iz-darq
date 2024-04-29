@@ -11,7 +11,6 @@ import {
 import { HomeComponent } from './modules/core/components/home/home.component';
 import { ErrorPageComponent } from './modules/core/components/error-page/error-page.component';
 import { RegistrationComponent } from './modules/core/components/registration/registration.component';
-import { CreateCredentialsComponent } from './modules/core/components/create-credentials/create-credentials.component';
 import { VerifyEmailComponent } from './modules/core/components/verify-email/verify-email.component';
 import { UpdateProfileComponent } from './modules/core/components/update-profile/update-profile.component';
 import { ForgotPasswordComponent } from './modules/core/components/forgot-password/forgot-password.component';
@@ -68,19 +67,6 @@ const routes: Routes = [
     canActivate: [
       NotAuthenticatedGuard,
       TokenValidGuard,
-    ],
-  },
-  {
-    path: 'create-credentials',
-    component: CreateCredentialsComponent,
-    data: {
-      predicate: (user: any) => {
-        return !user.payload?.credentials && user.payload?.source === 'AART';
-      }
-    },
-    canActivate: [
-      AuthenticatedGuard,
-      UserPredicateGuard,
     ],
   },
   {

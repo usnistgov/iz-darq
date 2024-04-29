@@ -77,7 +77,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/**/api/user/reset-password-request").not().authenticated()
 			.antMatchers("/**/api/user/verify-email").not().authenticated()
 			.antMatchers("/**/api/user/validate-token").not().authenticated()
-
 			.antMatchers("/**/api/facility/**").hasAuthority(ADMIN_PRIVILEGE)
 			.antMatchers("/**/api/account/**").hasAuthority(ADMIN_PRIVILEGE)
 			.antMatchers("/**/api/**").fullyAuthenticated()

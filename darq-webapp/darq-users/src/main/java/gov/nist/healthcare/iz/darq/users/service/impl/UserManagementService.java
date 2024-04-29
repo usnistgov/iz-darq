@@ -188,35 +188,6 @@ public class UserManagementService implements UserService {
     }
 
     @Override
-    public User createCredentials(CreateCredentialsRequest createCredentialsRequest) throws UsernameNotFoundException, RequestValidationException, OperationFailureException {
-        this.authorizeActionOn(createCredentialsRequest.getId(), false);
-        UserAccount account = this.accountService.getAccountById(createCredentialsRequest.getId());
-        if(account == null) {
-            throw new UsernameNotFoundException(createCredentialsRequest.getId());
-        }
-
-        if(!Strings.isNullOrEmpty(account.getPassword()) || !Strings.isNullOrEmpty(account.getUsername())) {
-            throw new OperationFailureException("Credentials for " + account.getUsername() + " already set");
-        }
-
-        List<FieldValidation> validationList = Arrays.asList(
-                this.validateUsername(createCredentialsRequest.getUsername()),
-                this.validatePassword(createCredentialsRequest.getPassword())
-        );
-
-        if(validationList.stream().map(FieldValidation::isStatus).anyMatch((s) -> !s)) {
-            throw new RequestValidationException(validationList.stream().filter((v) -> !v.isStatus()).collect(Collectors.toList()));
-        } else {
-            account.setqDarAccount(true);
-            account.setPending(true);
-            account.setUsername(createCredentialsRequest.getUsername());
-            account.setPassword(this.encoder.encode(createCredentialsRequest.getPassword()));
-            this.accountService.save(account);
-            return this.fromAccount(account);
-        }
-    }
-
-    @Override
     public User updateProfile(ProfileUpdateRequest updateRequest, User user) throws UsernameNotFoundException, FieldValidationException {
         this.authorizeActionOn(updateRequest.getId(), false);
         UserAccount account = this.accountService.getAccountById(updateRequest.getId());

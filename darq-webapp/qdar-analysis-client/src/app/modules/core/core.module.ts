@@ -11,7 +11,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RegistrationComponent } from './components/registration/registration.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { SharedModule } from '../shared/shared.module';
-import { CreateCredentialsComponent } from './components/create-credentials/create-credentials.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { UpdateProfileComponent } from './components/update-profile/update-profile.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
@@ -25,7 +24,6 @@ import { DownloadComponent } from './components/download/download.component';
     ErrorPageComponent,
     RegistrationComponent,
     ForgotPasswordComponent,
-    CreateCredentialsComponent,
     VerifyEmailComponent,
     UpdateProfileComponent,
     ResetPasswordComponent,

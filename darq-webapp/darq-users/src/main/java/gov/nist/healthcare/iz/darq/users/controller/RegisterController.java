@@ -3,7 +3,6 @@ package gov.nist.healthcare.iz.darq.users.controller;
 import com.google.common.base.Strings;
 import freemarker.template.TemplateException;
 import gov.nist.healthcare.domain.OpAck;
-import gov.nist.healthcare.iz.darq.access.domain.CreateCredentialsRequest;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationPartialFailureException;
@@ -97,15 +96,4 @@ public class RegisterController {
         }
     }
 
-    @RequestMapping(value = "/create-credentials", method = RequestMethod.POST)
-    @ResponseBody
-    public OpAck<User> credentials(@RequestBody CreateCredentialsRequest request) throws OperationFailureException {
-        try {
-            User user = this.userManagementService.createCredentials(request);
-            this.accountNotificationService.notifyAdminAccountCreated(user);
-            return new OpAck<>(OpAck.AckStatus.SUCCESS, "Account Created Successfully", user, "CREATE_CREDENTIALS");
-        } catch (RequestValidationException e) {
-            throw new OperationFailureException(e.getMessage());
-        }
-    }
 }
