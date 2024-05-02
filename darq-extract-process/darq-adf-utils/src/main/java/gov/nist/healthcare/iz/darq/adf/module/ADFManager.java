@@ -24,6 +24,9 @@ public class ADFManager {
 		put("COMPATIBILITY_3", new HashSet<>(Arrays.asList(
 				"3.0.0-SNAPSHOT", "3.0.0-SNAPSHOT.rev1"
 		)));
+		put("COMPATIBILITY_4", new HashSet<>(Arrays.asList(
+				"3.0.0", "3.0.1"
+		)));
 	}};
 
 
