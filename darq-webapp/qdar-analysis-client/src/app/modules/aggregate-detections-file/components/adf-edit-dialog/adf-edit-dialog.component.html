@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Edit File "{{ adf.name }}"</h2>
+<div mat-dialog-content>
+  <form [formGroup]="formGroup">
+    <div class="form-group">
+      <label for="name"><strong>Name</strong></label>
+      <input type="text" placeholder="Name" class="form-control" formControlName="name" name="name" id="name">
+    </div>
+    <div class="form-group">
+      <label for="name"><strong>Tags</strong></label>
+      <div class="p-chips-100p p-chips-dark">
+        <p-chips [style]="{ width : '100%'}" formControlName="tags"></p-chips>
+      </div>
+    </div>
+  </form>
+</div>
+<mat-dialog-actions style="justify-content: flex-end;">
+  <button [mat-dialog-close]="" class="btn btn-sm btn-secondary" style="margin-right: 5px;">Cancel</button>
+  <button [mat-dialog-close]="formGroup.getRawValue()" [disabled]="!formGroup.valid" class="btn btn-sm btn-success">Save</button>
+</mat-dialog-actions>

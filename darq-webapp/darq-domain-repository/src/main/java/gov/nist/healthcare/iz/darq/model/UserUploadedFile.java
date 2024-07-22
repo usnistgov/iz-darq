@@ -17,14 +17,14 @@ public class UserUploadedFile extends ADFMetaData implements Owned, AssignableTo
     public UserUploadedFile() {
     }
 
-    public UserUploadedFile(String name, String path, String owner, String ownerId, Date analysedOn, Date uploadedOn, ConfigurationPayload configuration, String keyHash, Summary summary, String size, String version, String build, String mqeVersion, Set<String> inactiveDetections, String facilityId, long totalAnalysisTime) {
-        super(name, path, owner, ownerId, analysedOn, uploadedOn, configuration, keyHash, summary, size, version, build, mqeVersion, inactiveDetections, totalAnalysisTime);
+    public UserUploadedFile(String name, List<String> tags, String path, String owner, String ownerId, Date analysedOn, Date uploadedOn, ConfigurationPayload configuration, String keyHash, Summary summary, String size, String version, String build, String mqeVersion, Set<String> inactiveDetections, String facilityId, long totalAnalysisTime) {
+        super(name, tags, path, owner, ownerId, analysedOn, uploadedOn, configuration, keyHash, summary, size, version, build, mqeVersion, inactiveDetections, totalAnalysisTime);
         this.facilityId = facilityId;
         this.composed = false;
     }
 
-    public UserUploadedFile(String name, String path, String owner, String ownerId, Date analysedOn, Date uploadedOn, ConfigurationPayload configuration, String keyHash, Summary summary, String size, String version, String build, String mqeVersion, Set<String> inactiveDetections, String facilityId, List<ADFileComponent> componentsRef, long totalAnalysisTime) {
-        super(name, path, owner, ownerId, analysedOn, uploadedOn, configuration, keyHash, summary, size, version, build, mqeVersion, inactiveDetections, totalAnalysisTime);
+    public UserUploadedFile(String name, List<String> tags, String path, String owner, String ownerId, Date analysedOn, Date uploadedOn, ConfigurationPayload configuration, String keyHash, Summary summary, String size, String version, String build, String mqeVersion, Set<String> inactiveDetections, String facilityId, List<ADFileComponent> componentsRef, long totalAnalysisTime) {
+        super(name, tags, path, owner, ownerId, analysedOn, uploadedOn, configuration, keyHash, summary, size, version, build, mqeVersion, inactiveDetections, totalAnalysisTime);
         this.facilityId = facilityId;
         this.composed = componentsRef != null && componentsRef.size() > 1;
         if(componentsRef != null && componentsRef.size() <= 1) {

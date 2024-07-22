@@ -25,6 +25,7 @@ public class ADFDescriptor {
 	private String build;
 	private String mqeVersion;
 	List<ConfigurationDescriptor> compatibilities;
+	List<String> tags;
 	String facilityId;
 	boolean composed;
 	List<ADFileComponent> components;
@@ -33,7 +34,7 @@ public class ADFDescriptor {
 		super();
 	}
 
-	public ADFDescriptor(String id, String name, String owner, String ownerDisplayName, String ownerId, Date analysedOn, Date uploadedOn, String size, List<ConfigurationDescriptor> compatibilities, String version, String build, String mqeVersion, String facilityId, List<ADFileComponent> components) {
+	public ADFDescriptor(String id, String name, List<String> tags, String owner, String ownerDisplayName, String ownerId, Date analysedOn, Date uploadedOn, String size, List<ConfigurationDescriptor> compatibilities, String version, String build, String mqeVersion, String facilityId, List<ADFileComponent> components) {
 		this.id = id;
 		this.name = name;
 		this.owner = owner;
@@ -60,6 +61,7 @@ public class ADFDescriptor {
 		this.cliVersion = version;
 		this.mqeVersion = mqeVersion;
 		this.build = build;
+		this.tags = tags;
 	}
 
 	public String getFacilityId() {
@@ -186,5 +188,13 @@ public class ADFDescriptor {
 
 	public String getMqeVersion() {
 		return mqeVersion;
+	}
+
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 }

@@ -88,6 +88,10 @@ export class FileService {
     }
   }
 
+  updateFile(id: string, fileChange: { name: string, tags: string[] }) {
+    return this.http.post<Message<IADFDescriptor>>(this.URL_PREFIX + id, fileChange);
+  }
+
   deleteFile(id: string): Observable<Message<IADFMetadata>> {
     return this.http.delete<Message<IADFMetadata>>(this.URL_PREFIX + '/' + id);
   }

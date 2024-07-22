@@ -1,6 +1,14 @@
+<div>
+  <div class="form-group">
+    <label for="name"><strong><i class="fa fa-filter" [ngClass]="{ 'filter-active': tagFilter.length > 0}"></i> Filter By Tags</strong></label>
+    <div class="p-chips-100p p-chips-dark">
+      <p-chips [style]="{ width : '100%'}" [(ngModel)]="tagFilter" (ngModelChange)="updateFilter($event)"></p-chips>
+    </div>
+  </div>
+</div>
 <p-table
   *ngIf="facilityId$ | async as facilityId"
-  [value]="files$ | async"
+  [value]="filtered$ | async"
   [paginator]="true"
   [rows]="10"
   [frozenColumns]
@@ -43,9 +51,22 @@
   <ng-template pTemplate="body" let-rowData>
     <tr>
       <td>
-        <i class="fa fa-file" style="color: blue; margin-right: 10px;"></i>
-        <i *ngIf="rowData.composed" class="fa fa-compress" style="color: #a71ba7; margin-right: 10px;"></i>
-        <strong>{{ rowData.name }}</strong>
+        <div style="display: flex; gap: 10px; justify-content: flex-start; align-items: flex-start;">
+          <button
+            *ngIf="'EDIT' | accessOnResource: rowData:'ADF' | async"
+            class="btn btn-sm btn-primary"
+            (click)="edit(rowData)">
+            <i class="fa fa-pencil"></i>
+          </button>
+          <div>
+            <i class="fa fa-file" style="color: blue; margin-right: 10px;"></i>
+            <i *ngIf="rowData.composed" class="fa fa-compress" style="color: #a71ba7; margin-right: 10px;"></i>
+            <strong>{{ rowData.name }}</strong>
+            <div style="display: flex; gap: 2px; margin-top: 5px;">
+              <span *ngFor="let item of (rowData.tags || [])" class="badge badge-dark">{{item}}</span>
+            </div>
+          </div>
+        </div>
       </td>
       <td><i class="fa fa-user" style="color: rgb(255, 0, 119);"></i> {{ rowData.ownerDisplayName }}</td>
       <td>{{ rowData.uploadedOn | date:'MM-dd-yyyy HH:mm' }}</td>

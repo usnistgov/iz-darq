@@ -6,6 +6,12 @@
       <input type="text" placeholder="Name" class="form-control" [(ngModel)]="name" name="name" id="name" required>
     </div>
     <div class="form-group">
+      <label for="name"><strong>Tags</strong></label>
+      <div class="p-chips-100p p-chips-dark">
+        <p-chips [style]="{ width : '100%'}" [(ngModel)]="tags" name="tags" id="tags"></p-chips>
+      </div>
+    </div>
+    <div class="form-group">
       <label for="facility"><strong>IIS</strong></label>
       <p-dropdown [(ngModel)]="facilityId" [autoDisplayFirst]="false" [showClear]="true" [options]="facilities" [style]="{ width : '100%'}" name="facility" id="facility" ></p-dropdown>
     </div>
@@ -66,12 +72,15 @@
       <ng-template pTemplate="body" let-rowData>
         <tr>
           <td>
-            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            <p-tableCheckbox #checkbox [value]="rowData" (click)="onRowCheckboxClick(checkbox.checked, rowData)" ></p-tableCheckbox>
           </td>
           <td>
             <i class="fa fa-file" style="color: blue; margin-right: 10px;"></i>
             <i *ngIf="rowData.composed" class="fa fa-compress" style="color: #a71ba7; margin-right: 10px;"></i>
             <strong>{{ rowData.name }}</strong>
+            <div style="display: flex; gap: 2px; margin-top: 5px;">
+              <span *ngFor="let item of (rowData.tags || [])" class="badge badge-dark">{{item}}</span>
+            </div>
           </td>
           <td>
             {{ rowData.version }}

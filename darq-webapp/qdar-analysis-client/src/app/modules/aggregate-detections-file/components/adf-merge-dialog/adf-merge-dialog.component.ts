@@ -25,6 +25,7 @@ export class AdfMergeDialogComponent implements OnInit {
 
   name: string;
   facilityId: string;
+  tags: string[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<AdfMergeDialogComponent>,
@@ -58,6 +59,12 @@ export class AdfMergeDialogComponent implements OnInit {
     }
   }
 
+  onRowCheckboxClick(checked: boolean, row: IADFDescriptor) {
+    if (checked) {
+      this.mergeTags(this.tags, row.tags || []);
+    }
+  }
+
   areCompatible(a: IADFDescriptor, b: IADFDescriptor) {
     if (!a.cliVersion || !b.cliVersion) { return false; }
 
@@ -69,6 +76,14 @@ export class AdfMergeDialogComponent implements OnInit {
     }
   }
 
+  mergeTags(existing: string[], additional: string[]) {
+    for (const tag of additional) {
+      if (!existing.includes(tag)) {
+        existing.push(tag);
+      }
+    }
+  }
+
   valid() {
     return this.name && this.facilityId && this.fileSelection && this.fileSelection.length > 1;
   }
@@ -77,6 +92,7 @@ export class AdfMergeDialogComponent implements OnInit {
     this.dialogRef.close({
       name: this.name,
       facilityId: this.facilityId,
+      tags: this.tags,
       ids: this.fileSelection.map((f) => f.id),
     });
   }

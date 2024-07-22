@@ -3,7 +3,7 @@ package gov.nist.healthcare.iz.darq.access.domain;
 public enum Action {
     VIEW(ResourceType.values()),
     CREATE(ResourceType.CONFIGURATION, ResourceType.REPORT_TEMPLATE, ResourceType.QUERY),
-    EDIT(ResourceType.CONFIGURATION, ResourceType.REPORT_TEMPLATE, ResourceType.QUERY),
+    EDIT(ResourceType.CONFIGURATION, ResourceType.REPORT_TEMPLATE, ResourceType.QUERY, ResourceType.ADF),
     CLONE(ResourceType.CONFIGURATION, ResourceType.REPORT_TEMPLATE),
     DELETE(ResourceType.values()),
     PUBLISH(ResourceType.CONFIGURATION, ResourceType.REPORT_TEMPLATE, ResourceType.REPORT),

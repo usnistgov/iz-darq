@@ -2,6 +2,7 @@ package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.StringWriter;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -176,11 +177,10 @@ public class SimpleHTMLSummaryGenerator implements HTMLSummaryGenerator {
 
 		if(printAdf && writer.supportsPrint()) {
 			// ADF File Writer
-			FileWriter adfFileWriter = new FileWriter(new File(path+"/plain_adf_content.json"));
-			adfFileWriter.write(writer.getAsString());
+			FileWriter adfFileWriter = new FileWriter(new File(path+"/plain_adf_content.txt"));
+			writer.writeAsString(adfFileWriter);
 			adfFileWriter.close();
 		}
-
 
 		// Write CSS
 	    FileUtils.copyInputStreamToFile(Exporter.class.getResourceAsStream("/bootstrap.min.css"), Paths.get(path, "css", "bootstrap.min.css").toFile());

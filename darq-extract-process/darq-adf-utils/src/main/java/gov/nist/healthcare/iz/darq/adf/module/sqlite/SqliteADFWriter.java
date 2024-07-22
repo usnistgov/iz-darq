@@ -1,4 +1,8 @@
 package gov.nist.healthcare.iz.darq.adf.module.sqlite;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.model.ADFVersion;
 import gov.nist.healthcare.iz.darq.adf.module.archive.ADFArchiveManager;
@@ -6,6 +10,7 @@ import gov.nist.healthcare.iz.darq.adf.module.sqlite.model.Dictionaries;
 import gov.nist.healthcare.iz.darq.digest.domain.*;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -111,13 +116,74 @@ public class SqliteADFWriter extends SimpleADFWriter {
 	}
 
 	@Override
-	public String getAsString() throws Exception {
-		throw new Exception("ADFWriter for ADF Version '" + getVersion() + "' does not support print");
+	public void writeAsString(FileWriter writer) throws Exception {
+		// COMMIT ANY PENDING TRANSACTION
+		connection.commit();
+
+		DatabaseMetaData meta = connection.getMetaData();
+		JsonFactory jsonFactory = new JsonFactory();
+		jsonFactory.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
+		ObjectMapper mapper = new ObjectMapper(jsonFactory);
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+		ResultSet tables = meta.getTables("", "", "%", new String[]{"TABLE"});
+
+		writer.write("** Table : METADATA (Encrypted Content) **\n");
+		writer.write("* INFO\n");
+		mapper.writeValue(writer, metadata);
+		writer.write("\n\n");
+		writer.write("* SUMMARY\n");
+		mapper.writeValue(writer, summary);
+		writer.write("\n\n");
+		writer.write("* CONFIGURATION\n");
+		mapper.writeValue(writer, configurationPayload);
+		writer.write("\n\n");
+		writer.write("* VERSION : "+ getVersion().name());
+		writer.write("\n\n");
+
+		writer.write("** Table : DICTIONARY (Encrypted Content) **\n");
+		for(Field field: dictionaries.get().keySet()) {
+			writer.write("* "+field.name()+"\n");
+			mapper.writeValue(writer, dictionaries.getValues(field));
+			writer.write("\n\n");
+		}
+
+		writer.write("** Table : SEC **\n");
+		writer.write("* KEY : Contains encrypted AES key using qDAR public key. \nthe AES secret key will be generated when the final ADF is written into disk.\n");
+		writer.write("* PUBLIC KEY HASH : "+  DatatypeConverter.printHexBinary(key.getPublicKeyHash()));
+
+		while(tables.next()) {
+			String name = tables.getString("TABLE_NAME");
+			if(!Arrays.asList("METADATA", "SEC", "DICTIONARY").contains(name)) {
+				Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery("SELECT * FROM "+ name);
+				int columns = rs.getMetaData().getColumnCount();
+				writer.write("\n\n");
+				writer.write("** Table : " + name +" **");
+				writer.write("\n");
+				List<Integer> tabSize = new ArrayList<>();
+				for(int i = 1; i <= columns; i++) {
+					int size = rs.getMetaData().getColumnName(i).length();
+					tabSize.add((size / 6) + 1);
+					writer.write(rs.getMetaData().getColumnName(i)+"\t| ");
+				}
+				writer.write("\n");
+				while(rs.next()) {
+					for(int i = 1; i <= columns; i++) {
+						writer.write(rs.getString(i));
+						for(int j = 0; j < tabSize.get(i - 1); j++) {
+							writer.write("\t");
+						}
+						writer.write("| ");
+					}
+					writer.write("\n");
+				}
+			}
+		}
 	}
 
 	@Override
 	public boolean supportsPrint() {
-		return false;
+		return true;
 	}
 
 	@Override

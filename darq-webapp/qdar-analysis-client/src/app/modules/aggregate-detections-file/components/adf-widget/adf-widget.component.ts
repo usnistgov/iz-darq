@@ -77,6 +77,7 @@ export class AdfWidgetComponent extends DamWidgetComponent implements OnInit, Af
                 }
               );
             }
+            return EMPTY;
           })
         );
       }),

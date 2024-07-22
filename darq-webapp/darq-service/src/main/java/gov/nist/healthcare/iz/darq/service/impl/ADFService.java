@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.service.impl;
 
+import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
@@ -35,14 +36,19 @@ public class ADFService {
     @Autowired
     ADFTemporaryDirectoryProviderService temporaryDirectoryProviderService;
 
-    UserUploadedFile create(String name, String facility, String ownerId, ADFReader file, List<ADFileComponent> components) throws InvalidFileFormat {
+    UserUploadedFile create(String name, List<String> tags, String facility, String ownerId, ADFReader file, List<ADFileComponent> components) throws InvalidFileFormat {
         try {
+            List<String> issues = validateNameAndTags(name, tags);
+            if(issues.size() > 0) {
+                throw new Exception("Invalid file metadata : "+ String.join(", ", issues));
+            }
             this.configService.validateConfigurationPayload(file.getConfigurationPayload());
             String uid = UUID.randomUUID().toString();
             Path dir = Files.createDirectory(Paths.get(PATH+"/"+uid));
             if (dir.toFile().exists()) {
                 UserUploadedFile metadata = new UserUploadedFile(
                         name,
+                        tags,
                         uid,
                         null,
                         ownerId,
@@ -73,7 +79,31 @@ public class ADFService {
         }
     }
 
-    public UserUploadedFile merge(String name, String facility, String ownerId, Set<UserUploadedFile> metadataList) throws Exception {
+    public UserUploadedFile update(UserUploadedFile file, String name, List<String> tags) throws Exception {
+        List<String> issues = validateNameAndTags(name, tags);
+        if(issues.size() > 0) {
+            throw new Exception("Invalid file metadata : "+ String.join(", ", issues));
+        }
+        else {
+            file.setName(name);
+            file.setTags(tags);
+            storage.store(file);
+            return file;
+        }
+    }
+
+    public List<String> validateNameAndTags(String name, List<String> tags) {
+        List<String> issues = new ArrayList<>();
+        if(Strings.isNullOrEmpty(name)) {
+            issues.add("Name is required.");
+        }
+        if(tags != null && tags.stream().anyMatch(Strings::isNullOrEmpty)) {
+            issues.add("Specified tag can't be empty");
+        }
+        return issues;
+    }
+
+    public UserUploadedFile merge(String name, List<String> tags, String facility, String ownerId, Set<UserUploadedFile> metadataList) throws Exception {
         if(metadataList == null) {
             throw new Exception("Invalid number of ADF to merge : none");
         }
@@ -91,7 +121,7 @@ public class ADFService {
         this.adfManager.merge(files, temporaryMergedADFLocation, key);
         try(ADFReader merged = adfManager.getADFReader(temporaryMergedADFLocation)) {
             merged.read(key);
-            return this.create(name, facility, ownerId, merged, this.getComponentsListFrom(metadataList));
+            return this.create(name, tags, facility, ownerId, merged, this.getComponentsListFrom(metadataList));
         }
     }
 

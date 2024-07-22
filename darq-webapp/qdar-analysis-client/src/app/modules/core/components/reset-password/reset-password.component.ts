@@ -50,7 +50,7 @@ export class ResetPasswordComponent implements OnInit {
           })
         );
       },
-      (_message) => {
+      (message) => {
         return of();
       }
     ).subscribe();

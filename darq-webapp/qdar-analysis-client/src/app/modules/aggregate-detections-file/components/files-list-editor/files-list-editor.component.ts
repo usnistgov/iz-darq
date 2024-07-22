@@ -9,12 +9,13 @@ import {
   EditorUpdate,
   TurnOnLoader,
   TurnOffLoader,
-  MessageService
+  MessageService,
+  IMessage
 } from 'ngx-dam-framework';
 import { Action, Store } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
-import { combineLatest, Observable, of, EMPTY, throwError } from 'rxjs';
-import { concatMap, flatMap, map, take, takeUntil, filter, catchError } from 'rxjs/operators';
+import { combineLatest, Observable, of, EMPTY, throwError, BehaviorSubject, Subscription } from 'rxjs';
+import { concatMap, flatMap, map, take, takeUntil, filter, catchError, tap } from 'rxjs/operators';
 import { IADFDescriptor } from '../../model/adf.model';
 import * as moment from 'moment';
 import { DataTableDialogComponent } from 'src/app/modules/shared/components/data-table-dialog/data-table-dialog.component';
@@ -28,6 +29,7 @@ import { AnalysisService } from 'src/app/modules/shared/services/analysis.servic
 import { ValuesService } from 'src/app/modules/shared/services/values.service';
 import { FileService } from '../../services/file.service';
 import { selectUserFacilityById } from '../../store/core.selectors';
+import { AdfEditDialogComponent } from '../adf-edit-dialog/adf-edit-dialog.component';
 
 export const ADF_FILE_LIST_EDITOR_METADATA: IEditorMetadata = {
   id: 'ADF_FILE_LIST_EDITOR_METADATA',
@@ -42,8 +44,11 @@ export const ADF_FILE_LIST_EDITOR_METADATA: IEditorMetadata = {
 })
 export class FilesListEditorComponent extends DamAbstractEditorComponent implements OnInit, OnDestroy {
 
-  files$: Observable<IADFDescriptor[]>;
+  files$: BehaviorSubject<IADFDescriptor[]>;
+  filtered$: Observable<IADFDescriptor[]>;
   facilityId$: Observable<string>;
+  tagFilter: string[] = [];
+  workspaceSubscription: Subscription;
 
   constructor(
     store: Store<any>,
@@ -62,15 +67,18 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
       actions$,
       store,
     );
-    this.files$ = this.currentSynchronized$.pipe(
+    this.files$ = new BehaviorSubject([]);
+    this.workspaceSubscription = this.currentSynchronized$.pipe(
       takeUntil(this.active$.pipe(
         filter(value => value.editor.id !== ADF_FILE_LIST_EDITOR_METADATA.id),
       )),
       map((value) => {
-        return [...value.files];
+        const files = [...value.files];
+        files.sort((a, b) => b.uploadedOn - a.uploadedOn);
+        this.files$.next(files);
       }),
-    );
-
+    ).subscribe();
+    this.filtered$ = this.files$.asObservable();
     this.facilityId$ = this.active$.pipe(
       takeUntil(this.active$.pipe(
         filter(value => value.editor.id !== ADF_FILE_LIST_EDITOR_METADATA.id),
@@ -79,6 +87,55 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
         return value.display.id;
       }),
     );
+  }
+
+  updateFilter(tags: string[]) {
+    if (tags.length === 0) {
+      this.filtered$ = this.files$.asObservable();
+    } else {
+      const normalizedTags = tags.map((tag) => tag.toLowerCase());
+      this.filtered$ = this.files$.asObservable().pipe(
+        map((files) => {
+          return this.filterListByTags(files, normalizedTags);
+        })
+      );
+    }
+  }
+
+  filterListByTags(files: IADFDescriptor[], tags: string[]) {
+    return files.filter((file) => {
+      if (file.tags && file.tags.length > 0) {
+        for (const tag of tags) {
+          if (!file.tags.includes(tag.toLowerCase())) {
+            return false;
+          }
+        }
+        return true;
+      }
+      return false;
+    });
+  }
+
+  edit(adf: IADFDescriptor) {
+    this.dialog.open(AdfEditDialogComponent, {
+      data: {
+        adf,
+      }
+    }).afterClosed().pipe(
+      flatMap((change) => {
+        if (change) {
+          return this.helper.getMessageAndHandle(
+            this.store,
+            () => {
+              return this.fileService.updateFile(adf.id, change);
+            },
+            this.handleSuccessAndRefresh
+          );
+        } else {
+          return of();
+        }
+      })
+    ).subscribe();
   }
 
   onEditorSave(action: EditorSave): Observable<Action> {
@@ -216,28 +273,30 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
             () => {
               return this.fileService.deleteFile(meta.id);
             },
-            (message) => {
-              if (message.status === MessageType.SUCCESS) {
-                return this.facilityId$.pipe(
-                  take(1),
-                  flatMap((facilityId) => {
-                    return this.fileService.getListByFacility(facilityId).pipe(
-                      map((files) => {
-                        return new EditorUpdate({
-                          value: { files },
-                          updateDate: true,
-                        });
-                      }),
-                    );
-                  })
-                );
-              }
-              return EMPTY;
-            }
+            this.handleSuccessAndRefresh
           );
         }
       }),
     ).subscribe();
+  }
+
+  handleSuccessAndRefresh = (message: IMessage<any>): Observable<Action> => {
+    if (message.status === MessageType.SUCCESS) {
+      return this.facilityId$.pipe(
+        take(1),
+        flatMap((facilityId) => {
+          return this.fileService.getListByFacility(facilityId).pipe(
+            map((files) => {
+              return new EditorUpdate({
+                value: { files },
+                updateDate: true,
+              });
+            }),
+          );
+        })
+      );
+    }
+    return EMPTY;
   }
 
   age(date: Date) {
@@ -248,6 +307,9 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
   }
 
   ngOnDestroy() {
+    if (this.workspaceSubscription) {
+      this.workspaceSubscription.unsubscribe();
+    }
   }
 
   ngOnInit(): void {

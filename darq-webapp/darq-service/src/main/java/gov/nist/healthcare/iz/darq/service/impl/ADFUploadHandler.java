@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import gov.nist.healthcare.crypto.service.CryptoKey;
@@ -35,7 +36,7 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 	ADFTemporaryDirectoryProviderService temporaryDirectoryProviderService;
 
 	@Override
-	public void handle(String name, String facility, InputStream stream, String ownerId, long size) throws InvalidFileFormat {
+	public void handle(String name, List<String> tags, String facility, InputStream stream, String ownerId, long size) throws InvalidFileFormat {
 		// Write stream to temporary directory
 		Path temporary = temporaryDirectoryProviderService.getADFTemporaryDirectoryPath();
 		Path temporaryAdf = Paths.get(temporary.toAbsolutePath().toString(), UUID.randomUUID() + "_uploaded_"+ (new Date()).getTime() +".data");
@@ -47,7 +48,7 @@ public class ADFUploadHandler implements ADFStoreUploadHandler {
 				if(!file.getVersion().equals(current)) {
 					throw new Exception("ADF version '"+ file.getVersion()+"' not supported, the currently supported ADF version is '" +current);
 				} else {
-					this.adfService.create(name, facility, ownerId, file, null);
+					this.adfService.create(name, tags, facility, ownerId, file, null);
 				}
 			}
 		} catch (Exception e) {

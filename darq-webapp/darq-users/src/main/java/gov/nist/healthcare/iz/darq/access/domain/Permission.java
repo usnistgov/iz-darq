@@ -142,7 +142,8 @@ public enum Permission {
                             OWNED(
                                     Action.VIEW,
                                     Action.ANALYSE,
-                                    Action.DELETE
+                                    Action.DELETE,
+                                    Action.EDIT
                             )
                     ),
                     ActionOn(
@@ -202,7 +203,8 @@ public enum Permission {
                             ResourceType.ADF,
                             ANY(
                                     Action.ANALYSE,
-                                    Action.DELETE
+                                    Action.DELETE,
+                                    Action.EDIT
                             )
                     ),
                     ActionOn(

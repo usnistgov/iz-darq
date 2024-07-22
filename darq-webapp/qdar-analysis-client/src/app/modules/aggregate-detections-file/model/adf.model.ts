@@ -17,6 +17,7 @@ export interface IADFDescriptor extends IDamResource {
   cliVersion: string;
   build: string;
   mqeVersion: string;
+  tags?: string[];
 }
 
 export interface IADFMetadata extends IDamResource {

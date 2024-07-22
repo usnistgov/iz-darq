@@ -55,6 +55,7 @@ public class DescriptorService {
         return new ADFDescriptor(
                 userUploadedFile.getId(),
                 userUploadedFile.getName(),
+                userUploadedFile.getTags(),
                 userUploadedFile.getOwner(),
                 this.userManagementService.getUserDisplayName(userUploadedFile.getOwnerId()),
                 userUploadedFile.getOwnerId(),

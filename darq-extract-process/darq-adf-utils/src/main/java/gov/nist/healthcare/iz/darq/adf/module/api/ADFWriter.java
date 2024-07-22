@@ -9,6 +9,7 @@ import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
 import gov.nist.healthcare.iz.darq.digest.domain.*;
 
+import java.io.FileWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public abstract class ADFWriter implements AutoCloseable {
 	public abstract void close() throws Exception;
 	public abstract void exportAndClose(String location) throws Exception;
 	public abstract ADFVersion getVersion();
-	public abstract String getAsString() throws Exception;
+	public abstract void writeAsString(FileWriter writer) throws Exception;
 	public abstract boolean supportsPrint();
 
 	public void write(Map<String, PatientPayload> generalPatientPayload, Map<String, Map<String, ADPayload>> reportingGroupPayload) throws Exception {

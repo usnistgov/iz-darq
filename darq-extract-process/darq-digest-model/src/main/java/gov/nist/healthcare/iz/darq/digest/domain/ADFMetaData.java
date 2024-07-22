@@ -1,6 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public class ADFMetaData {
@@ -20,10 +21,12 @@ public class ADFMetaData {
 	String build;
 	String mqeVersion;
 	Set<String> inactiveDetections;
+	List<String> tags;
 	long totalAnalysisTime;
 
 	public ADFMetaData(
 			String name,
+			List<String> tags,
 			String path,
 			String owner,
 			String ownerId,
@@ -41,6 +44,7 @@ public class ADFMetaData {
 	) {
 		super();
 		this.name = name;
+		this.tags = tags;
 		this.path = path;
 		this.keyHash = keyHash;
 		this.owner = owner;
@@ -173,5 +177,13 @@ public class ADFMetaData {
 
 	public void setTotalAnalysisTime(long totalAnalysisTime) {
 		this.totalAnalysisTime = totalAnalysisTime;
+	}
+
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 }

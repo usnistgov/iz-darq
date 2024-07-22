@@ -15,6 +15,7 @@ import { JobListEditorComponent } from './components/job-list-editor/job-list-ed
 import { WidgetEffects } from './store/widget.effects';
 import { ReportListEditorComponent } from './components/report-list-editor/report-list-editor.component';
 import { AdfMergeDialogComponent } from './components/adf-merge-dialog/adf-merge-dialog.component';
+import { AdfEditDialogComponent } from './components/adf-edit-dialog/adf-edit-dialog.component';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { AdfMergeDialogComponent } from './components/adf-merge-dialog/adf-merge
     IisSidebarComponent,
     FilesListEditorComponent,
     AdfMergeDialogComponent,
+    AdfEditDialogComponent
   ],
   imports: [
     CommonModule,

@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
 import gov.nist.healthcare.iz.darq.access.service.EmailService;
+import gov.nist.healthcare.iz.darq.controller.domain.ADFEditRequest;
 import gov.nist.healthcare.iz.darq.controller.domain.ADFMergeRequest;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
@@ -89,7 +90,8 @@ public class ADFController {
 	) {
 		return this.repo.findByOwnerIdAndFacilityId(user.getId(), null).size();
 	}
-    
+
+	/// TODO Add tags on upload?
 	@RequestMapping(value="/adf/upload", method=RequestMethod.POST)
 	@ResponseBody
 	@PreAuthorize("AccessOperation(ADF, UPLOAD, #facility != null ? FACILITY(#facility) : GLOBAL)")
@@ -101,7 +103,7 @@ public class ADFController {
 	) throws Exception{
 		InputStream stream = file.getInputStream();
 		long size = file.getSize();
-		uploadHandler.handle(name, facility, stream, user.getId(), size);
+		uploadHandler.handle(name, new ArrayList<>(), facility, stream, user.getId(), size);
 		if(!Strings.isNullOrEmpty(facility)) {
 			Facility facilityObject = this.facilityService.getFacilityById(facility);
 			this.userManagementService.getAllUsers().stream()
@@ -161,6 +163,22 @@ public class ADFController {
 		return (UserUploadedFile) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
 	}
 
+	@RequestMapping(value="/adf/{id}", method=RequestMethod.POST)
+	@ResponseBody
+	@PreAuthorize("AccessResource(#request, ADF, EDIT, #id)")
+	public OpAck<ADFDescriptor> post(
+			@AuthenticationPrincipal User user,
+			HttpServletRequest request,
+			@PathVariable("id") String id,
+			@RequestBody ADFEditRequest editRequest) throws Exception {
+		UserUploadedFile updated = adfService.update(
+				(UserUploadedFile) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE),
+				editRequest.getName(),
+				editRequest.getTags()
+		);
+		return new OpAck<>(AckStatus.SUCCESS, "File Updated Successfully", getADFDescriptorFromFile(updated, user), "adf-update");
+	}
+
 	@RequestMapping(value="/adf/{id}/download", method=RequestMethod.GET)
 	@PreAuthorize("isAdmin() && AccessResource(#request, ADF, VIEW, #id)")
 	public void download(
@@ -168,7 +186,6 @@ public class ADFController {
 			HttpServletResponse rsp,
 			@PathVariable("id") String id) throws Exception {
 		UserUploadedFile file = (UserUploadedFile) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
-
 		rsp.setContentType("application/json");
 		rsp.setHeader("Content-disposition", "attachment;filename="+file.getName().replace(" ", "_")+".data");
 		IOUtils.copy(this.storage.getFileInputStream(file.getPath()), rsp.getOutputStream());
@@ -191,7 +208,7 @@ public class ADFController {
 			@AuthenticationPrincipal User user,
 			@RequestBody ADFMergeRequest mergeRequest) throws Exception {
 		Set<UserUploadedFile> files = (Set<UserUploadedFile>) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_SET_ATTRIBUTE);
-		adfService.merge(mergeRequest.getName(), mergeRequest.getFacilityId(), user.getId(), files);
+		adfService.merge(mergeRequest.getName(), mergeRequest.getTags(), mergeRequest.getFacilityId(), user.getId(), files);
 		return new OpAck<>(AckStatus.SUCCESS,"Merge File Created Successfully", null, "adf-merge");
 	}
 
@@ -202,6 +219,11 @@ public class ADFController {
 			result.add(this.descriptorService.getADFDescriptor(md, this.configService.compatibilities(md.getConfiguration(), configurations)));
 		}
 		return result;
+	}
+
+	ADFDescriptor getADFDescriptorFromFile(UserUploadedFile file, User user) {
+		List<DigestConfiguration> configurations = this.confRepo.findAccessibleTo(user.getId());
+		return this.descriptorService.getADFDescriptor(file, this.configService.compatibilities(file.getConfiguration(), configurations));
 	}
 
 }

@@ -49,7 +49,7 @@ export class VerifyEmailComponent implements OnInit {
           })
         );
       },
-      (_message) => {
+      (message) => {
         return of();
       }
     ).subscribe();

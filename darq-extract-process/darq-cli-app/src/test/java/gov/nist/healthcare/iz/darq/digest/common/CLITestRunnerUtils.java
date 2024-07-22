@@ -65,12 +65,13 @@ public class CLITestRunnerUtils {
 		InputStream PUBLIC_KEY = CLITestRunnerUtils.class.getResourceAsStream(Constants.TEST_KEY_PUBLIC);
 		Path pkPath = Paths.get(folder.getRoot().getAbsolutePath(), "public.pem");
 		FileUtils.copyInputStreamToFile(PUBLIC_KEY, pkPath.toFile());
-		String[] args = new String[5];
+		String[] args = new String[6];
 		args[0] = "-p=" + patientsFilePath.toAbsolutePath();
 		args[1] = "-v=" + vaccinationsFilePath.toAbsolutePath();
 		args[2] = "-c=" + configurationFilePath.toAbsolutePath();
 		args[3] = "-pub=" + pkPath.toAbsolutePath();
 		args[4] = "-out=" + folder.getRoot().getAbsolutePath();
+		args[5] = "-pa";
 		try {
 			CLIApp.run(args);
 		} finally {

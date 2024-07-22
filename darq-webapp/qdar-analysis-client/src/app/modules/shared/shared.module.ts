@@ -59,6 +59,7 @@ import { VariableInstanceDisplayComponent } from './components/variable-instance
 import { QueryDenominatorOverrideComponent } from './components/query-dialog/query-denominator-override/query-denominator-override.component';
 import { VariableRefComponent } from './components/variable-ref/variable-ref.component';
 import { VariableQueryComponent } from './components/query-dialog/variable-query/variable-query.component';
+import { ChipsModule } from 'primeng/chips';
 
 @NgModule({
   declarations: [
@@ -124,6 +125,7 @@ import { VariableQueryComponent } from './components/query-dialog/variable-query
     CheckboxModule,
     TreeTableModule,
     RadioButtonModule,
+    ChipsModule,
   ],
   exports: [
     // Modules,
@@ -147,6 +149,7 @@ import { VariableQueryComponent } from './components/query-dialog/variable-query
     TreeTableModule,
     CheckboxModule,
     RadioButtonModule,
+    ChipsModule,
     // Components,
     AgeGroupsComponent,
     DetectionsListComponent,
