@@ -2,6 +2,7 @@ import { IConfigurationDescriptor, IConfigurationPayload } from '../../configura
 import { IDamResource } from 'ngx-dam-framework';
 import { EntityType } from '../../shared/model/entity.model';
 import { IRange } from '../../shared/model/age-group.model';
+import { JobStatus } from '../../report/model/report.model';
 
 export interface IADFDescriptor extends IDamResource {
   id: string;
@@ -91,4 +92,18 @@ export interface ISummaryCounts {
 export interface IAgeGroupCount {
   range: IRange;
   nb: number;
+}
+
+export interface IADFMergeJobDescriptor {
+  id: string;
+  type: EntityType.MERGE_JOB;
+  name: string;
+  submitTime: Date;
+  startTime: Date;
+  endTime: Date;
+  status: JobStatus;
+  owner: string;
+  failure: string;
+  adfList: IADFDescriptor[];
+  facilityId: string;
 }

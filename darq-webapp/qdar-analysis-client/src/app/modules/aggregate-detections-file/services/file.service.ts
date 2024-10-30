@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, combineLatest, of } from 'rxjs';
 import { Message } from 'ngx-dam-framework';
-import { IADFDescriptor, IADFMetadata } from '../model/adf.model';
+import { IADFDescriptor, IADFMergeJobDescriptor, IADFMetadata } from '../model/adf.model';
 import { IReportTemplateDescriptor } from '../../report-template/model/report-template.model';
 import { IUserFacilityDescriptor } from '../../facility/model/facility.model';
 import { EntityType } from '../../shared/model/entity.model';
@@ -20,6 +20,7 @@ export const PRIVATE_FACILITY_ID = 'private';
 export class FileService {
 
   readonly URL_PREFIX = 'api/adf/';
+  readonly MERGE_JOB_URL_PREFIX = this.URL_PREFIX + 'merge/job/';
 
   constructor(
     private http: HttpClient,
@@ -108,4 +109,19 @@ export class FileService {
     return this.http.post<Message<any>>(this.URL_PREFIX + 'upload', form);
   }
 
+  getJobs(): Observable<IADFMergeJobDescriptor[]> {
+    return this.http.get<IADFMergeJobDescriptor[]>(this.MERGE_JOB_URL_PREFIX);
+  }
+
+  getJobsByFacility(facility: string): Observable<IADFMergeJobDescriptor[]> {
+    if (facility === PRIVATE_FACILITY_ID) {
+      return this.http.get<IADFMergeJobDescriptor[]>(this.MERGE_JOB_URL_PREFIX);
+    } else {
+      return this.http.get<IADFMergeJobDescriptor[]>(this.MERGE_JOB_URL_PREFIX + facility);
+    }
+  }
+
+  removeJob(jobId: string): Observable<Message<any>> {
+    return this.http.delete<Message<any>>(this.MERGE_JOB_URL_PREFIX + jobId);
+  }
 }

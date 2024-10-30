@@ -10,10 +10,13 @@ import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
 import gov.nist.healthcare.iz.darq.access.service.EmailService;
 import gov.nist.healthcare.iz.darq.controller.domain.ADFEditRequest;
 import gov.nist.healthcare.iz.darq.controller.domain.ADFMergeRequest;
+import gov.nist.healthcare.iz.darq.service.domain.ADFMergeJobCreateData;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
+import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.service.impl.ADFMergeJobManagementService;
 import gov.nist.healthcare.iz.darq.service.impl.ADFService;
 import gov.nist.healthcare.iz.darq.service.impl.AnalysisReportService;
 import gov.nist.healthcare.iz.darq.users.domain.User;
@@ -50,7 +53,7 @@ public class ADFController {
 	@Autowired
 	private DigestConfigurationRepository confRepo;
 	@Autowired
-	private ADFStore storage;
+	private ADFStore<UserUploadedFile> storage;
 	@Autowired
 	private FacilityService facilityService;
 	@Autowired
@@ -63,6 +66,8 @@ public class ADFController {
 	private UserManagementService userManagementService;
 	@Autowired
 	private ADFService adfService;
+	@Autowired
+	private ADFMergeJobManagementService adfMergeJobManagementService;
 
 	//  Facilities for user
 	@RequestMapping(value = "/adf/facilities", method = RequestMethod.GET)
@@ -203,13 +208,71 @@ public class ADFController {
 	@RequestMapping(value="/adf/merge", method=RequestMethod.POST)
 	@ResponseBody
 	@PreAuthorize("isAdmin() && AccessMultipleResource(#request, ADF, VIEW, #mergeRequest.ids)")
-	public OpAck<Void> get(
+	public OpAck<Void> submitMergeJob(
 			HttpServletRequest request,
 			@AuthenticationPrincipal User user,
 			@RequestBody ADFMergeRequest mergeRequest) throws Exception {
-		Set<UserUploadedFile> files = (Set<UserUploadedFile>) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_SET_ATTRIBUTE);
-		adfService.merge(mergeRequest.getName(), mergeRequest.getTags(), mergeRequest.getFacilityId(), user.getId(), files);
-		return new OpAck<>(AckStatus.SUCCESS,"Merge File Created Successfully", null, "adf-merge");
+		adfMergeJobManagementService.add(new ADFMergeJobCreateData(
+				mergeRequest.getName(),
+				mergeRequest.getFacilityId(),
+				user.getId(),
+				mergeRequest.getTags(),
+				mergeRequest.getIds()
+		));
+		return new OpAck<>(AckStatus.SUCCESS,"Merge Job Created Successfully", null, "adf-merge-job-submit");
+	}
+
+	@RequestMapping(value="/adf/merge/job", method=RequestMethod.POST)
+	@ResponseBody
+	@PreAuthorize("isAdmin() && AccessMultipleResource(#request, ADF, VIEW, #mergeRequest.ids)")
+	public OpAck<Void> getMergeJob(
+			HttpServletRequest request,
+			@AuthenticationPrincipal User user,
+			@RequestBody ADFMergeRequest mergeRequest) throws Exception {
+		adfMergeJobManagementService.add(new ADFMergeJobCreateData(
+				mergeRequest.getName(),
+				mergeRequest.getFacilityId(),
+				user.getId(),
+				mergeRequest.getTags(),
+				mergeRequest.getIds()
+		));
+		return new OpAck<>(AckStatus.SUCCESS,"Merge Job Created Successfully", null, "adf-merge-job-submit");
+	}
+
+	@RequestMapping(value = {"/adf/merge/job/{facilityId}"}, method = RequestMethod.GET)
+	@ResponseBody
+	@PreAuthorize("isAdmin()")
+	public List<ADFMergeJobDescriptor> getJobsForFacility(
+			@AuthenticationPrincipal User user,
+			@PathVariable("facilityId") String facilityId) {
+		return getAdfMergeJobDescriptorList(this.adfMergeJobManagementService.getAllJobsForUserAndFacility(user.getId(), facilityId));
+	}
+
+	@RequestMapping(value = {"/adf/merge/job"}, method = RequestMethod.GET)
+	@ResponseBody
+	@PreAuthorize("isAdmin()")
+	public List<ADFMergeJobDescriptor> getJobsForUser(@AuthenticationPrincipal User user)  {
+		return getAdfMergeJobDescriptorList(this.adfMergeJobManagementService.getAllJobsForUserAndFacility(user.getId(), null));
+	}
+
+	@RequestMapping(value = "/adf/merge/job/{id}", method = RequestMethod.DELETE)
+	@ResponseBody
+	@PreAuthorize("isAdmin()")
+	public OpAck<AnalysisJob> deleteJob(@PathVariable("id") String id) throws Exception {
+		if(this.adfMergeJobManagementService.delete(id)) {
+			return new OpAck<>(OpAck.AckStatus.SUCCESS, "Job Deleted Successfully", null, "job-delete");
+		} else {
+			throw new OperationFailureException("Failed to delete Job");
+		}
+	}
+
+	List<ADFMergeJobDescriptor> getAdfMergeJobDescriptorList(List<ADFMergeJob> jobs) {
+		List<ADFMergeJobDescriptor> result = new ArrayList<>();
+		for(ADFMergeJob job : jobs){
+			List<UserUploadedFile> files = job.getIds().stream().map((id) -> storage.get(id)).collect(Collectors.toList());
+			result.add(this.descriptorService.getADFMergeJobDescriptor(job, files));
+		}
+		return result;
 	}
 
 	List<ADFDescriptor> getADFDescriptorFromFiles(List<UserUploadedFile> files, User user) {

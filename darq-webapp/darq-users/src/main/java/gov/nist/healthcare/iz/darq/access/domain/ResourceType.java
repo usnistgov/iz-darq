@@ -5,6 +5,7 @@ public enum ResourceType {
     CONFIGURATION,
     REPORT_TEMPLATE,
     ANALYSIS_JOB,
+    ADF_MERGE_JOB,
     REPORT,
     QUERY
 }

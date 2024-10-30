@@ -241,7 +241,7 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
                     this.facilityId$.pipe(
                       take(1),
                       map((id) => {
-                        this.router.navigate(['/', 'adf', 'dashboard', id, 'jobs']);
+                        this.router.navigate(['/', 'adf', 'dashboard', id, 'analysis-jobs']);
                       })
                     ).subscribe();
                   }

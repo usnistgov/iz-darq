@@ -15,14 +15,28 @@ import {
   OpenAnalysisJobEditor,
   CoreActionTypes,
   CoreActions,
+  OpenMergeJobEditor,
 } from './core.actions';
 
 import { selectUserFacilityById } from './core.selectors';
 import { OpenReportsEditor } from './core.actions';
 import { ReportService } from '../../report/services/report.service';
+import { IUserFacilityDescriptor } from '../../facility/model/facility.model';
 
 @Injectable()
 export class WidgetEffects extends DamWidgetEffect {
+
+  constructor(
+    private fileService: FileService,
+    private store: Store<any>,
+    private analysisService: AnalysisService,
+    private messageService: MessageService,
+    private supportService: SupportDataService,
+    private reportService: ReportService,
+    actions$: Actions<CoreActions>
+  ) {
+    super(ADF_WIDGET, actions$);
+  }
 
   @Effect()
   loadAdfDashboard$ = this.actions$.pipe(
@@ -121,29 +135,26 @@ export class WidgetEffects extends DamWidgetEffect {
       ]).pipe(
         take(1),
         flatMap(([jobs, facility]) => {
-          return [
-            new SetValue({
-              facilityId: action.payload.id,
-            }),
-            new LoadResourcesInRepository<any>({
-              collections: [
-                {
-                  key: 'jobs',
-                  values: jobs,
-                }
-              ]
-            }),
-            new OpenEditor({
-              id: action.payload.id,
-              editor: action.payload.editor,
-              initial: {
-                jobs,
-              },
-              display: {
-                ...facility,
-              },
-            })
-          ];
+          return this.openJobEditor(action, jobs, facility);
+        }),
+        catchError((error) => {
+          return this.handleError(error, action);
+        })
+      );
+    })
+  );
+
+  @Effect()
+  openMergeJobEditor$ = this.actions$.pipe(
+    ofType(CoreActionTypes.OpenMergeJobEditor),
+    concatMap((action: OpenMergeJobEditor) => {
+      return combineLatest([
+        this.fileService.getJobsByFacility(action.payload.id),
+        this.store.select(selectUserFacilityById, { id: action.payload.id }),
+      ]).pipe(
+        take(1),
+        flatMap(([jobs, facility]) => {
+          return this.openJobEditor(action, jobs, facility);
         }),
         catchError((error) => {
           return this.handleError(error, action);
@@ -193,23 +204,37 @@ export class WidgetEffects extends DamWidgetEffect {
     })
   );
 
+  openJobEditor(action: OpenMergeJobEditor | OpenAnalysisJobEditor, jobs: any[], facility: IUserFacilityDescriptor) {
+    return [
+      new SetValue({
+        facilityId: action.payload.id,
+      }),
+      new LoadResourcesInRepository<any>({
+        collections: [
+          {
+            key: 'merge-jobs',
+            values: jobs,
+          }
+        ]
+      }),
+      new OpenEditor({
+        id: action.payload.id,
+        editor: action.payload.editor,
+        initial: {
+          jobs,
+        },
+        display: {
+          ...facility,
+        },
+      })
+    ];
+  }
+
   handleError(error, action): Observable<Action> {
     return of(
       this.messageService.actionFromError(error),
       new OpenEditorFailure({ id: action.payload.editor.id }),
     );
-  }
-
-  constructor(
-    private fileService: FileService,
-    private store: Store<any>,
-    private analysisService: AnalysisService,
-    private messageService: MessageService,
-    private supportService: SupportDataService,
-    private reportService: ReportService,
-    actions$: Actions<CoreActions>
-  ) {
-    super(ADF_WIDGET, actions$);
   }
 
 }

@@ -15,6 +15,7 @@ import { selectCurrentFacility, selectUserFacilitiesSorted } from '../../store/c
 import { map, take, flatMap } from 'rxjs/operators';
 import { AdfMergeDialogComponent } from '../adf-merge-dialog/adf-merge-dialog.component';
 import { FileService } from '../../services/file.service';
+import { Router } from '@angular/router';
 
 export const ADF_WIDGET = 'ADF_WIDGET';
 
@@ -38,6 +39,7 @@ export class AdfWidgetComponent extends DamWidgetComponent implements OnInit, Af
     dialog: MatDialog,
     private fileService: FileService,
     private helper: RxjsStoreHelperService,
+    private router: Router,
   ) {
     super(ADF_WIDGET, store, dialog);
     this.facilities$ = store.select(selectUserFacilitiesSorted);
@@ -71,7 +73,7 @@ export class AdfWidgetComponent extends DamWidgetComponent implements OnInit, Af
                 },
                 (message) => {
                   if (message.status === 'SUCCESS' && mergeRequest.facilityId === current.id) {
-                    window.location.reload();
+                    this.router.navigate(['/', 'adf', 'dashboard', mergeRequest.facilityId || 'private', 'merge-jobs']);
                   }
                   return EMPTY;
                 }

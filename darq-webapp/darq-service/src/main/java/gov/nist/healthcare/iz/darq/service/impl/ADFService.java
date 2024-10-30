@@ -8,6 +8,7 @@ import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
 import gov.nist.healthcare.iz.darq.adf.service.exception.InvalidFileFormat;
 import gov.nist.healthcare.iz.darq.model.ADFileComponent;
 import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
+import gov.nist.healthcare.iz.darq.repository.FacilityRepository;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,12 +36,17 @@ public class ADFService {
     private CryptoKey key;
     @Autowired
     ADFTemporaryDirectoryProviderService temporaryDirectoryProviderService;
+    @Autowired
+    FacilityRepository facilityRepository;
 
     UserUploadedFile create(String name, List<String> tags, String facility, String ownerId, ADFReader file, List<ADFileComponent> components) throws InvalidFileFormat {
         try {
             List<String> issues = validateNameAndTags(name, tags);
             if(issues.size() > 0) {
                 throw new Exception("Invalid file metadata : "+ String.join(", ", issues));
+            }
+            if(!Strings.isNullOrEmpty(facility) && !facilityRepository.exists(facility)) {
+                throw new Exception("Facility Id '" + facility + "' does not exist");
             }
             this.configService.validateConfigurationPayload(file.getConfigurationPayload());
             String uid = UUID.randomUUID().toString();

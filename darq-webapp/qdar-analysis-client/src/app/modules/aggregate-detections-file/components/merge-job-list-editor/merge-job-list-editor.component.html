@@ -1,0 +1,98 @@
+<div class="ui-table-dash">
+  <div style="width: 100%; display: flex; margin-bottom: 10px; align-items: center;">
+    <span style="margin-right: 10px;"> Status Refresh Every </span>
+    <p-dropdown
+    [options]="refreshRateOptions"
+    [autoDisplayFirst]="false"
+    id="refersh"
+    name="refersh"
+    appendTo="body"
+    [ngModel]="rateValue"
+    (ngModelChange)="changeRate($event)"
+    placeholder="Refresh Rate">
+    </p-dropdown>
+  </div>
+  <p-table
+  [value]="jobs$ | async"
+  [paginator]="true"
+  [sortField]="'submitTime'"
+  [sortOrder]="-1"
+  [rows]="10"
+  [tableStyleClass]="'table table-sm table-striped'">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="vertical-align: middle;" pSortableColumn="name">
+          Name
+          <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle;" pSortableColumn="file">
+          Files
+        </th>
+        <th style="vertical-align: middle; width: 150px;" pSortableColumn="status">
+          Status
+          <p-sortIcon field="status"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle; width: 150px;" pSortableColumn="submitTime">
+          Submitted On
+          <p-sortIcon field="submitTime"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle; width: 150px;" pSortableColumn="startTime">
+          Started On
+          <p-sortIcon field="startTime"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle; width: 150px;"  pSortableColumn="endTime">
+          Finished On
+          <p-sortIcon field="endTime"></p-sortIcon>
+        </th>
+        <th style="vertical-align: middle; width: 300px;">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+      <tr>
+        <td>
+          <i class="fa fa-compress" style="color: purple; margin-right: 10px;"></i>
+          {{rowData.name}}
+          <div style="display: flex; gap: 2px; margin-top: 5px;">
+            <span *ngFor="let item of (rowData.tags || [])" class="badge badge-dark">{{item}}</span>
+          </div>
+        </td>
+        <td>
+          <div *ngFor="let component of rowData.adfList">
+            <span style="margin-right: 10px;">
+              <i class="fa fa-file" style="color: blue; margin-right: 10px;"></i>
+              <strong>{{ component.name }}</strong>
+            </span>
+            <span style="margin-right: 10px;">{{ component.uploadedOn | date:'MM-dd-yyyy HH:mm' }}</span>
+            <span *ngIf="facilityMap$ | async as facilityMap">
+              {{ facilityMap[component.facilityId] }}
+            </span>
+          </div>
+        </td>
+        <td style="text-align: center;">
+          <strong [ngClass]="{
+            'finished' : rowData.status === 'FINISHED',
+            'running'  : rowData.status === 'RUNNING',
+            'failed'   : rowData.status === 'FAILED',
+            'queued'   : rowData.status === 'QUEUED'
+          }">
+          <i  class="fa fa-info-circle" style="color: red;" *ngIf="rowData.failure" [pTooltip]="rowData.failure"></i> {{rowData.status}}
+          </strong>
+        </td>
+        <td>{{rowData.submitTime | date:'MM-dd-yyyy HH:mm' }}</td>
+        <td>{{rowData.startTime | date:'MM-dd-yyyy HH:mm' }}</td>
+        <td>{{rowData.endTime | date:'MM-dd-yyyy HH:mm' }}</td>
+        <td>
+          <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;">
+            <button class="btn btn-sm btn-primary"  style="margin-right: 5px;" *ngIf="rowData.mergedAdfId" [routerLink]="['/', 'adf', rowData.mergedAdfId, 'summary' ]" [queryParams]="{facilityId: facilityId$ | async}">
+              See File Summary
+            </button>
+            <button *ngIf="rowData.status !== 'RUNNING'" class="btn btn-sm btn-warning" (click)="remove(rowData)">
+              <i class="fa fa-trash"></i>
+              Delete Job
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

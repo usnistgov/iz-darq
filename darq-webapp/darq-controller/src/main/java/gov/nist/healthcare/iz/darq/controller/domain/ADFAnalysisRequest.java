@@ -1,6 +1,6 @@
 package gov.nist.healthcare.iz.darq.controller.domain;
 
-public class JobCreation {
+public class ADFAnalysisRequest {
 	String name;
 	String templateId;
 	String adfId;

@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.boot.config.data;
 
+import com.mongodb.MongoCredential;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,8 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 
+import java.util.Collections;
+
 @Configuration
 @EnableMongoRepositories(basePackages={"gov.nist.healthcare.iz.darq" , "gov.nist.healthcare.auth"})
 public class MongoConfig extends AbstractMongoConfiguration {
@@ -23,6 +26,12 @@ public class MongoConfig extends AbstractMongoConfiguration {
 	private String PORT;
 	@Value("${darq.db.name}")
 	private String NAME;
+	@Value("${darq.db.username}")
+	private String USERNAME;
+	@Value("${darq.db.password}")
+	private String PASSWORD;
+	@Value("${darq.db.auth.source}")
+	private String AUTH_SOURCE;
 
 	@Autowired
 	private MappingMongoConverter mongoConverter;
@@ -39,6 +48,16 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
 	@Override
 	public Mongo mongo() {
+		if(USERNAME != null && PASSWORD != null && !USERNAME.isEmpty() && !PASSWORD.isEmpty()) {
+			MongoCredential credential = MongoCredential.createCredential(USERNAME, AUTH_SOURCE, PASSWORD.toCharArray());
+			return new MongoClient(
+					new ServerAddress(
+							HOST,
+							Integer.parseInt(PORT)
+					),
+					Collections.singletonList(credential)
+			);
+		}
 		return new MongoClient(new ServerAddress(HOST, Integer.parseInt(PORT)));
 	}
 

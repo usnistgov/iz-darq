@@ -34,8 +34,13 @@
           </a>
         </li>
         <li class="nav-item" *ngIf="'VIEW' | accessOnScope : 'ANALYSIS_JOB': (facility._private ? { scope: 'GLOBAL' }: { scope: 'FACILITY', facilityId: facility.id}):'OWNER'  | async">
-          <a class="nav-link" [routerLink]="facilityId + '/jobs'" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="facilityId + '/analysis-jobs'" routerLinkActive="active">
             <h5 class="title-text"><i class="fa fa-area-chart" style="color:crimson; margin-right: 5px;"></i> Your Analysis Jobs</h5>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="facilityId + '/merge-jobs'" routerLinkActive="active">
+            <h5 class="title-text"><i class="fa fa-compress" style="color:crimson; margin-right: 5px;"></i> Your ADF Merge Jobs</h5>
           </a>
         </li>
         <li class="nav-item" *ngIf="!facility._private">

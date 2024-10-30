@@ -11,6 +11,7 @@ export enum CoreActionTypes {
 
   OpenADFListEditor = '[ADF] Open ADF List Editor',
   OpenAnalysisJobEditor = '[ADF] Open Analysis Job Editor',
+  OpenMergeJobEditor = '[ADF] Open Merge Job Editor',
   OpenReportsEditor = '[ADF] Open Reports Editor',
 
 
@@ -48,6 +49,11 @@ export class OpenADFListEditor implements OpenEditorBase {
 
 export class OpenAnalysisJobEditor implements OpenEditorBase {
   readonly type = CoreActionTypes.OpenAnalysisJobEditor;
+  constructor(readonly payload: { id: string; editor: IEditorMetadata; }) { }
+}
+
+export class OpenMergeJobEditor implements OpenEditorBase {
+  readonly type = CoreActionTypes.OpenMergeJobEditor;
   constructor(readonly payload: { id: string; editor: IEditorMetadata; }) { }
 }
 
@@ -107,6 +113,7 @@ export type CoreActions =
   | LoadADFDashboardFailure
   | OpenADFListEditor
   | OpenAnalysisJobEditor
+  | OpenMergeJobEditor
   | OpenReportsEditor
   | LoadADFiles
   | LoadADFilesSuccess

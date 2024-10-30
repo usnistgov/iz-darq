@@ -2,10 +2,7 @@ package gov.nist.healthcare.iz.darq.users.service.impl;
 
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisReport;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportTemplate;
-import gov.nist.healthcare.iz.darq.model.AnalysisJob;
-import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
-import gov.nist.healthcare.iz.darq.model.Facility;
-import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
+import gov.nist.healthcare.iz.darq.model.*;
 import gov.nist.healthcare.iz.darq.repository.*;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.impl.ADFStorage;
@@ -37,6 +34,8 @@ public class UserCleanupService {
     @Autowired
     AnalysisJobRepository analysisJobRepository;
     @Autowired
+    ADFMergeJobRepository adfMergeJobRepository;
+    @Autowired
     AnalysisReportService analysisReportService;
     @Autowired
     UserManagementService userManagementService;
@@ -56,6 +55,7 @@ public class UserCleanupService {
             List<ReportTemplate> reportTemplates = this.templateRepository.findByOwnerId(userId);
             List<UserUploadedFile> userUploadedFiles = this.adfMetaDataRepository.findByOwnerIdAndFacilityIdIsNull(userId);
             List<AnalysisJob> analysisJobs = this.analysisJobRepository.findByOwnerIdAndFacilityIdIsNull(userId);
+            List<ADFMergeJob> adfMergeJobs = this.adfMergeJobRepository.findByOwnerIdAndFacilityIdIsNull(userId);
             List<AnalysisReport> analysisReports = this.analysisReportService.findByOwnerIdAndFacilityIdIsNull(userId);
             List<UserEditToken> userTokens = this.userEditTokenRepository.findByUserId(userId);
 
@@ -70,6 +70,7 @@ public class UserCleanupService {
             });
             this.adfMetaDataRepository.delete(userUploadedFiles);
             this.analysisJobRepository.delete(analysisJobs);
+            this.adfMergeJobRepository.delete(adfMergeJobs);
             this.analysisReportService.delete(analysisReports);
             List<Facility> facilities = this.facilityRepository.findByMembersContaining(userId);
             facilities.forEach((facility) -> facility.getMembers().remove(userId));

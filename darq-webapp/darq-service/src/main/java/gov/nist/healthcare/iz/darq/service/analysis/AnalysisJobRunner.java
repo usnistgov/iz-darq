@@ -10,7 +10,7 @@ import java.util.List;
 public interface AnalysisJobRunner {
     AnalysisJob addJob(String name, String templateId, String adfId, String user) throws JobRunningException, NotFoundException;
     AnalysisJob startJob(AnalysisJob job) throws Exception;
-    AnalysisJob failJob(AnalysisJob job, String reason) throws JobRunningException;
+    AnalysisJob failJob(AnalysisJob job, String reason);
     List<AnalysisJob> getAllJobsForUserAndFacility(String user, String facilityId);
     boolean deleteJob(String id) throws JobRunningException;
 

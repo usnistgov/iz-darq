@@ -9,7 +9,8 @@ import {
   LoadADFDashboard,
   OpenADFListEditor,
   OpenAnalysisJobEditor,
-  OpenReportsEditor
+  OpenReportsEditor,
+  OpenMergeJobEditor
 } from './store/core.actions';
 import { AdfSummaryComponent } from './components/adf-summary/adf-summary.component';
 import { ADF_WIDGET, AdfWidgetComponent } from './components/adf-widget/adf-widget.component';
@@ -17,6 +18,7 @@ import { FilesListEditorComponent, ADF_FILE_LIST_EDITOR_METADATA } from './compo
 import { JobListEditorComponent, ANALYSIS_JOB_LIST_EDITOR_METADATA } from './components/job-list-editor/job-list-editor.component';
 import { ReportListEditorComponent, REPORT_LIST_EDITOR_METADATA } from './components/report-list-editor/report-list-editor.component';
 import { LoaderGuard } from '../shared/guards/loader.guard';
+import { MERGE_JOB_LIST_EDITOR_METADATA, MergeJobListEditorComponent } from './components/merge-job-list-editor/merge-job-list-editor.component';
 
 
 const routes: Routes = [
@@ -77,7 +79,7 @@ const routes: Routes = [
           },
         },
         {
-          path: 'jobs',
+          path: 'analysis-jobs',
           component: JobListEditorComponent,
           canActivate: [EditorActivateGuard],
           canDeactivate: [EditorDeactivateGuard],
@@ -88,6 +90,22 @@ const routes: Routes = [
               saveTableOfContent: true,
             },
             action: OpenAnalysisJobEditor,
+            idKey: 'facility',
+            redirectTo: ['/', 'error'],
+          },
+        },
+        {
+          path: 'merge-jobs',
+          component: MergeJobListEditorComponent,
+          canActivate: [EditorActivateGuard],
+          canDeactivate: [EditorDeactivateGuard],
+          data: {
+            editorMetadata: MERGE_JOB_LIST_EDITOR_METADATA,
+            onLeave: {
+              saveEditor: true,
+              saveTableOfContent: true,
+            },
+            action: OpenMergeJobEditor,
             idKey: 'facility',
             redirectTo: ['/', 'error'],
           },

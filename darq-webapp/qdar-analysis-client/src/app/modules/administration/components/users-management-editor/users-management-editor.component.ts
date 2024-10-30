@@ -169,7 +169,7 @@ export class UsersManagementEditorComponent implements OnInit {
       {
         data: {
           action: 'Delete Account',
-          question: 'Are you sure you want to delete user account for ' + user.screenName + ' ? All user private resources are going to be deleted (Configurations, Report Template, ADF, Analysis Jobs, Reports) ',
+          question: 'Are you sure you want to delete user account for ' + user.screenName + ' ? All user private resources are going to be deleted (Configurations, Report Template, ADF, Jobs, Reports) ',
         }
       }
     ).afterClosed().pipe(

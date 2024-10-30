@@ -5,13 +5,14 @@ import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTable;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.QueryPayload;
-import gov.nist.healthcare.iz.darq.controller.domain.JobCreation;
+import gov.nist.healthcare.iz.darq.controller.domain.ADFAnalysisRequest;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
+import gov.nist.healthcare.iz.darq.service.domain.AnalysisJobCreateData;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
-import gov.nist.healthcare.iz.darq.service.analysis.AnalysisJobRunner;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.service.impl.AnalysisJobManagementService;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class AnalysisController {
 	@Autowired
 	private ADFStore storage;
 	@Autowired
-	private AnalysisJobRunner runner;
+	private AnalysisJobManagementService analysisJobManagementService;
 	@Autowired
 	private DescriptorService descriptorService;
 	@Autowired
@@ -66,8 +67,14 @@ public class AnalysisController {
 	@PreAuthorize("AccessResource(ADF, ANALYSE, #job.adfId)")
 	public OpAck<AnalysisJobDescriptor> submitJob(
 			@AuthenticationPrincipal User user,
-			@RequestBody JobCreation job) throws Exception {
-		AnalysisJob submitted = this.runner.addJob(job.getName(), job.getTemplateId(), job.getAdfId(), user.getId());
+			@RequestBody ADFAnalysisRequest job) throws Exception {
+		AnalysisJobCreateData analysisJobCreateData = new AnalysisJobCreateData(
+				job.getName(),
+				user.getId(),
+				job.getTemplateId(),
+				job.getAdfId()
+		);
+		AnalysisJob submitted = this.analysisJobManagementService.add(analysisJobCreateData);
 		return new OpAck<>(OpAck.AckStatus.SUCCESS, "Job Submitted Successfully", getAnalysisJobDescriptor(submitted, user), "job-submit");
 	}
 
@@ -77,7 +84,7 @@ public class AnalysisController {
 	public List<AnalysisJobDescriptor> getJobsForFacility(
 			@AuthenticationPrincipal User user,
 			@PathVariable("facilityId") String facilityId) {
-		return getAnalysisJobDescriptorList(this.runner.getAllJobsForUserAndFacility(user.getId(), facilityId), user);
+		return getAnalysisJobDescriptorList(this.analysisJobManagementService.getAllJobsForUserAndFacility(user.getId(), facilityId), user);
 	}
 
 	@RequestMapping(value = {"/jobs"}, method = RequestMethod.GET)
@@ -85,7 +92,7 @@ public class AnalysisController {
 	@PreAuthorize("AccessOperation(ANALYSIS_JOB, VIEW, GLOBAL, OWNED())")
 	public List<AnalysisJobDescriptor> getJobsForUser(
 			@AuthenticationPrincipal User user)  {
-		return getAnalysisJobDescriptorList(this.runner.getAllJobsForUserAndFacility(user.getId(), null), user);
+		return getAnalysisJobDescriptorList(this.analysisJobManagementService.getAllJobsForUserAndFacility(user.getId(), null), user);
 	}
 
 	@RequestMapping(value = "/job/{id}", method = RequestMethod.DELETE)
@@ -93,7 +100,7 @@ public class AnalysisController {
 	@PreAuthorize("AccessResource(ANALYSIS_JOB, DELETE, #id)")
 	public OpAck<AnalysisJob> deleteJob(
 			@PathVariable("id") String id) throws Exception {
-		if(this.runner.deleteJob(id)) {
+		if(this.analysisJobManagementService.delete(id)) {
 			return new OpAck<>(OpAck.AckStatus.SUCCESS, "Job Deleted Successfully", null, "job-delete");
 		} else {
 			throw new OperationFailureException("Failed to delete Job");

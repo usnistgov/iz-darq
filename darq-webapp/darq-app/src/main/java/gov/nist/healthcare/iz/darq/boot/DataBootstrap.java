@@ -1,5 +1,7 @@
 package gov.nist.healthcare.iz.darq.boot;
 
+import gov.nist.healthcare.iz.darq.service.impl.ADFMergeJobManagementService;
+import gov.nist.healthcare.iz.darq.service.impl.AnalysisJobManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,10 @@ public class DataBootstrap {
     SetUserIdIDataIntegrityInitializer setUserIdIDataIntegrityInitializer;
     @Autowired
     ConfigurationVerificationIntegrityCheck configurationVerificationIntegrityCheck;
+	@Autowired
+	AnalysisJobManagementService analysisJobManagementService;
+	@Autowired
+	ADFMergeJobManagementService adfMergeJobManagementService;
 
     @PostConstruct
 	public void dataIntegrityChecksAndUpdates() throws Exception {
@@ -23,6 +29,8 @@ public class DataBootstrap {
 		this.userAccountAndRoleDataIntegrityInitializer.initializeAndFixAccounts();
 		this.setUserIdIDataIntegrityInitializer.setUserId();
 		this.configurationVerificationIntegrityCheck.check();
+		this.analysisJobManagementService.updateStaleRunningAndQueuedJobStatusOnStartup();
+		this.adfMergeJobManagementService.updateStaleRunningAndQueuedJobStatusOnStartup();
 	}
 
 }
