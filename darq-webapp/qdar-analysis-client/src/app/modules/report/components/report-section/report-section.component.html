@@ -5,10 +5,10 @@
     </div>
 
     <div style="padding: 10px;" [innerHTML]="value.text"></div>
-    <ng-container *ngFor="let data of (filtered ? filtered.data : value.data)">
+    <ng-container *ngFor="let data of (filtered ? filtered.data : value.data); index as i">
       <p-tabView *ngIf="!filterActive || data?.values?.length > 0" >
         <p-tabPanel header="Data Analysis" headerStyleClass="valid-tab">
-          <app-data-table #dataTable [table]="data" [labelizer]="labelizer"></app-data-table>
+          <app-data-table #dataTable [table]="data" [labelizer]="labelizer" [tableId]="value.path + '.' + value.header + ( i !== 0 ? '_' + i : '')"></app-data-table>
         </p-tabPanel>
         <p-tabPanel header="Query" headerStyleClass="valid-tab">
           <app-query-display [query]="data.query" [labelizer]="labelizer"></app-query-display>

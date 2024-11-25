@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, forwardRef, AfterViewInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import {
@@ -30,6 +30,8 @@ import { selectUserFacilityById } from '../../../aggregate-detections-file/store
 import { PRIVATE_FACILITY_ID } from '../../../aggregate-detections-file/services/file.service';
 import { ViewChild } from '@angular/core';
 import { NgxCSVParserError } from 'ngx-csv-parser';
+import { ReportTablesService } from '../../services/report-tables.service';
+import * as JSZip from 'jszip';
 
 export const REPORT_WIDGET = 'REPORT_WIDGET';
 
@@ -40,6 +42,7 @@ export const REPORT_WIDGET = 'REPORT_WIDGET';
   styleUrls: ['./report-widget.component.scss'],
   providers: [
     { provide: DamWidgetComponent, useExisting: forwardRef(() => ReportWidgetComponent) },
+    { provide: ReportTablesService }
   ],
 })
 export class ReportWidgetComponent extends DamWidgetComponent implements OnInit, AfterViewInit {
@@ -63,6 +66,7 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
     private reportService: ReportService,
     private valueService: ValuesService,
     private messageService: MessageService,
+    private reportsTable: ReportTablesService,
   ) {
     super(REPORT_WIDGET, store, dialog);
     this.generalFilter$ = this.store.select(selectReportGeneralFilter);
@@ -138,6 +142,22 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
         })
       ).subscribe();
     }
+  }
+
+  downloadAllTables() {
+    const zip = new JSZip();
+    for (const table of this.reportsTable.getTables()) {
+      zip.file(table.getFileName(), table.getCSVFileContent());
+    }
+    zip.generateAsync({ type: "blob" }).then((blob) => {
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      const fileURL = URL.createObjectURL(blob);
+      a.href = fileURL;
+      a.download = "report_csv_export.zip";
+      a.click();
+      a.remove();
+    });
   }
 
   clearReportingGroupCsvFile() {

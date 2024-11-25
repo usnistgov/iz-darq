@@ -37,28 +37,35 @@
   </ng-template>
 
   <ng-template #toolbar>
-    <button class="btn btn-sm" [ngClass]="{ 'btn-success' : filterIsActive$ | async, 'btn-dark' : (filterIsActive$ | async) === false }" style="margin-left: 5px;" (click)="filterReport()">
-      <i class="fa fa-filter" [ngClass]="{ 'filter-active' : filterIsActive$ | async }" ></i>
-      Report Filter
-    </button>
-    <div class="file-btn-wrapper" *ngIf="!reportingGroupCsvFile">
-      <input #fileImportInput (change)="fileChangeListener($event)" class="file-input" type="file" id="csv">
-      <button class="btn btn-sm btn-primary" style="margin-left: 5px;">
-        <i class="fa fa-file"></i>
-        Choose Reporting Group Hash File (CSV)
+    <div style="display: flex;">
+      <button class="btn btn-sm" [ngClass]="{ 'btn-success' : filterIsActive$ | async, 'btn-dark' : (filterIsActive$ | async) === false }" style="margin-left: 5px;" (click)="filterReport()">
+        <i class="fa fa-filter" [ngClass]="{ 'filter-active' : filterIsActive$ | async }" ></i>
+        Report Filter
       </button>
-    </div>
-    <div *ngIf="reportingGroupCsvFile" class="group-container">
-      <button class="btn group-times-btn" (click)="clearReportingGroupCsvFile()" >
-        <i class="fa fa-times" style="color: white;"></i>
+      <button class="btn btn-sm btn-secondary" style="margin-left: 5px;" (click)="downloadAllTables()">
+        <i class="fa fa-download"></i>
+        Export All Tables (CSV)
       </button>
-      <div class="group-file">
-        {{reportingGroupCsvFile.name}}
+      <div class="file-btn-wrapper" *ngIf="!reportingGroupCsvFile">
+        <input #fileImportInput (change)="fileChangeListener($event)" class="file-input" type="file" id="csv">
+        <button class="btn btn-sm btn-primary" style="margin-left: 5px;">
+          <i class="fa fa-file"></i>
+          Choose Reporting Group Hash File (CSV)
+        </button>
       </div>
-      <div class="group-addon">
-        Reporting Groups (CSV)
+      <div *ngIf="reportingGroupCsvFile" class="group-container">
+        <button class="btn group-times-btn" (click)="clearReportingGroupCsvFile()" >
+          <i class="fa fa-times" style="color: white;"></i>
+        </button>
+        <div class="group-file">
+          {{reportingGroupCsvFile.name}}
+        </div>
+        <div class="group-addon">
+          Reporting Groups (CSV)
+        </div>
       </div>
     </div>
+
     <div *ngIf="(isViewOnly$ | async) === false">
       <button class="btn btn-sm btn-primary" style="margin-right: 5px;" *ngIf="'PUBLISH' | accessOnResource : report:'REPORT' | async" [disabled]="containsUnsavedChanges$() | async" (click)="publish()" >
         <i class="fa fa-share"></i>
