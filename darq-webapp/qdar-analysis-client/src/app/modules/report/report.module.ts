@@ -12,10 +12,18 @@ import { SharedModule } from '../shared/shared.module';
 import { ReportTocComponent } from './components/report-toc/report-toc.component';
 import { ReportFilterDialogComponent } from './components/report-filter-dialog/report-filter-dialog.component';
 import { NgxCsvParserModule } from 'ngx-csv-parser';
+import { ReportExportDialogComponent } from './components/report-export-dialog/report-export-dialog.component';
 
 
 @NgModule({
-  declarations: [ReportWidgetComponent, ReportEditorComponent, ReportSectionComponent, ReportTocComponent, ReportFilterDialogComponent],
+  declarations: [
+    ReportWidgetComponent,
+    ReportEditorComponent,
+    ReportSectionComponent,
+    ReportTocComponent,
+    ReportFilterDialogComponent,
+    ReportExportDialogComponent
+  ],
   imports: [
     CommonModule,
     ReportRoutingModule,

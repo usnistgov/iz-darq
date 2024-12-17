@@ -1,0 +1,78 @@
+<h2 mat-dialog-title> Report Export </h2>
+
+<mat-dialog-content>
+  <table class="table table-sm table-stripped" *ngIf="selectedTables && selectedTables.length > 0">
+    <thead>
+      <tr>
+        <th>
+          <div style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              Selected Tables <span class="badge badge-primary">{{selectedTables.length}}</span>
+            </div>
+            <button class="btn btn-sm btn-danger" (click)="selectedTables = []; selectionChanged()">
+              <i class="fa fa-trash"></i> Clear All
+            </button>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of selectedTables">
+        <td>
+          {{item.name}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p-table #dt
+    [styleClass]="'table table-sm table-striped'"
+    [value]="compatible.asObservable() | async"
+    selectionMode="multiple"
+    [(selection)]="selectedTables"
+    (onRowSelect)="selectionChanged()"
+    (onRowUnselect)="selectionChanged()"
+    dataKey="id"
+    [rowHover]="true"
+    class="ui-table-dash"
+    [rows]="5"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [paginatorDropdownAppendTo]="'body'"
+    [paginator]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [filterDelay]="0"
+    [(first)]="first"
+    (onPage)="onPage($event)"
+    [globalFilterFields]="['id','description','target']">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 100px;">
+          <button class="btn btn-sm btn-primary" (click)="selectAll()" [disabled]="selectedTables.length === 0">
+            Select All
+          </button>
+        </th>
+        <th style="width: 400px; text-wrap: wrap;">Table ID</th>
+        <th>Columns</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-value>
+      <tr>
+        <th style="vertical-align: middle;">
+          <p-tableCheckbox [value]="value"></p-tableCheckbox>
+        </th>
+        <th style="vertical-align: middle;">{{value.name}}</th>
+        <th>
+          <div style="display: flex; align-items: flex-start; justify-content: flex-start; flex-wrap: wrap; gap: 4px;">
+            <div *ngFor="let item of value.columns" style="padding-left: 6px; padding-right: 6px; padding-top: 3px; padding-bottom: 3px; border: 1px solid lightgray; border-radius: 4px; background-color: rgb(240, 240, 240);">
+              {{item.label}}
+            </div>
+          </div>
+      </tr>
+    </ng-template>
+  </p-table>
+
+</mat-dialog-content>
+<mat-dialog-actions style="justify-content: flex-end;">
+  <button class="btn btn-sm btn-secondary" style="margin-right: 5px;" [mat-dialog-close]="" >Cancel</button>
+  <button class="btn btn-sm btn-success" [disabled]="selectedTables.length === 0" (click)="export()" >Export</button>
+</mat-dialog-actions>

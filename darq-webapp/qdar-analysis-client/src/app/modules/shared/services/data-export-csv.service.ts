@@ -47,7 +47,7 @@ export class DataExportCSVService {
     };
   }
 
-  getHeaders(columns: IColumn[]): ICSVHeaderField[] {
+  public getHeaders(columns: IColumn[]): ICSVHeaderField[] {
     const flags = this.getTableFlags(columns);
     const fields = columns.filter((c) => c.type === ColumnType.FIELD);
 
@@ -135,15 +135,20 @@ export class DataExportCSVService {
     }
   }
 
-  public writeCSV(rows: Row[], columns: IColumn[]): string {
+  public writeCSV(rows: Row[], columns: IColumn[], includeColumns = true): string {
     const headers = this.getHeaders(columns);
 
     return [
-      headers.map((h) => h.label).join(','),
+      ...(includeColumns ? [headers.map((h) => h.label).join(',')] : []),
       ...(rows || []).map((row) => {
         return headers.map((header) => this.escapeValue(this.getHeaderValue(row, header))).join(',');
       })
     ].join('\n');
+  }
+
+  public writeCSVHeader(columns: IColumn[]): string {
+    const headers = this.getHeaders(columns);
+    return headers.map((h) => h.label).join(',');
   }
 
   public escapeValue(value: string) {

@@ -32,6 +32,8 @@ import { ViewChild } from '@angular/core';
 import { NgxCSVParserError } from 'ngx-csv-parser';
 import { ReportTablesService } from '../../services/report-tables.service';
 import * as JSZip from 'jszip';
+import { ReportExportDialogComponent } from '../report-export-dialog/report-export-dialog.component';
+import { DataTableComponent } from 'src/app/modules/shared/components/data-table/data-table.component';
 
 export const REPORT_WIDGET = 'REPORT_WIDGET';
 
@@ -144,17 +146,39 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
     }
   }
 
+  mergeAndDownloadTable(tables: DataTableComponent[]) {
+    let content = '';
+    // Header
+    const header = tables[0];
+    content += `TABLE_ID,${header.getCSVFileHeader()}\n`;
+
+    for (const table of tables) {
+      content += table.getCSVFileContent(false)
+        .split('\n')
+        .map((row) => `${table.getTableId()}, ${row}`)
+        .join('\n') + '\n';
+    }
+    const a = document.createElement('a');
+    const file = new window.Blob([content], { type: 'text/csv' });
+    a.style.display = 'none';
+    const fileURL = URL.createObjectURL(file);
+    a.href = fileURL;
+    a.download = 'merged_tables.csv';
+    a.click();
+    a.remove();
+  }
+
   downloadAllTables() {
     const zip = new JSZip();
     for (const table of this.reportsTable.getTables()) {
       zip.file(table.getFileName(), table.getCSVFileContent());
     }
-    zip.generateAsync({ type: "blob" }).then((blob) => {
+    zip.generateAsync({ type: 'blob' }).then((blob) => {
       const a = document.createElement('a');
       a.style.display = 'none';
       const fileURL = URL.createObjectURL(blob);
       a.href = fileURL;
-      a.download = "report_csv_export.zip";
+      a.download = 'report_csv_export.zip';
       a.click();
       a.remove();
     });
@@ -165,6 +189,22 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
     this.store.dispatch(new SetValue({
       reportingGroups: {},
     }));
+  }
+
+  openExportDialog() {
+    this.dialog.open(ReportExportDialogComponent, {
+      data: {
+        tables: this.reportsTable.getTables()
+      }
+    }).afterClosed().pipe(
+      map((ids) => {
+        if (ids && ids.length > 0) {
+          this.mergeAndDownloadTable(
+            this.reportsTable.getTables().filter((table) => ids.includes(table.id))
+          );
+        }
+      })
+    ).subscribe();
   }
 
   publish() {

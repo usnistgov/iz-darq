@@ -1,4 +1,4 @@
-import { DataTableComponent } from "../../shared/components/data-table/data-table.component";
+import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
 
 export class ReportTablesService {
   tables: Record<string, DataTableComponent> = {};

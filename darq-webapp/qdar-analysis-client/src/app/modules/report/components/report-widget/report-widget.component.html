@@ -42,10 +42,19 @@
         <i class="fa fa-filter" [ngClass]="{ 'filter-active' : filterIsActive$ | async }" ></i>
         Report Filter
       </button>
-      <button class="btn btn-sm btn-secondary" style="margin-left: 5px;" (click)="downloadAllTables()">
-        <i class="fa fa-download"></i>
-        Export All Tables (CSV)
-      </button>
+      <div style="margin-left: 5px;" ngbDropdown display="dynamic">
+        <button class="btn btn-sm btn-outline-secondary" ngbDropdownToggle>
+          Export Tables
+        </button>
+        <div ngbDropdownMenu>
+          <button (click)="downloadAllTables()" ngbDropdownItem>
+            <i class="fa fa-file-archive-o"></i> Export All Tables (ZIP)
+          </button>
+          <button (click)="openExportDialog()" ngbDropdownItem>
+            <i class="fa fa-file"></i> Export Merged Tables (CSV)
+          </button>
+        </div>
+      </div>
       <div class="file-btn-wrapper" *ngIf="!reportingGroupCsvFile">
         <input #fileImportInput (change)="fileChangeListener($event)" class="file-input" type="file" id="csv">
         <button class="btn btn-sm btn-primary" style="margin-left: 5px;">

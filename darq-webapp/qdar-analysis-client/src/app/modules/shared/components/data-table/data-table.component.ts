@@ -18,6 +18,7 @@ import { ReportTablesService } from 'src/app/modules/report/services/report-tabl
 })
 export class DataTableComponent implements OnChanges, OnInit, OnDestroy {
 
+  public id: number = new Date().getTime();
   ColumnType = ColumnType;
   @Input()
   table: IDataTable;
@@ -82,7 +83,7 @@ export class DataTableComponent implements OnChanges, OnInit, OnDestroy {
     private dataTableService: DataTableService,
     @Optional() private reportTablesService: ReportTablesService,
     private csvExportService: DataExportCSVService) {
-    this.uniqueId = new Date().getTime() + "";
+    this.uniqueId = new Date().getTime() + '';
   }
 
   ngOnInit(): void {
@@ -167,11 +168,27 @@ export class DataTableComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   public getFileName() {
-    return this.tableId ? this.tableId.replace(/ /g, "_").replace(/\./g, "-").toLowerCase() + ".csv" : `qdar_table_${new Date().getTime()}.csv`;
+    return `${this.getTableId()}.csv`;
   }
 
-  public getCSVFileContent() {
-    return this.csvExportService.writeCSV(this.rows, this.columns);
+  public getTableId() {
+    return this.tableId ? this.tableId.replace(/ /g, '_').replace(/\./g, '-').toLowerCase() : `qdar_table_${new Date().getTime()}`;
+  }
+
+  public getColumns() {
+    return this.columns;
+  }
+
+  public getRows() {
+    return this.rows;
+  }
+
+  public getCSVFileContent(includeHeaders: boolean = true) {
+    return this.csvExportService.writeCSV(this.rows, this.columns, includeHeaders);
+  }
+
+  public getCSVFileHeader() {
+    return this.csvExportService.writeCSVHeader(this.columns);
   }
 
   public downloadCSV() {
