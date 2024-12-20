@@ -1,5 +1,4 @@
-import { IReportTemplate, IReportSection } from './report-template.model';
-import { IDamResource } from 'ngx-dam-framework';
+import { IReportTemplate } from './report-template.model';
 import { EntityType } from '../../shared/model/entity.model';
 
 export interface IReportTemplateStatePayload {

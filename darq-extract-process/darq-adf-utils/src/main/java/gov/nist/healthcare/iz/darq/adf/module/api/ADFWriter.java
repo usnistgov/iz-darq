@@ -132,8 +132,18 @@ public abstract class ADFWriter implements AutoCloseable {
 		}
 	}
 
+	public void write(Map<String, Integer> duplicateMatchSignature) throws Exception {
+		for(Map.Entry<String, Integer> entry : duplicateMatchSignature.entrySet()) {
+			write_duplicate_match_signature(
+					entry.getKey(),
+					entry.getValue()
+			);
+		}
+	}
+
 	public void write(ADChunk chunk) throws Exception {
 		this.write_chunk(chunk);
+		this.write(chunk.getDuplicatesMatchSignatures());
 		this.write(chunk.getGeneralPatientPayload(), chunk.getReportingGroupPayload());
 	}
 
@@ -150,4 +160,5 @@ public abstract class ADFWriter implements AutoCloseable {
 	protected abstract void provider_detections(String provider, String ageGroup, String code, int p, int n, boolean patient) throws Exception;
 	protected abstract void provider_vocab(String provider, String ageGroup, String table, String code, int nb, boolean patient) throws Exception;
 	protected abstract void write_v_events(String provider, String ageGroup, String year, String gender, String source, String code, int nb) throws Exception;
+	protected abstract void write_duplicate_match_signature(String signature, int nb) throws Exception;
 }

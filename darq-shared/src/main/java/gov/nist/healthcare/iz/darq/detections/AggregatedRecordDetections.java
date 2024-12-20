@@ -11,6 +11,10 @@ public class AggregatedRecordDetections {
 	Map<String, Map<String, Map<String, DetectionSum>>> vaccinations;
 	// DetectionCode
 	Map<String, DetectionSum> patient;
+	// Patient Match Signature
+	Map<String, Integer> recordMatchSignatures;
+	// Duplicate Record ID, Match Signature
+	Map<String, String> duplicates;
 
 	public Map<String, Map<String, Map<String, DetectionSum>>> getVaccinations() {
 		return vaccinations;
@@ -26,6 +30,22 @@ public class AggregatedRecordDetections {
 
 	public void setPatient(Map<String, DetectionSum> patient) {
 		this.patient = patient;
+	}
+
+	public Map<String, Integer> getRecordMatchSignatures() {
+		return recordMatchSignatures;
+	}
+
+	public void setRecordMatchSignatures(Map<String, Integer> recordMatchSignatures) {
+		this.recordMatchSignatures = recordMatchSignatures;
+	}
+
+	public Map<String, String> getDuplicates() {
+		return duplicates;
+	}
+
+	public void setDuplicates(Map<String, String> duplicates) {
+		this.duplicates = duplicates;
 	}
 
 	public void merge(AggregatedRecordDetections detections) {
@@ -53,6 +73,12 @@ public class AggregatedRecordDetections {
 						return existingByAgeGroup;
 					});
 				});
+			}
+			if(detections.recordMatchSignatures != null) {
+				if(recordMatchSignatures == null) {
+					recordMatchSignatures = new HashMap<>();
+				}
+				detections.recordMatchSignatures.forEach((key, value) -> recordMatchSignatures.compute(key, (k, v) -> v == null ? value : v + value));
 			}
 		}
 	}

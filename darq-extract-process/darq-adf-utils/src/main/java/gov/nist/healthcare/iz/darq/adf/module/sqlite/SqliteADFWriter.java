@@ -1,4 +1,5 @@
 package gov.nist.healthcare.iz.darq.adf.module.sqlite;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -243,6 +244,14 @@ public class SqliteADFWriter extends SimpleADFWriter {
 				dictionaries.getId(Field.GENDER, gender),
 				dictionaries.getId(Field.EVENT, source),
 				dictionaries.getId(Field.VACCINE_CODE, code),
+				nb
+		);
+	}
+
+	@Override
+	protected void write_duplicate_match_signature(String signature, int nb) throws Exception {
+		dao.write_match_signature(
+				dictionaries.getId(Field.MATCH_SIGNATURE, signature),
 				nb
 		);
 	}

@@ -6,6 +6,7 @@ import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
 import gov.nist.healthcare.iz.darq.digest.service.detection.provider.mqe.MQEDetectionProvider;
 import gov.nist.healthcare.iz.darq.digest.service.patient.matching.mismo.MismoPatientMatchingService;
 import gov.nist.healthcare.iz.darq.patient.matching.model.PatientMatchingDetection;
+import gov.nist.healthcare.iz.darq.patient.matching.model.RecordMatchProcessResult;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 import org.immregistries.mqe.vxu.VxuObject;
 import org.slf4j.Logger;
@@ -60,12 +61,13 @@ public class MismoMatcherDetectionProvider implements DetectionProvider {
 
 	@Override
 	public AggregatedRecordDetections processRecordAndGetDetections(PreProcessRecord record, DetectionContext context) throws Exception {
-		boolean isPossibleDuplicate = patientMatchingService.process(record.getRecord());
+		RecordMatchProcessResult matchProcessResult = patientMatchingService.process(record.getRecord());
 		AggregatedRecordDetections detections = new AggregatedRecordDetections();
+		detections.setRecordMatchSignatures(matchProcessResult.getSignatures());
 		if(context.keepDetection(PM001)) {
 			Map<String, DetectionSum> patient = new HashMap<>();
 			detections.setPatient(patient);
-			if(isPossibleDuplicate) {
+			if(matchProcessResult.isDuplicate()) {
 				patient.put(PM001, new DetectionSum(0, 1));
 			} else {
 				patient.put(PM001, new DetectionSum(1, 0));

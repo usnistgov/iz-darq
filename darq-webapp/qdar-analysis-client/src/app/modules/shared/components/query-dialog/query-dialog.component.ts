@@ -1,7 +1,6 @@
 import { IQueryVariableDisplay } from './../variable-ref-display/variable-ref-display.component';
 import { QueryVariableService } from './../../services/query-variable.service';
 import { QuerySaveDialogComponent, IQuerySaveDetails } from './../query-save-dialog/query-save-dialog.component';
-import { Store } from '@ngrx/store';
 import { IQuerySaveRequest } from './../../services/query.service';
 import { IConfigurationPayload } from './../../../configuration/model/configuration.model';
 import { map, flatMap, catchError } from 'rxjs/operators';

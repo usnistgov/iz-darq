@@ -98,7 +98,6 @@ public abstract class SimpleADFWriter extends ADFWriter {
 		});
 	}
 
-
 	protected void write_chunk(ADChunk chunk) {
 		counts.addUnreadPatients(chunk.getUnreadPatients());
 		counts.addUnreadVaccinations(chunk.getUnreadVaccinations());
@@ -126,5 +125,4 @@ public abstract class SimpleADFWriter extends ADFWriter {
 		this.metadata = metadata;
 		this.configurationPayload = payload;
 	}
-
 }

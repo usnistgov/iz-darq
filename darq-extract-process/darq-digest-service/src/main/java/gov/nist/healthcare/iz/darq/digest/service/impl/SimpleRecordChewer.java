@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import gov.nist.healthcare.iz.darq.digest.domain.ExtractFraction;
 import gov.nist.healthcare.iz.darq.adf.service.MergeService;
@@ -19,9 +18,7 @@ import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import gov.nist.healthcare.iz.darq.digest.service.ConfigurationProvider;
 import gov.nist.healthcare.iz.darq.digest.service.RecordChewer;
-import gov.nist.healthcare.iz.darq.parser.model.AggregatePatientRecord;
 
 @Service
 public class SimpleRecordChewer implements RecordChewer {
@@ -72,6 +69,7 @@ public class SimpleRecordChewer implements RecordChewer {
 				patientSection,
 				deIdentifiedSection,
 				extraction,
+				detections.getRecordMatchSignatures(),
 				record.getRecord().history.size(),
 				1,
 				historical,

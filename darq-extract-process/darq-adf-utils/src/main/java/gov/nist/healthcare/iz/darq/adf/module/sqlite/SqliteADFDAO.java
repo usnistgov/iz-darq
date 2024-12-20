@@ -28,6 +28,7 @@ public class SqliteADFDAO {
 	private PreparedStatement P_VOCAB;
 	private PreparedStatement P_PROVIDER_DETECTIONS;
 	private PreparedStatement P_PROVIDER_VOCAB;
+	private PreparedStatement P_MATCH_SIGNATURE;
 	private PreparedStatement V_DETECTIONS;
 	private PreparedStatement V_VOCAB;
 	private PreparedStatement V_EVENTS;
@@ -42,6 +43,7 @@ public class SqliteADFDAO {
 		this.P_PROVIDER_DETECTIONS = connection.prepareStatement("INSERT INTO P_PROVIDER_DETECTIONS VALUES(?, ?, ?, ?, ?) ON CONFLICT DO UPDATE SET P=P+?, N=N+?");
 		this.P_VOCAB = connection.prepareStatement("INSERT INTO P_VOCAB VALUES(?, ?, ?, ?) ON CONFLICT DO UPDATE SET N=N+?");
 		this.V_VOCAB = connection.prepareStatement("INSERT INTO V_VOCAB VALUES(?, ?, ?, ?, ?) ON CONFLICT DO UPDATE SET N=N+?");
+		this.P_MATCH_SIGNATURE = connection.prepareStatement("INSERT INTO P_MATCH_SIGNATURE VALUES (?, ?) ON CONFLICT DO UPDATE SET N=N+?");
 		this.P_PROVIDER_VOCAB = connection.prepareStatement("INSERT INTO P_PROVIDER_VOCAB VALUES(?, ?, ?, ?, ?) ON CONFLICT DO UPDATE SET N=N+?");
 		this.V_EVENTS = connection.prepareStatement("INSERT INTO V_EVENTS VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT DO UPDATE SET N=N+?");
 		this.METADATA = connection.prepareStatement("INSERT INTO METADATA VALUES(?, ?, ?, ?)");
@@ -133,6 +135,14 @@ public class SqliteADFDAO {
 		this.write_dictionary(Field.VACCINATION_YEAR, dictionaries.getValues(Field.VACCINATION_YEAR), secret);
 		this.write_dictionary(Field.EVENT, dictionaries.getValues(Field.EVENT), secret);
 		this.write_dictionary(Field.CODE, dictionaries.getValues(Field.CODE), secret);
+		this.write_dictionary(Field.MATCH_SIGNATURE, dictionaries.getValues(Field.MATCH_SIGNATURE), secret);
+	}
+
+	public void write_match_signature(int signature, int n) throws SQLException {
+		this.P_MATCH_SIGNATURE.setInt(1, signature);
+		this.P_MATCH_SIGNATURE.setInt(2, n);
+		this.P_MATCH_SIGNATURE.setInt(3, n);
+		this.P_MATCH_SIGNATURE.execute();
 	}
 
 	private <T> byte[] convertAndEncode(T value, SecretKeySpec key) throws Exception {

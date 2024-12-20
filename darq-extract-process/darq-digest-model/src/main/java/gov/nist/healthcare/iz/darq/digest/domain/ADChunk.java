@@ -18,12 +18,14 @@ public class ADChunk {
 	private Map<String, PatientPayload> generalPatientPayload;
 	private Map<String, Map<String, ADPayload>> reportingGroupPayload;
 	private Map<String, ExtractFraction> extraction;
+	private Map<String, Integer> duplicatesMatchSignatures;
 
 	public ADChunk(
 			Map<String, String> providers,
 			Map<String, PatientPayload> generalPatientPayload,
 			Map<String, Map<String, ADPayload>> reportingGroupPayload,
 			Map<String, ExtractFraction> extraction,
+			Map<String, Integer> duplicatesMatchSignatures,
 			int nbVaccinations,
 			int nbPatients,
 			int historical,
@@ -33,6 +35,7 @@ public class ADChunk {
 		this.providers = providers;
 		this.generalPatientPayload = generalPatientPayload;
 		this.reportingGroupPayload = reportingGroupPayload;
+		this.duplicatesMatchSignatures = duplicatesMatchSignatures;
 		this.extraction = extraction;
 		this.nbVaccinations = nbVaccinations;
 		this.nbPatients = nbPatients;
@@ -149,4 +152,11 @@ public class ADChunk {
 		this.administered = administered;
 	}
 
+	public Map<String, Integer> getDuplicatesMatchSignatures() {
+		return duplicatesMatchSignatures;
+	}
+
+	public void setDuplicatesMatchSignatures(Map<String, Integer> duplicatesMatchSignatures) {
+		this.duplicatesMatchSignatures = duplicatesMatchSignatures;
+	}
 }

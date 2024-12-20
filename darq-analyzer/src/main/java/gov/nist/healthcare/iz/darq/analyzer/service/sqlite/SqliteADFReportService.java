@@ -6,10 +6,7 @@ import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFReader;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTable;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTableRow;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.QueryIssues;
-import gov.nist.healthcare.iz.darq.analyzer.model.template.DataSelector;
-import gov.nist.healthcare.iz.darq.analyzer.model.template.QueryPayload;
-import gov.nist.healthcare.iz.darq.analyzer.model.template.QueryVariableInstanceHolder;
-import gov.nist.healthcare.iz.darq.analyzer.model.template.ValueContainer;
+import gov.nist.healthcare.iz.darq.analyzer.model.template.*;
 import gov.nist.healthcare.iz.darq.analyzer.service.ADFReportService;
 import gov.nist.healthcare.iz.darq.analyzer.service.common.DataTableService;
 import gov.nist.healthcare.iz.darq.analyzer.service.common.QueryValueResolverService;
@@ -49,31 +46,39 @@ public class SqliteADFReportService extends ADFReportService<SqliteADFReader> {
 		QueryIssues issues = tableService.getQueryIssues(file, detections);
 		QueryVariableInstanceHolder holder = this.tableService.getVariableInstanceHolder(payload, file, facilityId);
 
-		boolean isDetections = isDetectionsAnalysis(payload.getType());
-		Set<Field> allFields = Stream.concat(payload.getDenominatorFields().stream(), payload.getNominatorFields().stream()).collect(Collectors.toSet());
-		query
-				.append(select(allFields)).append(", ")
-				.append(denominator(payload.getDenominatorFields(), isDetections))
-				.append(", ")
-				.append(numerator(payload.getDenominatorFields(), payload.getNominatorFields()))
-				.append(", ")
-				.append(groupId(payload.getDenominatorFields()))
-				.append("\n")
-				.append(from(payload.getType()))
-				.append("\n")
-				.append(where(file, payload.getFilterFields()));
-		try (Statement statement = file.getConnection().createStatement()) {
-			ResultSet resultSet = statement.executeQuery(query.toString());
-			DataTable table = createDataTable(file, resultSet, allFields, payload, holder);
-			table.setIssues(issues);
-			return table;
+		if(isVariableQuery(payload)) {
+			return createVariableDataTable(payload, holder);
+		} else {
+			if(file.supportsAnalysisType(payload.getType())) {
+				boolean isDetections = isDetectionsAnalysis(payload.getType());
+				Set<Field> allFields = Stream.concat(payload.getDenominatorFields().stream(), payload.getNominatorFields().stream()).collect(Collectors.toSet());
+				query
+						.append(select(allFields)).append(", ")
+						.append(denominator(payload.getDenominatorFields(), isDetections))
+						.append(", ")
+						.append(numerator(payload.getDenominatorFields(), payload.getNominatorFields()))
+						.append(", ")
+						.append(groupId(payload.getDenominatorFields()))
+						.append("\n")
+						.append(from(file, payload.getType()))
+						.append("\n")
+						.append(where(file, payload.getFilterFields()));
+				try (Statement statement = file.getConnection().createStatement()) {
+					ResultSet resultSet = statement.executeQuery(query.toString());
+					DataTable table = createDataTable(file, resultSet, allFields, payload, holder);
+					table.setIssues(issues);
+					return table;
+				}
+			} else {
+				return createEmptyDataTable(payload);
+			}
 		}
 	}
 
 	private String groupId(Set<Field> fields) {
 		StringBuilder clause = new StringBuilder();
 		clause.append("dense_rank() OVER (");
-		if(fields != null && fields.size() > 0) {
+		if(fields != null && !fields.isEmpty()) {
 			clause.append("ORDER BY ");
 			clause.append(
 					String.join(
@@ -96,7 +101,7 @@ public class SqliteADFReportService extends ADFReportService<SqliteADFReader> {
 	String select(Set<Field> fields) {
 		StringBuilder select = new StringBuilder();
 		select.append("SELECT DISTINCT").append(" ");
-		if(fields != null && fields.size() > 0) {
+		if(fields != null && !fields.isEmpty()) {
 			select.append(
 					String.join(
 							", ",
@@ -114,7 +119,7 @@ public class SqliteADFReportService extends ADFReportService<SqliteADFReader> {
 	String over(Set<Field> fields) {
 		StringBuilder clause = new StringBuilder();
 		clause.append(" OVER (");
-		if(fields != null && fields.size() > 0) {
+		if(fields != null && !fields.isEmpty()) {
 			clause.append("PARTITION BY ");
 			clause.append(
 					String.join(
@@ -160,7 +165,7 @@ public class SqliteADFReportService extends ADFReportService<SqliteADFReader> {
 				.map((selector) -> whereByField(file, selector))
 				.filter((value) -> !Strings.isNullOrEmpty(value))
 				.collect(Collectors.toSet());
-		if(whereByField.size() > 0) {
+		if(!whereByField.isEmpty()) {
 			where.append("WHERE")
 					.append(" ")
 					.append(String.join(" AND ", whereByField));
@@ -168,29 +173,8 @@ public class SqliteADFReportService extends ADFReportService<SqliteADFReader> {
 		return where.toString();
 	}
 
-	String from(AnalysisType type) {
-		return "FROM " + translate(type);
-	}
-
-	String translate(AnalysisType type) {
-		switch (type) {
-			case V:
-				return "V_EVENTS";
-			case VD:
-				return "V_DETECTIONS";
-			case VT:
-				return "V_VOCAB";
-			case PD:
-				return "P_DETECTIONS";
-			case PT:
-				return "P_VOCAB";
-			case PD_RG:
-				return "P_PROVIDER_DETECTIONS";
-			case PT_RG:
-				return "P_PROVIDER_VOCAB";
-			default:
-				return type.name();
-		}
+	String from(SqliteADFReader file, AnalysisType type) {
+		return "FROM " + file.getTableNameForAnalysis(type);
 	}
 
 	String whereByField(SqliteADFReader file, DataSelector selector) {
@@ -269,6 +253,10 @@ public class SqliteADFReportService extends ADFReportService<SqliteADFReader> {
 		}
 	}
 
+	private boolean isVariableQuery(QueryPayload payload) {
+		return payload.getType() == null && payload.getPayloadType().equals(QueryPayloadType.VARIABLE);
+	}
+
 	DataTable createDataTable(SqliteADFReader file, ResultSet resultSet, Set<Field> fields, QueryPayload payload, QueryVariableInstanceHolder variables) throws SQLException {
 		DataTable table = new DataTable();
 		table.fromQuery(payload);
@@ -286,7 +274,7 @@ public class SqliteADFReportService extends ADFReportService<SqliteADFReader> {
 			table.getValues().add(row);
 		}
 
-		if(table.getValues().size() == 0 && variables != null && variables.hasNumerator() && variables.hasDenominator()) {
+		if(table.getValues().isEmpty() && variables != null && variables.hasNumerator() && variables.hasDenominator()) {
 			DataTableRow row = new DataTableRow();
 			Fraction rowFraction = new Fraction((int) variables.getNumerator().getValue(), (int) variables.getDenominator().getValue());
 			row.setGroupId(1);
@@ -298,6 +286,31 @@ public class SqliteADFReportService extends ADFReportService<SqliteADFReader> {
 
 		tableService.applyThreshold(table, payload.getQueryThreshold());
 		tableService.applyFilters(table, payload.getFilter());
+		return table;
+	}
+
+	DataTable createVariableDataTable(QueryPayload payload, QueryVariableInstanceHolder variables) {
+		DataTable table = new DataTable();
+		table.fromQuery(payload);
+
+		if(variables != null && variables.hasNumerator() && variables.hasDenominator()) {
+			DataTableRow row = new DataTableRow();
+			Fraction rowFraction = new Fraction((int) variables.getNumerator().getValue(), (int) variables.getDenominator().getValue());
+			row.setGroupId(1);
+			row.setValues(new HashMap<>());
+			row.setResult(rowFraction);
+			row.setAdjustedFraction(variables.getAdjustedFraction(rowFraction));
+			table.getValues().add(row);
+		}
+
+		tableService.applyThreshold(table, payload.getQueryThreshold());
+		tableService.applyFilters(table, payload.getFilter());
+		return table;
+	}
+
+	DataTable createEmptyDataTable(QueryPayload payload) {
+		DataTable table = new DataTable();
+		table.fromQuery(payload);
 		return table;
 	}
 

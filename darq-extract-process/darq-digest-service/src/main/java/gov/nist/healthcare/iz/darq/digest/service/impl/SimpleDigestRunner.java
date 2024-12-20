@@ -12,6 +12,7 @@ import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
 import gov.nist.healthcare.iz.darq.adf.service.MergeService;
 import gov.nist.healthcare.iz.darq.digest.service.detection.SimpleDetectionContext;
 import gov.nist.healthcare.iz.darq.digest.service.exception.InvalidPatientRecord;
+import gov.nist.healthcare.iz.darq.digest.service.report.ReportEngine;
 import gov.nist.healthcare.iz.darq.parser.model.AggregatePatientRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.AggregateParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParseError;
@@ -36,8 +37,6 @@ public class SimpleDigestRunner implements DigestRunner {
 	@Autowired
 	SimpleRecordChewer chewer;
 	private final static Logger logger = LoggerFactory.getLogger(SimpleDigestRunner.class.getName());
-	@Autowired
-	MergeService merge;
 	@Autowired
 	ConfigurationPayloadValidator configurationPayloadValidator;
 	@Autowired

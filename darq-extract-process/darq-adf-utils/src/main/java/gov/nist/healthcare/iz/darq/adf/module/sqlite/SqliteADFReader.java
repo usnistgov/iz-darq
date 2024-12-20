@@ -8,6 +8,7 @@ import gov.nist.healthcare.iz.darq.adf.model.Metadata;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
 import gov.nist.healthcare.iz.darq.adf.module.archive.ADFArchiveManager;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.model.Dictionaries;
+import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.Summary;
@@ -20,10 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 public class SqliteADFReader implements ADFReader {
 	protected Connection connection;
@@ -37,10 +35,12 @@ public class SqliteADFReader implements ADFReader {
 	protected PreparedStatement KEY;
 	protected PreparedStatement DICTIONARY;
 	protected PreparedStatement METADATA;
+	protected PreparedStatement CHECK_TABLE_EXISTS;
 	protected byte[] keyHash;
 	protected boolean open = false;
 	protected boolean ready = false;
 	protected final Dictionaries dictionaries = new Dictionaries();
+	protected Map<AnalysisType, Boolean> analysisTypeSupport = new HashMap<>();
 
 	public SqliteADFReader(String location, String temporaryInflateDirectory) {
 		this.location = location;
@@ -63,6 +63,8 @@ public class SqliteADFReader implements ADFReader {
 		this.METADATA = connection.prepareStatement("SELECT * FROM METADATA");
 		this.KEY = connection.prepareStatement("SELECT * FROM SEC");
 		this.DICTIONARY = connection.prepareStatement("SELECT DICT FROM DICTIONARY WHERE ID = ?");
+		this.CHECK_TABLE_EXISTS = connection.prepareStatement("SELECT name FROM sqlite_master WHERE type='table' AND name= ?");
+		this.loadAnalysisTypeSupportMap();
 		this.open = true;
 	}
 
@@ -89,6 +91,7 @@ public class SqliteADFReader implements ADFReader {
 		readDictionary(Field.VACCINATION_YEAR, secret);
 		readDictionary(Field.EVENT, secret);
 		readDictionary(Field.CODE, secret);
+		readDictionary(Field.MATCH_SIGNATURE, secret);
 	}
 
 	protected void readDictionary(Field field, byte[] secretBytes) throws Exception {
@@ -191,6 +194,46 @@ public class SqliteADFReader implements ADFReader {
 				return Arrays.equals(keyHash, key.getPublicKeyHash());
 			}
 			return false;
+		}
+	}
+
+	private boolean hasTable(String tableName) throws Exception {
+		this.CHECK_TABLE_EXISTS.setString(1, tableName);
+		ResultSet resultSet = this.CHECK_TABLE_EXISTS.executeQuery();
+		return resultSet.next();
+	}
+
+	public boolean supportsAnalysisType(AnalysisType type) {
+		return this.analysisTypeSupport.containsKey(type) && this.analysisTypeSupport.get(type);
+	}
+
+	public String getTableNameForAnalysis(AnalysisType type) {
+		switch (type) {
+			case V:
+				return "V_EVENTS";
+			case VD:
+				return "V_DETECTIONS";
+			case VT:
+				return "V_VOCAB";
+			case PD:
+				return "P_DETECTIONS";
+			case PT:
+				return "P_VOCAB";
+			case PD_RG:
+				return "P_PROVIDER_DETECTIONS";
+			case PT_RG:
+				return "P_PROVIDER_VOCAB";
+			case PM:
+				return "P_MATCH_SIGNATURE";
+			default:
+				return type.name();
+		}
+	}
+
+	private void loadAnalysisTypeSupportMap() throws Exception {
+		this.analysisTypeSupport = new HashMap<>();
+		for(AnalysisType type : AnalysisType.values()) {
+			this.analysisTypeSupport.put(type, this.hasTable(getTableNameForAnalysis(type)));
 		}
 	}
 

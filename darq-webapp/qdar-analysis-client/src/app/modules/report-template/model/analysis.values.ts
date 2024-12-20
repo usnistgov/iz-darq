@@ -4,6 +4,7 @@ export enum AnalysisType {
   VACCINCATIONS_VOCABULARY = 'VT',
   PATIENTS_DETECTIONS = 'PD',
   PATIENTS_VOCABULARY = 'PT',
+  PATIENTS_MATCHING = 'PM',
   PATIENTS_PROVIDER_DETECTIONS = 'PD_RG',
   PATIENTS_PROVIDER_VOCABULARY = 'PT_RG',
 }
@@ -16,7 +17,8 @@ export enum Field {
   EVENT = 'EVENT',
   GENDER = 'GENDER',
   VACCINE_CODE = 'VACCINE_CODE',
-  VACCINATION_YEAR = 'VACCINATION_YEAR'
+  VACCINATION_YEAR = 'VACCINATION_YEAR',
+  MATCH_SIGNATURE = 'MATCH_SIGNATURE'
 }
 
 export interface Compatibility {
@@ -30,7 +32,8 @@ export const fieldsForAnalysis: Compatibility = {
   [AnalysisType.PATIENTS_DETECTIONS]: [Field.AGE_GROUP, Field.DETECTION],
   [AnalysisType.PATIENTS_VOCABULARY]: [Field.AGE_GROUP, Field.TABLE, Field.CODE],
   [AnalysisType.PATIENTS_PROVIDER_DETECTIONS]: [Field.PROVIDER, Field.AGE_GROUP, Field.DETECTION],
-  [AnalysisType.PATIENTS_PROVIDER_VOCABULARY]: [Field.PROVIDER, Field.AGE_GROUP, Field.TABLE, Field.CODE]
+  [AnalysisType.PATIENTS_PROVIDER_VOCABULARY]: [Field.PROVIDER, Field.AGE_GROUP, Field.TABLE, Field.CODE],
+  [AnalysisType.PATIENTS_MATCHING]: [Field.MATCH_SIGNATURE]
 };
 
 export const names = {
@@ -39,6 +42,7 @@ export const names = {
   VACCINCATIONS_VOCABULARY: 'Vaccination Related Code Table',
   PATIENTS_DETECTIONS: 'Patient Record Related Detections (General)',
   PATIENTS_VOCABULARY: 'Patient Record Related Code Table (General)',
+  PATIENTS_MATCHING: 'Patient Matching Signatures',
   PATIENTS_PROVIDER_DETECTIONS: 'Patient Record Related Detections (By Reporting Group)',
   PATIENTS_PROVIDER_VOCABULARY: 'Patient Record Related Code Table (By Reporting Group)',
 };
@@ -52,5 +56,6 @@ export const fieldDisplayName = {
   [Field.EVENT]: Field.EVENT,
   [Field.GENDER]: Field.GENDER,
   [Field.VACCINE_CODE]: Field.VACCINE_CODE,
-  [Field.VACCINATION_YEAR]: Field.VACCINATION_YEAR
+  [Field.VACCINATION_YEAR]: Field.VACCINATION_YEAR,
+  [Field.MATCH_SIGNATURE]: Field.MATCH_SIGNATURE
 };

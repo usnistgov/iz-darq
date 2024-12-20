@@ -14,7 +14,8 @@ public enum Field {
 	EVENT(AnalysisType.V),
 	GENDER(AnalysisType.V),
 	VACCINE_CODE(AnalysisType.V),
-	VACCINATION_YEAR(AnalysisType.V);
+	VACCINATION_YEAR(AnalysisType.V),
+	MATCH_SIGNATURE(AnalysisType.PM);
 
 	final AnalysisType[] compatibilityGroups;
 	Field(AnalysisType... compatibility) {

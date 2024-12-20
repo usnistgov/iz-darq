@@ -1,7 +1,6 @@
 import { IQueryVariableDisplay } from './../../variable-ref-display/variable-ref-display.component';
-import { IQueryVariableRefInstance, IDynamicQueryVariableRef, QueryVariableRefType } from './../../../model/query-variable.model';
+import { QueryVariableRefType } from './../../../model/query-variable.model';
 import { map } from 'rxjs/operators';
-import { QueryVariableService } from './../../../services/query-variable.service';
 import { VariableSelectDialogComponent } from './../../variable-select-dialog/variable-select-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Component, OnInit, SimpleChanges, OnChanges } from '@angular/core';
@@ -48,6 +47,7 @@ export class SimpleQueryComponent extends QueryDialogTabComponent<ISimpleViewQue
     [AnalysisType.VACCINCATIONS]: this.labelize(
       [Field.PROVIDER, Field.AGE_GROUP, Field.EVENT, Field.GENDER, Field.VACCINATION_YEAR, Field.VACCINE_CODE]
     ),
+    [AnalysisType.PATIENTS_MATCHING]: [],
     [AnalysisType.VACCINCATIONS_DETECTIONS]: this.labelize([Field.PROVIDER, Field.AGE_GROUP]),
     [AnalysisType.VACCINCATIONS_VOCABULARY]: this.labelize([Field.PROVIDER, Field.AGE_GROUP]),
     [AnalysisType.PATIENTS_DETECTIONS]: this.labelize([Field.AGE_GROUP]),
@@ -71,6 +71,7 @@ export class SimpleQueryComponent extends QueryDialogTabComponent<ISimpleViewQue
     codes: boolean;
     vaccineEvents: boolean;
     provider: boolean;
+    matchSignature: boolean;
   };
 
   constructor(
@@ -134,16 +135,7 @@ export class SimpleQueryComponent extends QueryDialogTabComponent<ISimpleViewQue
   }
 
   setQueryFlags(type: AnalysisType) {
-    this.queryFlags = {
-      detections: [AnalysisType.PATIENTS_DETECTIONS, AnalysisType.VACCINCATIONS_DETECTIONS, AnalysisType.PATIENTS_PROVIDER_DETECTIONS]
-        .includes(type),
-      codes: [AnalysisType.PATIENTS_VOCABULARY, AnalysisType.VACCINCATIONS_VOCABULARY, AnalysisType.PATIENTS_PROVIDER_VOCABULARY]
-        .includes(type),
-      provider: [AnalysisType.PATIENTS_PROVIDER_VOCABULARY, AnalysisType.PATIENTS_PROVIDER_DETECTIONS]
-        .includes(type),
-      vaccineEvents: [AnalysisType.VACCINCATIONS]
-        .includes(type)
-    };
+    this.queryFlags = this.queryService.getQueryFlags(type);
   }
 
   ngOnInit(): void {

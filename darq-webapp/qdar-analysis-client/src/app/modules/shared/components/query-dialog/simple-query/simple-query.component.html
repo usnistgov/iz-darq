@@ -2,10 +2,11 @@
   <tbody>
     <tr>
       <th style="vertical-align: middle;"> Count of <strong style="color: red;">*</strong></th>
-      <td style="vertical-align: middle; text-align: end;">
+      <td style="vertical-align: middle; text-align: end;" [colSpan]="queryFlags.matchSignature ? 2 : 1">
         <span *ngIf="queryFlags.detections">Count percentage of detection </span>
         <span *ngIf="queryFlags.codes">Count percentage of code occurrences for field / table </span>
         <span *ngIf="queryFlags.vaccineEvents">Count percentage of occurrences of value in vaccination event field</span>
+        <span *ngIf="queryFlags.matchSignature">Count percentage of occurrences of patient match signature</span>
       </td>
       <td style="vertical-align: middle;" *ngIf="queryFlags.detections || queryFlags.codes">
         <app-field-input
@@ -33,7 +34,7 @@
         </p-dropdown>
       </td>
     </tr>
-    <tr [ngClass]="{'not-active': !value.denominator.active}">
+    <tr [ngClass]="{'not-active': !value.denominator.active}" *ngIf="breakdownBy[type] && breakdownBy[type].length !== 0"  >
       <th style="vertical-align: middle;">
         <p-checkbox [disabled]="queryFlags.provider" label="Breakdown By" [(ngModel)]="value.denominator.active" (ngModelChange)="triggerValid()" [binary]="true"></p-checkbox>
       </th>
@@ -73,7 +74,7 @@
             <button *ngIf="value.denominatorVariable" (click)="removeDenominatorVariable()" class="btn btn-sm btn-danger">
               <i class="fa fa-trash"></i>
             </button>
-          </div>  
+          </div>
         </div>
       </td>
     </tr>

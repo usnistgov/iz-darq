@@ -60,7 +60,7 @@ export class QueryService {
         field: flags.detections ? Field.DETECTION : Field.TABLE,
         value: undefined,
       } : undefined,
-      nominator: flags.detections ? Field.DETECTION : Field.CODE,
+      nominator: flags.matchSignature ? Field.MATCH_SIGNATURE : flags.detections ? Field.DETECTION : Field.CODE,
       denominator: {
         active: flags.provider,
         field: flags.provider ? Field.PROVIDER : undefined,
@@ -186,7 +186,9 @@ export class QueryService {
       provider: [AnalysisType.PATIENTS_PROVIDER_VOCABULARY, AnalysisType.PATIENTS_PROVIDER_DETECTIONS]
         .includes(type),
       vaccineEvents: [AnalysisType.VACCINCATIONS]
-        .includes(type)
+        .includes(type),
+      matchSignature: [AnalysisType.PATIENTS_MATCHING]
+        .includes(type),
     };
   }
 

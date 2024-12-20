@@ -4,6 +4,7 @@ import gov.nist.healthcare.iz.darq.parser.model.AggregatePatientRecord;
 import gov.nist.healthcare.iz.darq.patient.matching.model.EndOfBlockException;
 import gov.nist.healthcare.iz.darq.patient.matching.model.MatchResult;
 import gov.nist.healthcare.iz.darq.patient.matching.model.PatientRecord;
+import gov.nist.healthcare.iz.darq.patient.matching.model.RecordMatchProcessResult;
 import gov.nist.healthcare.iz.darq.patient.matching.service.PatientBlock;
 import gov.nist.healthcare.iz.darq.patient.matching.service.PatientBlockHandler;
 import gov.nist.healthcare.iz.darq.patient.matching.service.PatientMatcherService;
@@ -49,20 +50,21 @@ public abstract class PatientMatchingService<T, E extends MatchResult> {
 
 	public abstract void onClose() throws Exception;
 
-	public boolean process(AggregatePatientRecord patientRecord) throws Exception {
+	public RecordMatchProcessResult process(AggregatePatientRecord patientRecord) throws Exception {
 		T matcherPatientModel = transform(patientRecord);
+		RecordMatchProcessResult result = new RecordMatchProcessResult();
 		if (this.matcher.consider(matcherPatientModel)) {
 			PatientBlock<T> candidates = blockHandler.getCandidates(matcherPatientModel);
 			Map<String, E> matches = findMatches(matcherPatientModel, candidates);
 			boolean matchesFound = !matches.isEmpty();
 			if (matchesFound) {
+				result.setDuplicate(true);
+				matches.values().forEach((match) -> result.getSignatures().compute(match.getSignature(), (k, v) -> v == null ? 1 : v + 1));
 				this.onMatchesFound(patientRecord.ID, matches);
 			}
 			blockHandler.store(patientRecord.ID, matcherPatientModel);
-			return matchesFound;
-		} else {
-			return false;
 		}
+		return result;
 	}
 
 	Map<String, E> findMatches(T record, PatientBlock<T> candidates) {
