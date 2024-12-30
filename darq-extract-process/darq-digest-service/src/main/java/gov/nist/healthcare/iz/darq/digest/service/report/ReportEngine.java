@@ -1,8 +1,9 @@
 package gov.nist.healthcare.iz.darq.digest.service.report;
 
-import gov.nist.healthcare.iz.darq.detections.AggregatedRecordDetections;
-import gov.nist.healthcare.iz.darq.parser.model.AggregatePatientRecord;
+import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
+import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +17,9 @@ public class ReportEngine {
 		}
 	}
 
-	public void open() throws Exception {
+	public void open(Path tempDirectory, Path outputDirectory) throws Exception {
 		for(LocalReportService localReportService : localReports.values()) {
-			localReportService.open();
+			localReportService.open(tempDirectory, outputDirectory);
 		}
 	}
 
@@ -28,9 +29,9 @@ public class ReportEngine {
 		}
 	}
 
-	public void process(AggregatePatientRecord record, AggregatedRecordDetections detections) throws Exception {
+	public void process(PreProcessRecord record, RecordDetectionEngineResult recordDetectionEngineResult) throws Exception {
 		for(LocalReportService localReportService : localReports.values()) {
-			localReportService.process(record, detections);
+			localReportService.process(record, recordDetectionEngineResult);
 		}
 	}
 }

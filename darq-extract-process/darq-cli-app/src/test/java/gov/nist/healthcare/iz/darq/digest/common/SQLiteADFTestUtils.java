@@ -21,7 +21,8 @@ public class SQLiteADFTestUtils {
 			for (int i = 1; i <= columnsNumber; i++) {
 				if (i > 1) System.out.print(",  ");
 				String columnValue = resultSet.getString(i);
-				System.out.print(columnValue + " " + rsmd.getColumnName(i));
+				String columnName = rsmd.getColumnName(i).equals("N") ? "FOUND" : rsmd.getColumnName(i).equals("P") ? "NOT_FOUND" : rsmd.getColumnName(i);
+				System.out.print(columnValue + " " + columnName);
 			}
 			System.out.println();
 		}
@@ -56,7 +57,7 @@ public class SQLiteADFTestUtils {
 	}
 
 	public SqliteADFReader readADF(CryptoKey cryptoKey, TemporaryFolder folder) throws Exception {
-		String ADF = Paths.get(folder.getRoot().getAbsolutePath(), "darq-analysis", "ADF.data").toAbsolutePath().toString();
+		String ADF = Paths.get(folder.getRoot().getAbsolutePath(), "darq-analysis_test", "ADF.data").toAbsolutePath().toString();
 		String root = folder.getRoot().getAbsolutePath();
 		SqliteADFReader reader = new SqliteADFReader(ADF, root);
 		reader.read(cryptoKey);

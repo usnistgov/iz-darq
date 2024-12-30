@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.test.helper;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -52,10 +53,17 @@ abstract public class LineBuilder<T extends LineBuilder> {
 
 	abstract protected void close();
 
-	public String getLine() {
+	public void fill() {
 		this.close();
 		writer.put(ID, FIELD_ID);
 		writer.fill(defaultValue);
+	}
+
+	public String getLine() {
 		return writer.getLine();
+	}
+
+	public List<String> getLineColumns() {
+		return writer.getColumns();
 	}
 }

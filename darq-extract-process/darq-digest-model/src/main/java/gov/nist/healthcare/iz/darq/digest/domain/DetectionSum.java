@@ -1,10 +1,16 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
 public class DetectionSum {
-	
+
+	// TODO Refactor code to change from positive/negative to found/notfound
+	// Positive is + 1 when a detection was checked but not found
 	private int positive;
+	// Negative is + 1 when a detection is found
 	private int negative;
-	
+
+	public boolean exists() {
+		return negative >= 1;
+	}
 	
 	public DetectionSum() {
 		super();

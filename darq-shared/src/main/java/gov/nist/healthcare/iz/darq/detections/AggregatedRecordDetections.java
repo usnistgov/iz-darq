@@ -2,7 +2,6 @@ package gov.nist.healthcare.iz.darq.detections;
 
 import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class AggregatedRecordDetections {
@@ -46,40 +45,5 @@ public class AggregatedRecordDetections {
 
 	public void setDuplicates(Map<String, String> duplicates) {
 		this.duplicates = duplicates;
-	}
-
-	public void merge(AggregatedRecordDetections detections) {
-		if(detections != null) {
-			if(detections.patient != null) {
-				if(patient == null) {
-					patient = new HashMap<>();
-				}
-				detections.patient.forEach((key, value) -> patient.merge(key, value, DetectionSum::merge));
-			}
-			if(detections.vaccinations != null) {
-				if(vaccinations == null) {
-					vaccinations = new HashMap<>();
-				}
-				detections.vaccinations.forEach((keyProvider, valueProvider) -> {
-					vaccinations.merge(keyProvider, valueProvider, (existingByAgeGroup, valueByAgeGroup) -> {
-						valueByAgeGroup.forEach((keyAgeGroup, valueAgeGroup) -> {
-							existingByAgeGroup.merge(keyAgeGroup, valueAgeGroup, (existingByDetectionCode, valueByDetectionCode) -> {
-								valueByDetectionCode.forEach((keyDetectionCode, valueDetectionCode) -> {
-									existingByDetectionCode.merge(keyDetectionCode, valueDetectionCode, DetectionSum::merge);
-								});
-								return existingByDetectionCode;
-							});
-						});
-						return existingByAgeGroup;
-					});
-				});
-			}
-			if(detections.recordMatchSignatures != null) {
-				if(recordMatchSignatures == null) {
-					recordMatchSignatures = new HashMap<>();
-				}
-				detections.recordMatchSignatures.forEach((key, value) -> recordMatchSignatures.compute(key, (k, v) -> v == null ? value : v + value));
-			}
-		}
 	}
 }

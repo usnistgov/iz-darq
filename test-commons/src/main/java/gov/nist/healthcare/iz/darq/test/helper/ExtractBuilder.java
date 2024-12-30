@@ -36,7 +36,7 @@ public class ExtractBuilder {
 		vaccinations.close();
 	}
 
-	public Set<Record> get() {
-		return this.records.stream().map(RecordBuilder::get).collect(Collectors.toSet());
+	public List<Record> get() {
+		return this.records.stream().map(RecordBuilder::get).collect(Collectors.toList());
 	}
 }

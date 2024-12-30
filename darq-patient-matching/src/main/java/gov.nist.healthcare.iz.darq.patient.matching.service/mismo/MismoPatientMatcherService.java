@@ -8,6 +8,9 @@ import org.immregistries.mismo.match.PatientMatchResult;
 import org.immregistries.mismo.match.PatientMatcher;
 import org.immregistries.mismo.match.model.Patient;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+
 public class MismoPatientMatcherService implements PatientMatcherService<Patient, MismoMatchResult> {
 
   private PatientMatcher patientMatcher;
@@ -20,7 +23,9 @@ public class MismoPatientMatcherService implements PatientMatcherService<Patient
 	  if(configuration instanceof  String) {
 		  String configurationString = (String) configuration;
 		  if(!configurationString.isEmpty()) {
-			  this.patientMatcher = new PatientMatcher(configurationString);
+			  this.patientMatcher = new PatientMatcher(
+					  new ByteArrayInputStream(configurationString.getBytes(StandardCharsets.UTF_8))
+			  );
 		  }
 	  } else {
 		  throw new Exception("Invalid MISMO configuration");

@@ -43,6 +43,11 @@ public class RecordBuilder extends LineBuilder<RecordBuilder> {
 		return this;
 	}
 
+	public RecordBuilder withDOB(String DOB) {
+		writer.put(DOB, PATIENT_DOB);
+		return this;
+	}
+
 	public VaccinationBuilder withVaccination() {
 		VaccinationBuilder vaccine = new VaccinationBuilder(this);
 		this.vaccinations.add(vaccine);
@@ -50,9 +55,20 @@ public class RecordBuilder extends LineBuilder<RecordBuilder> {
 	}
 
 	public Record get() {
+		this.fill();
 		String patient = this.getLine();
-		List<String> vaccinations = this.vaccinations.stream().map(LineBuilder::getLine).collect(Collectors.toList());
-		return new Record(patient, vaccinations);
+		List<String> patientColumns = this.getLineColumns();
+		List<String> vaccinations = this.vaccinations.stream()
+		                                             .peek(LineBuilder::fill)
+				                                     .map(LineBuilder::getLine)
+				                                     .collect(Collectors.toList());
+		List<List<String>> vaccinationColumns =  this.vaccinations.stream().map(LineBuilder::getLineColumns).collect(Collectors.toList());
+		return new Record(
+				patient,
+				patientColumns,
+				vaccinations,
+				vaccinationColumns
+		);
 	}
 
 	public ExtractBuilder and() {

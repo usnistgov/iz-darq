@@ -1,5 +1,8 @@
 package gov.nist.healthcare.iz.darq.test.helper;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class LineWriter {
 	String[] fields;
 
@@ -11,6 +14,10 @@ public class LineWriter {
 		if(i < fields.length) {
 			fields[i] = value;
 		}
+	}
+
+	public List<String> getColumns() {
+		return Arrays.asList(fields);
 	}
 
 	public String getLine() {

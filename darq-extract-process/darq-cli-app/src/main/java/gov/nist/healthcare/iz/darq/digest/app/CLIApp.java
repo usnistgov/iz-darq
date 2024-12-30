@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -81,10 +82,11 @@ public class CLIApp {
 			//--- OPTIONS
 			Options options = new Options();
 			options.addOption("help", false, "print help");
+			options.addOption("s", "suffixOut", true, "Suffix for output files");
 			options.addOption("p", "patients", true, "Patients Extract File");
 			options.addOption("v", "vaccinations", true, "Vaccinations Extract File");
 			options.addOption("c", "configuration", true, "Analysis Configuration");
-			options.addOption("tmpDir", "temporaryDirectory", true, "Location where to create temporary directory");
+			options.addOption("t", "temporaryDirectory", true, "Location where to create temporary directory");
 			options.addOption("out", "output", true, "Location where to create result directory");
 			options.addOption("pa", "printAdf", false, "print ADF content (deprecated)");
 			options.addOption("d", "dateFormat", true, "Date Format");
@@ -101,6 +103,10 @@ public class CLIApp {
 				System.exit(0);
 			}
 			else {
+				Date timestamp = new Date();
+				SimpleDateFormat timestampFormat = new SimpleDateFormat("dd-MM-YYYY_hh:mm:ss");
+				String prefix = cmd.hasOption("s") ? cmd.getOptionValue("s") : timestampFormat.format(timestamp);
+
 				System.out.println("===================================================================================================");
 				System.out.println(" [NIST] Welcome to Data At Rest Quality Analysis Command Line Tool " + tag + " ");
 				System.out.println("===================================================================================================");
@@ -115,7 +121,7 @@ public class CLIApp {
 					String pFilePath = cmd.getOptionValue("p");
 					String vFilePath = cmd.getOptionValue("v");
 					String cFilePath = cmd.getOptionValue("c");
-					String tmpDirLocation = cmd.getOptionValue("tmpDir");
+					String tmpDirLocation = cmd.getOptionValue("t");
 					boolean printAdf = cmd.hasOption("pa");
 					boolean activePatientMatching = cmd.hasOption("pm");
 					boolean deActivatePatientMatching = cmd.hasOption("npm");
@@ -175,7 +181,8 @@ public class CLIApp {
 
 						// --- Create Outputs Folder
 						String outputRoot = cmd.hasOption("out") ? cmd.getOptionValue("out") : ".";
-						File output = Paths.get(outputRoot, "darq-analysis").toFile();
+
+						File output = Paths.get(outputRoot, "darq-analysis"+"_"+prefix).toFile();
 						output.mkdirs();
 
 						// --- Create Temporary Directory

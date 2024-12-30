@@ -9,6 +9,7 @@ import gov.nist.healthcare.iz.darq.test.helper.Record;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 /*
@@ -80,7 +81,7 @@ public class SimpleExampleMock implements DataExtractMock {
 	}
 
 	@Override
-	public Set<Record> getDataExtract() {
+	public List<Record> getDataExtract() {
 		return new ExtractBuilder(ageGroupHelper)
 				.withRecord()
 				// Record 1

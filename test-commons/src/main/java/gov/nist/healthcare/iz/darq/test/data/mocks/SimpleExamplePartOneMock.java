@@ -3,12 +3,13 @@ package gov.nist.healthcare.iz.darq.test.data.mocks;
 import gov.nist.healthcare.iz.darq.test.helper.ExtractBuilder;
 import gov.nist.healthcare.iz.darq.test.helper.Record;
 
+import java.util.List;
 import java.util.Set;
 
 public class SimpleExamplePartOneMock extends SimpleExampleMock {
 
 	@Override
-	public Set<Record> getDataExtract() {
+	public List<Record> getDataExtract() {
 		return new ExtractBuilder(ageGroupHelper)
 				.withRecord()
 				// Record 1

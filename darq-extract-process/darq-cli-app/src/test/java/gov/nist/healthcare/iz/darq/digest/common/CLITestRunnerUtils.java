@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CLITestRunnerUtils {
 
@@ -26,6 +28,7 @@ public class CLITestRunnerUtils {
 	protected Path patientsFilePath;
 	protected Path vaccinationsFilePath;
 	protected CryptoKey cryptoKey;
+	List<Record> records = new ArrayList<>();
 
 	public CLITestRunnerUtils(DataExtractMock mock, TemporaryFolder folder) {
 		this.mock = mock;
@@ -34,6 +37,7 @@ public class CLITestRunnerUtils {
 
 	public void createFiles() throws IOException {
 		System.out.println("=== Creating Configuration File");
+		this.records = mock.getDataExtract();
 		configurationFilePath = folder.newFile("configuration.json").toPath();
 		objectMapper.writeValue(new FileWriter(configurationFilePath.toFile()), mock.getConfigurationPayload());
 		System.out.println(String.join("\n", Files.readAllLines(configurationFilePath)));
@@ -43,7 +47,7 @@ public class CLITestRunnerUtils {
 		vaccinationsFilePath = folder.newFile("vaccinations.tsv").toPath();
 		FileWriter patients = new FileWriter(patientsFilePath.toFile());
 		FileWriter vaccinations = new FileWriter(vaccinationsFilePath.toFile());
-		for(Record record: mock.getDataExtract()) {
+		for(Record record: records) {
 			patients.write(record.getPatient());
 			patients.write("\n");
 			for(String vaccination: record.getVaccinations()) {
@@ -65,18 +69,28 @@ public class CLITestRunnerUtils {
 		InputStream PUBLIC_KEY = CLITestRunnerUtils.class.getResourceAsStream(Constants.TEST_KEY_PUBLIC);
 		Path pkPath = Paths.get(folder.getRoot().getAbsolutePath(), "public.pem");
 		FileUtils.copyInputStreamToFile(PUBLIC_KEY, pkPath.toFile());
-		String[] args = new String[6];
+		String[] args = new String[7];
 		args[0] = "-p=" + patientsFilePath.toAbsolutePath();
 		args[1] = "-v=" + vaccinationsFilePath.toAbsolutePath();
 		args[2] = "-c=" + configurationFilePath.toAbsolutePath();
 		args[3] = "-pub=" + pkPath.toAbsolutePath();
 		args[4] = "-out=" + folder.getRoot().getAbsolutePath();
-		args[5] = "-pa";
+		args[5] = "-s=test";
+		args[6] = "-pa";
+
 		try {
 			CLIApp.run(args);
 		} finally {
 			CLIApp.cleanUp();
 		}
+	}
+
+	public Path getLocalReport(String name) {
+		return Paths.get(
+				folder.getRoot().getAbsolutePath(),
+				"darq-analysis_test",
+				name
+		).toAbsolutePath();
 	}
 
 	public Path getPatientsFilePath() {
@@ -93,5 +107,13 @@ public class CLITestRunnerUtils {
 
 	public CryptoKey getCryptoKey() {
 		return cryptoKey;
+	}
+
+	public List<Record> getRecords() {
+		return records;
+	}
+
+	public void setRecords(List<Record> records) {
+		this.records = records;
 	}
 }

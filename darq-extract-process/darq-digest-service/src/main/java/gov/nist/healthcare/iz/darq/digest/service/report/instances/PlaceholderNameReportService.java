@@ -1,8 +1,9 @@
 package gov.nist.healthcare.iz.darq.digest.service.report.instances;
 
-import gov.nist.healthcare.iz.darq.detections.AggregatedRecordDetections;
+import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
 import gov.nist.healthcare.iz.darq.digest.service.report.AggregateLocalReportService;
-import gov.nist.healthcare.iz.darq.parser.model.AggregatePatientRecord;
+import gov.nist.healthcare.iz.darq.digest.service.report.model.AggregateRow;
+import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.immregistries.mqe.validator.detection.Detection;
 import org.immregistries.mqe.validator.engine.codes.KnowNameList;
@@ -21,14 +22,16 @@ public class PlaceholderNameReportService extends AggregateLocalReportService {
 			Detection.PatientNameLastIsInvalid.getMqeMqeCode(),
 			Detection.PatientNameFirstIsInvalid.getMqeMqeCode()
 	));
+	public static final String FILENAME = "placeholder_names.csv";
 
 	public PlaceholderNameReportService() {
-		super("placeholder_names.csv");
+		super(FILENAME);
 	}
 
 	@Override
 	public List<String> getHeader() {
 		return Arrays.asList(
+				"Known Name Id",
 				"Name First",
 				"Name Middle",
 				"Name Last",
@@ -38,22 +41,27 @@ public class PlaceholderNameReportService extends AggregateLocalReportService {
 	}
 
 	@Override
-	public List<List<String>> getRows(AggregatePatientRecord patientRecord, AggregatedRecordDetections detections) {
-		boolean hasPlaceholderName = MQE_DETECTIONS.stream().anyMatch((detection) -> detections.getPatient().containsKey(detection) && detections.getPatient().get(detection).getPositive() > 0);
+	public List<AggregateRow> getRows(PreProcessRecord context, RecordDetectionEngineResult detections) {
+		boolean hasPlaceholderName = MQE_DETECTIONS.stream().anyMatch((detection) -> detections.getPatientDetections().containsKey(detection) && detections.getPatientDetections().get(detection).exists());
 		if(hasPlaceholderName) {
-			String first = patientRecord.patient.own_name.first.getValue();
-			String middle = patientRecord.patient.own_name.middle.getValue();
-			String last = patientRecord.patient.own_name.last.getValue();
+			String first = context.getRecord().patient.own_name.first.getValue();
+			String middle = context.getRecord().patient.own_name.middle.getValue();
+			String last = context.getRecord().patient.own_name.last.getValue();
 			List<KnownName> matches = getKnownName(first, middle, last);
 			if(!matches.isEmpty()) {
-				ArrayList<List<String>> rows = new ArrayList<>();
+				List<AggregateRow> rows = new ArrayList<>();
 				for(KnownName knownName : matches) {
 					rows.add(
-							Arrays.asList(
-									knownName.getNameFirst(),
-									knownName.getNameMiddle(),
-									knownName.getNameLast(),
-									knownName.getNameType().name()
+							new AggregateRow(
+									Collections.singletonList(
+											knownName.getKnownNameId() + ""
+									),
+									Arrays.asList(
+											knownName.getNameFirst(),
+											knownName.getNameMiddle(),
+											knownName.getNameLast(),
+											knownName.getNameType().name()
+									)
 							)
 					);
 				}

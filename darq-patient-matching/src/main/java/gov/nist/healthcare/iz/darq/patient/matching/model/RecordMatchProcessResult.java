@@ -5,11 +5,11 @@ import java.util.Map;
 
 public class RecordMatchProcessResult {
 	private boolean duplicate;
-	private final Map<String, Integer> signatures;
+	private Map<String, String> duplicatesWithSignature;
 
 	public RecordMatchProcessResult() {
 		duplicate = false;
-		signatures = new HashMap<>();
+		duplicatesWithSignature = new HashMap<>();
 	}
 
 	public boolean isDuplicate() {
@@ -20,7 +20,11 @@ public class RecordMatchProcessResult {
 		this.duplicate = duplicate;
 	}
 
-	public Map<String, Integer> getSignatures() {
-		return signatures;
+	public Map<String, String> getDuplicatesWithSignature() {
+		return duplicatesWithSignature;
+	}
+
+	public void setDuplicatesWithSignature(Map<String, String> duplicatesWithSignature) {
+		this.duplicatesWithSignature = duplicatesWithSignature;
 	}
 }

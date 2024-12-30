@@ -3,32 +3,12 @@ package gov.nist.healthcare.iz.darq.digest.service.detection.provider.mqe;
 import java.util.Objects;
 
 public class VaccineDetection {
-	private String reportingGroup;
-	private String ageGroup;
 	private String code;
 	private boolean positive;
 
-	public VaccineDetection(String reportingGroup, String ageGroup, String code, boolean positive) {
-		this.reportingGroup = reportingGroup;
-		this.ageGroup = ageGroup;
+	public VaccineDetection(String code, boolean positive) {
 		this.code = code;
 		this.positive = positive;
-	}
-
-	public String getReportingGroup() {
-		return reportingGroup;
-	}
-
-	public void setReportingGroup(String reportingGroup) {
-		this.reportingGroup = reportingGroup;
-	}
-
-	public String getAgeGroup() {
-		return ageGroup;
-	}
-
-	public void setAgeGroup(String ageGroup) {
-		this.ageGroup = ageGroup;
 	}
 
 	public String getCode() {

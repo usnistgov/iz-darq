@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.digest.app.config;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +14,11 @@ import gov.nist.healthcare.iz.darq.digest.service.detection.provider.mismo.Mismo
 import gov.nist.healthcare.iz.darq.digest.service.detection.provider.mqe.MQEDetectionProvider;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.patient.matching.mismo.MismoPatientMatchingService;
+import gov.nist.healthcare.iz.darq.digest.service.report.ReportEngine;
+import gov.nist.healthcare.iz.darq.digest.service.report.instances.BadPhoneNumberReportService;
+import gov.nist.healthcare.iz.darq.digest.service.report.instances.DuplicateRecordsReportService;
+import gov.nist.healthcare.iz.darq.digest.service.report.instances.LotNumberReportService;
+import gov.nist.healthcare.iz.darq.digest.service.report.instances.PlaceholderNameReportService;
 import gov.nist.healthcare.iz.darq.patient.matching.service.mismo.MismoPatientMatcherService;
 import gov.nist.healthcare.iz.darq.patient.matching.service.mismo.MismoSQLitePatientBlockHandler;
 import org.immregistries.mismo.match.PatientMatcher;
@@ -32,7 +38,9 @@ public class DigestConfiguration {
 	@Bean
 	@Qualifier("MATCHER_SERVICE")
 	public MismoPatientMatchingService patientMatchingService() {
-	  MismoPatientMatcherService matcher = new MismoPatientMatcherService(new PatientMatcher());
+	  MismoPatientMatcherService matcher = new MismoPatientMatcherService(new PatientMatcher(
+			  DigestConfiguration.class.getResourceAsStream("/Configuration.yml")
+	  ));
 	  MismoSQLitePatientBlockHandler blockHandler = new MismoSQLitePatientBlockHandler();
 	  return new MismoPatientMatchingService(matcher, blockHandler);
 	}
@@ -45,6 +53,18 @@ public class DigestConfiguration {
 		providers.put(AvailableDetectionEngines.DP_ID_MQE, mqeDetectionProvider);
 		providers.put(AvailableDetectionEngines.DP_ID_PM, mismoMatcherDetectionProvider);
 		return new DetectionEngine(providers);
+	}
+
+	@Bean
+	public ReportEngine reportEngine() {
+		return new ReportEngine(
+				Arrays.asList(
+						new BadPhoneNumberReportService(),
+						new DuplicateRecordsReportService(),
+						new LotNumberReportService(),
+						new PlaceholderNameReportService()
+				)
+		);
 	}
 
 	@Bean

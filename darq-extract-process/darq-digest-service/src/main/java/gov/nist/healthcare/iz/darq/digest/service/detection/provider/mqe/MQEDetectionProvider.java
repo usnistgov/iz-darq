@@ -91,14 +91,14 @@ public class MQEDetectionProvider implements DetectionProvider {
 	public void close() {}
 
 	@Override
-	public AggregatedRecordDetections processRecordAndGetDetections(PreProcessRecord record, DetectionContext context) {
-		AggregatedRecordDetections detections = new AggregatedRecordDetections();
+	public RecordDetectionEngineResult processRecordAndGetDetections(PreProcessRecord record, DetectionContext context) {
+		RecordDetectionEngineResult detections = new RecordDetectionEngineResult();
 		// Provider, Age Group, DetectionCode
-		Map<String, Map<String, Map<String, DetectionSum>>> vaccinations = new HashMap<>();
+		Map<String, Map<String, DetectionSum>> vaccinations = new HashMap<>();
 		// Age Group, DetectionCode
 		Map<String, DetectionSum> patient = new HashMap<>();
-		detections.setPatient(patient);
-		detections.setVaccinations(vaccinations);
+		detections.setPatientDetections(patient);
+		detections.setVaccinationDetectionsById(vaccinations);
 
 
 		// Transform APR
@@ -127,8 +127,6 @@ public class MQEDetectionProvider implements DetectionProvider {
 
 			Integer positionId = r.getPositionId();
 			String vaccineId = ruleTargetIsVaccination ? vaccinationIdByPositionId.get(positionId) : "";
-			String ageGroup = ruleTargetIsVaccination ? record.getAgeGroupAtVaccinationByVaccinationId().get(vaccineId) : "";
-			String provider = ruleTargetIsVaccination ? record.getProvidersByVaccinationId().get(vaccineId) : "";
 
 			// Get Possible Detections for Rule
 			Set<MqeDetection> possible = r.getPossible().stream().filter(Objects::nonNull).collect(Collectors.toSet());
@@ -145,8 +143,6 @@ public class MQEDetectionProvider implements DetectionProvider {
 								.get(vaccineId)
 								.add(
 										new VaccineDetection(
-												provider,
-												ageGroup,
 												report.getDetection().getMqeMqeCode(),
 												false
 										)
@@ -154,7 +150,6 @@ public class MQEDetectionProvider implements DetectionProvider {
 					} else {
 						detectionsForPatient.add(
 								new PatientRecordDetection(
-										ageGroup,
 										report.getDetection().getMqeMqeCode(),
 										false
 								)
@@ -172,8 +167,6 @@ public class MQEDetectionProvider implements DetectionProvider {
 								.get(vaccineId)
 								.add(
 										new VaccineDetection(
-												provider,
-												ageGroup,
 												positive.getMqeMqeCode(),
 												true
 										)
@@ -181,7 +174,6 @@ public class MQEDetectionProvider implements DetectionProvider {
 					} else {
 						detectionsForPatient.add(
 								new PatientRecordDetection(
-										ageGroup,
 										positive.getMqeMqeCode(),
 										true
 								)
@@ -191,9 +183,14 @@ public class MQEDetectionProvider implements DetectionProvider {
 			}
 		}
 
-		detectionsByVaccination.values().stream()
-				.flatMap(Set::stream)
-				.forEach((detection) -> addVaccineDetection(vaccinations, detection.getAgeGroup(), detection.getReportingGroup(), detection.getCode(), detection.isPositive()));
+		for(String vaccinationId: detectionsByVaccination.keySet()) {
+			detectionsByVaccination
+					.get(vaccinationId)
+					.forEach((detection) -> {
+						addVaccineDetection(vaccinations, vaccinationId, detection.getCode(), detection.isPositive());
+					});
+
+		}
 
 		detectionsForPatient
 				.forEach((detection) -> addPatientDetection(patient, detection.getCode(), detection.isPositive()));
@@ -215,20 +212,16 @@ public class MQEDetectionProvider implements DetectionProvider {
 		}
 	}
 
-	private void addVaccineDetection(Map<String, Map<String, Map<String, DetectionSum>>> vaccinations, String ageGroup, String provider, String code, boolean positive) {
-		if(!vaccinations.containsKey(provider)) {
-			vaccinations.put(provider, new HashMap<>());
+	private void addVaccineDetection(Map<String, Map<String, DetectionSum>> vaccinations, String vaccinationId, String code, boolean positive) {
+		if(!vaccinations.containsKey(vaccinationId)) {
+			vaccinations.put(vaccinationId, new HashMap<>());
 		}
 
-		if(!vaccinations.get(provider).containsKey(ageGroup)) {
-			vaccinations.get(provider).put(ageGroup, new HashMap<>());
+		if(!vaccinations.get(vaccinationId).containsKey(code)) {
+			vaccinations.get(vaccinationId).put(code, new DetectionSum());
 		}
 
-		if(!vaccinations.get(provider).get(ageGroup).containsKey(code)) {
-			vaccinations.get(provider).get(ageGroup).put(code, new DetectionSum());
-		}
-
-		DetectionSum sum = vaccinations.get(provider).get(ageGroup).get(code);
+		DetectionSum sum = vaccinations.get(vaccinationId).get(code);
 
 		if(positive) {
 			sum.addPositive(1);

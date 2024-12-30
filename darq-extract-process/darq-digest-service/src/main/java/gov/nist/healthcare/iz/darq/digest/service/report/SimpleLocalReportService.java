@@ -1,5 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.service.report;
 
+import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
+import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 import org.apache.commons.csv.CSVPrinter;
 
 import java.io.IOException;
@@ -13,7 +15,17 @@ public abstract class SimpleLocalReportService extends LocalReportService {
 		super(filename);
 	}
 
-	@Override
+	public void process(PreProcessRecord record, RecordDetectionEngineResult recordDetectionEngineResult) throws Exception {
+		List<List<String>> rows = getRows(record, recordDetectionEngineResult);
+		if(rows != null && !rows.isEmpty()) {
+			for(List<String> row : rows) {
+				write(row);
+			}
+		}
+	}
+
+	public abstract List<List<String>> getRows(PreProcessRecord record, RecordDetectionEngineResult recordDetectionEngineResult);
+
 	public void write(List<String> row) throws IOException {
 		printer.printRecord(row);
 	}

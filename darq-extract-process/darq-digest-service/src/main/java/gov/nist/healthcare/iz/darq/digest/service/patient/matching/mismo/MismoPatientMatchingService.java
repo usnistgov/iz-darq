@@ -7,15 +7,9 @@ import gov.nist.healthcare.iz.darq.patient.matching.service.PatientBlockHandler;
 import gov.nist.healthcare.iz.darq.patient.matching.service.PatientMatcherService;
 import org.immregistries.mismo.match.model.Patient;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Map;
 
 public class MismoPatientMatchingService extends PatientMatchingService<Patient, MismoMatchResult> {
-
-	private final String MATCH_FILE = "pm_matches.csv";
-	private FileWriter file;
 
 	public MismoPatientMatchingService(PatientMatcherService<Patient, MismoMatchResult> matcher, PatientBlockHandler<Patient> blockHandler) {
 		super(matcher, blockHandler);
@@ -28,7 +22,8 @@ public class MismoPatientMatchingService extends PatientMatchingService<Patient,
 
 	@Override
 	public void onInit() throws Exception {
-		file = new FileWriter(Paths.get(this.outputs.toAbsolutePath().toString(), MATCH_FILE).toFile());
+		// Nothing to do, keeping hook for potential future use
+		// Report creation has been moved to DuplicateRecordsReportService
 	}
 
 	@Override
@@ -47,15 +42,14 @@ public class MismoPatientMatchingService extends PatientMatchingService<Patient,
 	}
 
 	@Override
-	public void onMatchesFound(String record, Map<String, MismoMatchResult> matches) throws IOException {
-		for(String matchId: matches.keySet()) {
-			file.write(record + ", " + matchId + ", " + matches.get(matchId).getSignature() + "\n");
-		}
-		file.flush();
+	public void onMatchesFound(String record, Map<String, MismoMatchResult> matches) {
+		// Nothing to do, keeping hook for potential future use
+		// Report creation has been moved to DuplicateRecordsReportService
 	}
 
 	@Override
 	public void onClose() throws Exception {
-		file.close();
+		// Nothing to do, keeping hook for potential future use
+		// Report creation has been moved to DuplicateRecordsReportService
 	}
 }

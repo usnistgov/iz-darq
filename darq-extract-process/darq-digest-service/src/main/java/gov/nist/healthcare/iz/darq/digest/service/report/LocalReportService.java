@@ -1,7 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.service.report;
 
-import gov.nist.healthcare.iz.darq.detections.AggregatedRecordDetections;
-import gov.nist.healthcare.iz.darq.parser.model.AggregatePatientRecord;
+import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
+import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 import org.apache.commons.csv.CSVFormat;
 
 import java.io.FileWriter;
@@ -23,8 +23,6 @@ public abstract class LocalReportService {
 	}
 
 	public abstract List<String> getHeader();
-	public abstract List<List<String>> getRows(AggregatePatientRecord patientRecord, AggregatedRecordDetections detections);
-	public abstract void write(List<String> row) throws Exception;
 	public abstract void onOpen() throws Exception;
 	public abstract void onClose() throws Exception;
 
@@ -46,14 +44,7 @@ public abstract class LocalReportService {
 		this.open = false;
 	}
 
-	public void process(AggregatePatientRecord patientRecord, AggregatedRecordDetections detections) throws Exception {
-		List<List<String>> rows = getRows(patientRecord, detections);
-		if(rows != null && !rows.isEmpty()) {
-			for(List<String> row : rows) {
-				write(row);
-			}
-		}
-	}
+	public abstract void process(PreProcessRecord record, RecordDetectionEngineResult recordDetectionEngineResult) throws Exception;
 
 	public void openOutputFile() throws Exception {
 		if(outputFileWriter == null) {

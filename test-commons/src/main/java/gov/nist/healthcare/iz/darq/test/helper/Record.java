@@ -5,10 +5,19 @@ import java.util.List;
 public class Record {
 	String patient;
 	List<String> vaccinations;
+	List<String> patientColumns;
+	List<List<String>> vaccinationsColumns;
 
-	public Record(String patient, List<String> vaccinations) {
+	public Record(
+			String patient,
+			List<String> patientColumns,
+			List<String> vaccinations,
+			List<List<String>> vaccinationsColumns
+	) {
 		this.patient = patient;
+		this.patientColumns = patientColumns;
 		this.vaccinations = vaccinations;
+		this.vaccinationsColumns = vaccinationsColumns;
 	}
 
 	public String getPatient() {
@@ -19,4 +28,19 @@ public class Record {
 		return vaccinations;
 	}
 
+	public List<List<String>> getVaccinationsColumns() {
+		return vaccinationsColumns;
+	}
+
+	public void setVaccinationsColumns(List<List<String>> vaccinationsColumns) {
+		this.vaccinationsColumns = vaccinationsColumns;
+	}
+
+	public List<String> getPatientColumns() {
+		return patientColumns;
+	}
+
+	public void setPatientColumns(List<String> patientColumns) {
+		this.patientColumns = patientColumns;
+	}
 }

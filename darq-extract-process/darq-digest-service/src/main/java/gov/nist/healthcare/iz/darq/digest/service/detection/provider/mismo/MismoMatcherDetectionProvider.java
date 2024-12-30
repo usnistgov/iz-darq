@@ -60,13 +60,13 @@ public class MismoMatcherDetectionProvider implements DetectionProvider {
 	}
 
 	@Override
-	public AggregatedRecordDetections processRecordAndGetDetections(PreProcessRecord record, DetectionContext context) throws Exception {
+	public RecordDetectionEngineResult processRecordAndGetDetections(PreProcessRecord record, DetectionContext context) throws Exception {
 		RecordMatchProcessResult matchProcessResult = patientMatchingService.process(record.getRecord());
-		AggregatedRecordDetections detections = new AggregatedRecordDetections();
-		detections.setRecordMatchSignatures(matchProcessResult.getSignatures());
+		RecordDetectionEngineResult detections = new RecordDetectionEngineResult();
+		detections.setPossiblePatientRecordDuplicatesWithSignature(matchProcessResult.getDuplicatesWithSignature());
 		if(context.keepDetection(PM001)) {
 			Map<String, DetectionSum> patient = new HashMap<>();
-			detections.setPatient(patient);
+			detections.setPatientDetections(patient);
 			if(matchProcessResult.isDuplicate()) {
 				patient.put(PM001, new DetectionSum(0, 1));
 			} else {

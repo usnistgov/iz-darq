@@ -2,12 +2,16 @@ package gov.nist.healthcare.iz.darq.digest.service.report;
 
 
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFWriter;
+import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
+import gov.nist.healthcare.iz.darq.digest.service.report.model.AggregateRow;
+import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 import org.apache.commons.csv.CSVPrinter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,12 +28,29 @@ public abstract class AggregateLocalReportService extends LocalReportService {
 		super(filename);
 	}
 
-	@Override
-	public void write(List<String> row) throws Exception {
-		String value = getRowString(row);
-		this.writeValue.setString(1, value);
-		this.writeValue.setInt(2, 1);
+	public abstract List<AggregateRow> getRows(PreProcessRecord record, RecordDetectionEngineResult recordDetectionEngineResult);
+
+	public void process(PreProcessRecord record, RecordDetectionEngineResult recordDetectionEngineResult) throws Exception {
+		List<AggregateRow> rows = getRows(record, recordDetectionEngineResult);
+		if(rows != null && !rows.isEmpty()) {
+			for(AggregateRow row : rows) {
+				write(row);
+			}
+		}
+	}
+
+	public void write(AggregateRow row) throws Exception {
+		String indexed = getCSV(row.getIndexedValues());
+		List<String> rowValues = new ArrayList<>();
+		rowValues.addAll(row.getIndexedValues());
+		rowValues.addAll(row.getNonIndexedValues());
+		this.writeValue.setString(1, indexed);
+		this.writeValue.setString(2, getCSV(rowValues)
+				.replaceAll("\n", "")
+				.replaceAll("\r", "")
+		);
 		this.writeValue.setInt(3, 1);
+		this.writeValue.setInt(4, 1);
 		this.writeValue.execute();
 
 		if((write_no % COMMIT_SIZE) == 0) {
@@ -38,10 +59,10 @@ public abstract class AggregateLocalReportService extends LocalReportService {
 		write_no++;
 	}
 
-	public String getRowString(List<String> row) throws IOException {
+	public String getCSV(List<String> values) throws IOException {
 		StringWriter value = new StringWriter();
 		CSVPrinter csvPrinter = new CSVPrinter(value , csvFormat);
-		csvPrinter.printRecord(row);
+		csvPrinter.printRecord(values);
 		return value.toString();
 	}
 
@@ -54,10 +75,15 @@ public abstract class AggregateLocalReportService extends LocalReportService {
 			connection = DriverManager.getConnection("jdbc:sqlite:" + dbFileLocation);
 			create();
 			connection.setAutoCommit(false);
-			this.writeValue = connection.prepareStatement("INSERT INTO REPORT(?, ?) ON CONFLICT DO UPDATE SET N=N+?");
+			this.writeValue = connection.prepareStatement("INSERT INTO REPORT VALUES(?, ?, ?) ON CONFLICT DO UPDATE SET N=N+?");
 			this.readValue = connection.prepareStatement("SELECT * FROM REPORT");
 		} catch (Exception e){
-			close();
+			if(connection != null) {
+				connection.close();
+			}
+			if(this.outputFileWriter != null) {
+				this.outputFileWriter.close();
+			}
 			throw e;
 		}
 	}
@@ -79,11 +105,17 @@ public abstract class AggregateLocalReportService extends LocalReportService {
 	}
 
 	private void writeFile() throws SQLException, IOException {
+		this.outputFileWriter.append(
+				getCSV(this.getHeader()).replaceAll("\r", "")
+		);
 		ResultSet result = readValue.executeQuery();
 		while(result.next()) {
-			String value = result.getString("VALUE");
-			int number = result.getInt("N");
-			this.outputFileWriter.append(value).append(", ").append(String.valueOf(number)).append("\n");
+			String value = result.getString("ROW_VALUE");
+			String number = result.getInt("N") + "";
+			this.outputFileWriter.append(value)
+			                     .append(",")
+			                     .append(number)
+			                     .append("\n");
 		}
 		result.close();
 	}

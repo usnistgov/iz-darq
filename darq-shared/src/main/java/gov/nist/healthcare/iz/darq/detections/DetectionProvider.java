@@ -10,5 +10,5 @@ public interface DetectionProvider {
 	Set<String> getEnabledDetectionCodes();
 	Set<DetectionDescriptor> provides();
 	void close() throws Exception;
-	AggregatedRecordDetections processRecordAndGetDetections(PreProcessRecord record, DetectionContext context) throws Exception;
+	RecordDetectionEngineResult processRecordAndGetDetections(PreProcessRecord record, DetectionContext context) throws Exception;
 }

@@ -59,7 +59,9 @@ public abstract class PatientMatchingService<T, E extends MatchResult> {
 			boolean matchesFound = !matches.isEmpty();
 			if (matchesFound) {
 				result.setDuplicate(true);
-				matches.values().forEach((match) -> result.getSignatures().compute(match.getSignature(), (k, v) -> v == null ? 1 : v + 1));
+				for(String matchRecordId : matches.keySet()) {
+					result.getDuplicatesWithSignature().put(matchRecordId, matches.get(matchRecordId).getSignature());
+				}
 				this.onMatchesFound(patientRecord.ID, matches);
 			}
 			blockHandler.store(patientRecord.ID, matcherPatientModel);

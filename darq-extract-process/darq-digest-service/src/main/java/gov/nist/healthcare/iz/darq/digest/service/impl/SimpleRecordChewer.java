@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
 import gov.nist.healthcare.iz.darq.digest.domain.ExtractFraction;
 import gov.nist.healthcare.iz.darq.adf.service.MergeService;
 import gov.nist.healthcare.iz.darq.detections.AggregatedRecordDetections;
@@ -12,6 +13,7 @@ import gov.nist.healthcare.iz.darq.detections.DetectionContext;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
 import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
 import gov.nist.healthcare.iz.darq.digest.domain.*;
+import gov.nist.healthcare.iz.darq.digest.service.report.ReportEngine;
 import gov.nist.healthcare.iz.darq.digest.service.vocabulary.RecordValuesAnalysisResult;
 import gov.nist.healthcare.iz.darq.digest.service.vocabulary.SimpleRecordValueAnalysisService;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
@@ -31,6 +33,8 @@ public class SimpleRecordChewer implements RecordChewer {
 	private MergeService mergeService;
 	@Autowired
 	DetectionEngine detectionEngine;
+	@Autowired
+	ReportEngine reportEngine;
 
 	@Override
 	public ADChunk munch(PreProcessRecord record, LocalDate date, DetectionContext detectionContext) throws Exception {
@@ -40,7 +44,8 @@ public class SimpleRecordChewer implements RecordChewer {
 		}
 
 		// Analyze Record (Detections & Vocabulary & Vaccination Events)
-		AggregatedRecordDetections detections = detectionEngine.processRecordAndGetDetections(record, detectionContext);
+		RecordDetectionEngineResult recordDetectionEngineResult = detectionEngine.processRecordAndGetDetections(record, detectionContext);
+		AggregatedRecordDetections detections = aggregate(recordDetectionEngineResult, record);
 		RecordValuesAnalysisResult recordValuesAnalysisResult = recordValueAnalysisService.analyseRecordValues(record);
 		Map<String, Map<String, Map<String, Map<String, Map<String, TablePayload>>>>> aggregateVaccinationEvents = recordValueAnalysisService.getVaccinationEvents(record, detectionContext);
 
@@ -62,6 +67,8 @@ public class SimpleRecordChewer implements RecordChewer {
 			deIdentifiedSection.put(hash, merged.get(provider));
 			providers.put(provider, hash);
 		}
+
+		reportEngine.process(record, recordDetectionEngineResult);
 
 		// Create ADF Chunk
 		return new ADChunk(
@@ -115,6 +122,40 @@ public class SimpleRecordChewer implements RecordChewer {
 		PatientPayload payload = new PatientPayload(patientDetections, patientCodes, 1);
 		patientSection.put(ageGroup, payload);
 		return patientSection;
+	}
+
+
+	public AggregatedRecordDetections aggregate(RecordDetectionEngineResult detections, PreProcessRecord record) {
+		AggregatedRecordDetections aggregated = new AggregatedRecordDetections();
+		aggregated.setPatient(detections.getPatientDetections());
+		Map<String, Map<String, Map<String, DetectionSum>>> vaccinationsAggDetections = new HashMap<>();
+		aggregated.setVaccinations(vaccinationsAggDetections);
+		if(detections.getVaccinationDetectionsById() != null) {
+			for(String vaccinationId: detections.getVaccinationDetectionsById().keySet()) {
+				Map<String, DetectionSum> vaccinationDetections = detections.getVaccinationDetectionsById().get(vaccinationId);
+				String provider = record.getProvidersByVaccinationId().get(vaccinationId);
+				String ageGroup = record.getAgeGroupAtVaccinationByVaccinationId().get(vaccinationId);
+
+				if(!vaccinationsAggDetections.containsKey(provider)) {
+					vaccinationsAggDetections.put(provider, new HashMap<>());
+				}
+
+				if(!vaccinationsAggDetections.get(provider).containsKey(ageGroup)) {
+					vaccinationsAggDetections.get(provider).put(ageGroup, new HashMap<>());
+				}
+
+				vaccinationDetections.forEach((k, v) -> {
+					vaccinationsAggDetections.get(provider).get(ageGroup).merge(k, v, DetectionSum::merge);
+				});
+			}
+		}
+		Map<String, Integer> signatures = new HashMap<>();
+		for(String signature: detections.getPossiblePatientRecordDuplicatesWithSignature().values()) {
+			signatures.compute(signature, (k, v) -> v == null ? 1 : v + 1);
+		}
+		aggregated.setRecordMatchSignatures(signatures);
+		aggregated.setDuplicates(detections.getPossiblePatientRecordDuplicatesWithSignature());
+		return aggregated;
 	}
 
 	@SafeVarargs

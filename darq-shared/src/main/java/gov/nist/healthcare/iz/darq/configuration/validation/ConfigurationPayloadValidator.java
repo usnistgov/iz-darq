@@ -42,8 +42,7 @@ public class ConfigurationPayloadValidator {
         List<String> issues = new ArrayList<>();
         if(mismoPatientMatcherConfiguration != null && !mismoPatientMatcherConfiguration.isEmpty()) {
             try {
-                PatientCompare patientCompare = new PatientCompare();
-                patientCompare.readScript(mismoPatientMatcherConfiguration);
+                new PatientCompare(mismoPatientMatcherConfiguration);
             } catch (Exception e) {
                 issues.add("MISMO patient matcher configuration is invalid : " + e.getCause().getMessage());
             }

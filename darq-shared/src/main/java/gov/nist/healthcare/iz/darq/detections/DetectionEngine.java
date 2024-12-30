@@ -2,7 +2,6 @@ package gov.nist.healthcare.iz.darq.detections;
 
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -38,10 +37,8 @@ public class DetectionEngine {
 		}
 	}
 
-	public AggregatedRecordDetections processRecordAndGetDetections(PreProcessRecord record, DetectionContext context) throws Exception {
-		AggregatedRecordDetections detections = new AggregatedRecordDetections();
-		detections.setPatient(new HashMap<>());
-		detections.setVaccinations(new HashMap<>());
+	public RecordDetectionEngineResult processRecordAndGetDetections(PreProcessRecord record, DetectionContext context) throws Exception {
+		RecordDetectionEngineResult detections = new RecordDetectionEngineResult();
 
 		for(DetectionProvider provider: activeDetectionProviders) {
 			detections.merge(provider.processRecordAndGetDetections(record, context));

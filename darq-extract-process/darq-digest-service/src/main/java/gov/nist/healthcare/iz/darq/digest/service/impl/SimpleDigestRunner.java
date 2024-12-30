@@ -9,7 +9,6 @@ import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.service.ConfigurationProvider;
 import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
-import gov.nist.healthcare.iz.darq.adf.service.MergeService;
 import gov.nist.healthcare.iz.darq.digest.service.detection.SimpleDetectionContext;
 import gov.nist.healthcare.iz.darq.digest.service.exception.InvalidPatientRecord;
 import gov.nist.healthcare.iz.darq.digest.service.report.ReportEngine;
@@ -41,18 +40,22 @@ public class SimpleDigestRunner implements DigestRunner {
 	ConfigurationPayloadValidator configurationPayloadValidator;
 	@Autowired
 	DetectionEngine detectionEngine;
+	@Autowired
+	ReportEngine reportEngine;
 
 	private LucenePatientRecordIterator iterator;
 	private int size = 0;
 
 	@Override
 	public void digest(ConfigurationPayload configuration, String patient, String vaccines, DqDateFormat dateFormat, ADFWriter writer, Path output, Path temporaryDirectory) throws Exception {
+		logger.info("[REPORT] Initializing Local Report Engine");
+		reportEngine.open(temporaryDirectory, output);
 		logger.info("[PREPROCESS] Validating Configuration");
 		configurationPayloadValidator.validateConfigurationPayload(configuration);
 		logger.info("[START] Processing Extract");
 		Path patientsFilePath = Paths.get(patient);
 		size = (int) Files.lines(patientsFilePath).parallel().count();
-		logger.info("Number of patient records : "+size);
+		logger.info("Number of patient records : {}", size);
 
 		ConfigurationProvider config = new SimpleConfigurationProvider(configuration);
 
@@ -119,6 +122,12 @@ public class SimpleDigestRunner implements DigestRunner {
 			this.detectionEngine.close();
 		} catch (Exception e) {
 			logger.error("[END][DETECTION PROVIDER CLOSING ERROR]", e);
+		}
+
+		try {
+			this.reportEngine.close();
+		} catch (Exception e) {
+			logger.error("[END][REPORT ENGINE CLOSING ERROR]", e);
 		}
 
 		try {
