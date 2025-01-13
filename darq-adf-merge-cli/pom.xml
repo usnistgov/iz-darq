@@ -5,13 +5,13 @@
     <parent>
         <artifactId>darq</artifactId>
         <groupId>gov.nist.healthcare.iz</groupId>
-        <version>3.0.3-SNAPSHOT</version>
+        <version>3.1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <properties>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>MM-dd-yyyy</maven.build.timestamp.format>
-        <qdar.api.version>3.0.3-SNAPSHOT</qdar.api.version>
+        <qdar.api.version>3.1.0-SNAPSHOT</qdar.api.version>
         <mqe.version>2022.9-BETA</mqe.version>
     </properties>
     <artifactId>darq-adf-merge-cli</artifactId>

@@ -208,8 +208,11 @@ public class SqliteADFMerger {
 	public void merge_table(String table, List<SqliteADFReader> files, BiConsumer<ResultSet, Dictionaries> fn) throws SQLException {
 		for(SqliteADFReader file: files) {
 			Statement statement  = file.getConnection().createStatement();
-			ResultSet tableRows = statement.executeQuery("SELECT * FROM "+ table);
-			fn.accept(tableRows, file.getDictionaries());
+			ResultSet resultSet = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='"+table+"';\n");
+			if(resultSet.next()) {
+				ResultSet tableRows = statement.executeQuery("SELECT * FROM "+ table);
+				fn.accept(tableRows, file.getDictionaries());
+			}
 		}
 	}
 

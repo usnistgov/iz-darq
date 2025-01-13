@@ -7,7 +7,6 @@ import gov.nist.healthcare.iz.darq.aart.client.domain.FacilityIdentifier;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisReport;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.commons.io.IOUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,13 +16,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +41,7 @@ public class qDARClient {
 
     public static PrivateKey getPrivateKeyFromJKS(String jksLocation, String jksPassword, String keyAlias, String keyPassword) throws Exception {
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keystore.load(new FileInputStream(new File(jksLocation)), jksPassword.toCharArray());
+        keystore.load(Files.newInputStream(new File(jksLocation).toPath()), jksPassword.toCharArray());
         Key key = keystore.getKey(keyAlias, keyPassword.toCharArray());
         if (key instanceof PrivateKey) {
             return (PrivateKey) key;
