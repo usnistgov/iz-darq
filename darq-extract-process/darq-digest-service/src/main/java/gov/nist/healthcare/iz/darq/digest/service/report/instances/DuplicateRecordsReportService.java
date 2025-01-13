@@ -1,7 +1,10 @@
 package gov.nist.healthcare.iz.darq.digest.service.report.instances;
 
+import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
+import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
 import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
-import gov.nist.healthcare.iz.darq.digest.service.report.SimpleLocalReportService;
+import gov.nist.healthcare.iz.darq.localreport.LocalReportEngineConfiguration;
+import gov.nist.healthcare.iz.darq.localreport.SimpleLocalReportService;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 
 import java.util.*;
@@ -39,5 +42,10 @@ public class DuplicateRecordsReportService extends SimpleLocalReportService {
 			}
 		}
 		return rows;
+	}
+
+	@Override
+	public boolean handleInclude(LocalReportEngineConfiguration configuration, DetectionEngine engine) {
+		return engine.isDetectionProviderActive(AvailableDetectionEngines.DP_ID_PM);
 	}
 }

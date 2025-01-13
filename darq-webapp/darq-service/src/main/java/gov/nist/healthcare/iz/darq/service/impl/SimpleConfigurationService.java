@@ -5,6 +5,7 @@ import java.util.List;
 
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
 import gov.nist.healthcare.iz.darq.configuration.validation.ConfigurationPayloadValidator;
+import gov.nist.healthcare.iz.darq.digest.domain.expression.ComplexDetection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,35 +34,47 @@ public class SimpleConfigurationService implements ConfigurationService {
 	}
 
 	@Override
-	public boolean compatible(ConfigurationPayload master, ConfigurationPayload slave) {
+	public boolean compatible(ConfigurationPayload source, ConfigurationPayload target) {
 		boolean age_groups = true;
 		boolean detections = true;
-		if(master == null) {
+		boolean complexDetections = true;
+
+		if(source == null) {
 			return false;
 		}
 		//detections
-		if(master.getDetections() != null && slave.getDetections() != null){
-			for(String d : master.getDetections()){
-				if(!slave.getDetections().contains(d)){
+		if(source.getDetections() != null && target.getDetections() != null){
+			for(String d : source.getDetections()){
+				if(!target.getDetections().contains(d)){
 					detections = false;
 					break;
 				}
 			}
 		}
 		else {
-			detections = slave.getDetections() == null;
+			detections = target.getDetections() == null;
 		}
 		
 		
 		//ageGroups
-		for(Range r : slave.getAgeGroups()){
-			if(!master.getAgeGroups().contains(r)){
+		for(Range r : target.getAgeGroups()){
+			if(!source.getAgeGroups().contains(r)){
 				age_groups = false;
 				break;
 			}
 		}
+
+		// Complex Detections
+		if(source.getComplexDetections() != null && target.getComplexDetections() != null){
+			for(ComplexDetection d : source.getComplexDetections()){
+				if(!target.getComplexDetections().contains(d)){
+					complexDetections = false;
+					break;
+				}
+			}
+		}
 		
-		return age_groups && slave.getAgeGroups().size() == master.getAgeGroups().size() && detections;
+		return age_groups && target.getAgeGroups().size() == source.getAgeGroups().size() && detections && complexDetections;
 	}
 
 	@Override

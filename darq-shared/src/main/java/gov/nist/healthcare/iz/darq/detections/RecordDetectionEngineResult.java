@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RecordDetectionEngineResult {
-	Map<String, DetectionSum> patientDetections = new HashMap<String, DetectionSum>();
+	Map<String, DetectionSum> patientDetections = new HashMap<>();
 	Map<String, Map<String, DetectionSum>> vaccinationDetectionsById = new HashMap<>();
 	Map<String, String> possiblePatientRecordDuplicatesWithSignature = new HashMap<>();
 
@@ -62,5 +62,13 @@ public class RecordDetectionEngineResult {
 				possiblePatientRecordDuplicatesWithSignature.putAll(other.getPossiblePatientRecordDuplicatesWithSignature());
 			}
 		}
+	}
+
+	private DetectionSum getPatientDetectionSum(String code) {
+		return this.getPatientDetections().get(code);
+	}
+
+	private DetectionSum getVaccinationDetectionSum(String vaccinationId, String code) {
+		return this.getVaccinationDetectionsById().get(vaccinationId).get(code);
 	}
 }

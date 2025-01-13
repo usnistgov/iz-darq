@@ -27,6 +27,9 @@ import java.util.stream.Stream;
 		VX 3 => 08 VALID
 		VX 4 => 08 PREFIX
 		VX 5 => 145 INFIX
+	RECORD 3
+		VX 1 => 8 VALID 01
+		VX 2 => 145 INVALID 01
 
  */
 
@@ -157,6 +160,27 @@ public class LotNumberReportMock implements DataExtractMock {
 					.withValue(CVX, "145")
 					.withValue(EVENT, "00")
 					.withValue(LOT_NUMBER, infix)
+					.and()
+				.and()
+				.withRecord()
+				// Record 2
+				.withAgeGroup(0)
+				.withValue(PNF, "Albert")
+				.withValue(PNL, "Einstein")
+				.withVocabulary("GENDER_0001", "M")
+				.withVaccination()
+					.withAdminAtAgeGroup(0)
+					.withReportingGroup("ANY")
+					.withValue(CVX, "08")
+					.withValue(EVENT, "01")
+					.withValue(LOT_NUMBER, validLotNumber)
+				.and()
+				.withVaccination()
+					.withAdminAtAgeGroup(0)
+					.withReportingGroup("ANY")
+					.withValue(CVX, "145")
+					.withValue(EVENT, "01")
+					.withValue(LOT_NUMBER, lotNumberInvalid)
 				.and().and();
 		return extractBuilder.get();
 	}

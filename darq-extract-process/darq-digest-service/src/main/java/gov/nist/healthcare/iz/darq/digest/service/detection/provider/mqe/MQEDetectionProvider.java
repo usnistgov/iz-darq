@@ -34,22 +34,21 @@ public class MQEDetectionProvider implements DetectionProvider {
 	private final static Logger logger = LoggerFactory.getLogger(MQEDetectionProvider.class.getName());
 
 	public MQEDetectionProvider() {
-		Set<Detection> all = new HashSet<>(Arrays.asList(Detection.values()));
 		Set<Detection> active =  ValidationRuleEntityLists.activeDetectionsForTargets(new HashSet<>(Arrays.asList(
 				TargetType.Patient,
 				TargetType.NextOfKin,
 				TargetType.Vaccination
 		)));
-		for(Detection d : all) {
+		for(Detection d : active) {
 			descriptors.add(new DetectionDescriptor(d.getMqeMqeCode(), d.getDisplayText(),d.getTargetObject().toString(), active.contains(d)));
 		}
 	}
 
 	@Override
-	public void configure(DetectionEngineConfiguration configuration) {
-		logger.info("Configuring MQE Validator");
+	public void configure(DetectionEngineConfiguration configuration, List<DetectionProvider> before) {
+		logger.info("Configuring MQE Detection Provider");
 		MessageValidator.INSTANCE.configure(
-				configuration.getConfigurationPayload().getDetections().stream()
+				configuration.getConfigurationPayload().getAllDetectionCodes().stream()
 						.map((code) -> {
 							try {
 								return MqeCode.valueOf(code);
@@ -69,21 +68,15 @@ public class MQEDetectionProvider implements DetectionProvider {
 	}
 
 	@Override
-	public boolean hasSideEffect() {
-		return false;
+	public boolean include(DetectionEngineConfiguration configuration) {
+		return configuration.getConfigurationPayload()
+		                    .getAllDetectionCodes()
+		                    .stream()
+		                    .anyMatch((code) -> descriptors.stream().anyMatch((descriptors) -> descriptors.getCode().equals(code)));
 	}
 
 	@Override
-	public Set<String> getEnabledDetectionCodes() {
-		return ValidationRuleEntityLists.activeDetectionsForTargets(new HashSet<>(Arrays.asList(
-				TargetType.Patient,
-				TargetType.NextOfKin,
-				TargetType.Vaccination
-		))).stream().map(Detection::getMqeMqeCode).collect(Collectors.toSet());
-	}
-
-	@Override
-	public Set<DetectionDescriptor> provides() {
+	public Set<DetectionDescriptor> getDetections() {
 		return Collections.unmodifiableSet(descriptors);
 	}
 
@@ -91,16 +84,7 @@ public class MQEDetectionProvider implements DetectionProvider {
 	public void close() {}
 
 	@Override
-	public RecordDetectionEngineResult processRecordAndGetDetections(PreProcessRecord record, DetectionContext context) {
-		RecordDetectionEngineResult detections = new RecordDetectionEngineResult();
-		// Provider, Age Group, DetectionCode
-		Map<String, Map<String, DetectionSum>> vaccinations = new HashMap<>();
-		// Age Group, DetectionCode
-		Map<String, DetectionSum> patient = new HashMap<>();
-		detections.setPatientDetections(patient);
-		detections.setVaccinationDetectionsById(vaccinations);
-
-
+	public void process(PreProcessRecord record, DetectionContext context, RecordDetectionEngineResult detections) {
 		// Transform APR
 		TransformResult<VaccineRecord, MqeVaccination, MqeMessageReceived> transformed = this.transformer.transform(record.getRecord());
 		MqeMessageReceived msg = transformed.getPayload();
@@ -187,15 +171,13 @@ public class MQEDetectionProvider implements DetectionProvider {
 			detectionsByVaccination
 					.get(vaccinationId)
 					.forEach((detection) -> {
-						addVaccineDetection(vaccinations, vaccinationId, detection.getCode(), detection.isPositive());
+						addVaccineDetection(detections.getVaccinationDetectionsById(), vaccinationId, detection.getCode(), detection.isPositive());
 					});
 
 		}
 
 		detectionsForPatient
-				.forEach((detection) -> addPatientDetection(patient, detection.getCode(), detection.isPositive()));
-
-		return detections;
+				.forEach((detection) -> addPatientDetection(detections.getPatientDetections(), detection.getCode(), detection.isPositive()));
 	}
 
 	private void addPatientDetection(Map<String, DetectionSum> patient, String code, boolean positive) {

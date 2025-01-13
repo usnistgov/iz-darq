@@ -26,7 +26,7 @@ public class LineWriter {
 
 	public void fill(String value) {
 		for(int i = 0; i < fields.length; i++) {
-			if(fields[i] == null || fields[i].isEmpty()) {
+			if(fields[i] == null) {
 				fields[i] = value;
 			}
 		}

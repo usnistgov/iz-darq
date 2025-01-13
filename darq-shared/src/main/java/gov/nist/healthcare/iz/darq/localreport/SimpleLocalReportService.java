@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.digest.service.report;
+package gov.nist.healthcare.iz.darq.localreport;
 
 import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
@@ -13,6 +13,10 @@ public abstract class SimpleLocalReportService extends LocalReportService {
 
 	public SimpleLocalReportService(String filename) {
 		super(filename);
+	}
+
+	public SimpleLocalReportService(String filename, String ...requiredDetectionDependencies) {
+		super(filename, requiredDetectionDependencies);
 	}
 
 	public void process(PreProcessRecord record, RecordDetectionEngineResult recordDetectionEngineResult) throws Exception {

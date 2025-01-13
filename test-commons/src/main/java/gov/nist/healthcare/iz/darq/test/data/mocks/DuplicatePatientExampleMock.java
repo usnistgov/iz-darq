@@ -101,7 +101,7 @@ public class DuplicatePatientExampleMock implements DataExtractMock {
 				// Record 5
 				.withAgeGroup(0)
 					.withValue(PNF, "Testy")
-					.withValue(PNF, "Teston")
+					.withValue(PNM, "Teston")
 					.withValue(PNL, "McTester")
 					.withVocabulary("GENDER_0001", "M")
 				.and()

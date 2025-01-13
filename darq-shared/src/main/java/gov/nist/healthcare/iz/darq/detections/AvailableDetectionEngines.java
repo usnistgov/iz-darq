@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 public class AvailableDetectionEngines {
 	public static final String DP_ID_MQE = "MQE";
 	public static final String DP_ID_PM = "PATIENT_MATCHER";
+	public static final String DP_ID_COMPLEX_DETECTIONS = "COMPLEX_DETECTIONS";
+
 	public static final Map<String, Set<String>> CODES_BY_DETECTION_PROVIDER = new HashMap<String, Set<String>>() {{
 		put(DP_ID_MQE, Arrays.stream(MqeCode.values()).map((MqeCode::name)).collect(Collectors.toSet()));
 		put(DP_ID_PM, Arrays.stream(PatientMatchingDetection.values()).map((PatientMatchingDetection::name)).collect(Collectors.toSet()));

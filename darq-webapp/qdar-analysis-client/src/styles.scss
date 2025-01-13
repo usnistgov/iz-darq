@@ -1,5 +1,9 @@
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import "./assets/variables";
+@import '~codemirror/lib/codemirror';
+@import '~codemirror/theme/monokai';
+@import '~codemirror/addon/fold/foldgutter';
+@import '~codemirror/addon/dialog/dialog';
 
 html {
   height: 100%;
@@ -271,8 +275,20 @@ body .pi {
 
 .p-chips-100p .ui-chips .ui-inputtext {
   width: 100%;
-} 
+}
 
 .p-chips-dark .ui-chips .ui-inputtext .ui-chips-token {
   background-color: black;
+}
+
+.ui-organizationchart-node-content {
+  padding: 0 !important;
+}
+
+.expand-textarea .CodeMirror {
+  height: unset;
+}
+
+.CodeMirror {
+  height: 200px;
 }

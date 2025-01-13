@@ -12,7 +12,7 @@ import {
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
-import { flatMap, map, take, concatMap, catchError } from 'rxjs/operators';
+import { flatMap, map, take, concatMap, catchError, tap } from 'rxjs/operators';
 import { selectConfigurationById } from '../../store/core.selectors';
 import { IConfigurationDescriptor, IDigestConfiguration } from '../../model/configuration.model';
 import { IRange } from '../../../shared/model/age-group.model';
@@ -24,6 +24,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
 import { ResourceType } from '../../../core/model/resouce-type.enum';
 import { PermissionService } from '../../../core/services/permission.service';
+import { ComplexDetectionDialogComponent } from '../complex-detection-dialog/complex-detection-dialog.component';
 
 export const CONFIGURATION_EDITOR_MD: IEditorMetadata = {
   id: 'CONFIGURATION_EDITOR',
@@ -43,7 +44,21 @@ export class ConfigurationEditorComponent extends DamAbstractEditorComponent imp
   value: IDigestConfiguration;
   detections: Observable<IDetectionResource[]>;
   wSub: Subscription;
-
+  configurationTextAreaCollapsed = true;
+  yamlEditorOptions = {
+    theme: 'monokai',
+    mode: 'yaml',
+    lineNumbers: true,
+    foldGutter: true,
+    styleActiveLine: true,
+    autoCloseTags: true,
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers'],
+    matchBrackets: true,
+    extraKeys: { 'Alt-F': 'findPersistent' },
+    lineWrapping: true,
+    placeholder:
+      ``,
+  };
   constructor(
     store: Store<any>,
     actions$: Actions,
@@ -129,6 +144,61 @@ export class ConfigurationEditorComponent extends DamAbstractEditorComponent imp
         return of();
       })
     ).subscribe();
+  }
+
+  openComplexDetectionDialog(index: number = -1) {
+    this.detections.pipe(
+      take(1),
+      flatMap((detections) => {
+        const excludeCode = index !== -1 ? this.value.payload.complexDetections[index].code : undefined;
+        return this.dialog.open(ComplexDetectionDialogComponent, {
+          minWidth: '80vw',
+          data: {
+            detections,
+            existingCodes: (this.value.payload.complexDetections || [])
+              .map((detection) => detection.code)
+              .filter((detection) => !excludeCode || excludeCode !== detection),
+            detection: index !== -1 ? this.value.payload.complexDetections[index] : null,
+          }
+        }).afterClosed().pipe(
+          tap((result) => {
+            if (result) {
+              const complexDetections = [
+                ...(this.value.payload.complexDetections || [])
+              ];
+              if (index !== -1) {
+                complexDetections.splice(index, 1, result);
+              } else {
+                complexDetections.push(result);
+              }
+              this.value = {
+                ...this.value,
+                payload: {
+                  ...this.value.payload,
+                  complexDetections,
+                }
+              };
+              this.emitChange();
+            }
+          })
+        );
+      })
+    ).subscribe();
+  }
+
+  deleteComplexDetection(index: number) {
+    const detections = [
+      ...(this.value.payload.complexDetections || [])
+    ];
+    detections.splice(index, 1);
+    this.value = {
+      ...this.value,
+      payload: {
+        ...this.value.payload,
+        complexDetections: detections,
+      }
+    };
+    this.emitChange();
   }
 
   lock() {

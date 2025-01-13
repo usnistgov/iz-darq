@@ -12,14 +12,19 @@ import gov.nist.healthcare.iz.darq.digest.domain.Summary;
 import org.apache.commons.io.IOUtils;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Map;
+import java.util.Objects;
 
-public class SqliteADFDAO {
+public class SqliteADFWriterDAO {
 
 	private Connection connection;
 	private ObjectMapper mapper = new ObjectMapper();
@@ -36,8 +41,9 @@ public class SqliteADFDAO {
 	private PreparedStatement SEC;
 	private PreparedStatement DICT;
 
-	public SqliteADFDAO(Connection connection) throws SQLException {
+	public SqliteADFWriterDAO(Connection connection) throws SQLException {
 		this.connection = connection;
+		initialize();
 		this.P_DETECTIONS = connection.prepareStatement("INSERT INTO P_DETECTIONS VALUES(?, ?, ?, ?) ON CONFLICT DO UPDATE SET P=P+?, N=N+?");
 		this.V_DETECTIONS = connection.prepareStatement("INSERT INTO V_DETECTIONS VALUES(?, ?, ?, ?, ?) ON CONFLICT DO UPDATE SET P=P+?, N=N+?");
 		this.P_PROVIDER_DETECTIONS = connection.prepareStatement("INSERT INTO P_PROVIDER_DETECTIONS VALUES(?, ?, ?, ?, ?) ON CONFLICT DO UPDATE SET P=P+?, N=N+?");
@@ -49,6 +55,21 @@ public class SqliteADFDAO {
 		this.METADATA = connection.prepareStatement("INSERT INTO METADATA VALUES(?, ?, ?, ?)");
 		this.DICT = connection.prepareStatement("INSERT INTO DICTIONARY VALUES(?, ?)");
 		this.SEC = connection.prepareStatement("INSERT INTO SEC VALUES(?, ?)");
+	}
+
+	void initialize() throws SQLException {
+		Statement statement = connection.createStatement();
+		statement.executeQuery("PRAGMA journal_mode=OFF");
+		statement.execute("PRAGMA synchronous=OFF ");
+		new BufferedReader(new InputStreamReader(Objects.requireNonNull(SqliteADFWriter.class.getResourceAsStream("/adf_schema.sql")),
+		                                         StandardCharsets.UTF_8)).lines().forEach((line) -> {
+			try {
+				statement.execute(line);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 	public void write_p_detections(int ageGroup, int code, int p, int n) throws SQLException {

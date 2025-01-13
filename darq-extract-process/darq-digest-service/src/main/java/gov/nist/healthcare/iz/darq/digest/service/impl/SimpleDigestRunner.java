@@ -11,7 +11,7 @@ import gov.nist.healthcare.iz.darq.digest.service.ConfigurationProvider;
 import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
 import gov.nist.healthcare.iz.darq.digest.service.detection.SimpleDetectionContext;
 import gov.nist.healthcare.iz.darq.digest.service.exception.InvalidPatientRecord;
-import gov.nist.healthcare.iz.darq.digest.service.report.ReportEngine;
+import gov.nist.healthcare.iz.darq.localreport.LocalReportEngine;
 import gov.nist.healthcare.iz.darq.parser.model.AggregatePatientRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.AggregateParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParseError;
@@ -41,7 +41,7 @@ public class SimpleDigestRunner implements DigestRunner {
 	@Autowired
 	DetectionEngine detectionEngine;
 	@Autowired
-	ReportEngine reportEngine;
+	LocalReportEngine localReportEngine;
 
 	private LucenePatientRecordIterator iterator;
 	private int size = 0;
@@ -49,7 +49,6 @@ public class SimpleDigestRunner implements DigestRunner {
 	@Override
 	public void digest(ConfigurationPayload configuration, String patient, String vaccines, DqDateFormat dateFormat, ADFWriter writer, Path output, Path temporaryDirectory) throws Exception {
 		logger.info("[REPORT] Initializing Local Report Engine");
-		reportEngine.open(temporaryDirectory, output);
 		logger.info("[PREPROCESS] Validating Configuration");
 		configurationPayloadValidator.validateConfigurationPayload(configuration);
 		logger.info("[START] Processing Extract");
@@ -125,7 +124,7 @@ public class SimpleDigestRunner implements DigestRunner {
 		}
 
 		try {
-			this.reportEngine.close();
+			this.localReportEngine.close();
 		} catch (Exception e) {
 			logger.error("[END][REPORT ENGINE CLOSING ERROR]", e);
 		}

@@ -15,7 +15,7 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
 	public SimpleConfigurationProvider(ConfigurationPayload payload) {
 		super();
 		this.ageGroup = new AgeGroupCalculator(payload.getAgeGroups());
-		this.filter = new ConfigurableDetectionFilter(payload.getDetections());
+		this.filter = new ConfigurableDetectionFilter(payload.getAllDetectionCodes());
 		this.vaxGroupMapperObj = new SimpleVaxGroupMapper(payload.getVaxCodeAbstraction());
 	}
 

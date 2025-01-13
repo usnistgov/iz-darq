@@ -1,0 +1,55 @@
+<div style="height: 100%; display: grid; grid-template-rows: min-content 1fr;">
+  <h3 mat-dialog-title>Complex Detection</h3>
+  <div style="height: 100%; display: grid; grid-template-rows: min-content auto;">
+    <form [formGroup]="formGroup">
+      <div class="form-group">
+        <label style="font-weight: bold;" for="code">Target</label>
+        <div style="display: flex; gap: 10px;">
+          <div class="form-check" *ngFor="let target of targets">
+            <input formControlName="target" class="form-check-input" type="radio" [value]="target" [id]="target">
+            <label class="form-check-label" [for]="target">
+              {{target}}
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label style="font-weight: bold;" class="form-label" for="code">Detection Code</label>
+        <input id="code" class="form-control" type="text" name="code" formControlName="code">
+        <div class="invalid-feedback" style="display: flex; flex-direction: column; gap: 3px;">
+          <span *ngIf="formGroup.controls['code'].errors?.pattern">
+            Invalid detection code format, only A to Z (uppercase) and 0 to 9 characters allowed.
+          </span>
+          <span *ngIf="formGroup.controls['code'].errors?.maxlength">
+            Invalid detection code length, only up to 10 characters allowed.
+          </span>
+          <span *ngIf="formGroup.controls['code'].errors?.existing">
+            Code "{{formGroup.controls['code'].errors?.existing}}" is already taken.
+          </span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label style="font-weight: bold;" for="code">Description</label>
+        <textarea id="code" class="form-control" type="text" name="description" formControlName="description"></textarea>
+      </div>
+    </form>
+    <div class="form-group">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+        <label style="font-weight: bold;" for="code">Expression</label>
+        <button class="btn btn-sm btn-primary" (click)="openExpressionDialog()" [disabled]="!formGroup.controls['target']?.value" >
+          <i class="fa fa-pencil"></i> Edit
+        </button>
+      </div>
+      <div style="padding: 1em; background-color: rgb(246, 246, 246); border: 1px solid rgb(201, 201, 201); border-radius: 5px;">
+        <div style="color: gray;">
+          <input type="checkbox" name="showDesc" [(ngModel)]="showDescriptionString" (ngModelChange)="updateString()"> Show Detections Description
+        </div>
+        {{ expressionString }}
+      </div>
+    </div>
+  </div>
+  <mat-dialog-actions style="justify-content: flex-end;">
+    <button (click)="cancel()" class="btn btn-sm btn-secondary" style="margin-right: 5px;">Cancel</button>
+    <button (click)="close()" class="btn btn-sm btn-success" [disabled]="formGroup.invalid || !expression" >Save</button>
+  </mat-dialog-actions>
+</div>

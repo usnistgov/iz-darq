@@ -13,7 +13,6 @@ import gov.nist.healthcare.iz.darq.digest.domain.*;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -27,7 +26,7 @@ public class SqliteADFWriter extends SimpleADFWriter {
 	private int write_no = 1;
 	private final int COMMIT_SIZE = 100;
 	private final CryptoKey key;
-	private SqliteADFDAO dao;
+	private SqliteADFWriterDAO dao;
 
 	protected Dictionaries dictionaries = new Dictionaries();
 
@@ -41,27 +40,12 @@ public class SqliteADFWriter extends SimpleADFWriter {
 			this.ADF_SQLITE_TEMP = UUID.randomUUID() + ".db";
 			this.DB_LOCATION = temporaryDirectory + "/" + ADF_SQLITE_TEMP;
 			connection = DriverManager.getConnection("jdbc:sqlite:" + DB_LOCATION);
-			create();
-			dao = new SqliteADFDAO(connection);
+			dao = new SqliteADFWriterDAO(connection);
 			connection.setAutoCommit(false);
 		} catch (Exception e){
 			close();
 			throw e;
 		}
-	}
-
-	void create() throws SQLException {
-		Statement statement = connection.createStatement();
-		statement.executeQuery("PRAGMA journal_mode=OFF");
-		statement.execute("PRAGMA synchronous=OFF ");
-		new BufferedReader(new InputStreamReader(Objects.requireNonNull(SqliteADFWriter.class.getResourceAsStream("/adf_schema.sql")),StandardCharsets.UTF_8)).lines().forEach((line) -> {
-			try {
-				statement.execute(line);
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new RuntimeException(e);
-			}
-		});
 	}
 
 	@Override

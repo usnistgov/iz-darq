@@ -20,6 +20,9 @@ import gov.nist.healthcare.iz.darq.detections.DetectionEngineConfiguration;
 import gov.nist.healthcare.iz.darq.digest.app.exception.*;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
+import gov.nist.healthcare.iz.darq.localreport.AvailableLocalReportServices;
+import gov.nist.healthcare.iz.darq.localreport.LocalReportEngine;
+import gov.nist.healthcare.iz.darq.localreport.LocalReportEngineConfiguration;
 import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -104,7 +107,7 @@ public class CLIApp {
 			}
 			else {
 				Date timestamp = new Date();
-				SimpleDateFormat timestampFormat = new SimpleDateFormat("dd-MM-YYYY_hh:mm:ss");
+				SimpleDateFormat timestampFormat = new SimpleDateFormat("dd_MM_YYYY_hh_mm_ss");
 				String prefix = cmd.hasOption("s") ? cmd.getOptionValue("s") : timestampFormat.format(timestamp);
 
 				System.out.println("===================================================================================================");
@@ -199,7 +202,25 @@ public class CLIApp {
 						if(!deActivatePatientMatching && (configurationPayload.isActivatePatientMatching() || activePatientMatching)) {
 							detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_PM);
 						}
+						if(!configurationPayload.getComplexDetections().isEmpty()) {
+							detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_COMPLEX_DETECTIONS);
+						}
 						detectionEngine.configure(detectionEngineConfiguration);
+
+						// --- Configure Local Report Engine
+						logger.info("Configuring the local report engine");
+						LocalReportEngine localReportEngine = context.getBean(LocalReportEngine.class);
+						LocalReportEngineConfiguration localReportEngineConfiguration = new LocalReportEngineConfiguration();
+						localReportEngineConfiguration.setOutputDirectory(output.getAbsolutePath());
+						localReportEngineConfiguration.setTemporaryDirectory(temporaryDirectory.toAbsolutePath().toString());
+						localReportEngineConfiguration.setConfigurationPayload(configurationPayload);
+						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_BAD_PHONES);
+						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_DUPLICATE_RECORDS);
+						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_LOT_NUMBERS);
+						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_PLACEHOLDER_NAMES);
+						localReportEngine.configure(localReportEngineConfiguration, detectionEngine);
+
+
 
 						// --- Configure Services
 						logger.info("Configuring Services");

@@ -18,4 +18,62 @@ export interface IConfigurationPayload {
   asOf?: string;
   activatePatientMatching?: boolean;
   mismoPatientMatchingConfiguration?: string;
+  complexDetections?: IComplexDetection[];
+}
+
+export enum ComplexDetectionTarget {
+  RECORD = 'RECORD',
+  VACCINATION = 'VACCINATION'
+}
+
+export enum ExpressionType {
+  AND = 'AND',
+  OR = 'OR',
+  XOR = 'XOR',
+  NOT = 'NOT',
+  IMPLY = 'IMPLY',
+  DETECTION = 'DETECTION'
+}
+
+export interface IExpression {
+  type: ExpressionType;
+}
+
+export interface IANDExpression {
+  expressions: IExpression[];
+  type: ExpressionType.AND;
+}
+
+export interface IORExpression {
+  expressions: IExpression[];
+  type: ExpressionType.OR;
+}
+
+export interface IXORExpression {
+  expressions: IExpression[];
+  type: ExpressionType.XOR;
+}
+
+export interface IIMPLYExpression {
+  left?: IExpression;
+  right?: IExpression;
+  type: ExpressionType.IMPLY;
+}
+
+export interface INOTExpression {
+  expression?: IExpression;
+  type: ExpressionType.NOT;
+}
+
+export interface IDetectionExpression {
+  code: string;
+  type: ExpressionType.DETECTION;
+}
+
+
+export interface IComplexDetection {
+  code: string;
+  target: ComplexDetectionTarget;
+  expression?: IExpression;
+  description: string;
 }

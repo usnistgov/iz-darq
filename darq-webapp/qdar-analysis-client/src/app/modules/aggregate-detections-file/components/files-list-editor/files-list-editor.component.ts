@@ -158,16 +158,15 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
     ]).pipe(
       map(([file, detections, cvxCodes, patientTables, vaccinationTables]) => {
         return {
-          options: this.valueService.getFieldOptions({
-            detections: detections.filter((d) => file.configuration.detections.includes(d.id)),
-            ageGroups: file.configuration.ageGroups,
+          options: this.valueService.getFieldOptionsUsingConfiguration({
+            detections,
             cvxs: cvxCodes,
             reportingGroups: {},
             tables: {
               vaccinationTables,
               patientTables,
             }
-          }, {}),
+          }, file.configuration, {}),
           configuration: file.configuration,
         };
       }),

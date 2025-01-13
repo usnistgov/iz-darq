@@ -6,7 +6,6 @@ import gov.nist.healthcare.iz.darq.test.helper.AgeGroupHelper;
 import gov.nist.healthcare.iz.darq.test.helper.ExtractBuilder;
 import gov.nist.healthcare.iz.darq.test.helper.Record;
 import org.immregistries.mqe.validator.detection.Detection;
-import org.immregistries.mqe.validator.engine.codes.KnowNameList;
 import org.immregistries.mqe.validator.engine.codes.KnownName;
 
 import java.time.LocalDate;
@@ -66,19 +65,11 @@ public class PlaceholderNamesMock implements DataExtractMock {
 				.withVocabulary("GENDER_0001", "F").and();
 
 		names.put(
-				new KnownName(5, "", "UNK", "", null, KnownName.NameType.INVALID_NAME),
-				2
-		);
-		names.put(
 				new KnownName(24, "BOY", "BABY", "", null, KnownName.NameType.UNNAMED_NEWBORN),
 				3
 		);
 		names.put(
 				new KnownName(26, "MOUSE", "MICKY", "", null, KnownName.NameType.TEST_PATIENT),
-				1
-		);
-		names.put(
-				new KnownName(35, "", "ZZ", "", null, KnownName.NameType.INVALID_PREFIXES),
 				1
 		);
 		names.put(

@@ -100,16 +100,15 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
       this.store.select(selectReportingGroups),
     ]).pipe(
       map(([report, detections, cvxCodes, patientTables, vaccinationTables, reportingGroups]) => {
-        return this.valueService.getFieldOptions({
+        return this.valueService.getFieldOptionsUsingConfiguration({
           detections,
-          ageGroups: report.configuration.ageGroups,
           cvxs: cvxCodes,
           reportingGroups,
           tables: {
             vaccinationTables,
             patientTables,
           }
-        }, report.customDetectionLabels);
+        }, report.configuration, report.customDetectionLabels);
       }),
     );
   }

@@ -2,8 +2,8 @@ package gov.nist.healthcare.iz.darq.digest.service.report.instances;
 
 import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
 import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
-import gov.nist.healthcare.iz.darq.digest.service.report.AggregateLocalReportService;
-import gov.nist.healthcare.iz.darq.digest.service.report.model.AggregateRow;
+import gov.nist.healthcare.iz.darq.localreport.AggregateLocalReportService;
+import gov.nist.healthcare.iz.darq.localreport.AggregateRow;
 import gov.nist.healthcare.iz.darq.parser.type.DqString;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 import org.immregistries.mqe.validator.detection.Detection;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class BadPhoneNumberReportService extends AggregateLocalReportService {
 
 	public static final String FILENAME = "bad_phone_number.csv";
-	Set<Detection> DETECTIONS = new HashSet<>(Arrays.asList(
+	public static final Set<Detection> DETECTIONS = new HashSet<>(Arrays.asList(
 			Detection.PatientPhoneIsIncomplete,
 			Detection.PatientPhoneIsInvalid,
 		    Detection.PatientPhoneTelUseCodeIsDeprecated,
@@ -26,7 +26,7 @@ public class BadPhoneNumberReportService extends AggregateLocalReportService {
 	));
 
 	public BadPhoneNumberReportService() {
-		super(FILENAME);
+		super(FILENAME, DETECTIONS.stream().map(Detection::getMqeMqeCode).toArray(String[]::new));
 	}
 
 	@Override

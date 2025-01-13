@@ -8,13 +8,17 @@ import gov.nist.healthcare.iz.darq.digest.service.report.instances.LotNumberRepo
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.io.FileUtils;
 import org.immregistries.mqe.validator.detection.Detection;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -71,65 +75,92 @@ public class LotNumberLocalReportTestCase {
 		VX 3 => 08 VALID
 		VX 4 => 08 PREFIX
 		VX 5 => 145 INFIX
+		RECORD 3
+		VX 1 => 08 VALID | historical 01
+		VX 2 => 145 INVALID | historical 01
 
 		===
 		08 VALID 2
+		08 VALID 1 - Historical (no validation info)
 		145 VALID 1
 		08 INVALID 1
 		145 INVALID 1
+		145 INVALID 1 - Historical (no validation info)
 		08 PREFIX 2
 		08 SUFFIX 1
 		145 PREFIX 1
 		145 INFIX 1
 		 */
-		assertEquals(9, lines.size());
+		assertEquals(11, lines.size());
 		// 08 VALID 2
 		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.validLotNumber) &&
 				record.get(1).equals("08") &&
-				record.get(2).isEmpty() &&
-				record.get(3).equals("2"))
+				record.get(2).equals("Administered") &&
+				record.get(3).isEmpty() &&
+				record.get(4).equals("2"))
+		);
+		// 08 VALID 1 - Historical (no validation info)
+		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.validLotNumber) &&
+				record.get(1).equals("08") &&
+				record.get(2).equals("Historical") &&
+				record.get(3).isEmpty() &&
+				record.get(4).equals("1"))
 		);
 		// 145 VALID 1
 		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.validLotNumber) &&
 				record.get(1).equals("145") &&
-				record.get(2).isEmpty() &&
-				record.get(3).equals("1"))
+				record.get(2).equals("Administered") &&
+				record.get(3).isEmpty() &&
+				record.get(4).equals("1"))
 		);
 		// 08 INVALID 1
 		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.lotNumberInvalid) &&
 				record.get(1).equals("08") &&
-				record.get(2).contains(Detection.VaccinationLotNumberIsInvalid.getMqeMqeCode()) &&
-				record.get(3).equals("1"))
+				record.get(2).equals("Administered") &&
+				record.get(3).contains(Detection.VaccinationLotNumberIsInvalid.getMqeMqeCode()) &&
+				record.get(4).equals("1"))
 		);
 		// 145 INVALID 1
 		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.lotNumberInvalid) &&
 				record.get(1).equals("145") &&
-				record.get(2).contains(Detection.VaccinationLotNumberIsInvalid.getMqeMqeCode()) &&
-				record.get(3).equals("1"))
+				record.get(2).equals("Administered") &&
+				record.get(3).contains(Detection.VaccinationLotNumberIsInvalid.getMqeMqeCode()) &&
+				record.get(4).equals("1"))
+		);
+		// 145 INVALID 1 - Historical (no validation info)
+		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.lotNumberInvalid) &&
+				record.get(1).equals("145") &&
+				record.get(2).equals("Historical") &&
+				record.get(3).isEmpty() &&
+				record.get(4).equals("1"))
 		);
 		// 08 PREFIX 2
 		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.prefix) &&
 				record.get(1).equals("08") &&
-				record.get(2).contains(Detection.VaccinationLotNumberHasInvalidPrefixes.getMqeMqeCode()) &&
-				record.get(3).equals("2"))
+				record.get(2).equals("Administered") &&
+				record.get(3).contains(Detection.VaccinationLotNumberHasInvalidPrefixes.getMqeMqeCode()) &&
+				record.get(4).equals("2"))
 		);
 		// 08 SUFFIX 1
 		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.suffix) &&
 				record.get(1).equals("08") &&
-				record.get(2).contains(Detection.VaccinationLotNumberHasInvalidSuffixes.getMqeMqeCode()) &&
-				record.get(3).equals("1"))
+				record.get(2).equals("Administered") &&
+				record.get(3).contains(Detection.VaccinationLotNumberHasInvalidSuffixes.getMqeMqeCode()) &&
+				record.get(4).equals("1"))
 		);
 		// 145 PREFIX 1
 		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.prefix) &&
 				record.get(1).equals("145") &&
-				record.get(2).contains(Detection.VaccinationLotNumberHasInvalidPrefixes.getMqeMqeCode()) &&
-				record.get(3).equals("1"))
+				record.get(2).equals("Administered") &&
+				record.get(3).contains(Detection.VaccinationLotNumberHasInvalidPrefixes.getMqeMqeCode()) &&
+				record.get(4).equals("1"))
 		);
 		// 145 INFIX 1
 		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.infix) &&
 				record.get(1).equals("145") &&
-				record.get(2).contains(Detection.VaccinationLotNumberHasInvalidInfixes.getMqeMqeCode()) &&
-				record.get(3).equals("1"))
+				record.get(2).equals("Administered") &&
+				record.get(3).contains(Detection.VaccinationLotNumberHasInvalidInfixes.getMqeMqeCode()) &&
+				record.get(4).equals("1"))
 		);
 	}
 

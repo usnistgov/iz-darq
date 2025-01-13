@@ -33,7 +33,7 @@ public class SqliteADFMerger {
 		Connection connection = DriverManager.getConnection("jdbc:sqlite:" + initial);
 
 		try {
-			SqliteADFDAO dao = new SqliteADFDAO(connection);
+			SqliteADFWriterDAO dao = new SqliteADFWriterDAO(connection);
 			Dictionaries dictionaries = largest.getDictionaries();
 			SecretKeySpec secret = new SecretKeySpec(largest.readKey(key), "AES");
 
@@ -122,6 +122,17 @@ public class SqliteADFMerger {
 					);
 				} catch (SQLException ignored) {}
 			});
+			merge_table("P_MATCH_SIGNATURE", remaining, (rows, dictionary) -> {
+				try {
+					this.merge_match_signatures(
+							dictionary,
+							rows,
+							dictionaries,
+							dao,
+							commitCounter
+					);
+				} catch (SQLException ignored) {}
+			});
 
 			connection.setAutoCommit(true);
 
@@ -202,7 +213,7 @@ public class SqliteADFMerger {
 		}
 	}
 
-	public void merge_provider_detections(Dictionaries source, ResultSet rows, Dictionaries target, SqliteADFDAO dao, boolean patient, AtomicInteger counter) throws SQLException {
+	public void merge_provider_detections(Dictionaries source, ResultSet rows, Dictionaries target, SqliteADFWriterDAO dao, boolean patient, AtomicInteger counter) throws SQLException {
 		while (rows.next()) {
 			String provider = source.findValue(Field.PROVIDER, rows.getInt("PROVIDER_ID"));
 			String ageGroup = source.findValue(Field.AGE_GROUP, rows.getInt("AGE_GROUP"));
@@ -221,7 +232,7 @@ public class SqliteADFMerger {
 		}
 	}
 
-	public void merge_provider_vocab(Dictionaries source, ResultSet rows, Dictionaries target, SqliteADFDAO dao, boolean patient, AtomicInteger counter) throws SQLException {
+	public void merge_provider_vocab(Dictionaries source, ResultSet rows, Dictionaries target, SqliteADFWriterDAO dao, boolean patient, AtomicInteger counter) throws SQLException {
 		while (rows.next()) {
 			String provider = source.findValue(Field.PROVIDER, rows.getInt("PROVIDER_ID"));
 			String ageGroup = source.findValue(Field.AGE_GROUP, rows.getInt("AGE_GROUP"));
@@ -240,7 +251,7 @@ public class SqliteADFMerger {
 		}
 	}
 
-	private void merge_patient_detections(Dictionaries source, ResultSet rows, Dictionaries target, SqliteADFDAO dao, AtomicInteger counter) throws SQLException {
+	private void merge_patient_detections(Dictionaries source, ResultSet rows, Dictionaries target, SqliteADFWriterDAO dao, AtomicInteger counter) throws SQLException {
 		while (rows.next()) {
 			String ageGroup = source.findValue(Field.AGE_GROUP, rows.getInt("AGE_GROUP"));
 			String code = source.findValue(Field.DETECTION, rows.getInt("DETECTION_CODE"));
@@ -256,7 +267,7 @@ public class SqliteADFMerger {
 		}
 	}
 
-	private void merge_patient_vocab(Dictionaries source, ResultSet rows, Dictionaries target, SqliteADFDAO dao, AtomicInteger counter) throws SQLException {
+	private void merge_patient_vocab(Dictionaries source, ResultSet rows, Dictionaries target, SqliteADFWriterDAO dao, AtomicInteger counter) throws SQLException {
 		while (rows.next()) {
 			String ageGroup = source.findValue(Field.AGE_GROUP, rows.getInt("AGE_GROUP"));
 			String code = source.findValue(Field.CODE, rows.getInt("CODE"));
@@ -272,7 +283,19 @@ public class SqliteADFMerger {
 		}
 	}
 
-	private void merge_vaccination_events(Dictionaries source, ResultSet rows, Dictionaries target, SqliteADFDAO dao, AtomicInteger counter) throws SQLException {
+	private void merge_match_signatures(Dictionaries source, ResultSet rows, Dictionaries target, SqliteADFWriterDAO dao, AtomicInteger counter) throws SQLException {
+		while (rows.next()) {
+			String signature = source.findValue(Field.MATCH_SIGNATURE, rows.getInt("MATCH_SIGNATURE"));
+			int nb = rows.getInt("N");
+			dao.write_match_signature(
+					target.getId(Field.MATCH_SIGNATURE, signature),
+					nb
+			);
+			commit(dao.getConnection(), counter);
+		}
+	}
+
+	private void merge_vaccination_events(Dictionaries source, ResultSet rows, Dictionaries target, SqliteADFWriterDAO dao, AtomicInteger counter) throws SQLException {
 		while (rows.next()) {
 			String provider = source.findValue(Field.PROVIDER, rows.getInt("PROVIDER_ID"));
 			String ageGroup = source.findValue(Field.AGE_GROUP, rows.getInt("AGE_GROUP"));

@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.digest.service.report.model;
+package gov.nist.healthcare.iz.darq.localreport;
 
 import java.util.ArrayList;
 import java.util.Arrays;

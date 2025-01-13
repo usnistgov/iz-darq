@@ -2,16 +2,20 @@ package gov.nist.healthcare.iz.darq.configuration.validation;
 
 import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
+import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
+import gov.nist.healthcare.iz.darq.detections.DetectionDescriptor;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Range;
-import gov.nist.healthcare.iz.darq.patient.matching.model.PatientMatchingDetection;
+import gov.nist.healthcare.iz.darq.digest.domain.expression.ComplexDetection;
+import gov.nist.healthcare.iz.darq.digest.domain.expression.ComplexDetectionTarget;
 import org.immregistries.mismo.match.PatientCompare;
-import org.immregistries.mqe.validator.detection.MqeCode;
+import org.immregistries.mqe.vxu.VxuObject;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -21,8 +25,9 @@ public class ConfigurationPayloadValidator {
 
     // Valid detections codes
     {
-        Arrays.stream(MqeCode.values()).forEach((mqeCode) -> allowedDetectionCodes.add(mqeCode.name()));
-        allowedDetectionCodes.add(PatientMatchingDetection.PM001.name());
+        AvailableDetectionEngines.ALL_DETECTION_DESCRIPTORS.forEach((detection) -> {
+            allowedDetectionCodes.add(detection.getCode());
+        });
     }
 
     public void validateConfigurationPayload(ConfigurationPayload configurationPayload) throws InvalidConfigurationPayload {
@@ -32,8 +37,9 @@ public class ConfigurationPayloadValidator {
         errors.addAll(validateAsOfDate(configurationPayload.getAsOf()));
         errors.addAll(validateVaxCodeAbstraction(configurationPayload.getVaxCodeAbstraction()));
         errors.addAll(validateMismoPatientMatcherConfiguration(configurationPayload.getMismoPatientMatchingConfiguration()));
+        errors.addAll(validateComplexDetections(configurationPayload.getComplexDetections()));
 
-        if(errors.size() > 0) {
+        if(!errors.isEmpty()) {
             throw new InvalidConfigurationPayload(errors);
         }
     }
@@ -70,7 +76,7 @@ public class ConfigurationPayloadValidator {
             }
         }
 
-        if(errors.size() > 0) {
+        if(!errors.isEmpty()) {
             return errors;
         }
 
@@ -164,4 +170,56 @@ public class ConfigurationPayloadValidator {
             return Collections.emptyList();
         }
     }
+
+    public List<String> validateComplexDetections(List<ComplexDetection> complexDetections) {
+        ArrayList<String> errors = new ArrayList<>();
+        if(complexDetections != null) {
+            Set<String> codes = new HashSet<>();
+            for(ComplexDetection cd: complexDetections) {
+                if(cd.getCode() == null || cd.getCode().isEmpty()) {
+                    errors.add("Configuration complex detection code is required");
+                } else if(!cd.getCode().matches("^[A-Z0-9]+$")) {
+                    errors.add("Configuration complex detection code '"+ cd.getCode() +"' is invalid only A to Z and 0 to 9 characters permitted");
+                } else if(cd.getCode().length() > 10) {
+                    errors.add("Configuration complex detection code '"+ cd.getCode() +"' is too long, only 10 characters permitted");
+                } else if(allowedDetectionCodes.contains(cd.getCode())) {
+                    errors.add("Configuration complex detection code '"+ cd.getCode() +"' is already in use");
+                } else if(codes.contains(cd.getCode())) {
+                    errors.add("Configuration complex detection code '"+ cd.getCode() +"' is duplicate");
+                } else if(cd.getTarget() == null) {
+                    errors.add("Configuration complex detection target is required");
+                } else if(cd.getDescription() == null || cd.getDescription().isEmpty()) {
+                    errors.add("Configuration complex detection description is required");
+                } else {
+                    List<String> detectionErrors = cd.getExpression().validate();
+                    errors.addAll(detectionErrors.stream().map((error) -> cd.getCode() +" - "+ error)
+                                                 .collect(Collectors.toList()));
+                    cd.getExpression().getLeafDetectionCodes().forEach((code) -> {
+                        if(!allowedDetectionCodes.contains(code)) {
+                            errors.add(cd.getCode() +" - Detection '"+ code +"' is not a valid Detection Code");
+                        }
+
+                        DetectionDescriptor detection = getDetectionByCode(code);
+                        if(detection != null) {
+                            if(cd.getTarget().equals(ComplexDetectionTarget.VACCINATION) && !detection.getTarget().equals(VxuObject.VACCINATION.name())) {
+                                errors.add(cd.getCode() +" - Detection '"+ code +"' target is '"+detection.getTarget()+"' which is not compatible with '"+ cd.getTarget() +"'");
+                            }
+                        } else {
+                            errors.add(cd.getCode() +" - Detection '"+ code +"' is not a valid Detection Code");
+                        }
+                    });
+                }
+                codes.add(cd.getCode());
+            }
+        }
+        return errors;
+    }
+
+    DetectionDescriptor getDetectionByCode(String code) {
+        return AvailableDetectionEngines.ALL_DETECTION_DESCRIPTORS.stream()
+                                                                  .filter((detection) -> detection.getCode().equals(code))
+                                                                  .findFirst()
+                                                                  .orElse(null);
+    }
+
 }

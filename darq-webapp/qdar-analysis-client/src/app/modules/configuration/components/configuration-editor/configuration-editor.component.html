@@ -54,19 +54,29 @@
     <p-checkbox
       id="patientMatching"
       name="patientMatching"
-      [disabled]="viewOnly$ | async" label="Activate" 
+      [disabled]="viewOnly$ | async" label="Activate"
       [ngModel]="value.payload.activatePatientMatching" (ngModelChange)="pmChange($event)" [binary]="true">
     </p-checkbox>
   </div>
   <div class="form-group">
     <label for="patientMatching"><strong>MISMO Patient Matcher Configuration</strong></label><br>
-    <textarea
-      placeholder="MISMO Configuration" class="form-control" 
-      name="mismo-configuration" id="mismo-configuration" 
-      [ngModel]="value.payload.mismoPatientMatchingConfiguration" 
-      (input)="mismoConfigChange($event.target.value)" 
-      [disabled]="(viewOnly$ | async) || !value.payload.activatePatientMatching">
-    </textarea>
+    <ngx-codemirror
+      placeholder="MISMO Configuration"
+      [ngClass]="{ 'expand-textarea': !configurationTextAreaCollapsed }"
+      name="mismo-configuration" id="mismo-configuration"
+      [ngModel]="value.payload.mismoPatientMatchingConfiguration"
+      (input)="mismoConfigChange($event.target.value)"
+      [disabled]="(viewOnly$ | async) || !value.payload.activatePatientMatching"
+      [options]="yamlEditorOptions"
+    ></ngx-codemirror>
+    <div style="border-top: 1px solid rgb(163, 163, 163); width: 100%; display: flex; align-items: center; justify-content: center;">
+      <div style="cursor: pointer;" *ngIf="configurationTextAreaCollapsed" (click)="configurationTextAreaCollapsed = !configurationTextAreaCollapsed" >
+        <i class="fa fa-chevron-down" style="margin-right: 10px;"></i> expand
+      </div>
+      <div style="cursor: pointer;" *ngIf="!configurationTextAreaCollapsed" (click)="configurationTextAreaCollapsed = !configurationTextAreaCollapsed">
+        <i class="fa fa-chevron-up" style="margin-right: 10px;"></i> collapse
+      </div>
+    </div>
   </div>
   <div class="form-group">
     <label for="ageGroups"><strong>Age Groups</strong></label>
@@ -76,6 +86,42 @@
       [viewOnly]="(viewOnly$ | async)"
       (valueChange)="ageGroupsChange($event)"
     ></app-age-groups>
+  </div>
+  <div class="form-group">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <label for="complex-detections"><strong>Complex Detections</strong></label>
+      <button class="btn btn-sm btn-primary" (click)="openComplexDetectionDialog()" *ngIf="(viewOnly$ | async) === false">
+        <i class="fa fa-plus"></i>
+        Create Detection
+      </button>
+    </div>
+    <p-table id="complex-detections" [value]="value.payload.complexDetections" [paginator]="true" [rows]="10">
+      <ng-template pTemplate="header">
+        <tr>
+            <th>Code</th>
+            <th>Description</th>
+            <th *ngIf="(viewOnly$ | async) === false">Action</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-index="rowIndex">
+        <tr>
+          <td>{{rowData.code}}</td>
+          <td>{{rowData.description}}</td>
+          <td *ngIf="(viewOnly$ | async) === false">
+            <div style="width: 100%; display: flex; justify-content: flex-end; align-items: center; gap: 5px;">
+              <button class="btn btn-sm btn-primary" (click)="openComplexDetectionDialog(index)" >
+                <i class="fa fa-pencil"></i>
+                Edit
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="deleteComplexDetection(index)" >
+                <i class="fa fa-trash"></i>
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
   </div>
   <div class="form-group">
     <label for="detections"><strong>Managed Detections</strong></label>

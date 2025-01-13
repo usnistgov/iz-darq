@@ -3,7 +3,6 @@ package gov.nist.healthcare.iz.darq.digest.service.detection.provider.mismo;
 import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.darq.detections.*;
 import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
-import gov.nist.healthcare.iz.darq.digest.service.detection.provider.mqe.MQEDetectionProvider;
 import gov.nist.healthcare.iz.darq.digest.service.patient.matching.mismo.MismoPatientMatchingService;
 import gov.nist.healthcare.iz.darq.patient.matching.model.PatientMatchingDetection;
 import gov.nist.healthcare.iz.darq.patient.matching.model.RecordMatchProcessResult;
@@ -14,13 +13,12 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MismoMatcherDetectionProvider implements DetectionProvider {
 
 	MismoPatientMatchingService patientMatchingService;
 	private final Set<DetectionDescriptor> descriptors = new HashSet<>();
-	private final static Logger logger = LoggerFactory.getLogger(MQEDetectionProvider.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(MismoMatcherDetectionProvider.class.getName());
 	private final static String PM001 = PatientMatchingDetection.PM001.name();
 
 	public MismoMatcherDetectionProvider(MismoPatientMatchingService patientMatchingService) {
@@ -29,7 +27,7 @@ public class MismoMatcherDetectionProvider implements DetectionProvider {
 	}
 
 	@Override
-	public void configure(DetectionEngineConfiguration configuration) throws Exception {
+	public void configure(DetectionEngineConfiguration configuration, List<DetectionProvider> before) throws Exception {
 		logger.info("Configuring MISMO Matching Detection Provider");
 		this.patientMatchingService.initialize(Paths.get(configuration.getTemporaryDirectory()), Paths.get(configuration.getOutputDirectory()));
 		if(!Strings.isNullOrEmpty(configuration.getConfigurationPayload().getMismoPatientMatchingConfiguration())) {
@@ -38,18 +36,17 @@ public class MismoMatcherDetectionProvider implements DetectionProvider {
 	}
 
 	@Override
-	public boolean hasSideEffect() {
-		// Matches patients records and creates patient_matches.tsv file
-		return true;
+	public boolean include(DetectionEngineConfiguration configuration) {
+		boolean PMDetectionIsActive = configuration.getConfigurationPayload()
+		                    .getAllDetectionCodes()
+		                    .stream()
+		                    .anyMatch((code) -> descriptors.stream().anyMatch((descriptors) -> descriptors.getCode().equals(code)));
+		boolean patientMatchingIsActive = configuration.getConfigurationPayload().isActivatePatientMatching();
+		return PMDetectionIsActive || patientMatchingIsActive;
 	}
 
 	@Override
-	public Set<String> getEnabledDetectionCodes() {
-		return provides().stream().map(DetectionDescriptor::getCode).collect(Collectors.toSet());
-	}
-
-	@Override
-	public Set<DetectionDescriptor> provides() {
+	public Set<DetectionDescriptor> getDetections() {
 		return Collections.unmodifiableSet(descriptors);
 	}
 
@@ -60,19 +57,16 @@ public class MismoMatcherDetectionProvider implements DetectionProvider {
 	}
 
 	@Override
-	public RecordDetectionEngineResult processRecordAndGetDetections(PreProcessRecord record, DetectionContext context) throws Exception {
+	public void process(PreProcessRecord record, DetectionContext context, RecordDetectionEngineResult detections) throws Exception {
 		RecordMatchProcessResult matchProcessResult = patientMatchingService.process(record.getRecord());
-		RecordDetectionEngineResult detections = new RecordDetectionEngineResult();
 		detections.setPossiblePatientRecordDuplicatesWithSignature(matchProcessResult.getDuplicatesWithSignature());
 		if(context.keepDetection(PM001)) {
-			Map<String, DetectionSum> patient = new HashMap<>();
-			detections.setPatientDetections(patient);
+			Map<String, DetectionSum> patient = detections.getPatientDetections();
 			if(matchProcessResult.isDuplicate()) {
 				patient.put(PM001, new DetectionSum(0, 1));
 			} else {
 				patient.put(PM001, new DetectionSum(1, 0));
 			}
 		}
-		return detections;
 	}
 }

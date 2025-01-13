@@ -1,9 +1,8 @@
-package gov.nist.healthcare.iz.darq.digest.service.report;
+package gov.nist.healthcare.iz.darq.localreport;
 
 
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFWriter;
 import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
-import gov.nist.healthcare.iz.darq.digest.service.report.model.AggregateRow;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -27,6 +26,11 @@ public abstract class AggregateLocalReportService extends LocalReportService {
 	public AggregateLocalReportService(String filename) {
 		super(filename);
 	}
+
+	public AggregateLocalReportService(String filename, String ...requiredDetectionDependencies) {
+		super(filename, requiredDetectionDependencies);
+	}
+
 
 	public abstract List<AggregateRow> getRows(PreProcessRecord record, RecordDetectionEngineResult recordDetectionEngineResult);
 

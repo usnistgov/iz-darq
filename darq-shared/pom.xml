@@ -42,6 +42,11 @@
             <version>${qdar.api.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.12.0</version>
+        </dependency>
+        <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>
             <artifactId>file-parser</artifactId>
             <version>${qdar.api.version}</version>

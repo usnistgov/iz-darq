@@ -25,7 +25,7 @@ public class Exporter implements ExportADChunk {
 	@Autowired
 	private DetectionEngine detectionEngine;
 
-	Set<String> getInactiveDetections(List<String> fromConfig) {
+	Set<String> getInactiveDetections(Set<String> fromConfig) {
 		Set<String> active = detectionEngine.getActiveDetectionCodes();
 		return fromConfig.stream().filter((code) -> !active.contains(code)).collect(Collectors.toSet());
 	}
@@ -39,7 +39,7 @@ public class Exporter implements ExportADChunk {
 				mqeVersion,
 				elapsed,
 				new Date(),
-				getInactiveDetections(payload.getDetections())
+				getInactiveDetections(payload.getAllDetectionCodes())
 		);
 
 		Summary summary = new Summary(

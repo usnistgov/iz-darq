@@ -29,7 +29,7 @@ public class QueryService {
             issues.add("Query content is required");
         }
 
-        if(issues.size() > 0) {
+        if(!issues.isEmpty()) {
             throw new Exception("Invalid query : " + String.join(", ", issues));
         }
     }
@@ -65,7 +65,7 @@ public class QueryService {
                 return false;
             case DETECTION:
                 if(!Strings.isNullOrEmpty(value)) {
-                    return configurationPayload.getDetections().contains(value);
+                    return configurationPayload.getAllDetectionCodes().contains(value);
                 }
                 return false;
         }

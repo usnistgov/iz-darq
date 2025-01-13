@@ -10,7 +10,7 @@ import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 public interface ConfigurationService {
 	List<DigestConfiguration> compatibilities(ConfigurationPayload payload, List<DigestConfiguration> configurations);
 
-	boolean compatible(ConfigurationPayload master, ConfigurationPayload slave);
+	boolean compatible(ConfigurationPayload source, ConfigurationPayload target);
 
 	void validateConfigurationPayload(ConfigurationPayload configurationPayload) throws InvalidConfigurationPayload;
 

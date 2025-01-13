@@ -95,16 +95,15 @@ export class RtSectionPayloadEditorComponent extends DamAbstractEditorComponent 
       this.store.select(selectVaccinationTables),
     ]).pipe(
       map(([labels, detections, cvxCodes, configuration, patientTables, vaccinationTables]) => {
-        return this.valueService.getFieldOptions({
-          detections: detections.filter((d) => configuration.detections.includes(d.id)),
-          ageGroups: configuration.ageGroups,
+        return this.valueService.getFieldOptionsUsingConfiguration({
+          detections,
           cvxs: cvxCodes,
           reportingGroups: {},
           tables: {
             vaccinationTables,
             patientTables,
           }
-        }, labels);
+        }, configuration, labels);
       }),
     );
     this.labels$ = this.options$.pipe(

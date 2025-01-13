@@ -1,6 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import gov.nist.healthcare.iz.darq.digest.domain.expression.ComplexDetection;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +16,7 @@ public class ConfigurationPayload {
 	private String mismoPatientMatchingConfiguration;
 	private Map<String, String> vaxCodeAbstraction;
 	private final Date now = new Date();
+	private List<ComplexDetection> complexDetections = new ArrayList<>();
 
 	public List<Range> getAgeGroups() {
 		if(this.ageGroups == null) {
@@ -66,6 +68,27 @@ public class ConfigurationPayload {
 		this.mismoPatientMatchingConfiguration = mismoPatientMatchingConfiguration;
 	}
 
+	public List<ComplexDetection> getComplexDetections() {
+		return complexDetections;
+	}
+
+	public void setComplexDetections(List<ComplexDetection> complexDetections) {
+		this.complexDetections = complexDetections;
+	}
+
+	@JsonIgnore
+	public Set<String> getAllDetectionCodes() {
+		Set<String> detectionCodes = new HashSet<>();
+		detectionCodes.addAll(getDetections());
+		if(complexDetections != null) {
+			for(ComplexDetection detection : complexDetections) {
+				detectionCodes.addAll(detection.getExpression().getLeafDetectionCodes());
+				detectionCodes.add(detection.getCode());
+			}
+		}
+		return detectionCodes;
+	}
+
 	@JsonIgnore
 	public Date getAsOfDate() throws ParseException {
 		if(this.asOf != null && !this.asOf.isEmpty()) {
@@ -91,11 +114,12 @@ public class ConfigurationPayload {
 				Objects.equals(activatePatientMatching, that.activatePatientMatching) &&
 				Objects.equals(mismoPatientMatchingConfiguration, that.mismoPatientMatchingConfiguration) &&
 				Objects.equals(asOf, that.asOf) &&
-				Objects.equals(vaxCodeAbstraction, that.vaxCodeAbstraction);
+				Objects.equals(vaxCodeAbstraction, that.vaxCodeAbstraction) &&
+				Objects.equals(complexDetections, that.complexDetections);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(ageGroups, detections, asOf, activatePatientMatching, mismoPatientMatchingConfiguration, vaxCodeAbstraction);
+		return Objects.hash(ageGroups, detections, asOf, activatePatientMatching, mismoPatientMatchingConfiguration, vaxCodeAbstraction, complexDetections);
 	}
 }

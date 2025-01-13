@@ -10,8 +10,22 @@ import { ConfigurationToolbarComponent } from './components/configuration-toolba
 import { ConfigurationSideBarComponent } from './components/configuration-side-bar/configuration-side-bar.component';
 import { ConfigurationEditorComponent } from './components/configuration-editor/configuration-editor.component';
 import { ConfigurationTitleComponent } from './components/configuration-title/configuration-title.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ComplexDetectionDialogComponent } from './components/complex-detection-dialog/complex-detection-dialog.component';
+import { ComplexDetectionExpressionDialogComponent } from './components/complex-detection-expression-dialog/complex-detection-expression-dialog.component';
+import { OrganizationChartModule } from 'primeng/organizationchart';
+import { DragDropModule } from 'primeng/dragdrop';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 
+import 'codemirror/addon/display/placeholder';
+import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/edit/closetag';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/fold/brace-fold';
+import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/fold/xml-fold';
+import 'codemirror/addon/selection/active-line';
+import 'codemirror/mode/yaml/yaml';
 
 @NgModule({
   declarations: [
@@ -19,7 +33,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ConfigurationToolbarComponent,
     ConfigurationSideBarComponent,
     ConfigurationEditorComponent,
-    ConfigurationTitleComponent
+    ConfigurationTitleComponent,
+    ComplexDetectionDialogComponent,
+    ComplexDetectionExpressionDialogComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +43,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     SharedModule,
     DamFrameworkModule,
     DamMessagesModule,
+    OrganizationChartModule,
+    DragDropModule,
     EffectsModule.forFeature([CoreEffects]),
-  ]
+    CodemirrorModule
+  ],
+  entryComponents: [ComplexDetectionDialogComponent, ComplexDetectionExpressionDialogComponent]
 })
 export class ConfigurationModule { }

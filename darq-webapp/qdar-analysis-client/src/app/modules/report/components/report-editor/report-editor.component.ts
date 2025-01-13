@@ -73,16 +73,15 @@ export class ReportEditorComponent extends DamAbstractEditorComponent implements
       this.store.select(selectReportingGroups),
     ]).pipe(
       map(([report, detections, cvxCodes, patientTables, vaccinationTables, reportingGroups]) => {
-        const options = this.valueService.getFieldOptions({
+        const options = this.valueService.getFieldOptionsUsingConfiguration({
           detections,
-          ageGroups: report.configuration.ageGroups,
           reportingGroups,
           cvxs: cvxCodes,
           tables: {
             vaccinationTables,
             patientTables,
           }
-        }, report.customDetectionLabels);
+        }, report.configuration, report.customDetectionLabels);
         return this.valueService.getQueryValuesLabel(options);
       }),
     );

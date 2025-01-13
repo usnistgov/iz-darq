@@ -2,12 +2,12 @@ package gov.nist.healthcare.iz.darq.detections;
 
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DetectionEngineConfiguration {
 	ConfigurationPayload configurationPayload;
-	Set<String> activeProviders = new HashSet<>();
+	List<String> activeProviders = new ArrayList<>();
 	String temporaryDirectory;
 	String outputDirectory;
 
@@ -23,11 +23,11 @@ public class DetectionEngineConfiguration {
 		activeProviders.add(providerId);
 	}
 
-	public Set<String> getActiveProviders() {
+	public List<String> getActiveProviders() {
 		return activeProviders;
 	}
 
-	public void setActiveProviders(Set<String> activeProviders) {
+	public void setActiveProviders(List<String> activeProviders) {
 		this.activeProviders = activeProviders;
 	}
 

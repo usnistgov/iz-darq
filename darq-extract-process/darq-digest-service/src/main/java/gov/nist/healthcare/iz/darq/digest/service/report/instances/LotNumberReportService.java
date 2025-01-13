@@ -2,8 +2,8 @@ package gov.nist.healthcare.iz.darq.digest.service.report.instances;
 
 import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
 import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
-import gov.nist.healthcare.iz.darq.digest.service.report.AggregateLocalReportService;
-import gov.nist.healthcare.iz.darq.digest.service.report.model.AggregateRow;
+import gov.nist.healthcare.iz.darq.localreport.AggregateLocalReportService;
+import gov.nist.healthcare.iz.darq.localreport.AggregateRow;
 import gov.nist.healthcare.iz.darq.parser.model.VaccineRecord;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 import org.immregistries.mqe.validator.detection.Detection;
@@ -33,6 +33,7 @@ public class LotNumberReportService extends AggregateLocalReportService {
 		return Arrays.asList(
 				"Lot Number",
 				"CVX",
+				"Event Type",
 				"Detections",
 				"Count"
 		);
@@ -46,13 +47,15 @@ public class LotNumberReportService extends AggregateLocalReportService {
 			if(vx.lot_number.hasValue()) {
 				String lotNumber = vx.lot_number.getValue();
 				String cvx = vx.vaccine_type_cvx.hasValue() ? vx.vaccine_type_cvx.getValue() : "";
+				String event = vx.event_information_source.hasValue() ? vx.event_information_source.getValue() : "";
 				Map<String, DetectionSum> vaccineDetections = detections.getVaccinationDetectionsById().get(vaccinationId);
 				List<Detection> lotNumberDetections = getLotNumberDetections(vaccineDetections);
 				rows.add(
 						new AggregateRow(
 								Arrays.asList(
 										lotNumber,
-										cvx
+										cvx,
+										getEventString(event)
 								),
 								Collections.singletonList(
 										lotNumberDetections
@@ -81,6 +84,19 @@ public class LotNumberReportService extends AggregateLocalReportService {
 			});
 		}
 		return lotNumberDetections;
+	}
+
+	String getEventString(String code) {
+		if(code == null || code.isEmpty()) {
+			return "Not Present";
+		}
+		if(code.equals("00")) {
+			return "Administered";
+		}
+		if(code.equals("01")) {
+			return "Historical";
+		}
+		return "Unrecognized";
 	}
 
 	String getDetectionText(Detection detection) {

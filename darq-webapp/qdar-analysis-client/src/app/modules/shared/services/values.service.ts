@@ -4,6 +4,8 @@ import { Comparator } from '../../report-template/model/report-template.model';
 import { SelectItem } from 'primeng/api/selectitem';
 import { AgeGroupService } from './age-group.service';
 import { Field } from '../../report-template/model/analysis.values';
+import { ICvxResource, IDetectionResource } from '../model/public.model';
+import { IConfigurationPayload } from '../../configuration/model/configuration.model';
 
 export interface ILabelMap {
   [key: string]: string;
@@ -56,6 +58,37 @@ export class ValuesService {
     processOptions(options.ageGroupOptions, Field.AGE_GROUP);
 
     return new Labelizer(map, options);
+  }
+
+  getFieldOptionsUsingConfiguration(
+    data: {
+      detections: IDetectionResource[],
+      cvxs: ICvxResource[],
+      reportingGroups: Record<string, string>,
+      tables: {
+        patientTables: string[];
+        vaccinationTables: string[];
+      }
+    },
+    configuration: IConfigurationPayload,
+    customLabels: Record<string, string>
+  ) {
+    return this.getFieldOptions({
+      detections: [
+        ...data.detections.filter((d) => configuration.detections.includes(d.id)),
+        ...configuration.complexDetections.map((complex) => ({
+          id: complex.code,
+          type: 'Detection',
+          description: complex.description,
+          target: complex.target,
+          active: true,
+        }))
+      ],
+      cvxs: data.cvxs,
+      ageGroups: configuration.ageGroups,
+      reportingGroups: data.reportingGroups,
+      tables: data.tables,
+    }, customLabels);
   }
 
   getFieldOptions(data: IFieldInputData, customLabels: Record<string, string>): IFieldInputOptions {

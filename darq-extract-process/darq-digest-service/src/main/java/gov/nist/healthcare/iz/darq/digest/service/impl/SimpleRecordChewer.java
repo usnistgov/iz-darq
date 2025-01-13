@@ -13,7 +13,7 @@ import gov.nist.healthcare.iz.darq.detections.DetectionContext;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
 import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
 import gov.nist.healthcare.iz.darq.digest.domain.*;
-import gov.nist.healthcare.iz.darq.digest.service.report.ReportEngine;
+import gov.nist.healthcare.iz.darq.localreport.LocalReportEngine;
 import gov.nist.healthcare.iz.darq.digest.service.vocabulary.RecordValuesAnalysisResult;
 import gov.nist.healthcare.iz.darq.digest.service.vocabulary.SimpleRecordValueAnalysisService;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
@@ -34,7 +34,7 @@ public class SimpleRecordChewer implements RecordChewer {
 	@Autowired
 	DetectionEngine detectionEngine;
 	@Autowired
-	ReportEngine reportEngine;
+	LocalReportEngine localReportEngine;
 
 	@Override
 	public ADChunk munch(PreProcessRecord record, LocalDate date, DetectionContext detectionContext) throws Exception {
@@ -44,7 +44,7 @@ public class SimpleRecordChewer implements RecordChewer {
 		}
 
 		// Analyze Record (Detections & Vocabulary & Vaccination Events)
-		RecordDetectionEngineResult recordDetectionEngineResult = detectionEngine.processRecordAndGetDetections(record, detectionContext);
+		RecordDetectionEngineResult recordDetectionEngineResult = detectionEngine.process(record, detectionContext);
 		AggregatedRecordDetections detections = aggregate(recordDetectionEngineResult, record);
 		RecordValuesAnalysisResult recordValuesAnalysisResult = recordValueAnalysisService.analyseRecordValues(record);
 		Map<String, Map<String, Map<String, Map<String, Map<String, TablePayload>>>>> aggregateVaccinationEvents = recordValueAnalysisService.getVaccinationEvents(record, detectionContext);
@@ -68,7 +68,7 @@ public class SimpleRecordChewer implements RecordChewer {
 			providers.put(provider, hash);
 		}
 
-		reportEngine.process(record, recordDetectionEngineResult);
+		localReportEngine.process(record, recordDetectionEngineResult);
 
 		// Create ADF Chunk
 		return new ADChunk(

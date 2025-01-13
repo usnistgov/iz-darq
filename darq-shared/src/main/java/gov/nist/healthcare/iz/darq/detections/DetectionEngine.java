@@ -2,49 +2,52 @@ package gov.nist.healthcare.iz.darq.detections;
 
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DetectionEngine {
 	private final Map<String, DetectionProvider> providers;
-	private final Set<DetectionProvider> activeDetectionProviders;
+	private final List<DetectionProvider> activeDetectionProviders;
 
 	public DetectionEngine(Map<String, DetectionProvider> providers) {
 		this.providers = providers;
-		this.activeDetectionProviders = new HashSet<>();
+		this.activeDetectionProviders = new ArrayList<>();
 	}
 
 	public Set<String> getActiveDetectionCodes() {
 		return activeDetectionProviders.stream()
-				.flatMap(provider -> provider.getEnabledDetectionCodes().stream())
-				.collect(Collectors.toSet());
+		                               .flatMap(provider -> provider.getDetections()
+		                                                            .stream()
+		                                                            .map(DetectionDescriptor::getCode)
+		                               )
+		                               .collect(Collectors.toSet());
 	}
 
 	public void configure(DetectionEngineConfiguration configuration) throws Exception {
 		activeDetectionProviders.clear();
-		Set<String> detections = new HashSet<>(configuration.getConfigurationPayload().getDetections());
 		for(String providerId: configuration.getActiveProviders()) {
 			if(providers.containsKey(providerId)) {
 				DetectionProvider  provider = providers.get(providerId);
-				boolean isInConfiguration = provider.getEnabledDetectionCodes().stream().anyMatch(detections::contains);
-				if(isInConfiguration || provider.hasSideEffect()) {
-					provider.configure(configuration);
+				if(provider.include(configuration)) {
+					provider.configure(configuration, Collections.unmodifiableList(activeDetectionProviders));
 					activeDetectionProviders.add(provider);
 				}
 			}
 		}
 	}
 
-	public RecordDetectionEngineResult processRecordAndGetDetections(PreProcessRecord record, DetectionContext context) throws Exception {
+	public RecordDetectionEngineResult process(PreProcessRecord record, DetectionContext context) throws Exception {
 		RecordDetectionEngineResult detections = new RecordDetectionEngineResult();
 
 		for(DetectionProvider provider: activeDetectionProviders) {
-			detections.merge(provider.processRecordAndGetDetections(record, context));
+			provider.process(record, context, detections);
 		}
 
 		return detections;
+	}
+
+	public boolean isDetectionProviderActive(String providerId) {
+		return activeDetectionProviders.contains(providers.get(providerId));
 	}
 
 	public void close() throws Exception {

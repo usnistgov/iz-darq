@@ -11,6 +11,10 @@ public class DetectionSum {
 	public boolean exists() {
 		return negative >= 1;
 	}
+
+	public boolean isChecked() {
+		return positive > 0 || negative > 0;
+	}
 	
 	public DetectionSum() {
 		super();

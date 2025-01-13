@@ -1,7 +1,9 @@
 package gov.nist.healthcare.iz.darq.digest.common;
 
+import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFReader;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import org.junit.rules.TemporaryFolder;
 
 import java.nio.file.Paths;
@@ -22,11 +24,25 @@ public class SQLiteADFTestUtils {
 				if (i > 1) System.out.print(",  ");
 				String columnValue = resultSet.getString(i);
 				String columnName = rsmd.getColumnName(i).equals("N") ? "FOUND" : rsmd.getColumnName(i).equals("P") ? "NOT_FOUND" : rsmd.getColumnName(i);
-				System.out.print(columnValue + " " + columnName);
+				String mappedValue = "";
+				try {
+					mappedValue = reader.getDictionaries().findValue(Field.valueOf(translate(columnName)), Integer.parseInt(columnValue));
+				} catch (Exception e) {
+				}
+
+				System.out.print((Strings.isNullOrEmpty(mappedValue) ? columnValue : mappedValue) + " " + columnName);
 			}
 			System.out.println();
 		}
 	}
+
+	public String translate(String column) {
+		if(column.equals("DETECTION_CODE")) {
+			return "DETECTION";
+		}
+		return column;
+	}
+
 
 	public void checkTableContent(PreparedStatement statement, PreparedStatement count, List<List<Integer>> rows) throws Exception {
 		for (List<Integer> row : rows) {
