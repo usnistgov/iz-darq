@@ -30,13 +30,15 @@ public class ConfigurationPayloadValidator {
         });
     }
 
-    public void validateConfigurationPayload(ConfigurationPayload configurationPayload) throws InvalidConfigurationPayload {
+    public void validateConfigurationPayload(ConfigurationPayload configurationPayload, boolean validateMismoConfiguration) throws InvalidConfigurationPayload {
         ArrayList<String> errors = new ArrayList<>();
         errors.addAll(validateAgeGroups(configurationPayload.getAgeGroups(), true));
         errors.addAll(validateDetections(configurationPayload.getDetections()));
         errors.addAll(validateAsOfDate(configurationPayload.getAsOf()));
         errors.addAll(validateVaxCodeAbstraction(configurationPayload.getVaxCodeAbstraction()));
-        errors.addAll(validateMismoPatientMatcherConfiguration(configurationPayload.getMismoPatientMatchingConfiguration()));
+        if(validateMismoConfiguration) {
+            errors.addAll(validateMismoPatientMatcherConfiguration(configurationPayload.getMismoPatientMatchingConfiguration()));
+        }
         errors.addAll(validateComplexDetections(configurationPayload.getComplexDetections()));
 
         if(!errors.isEmpty()) {

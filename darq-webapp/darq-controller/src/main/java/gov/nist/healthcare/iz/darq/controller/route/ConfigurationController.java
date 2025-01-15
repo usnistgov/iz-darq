@@ -137,7 +137,7 @@ public class ConfigurationController {
 		}
 		config.setLastUpdated(new Date());
 		try {
-			this.configService.validateConfigurationPayload(config.getPayload());
+			this.configService.validateConfigurationPayload(config.getPayload(), true);
 			this.configService.validateAgeGroups(config.getPayload().getAgeGroups(), false);
 		} catch (InvalidConfigurationPayload invalidConfigurationPayload) {
 			throw new OperationFailureException(invalidConfigurationPayload.getMessage());

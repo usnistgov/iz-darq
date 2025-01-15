@@ -48,7 +48,7 @@ public class ADFService {
             if(!Strings.isNullOrEmpty(facility) && !facilityRepository.exists(facility)) {
                 throw new Exception("Facility Id '" + facility + "' does not exist");
             }
-            this.configService.validateConfigurationPayload(file.getConfigurationPayload());
+            this.configService.validateConfigurationPayload(file.getConfigurationPayload(), false);
             String uid = UUID.randomUUID().toString();
             Path dir = Files.createDirectory(Paths.get(PATH+"/"+uid));
             if (dir.toFile().exists()) {

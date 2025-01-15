@@ -35,7 +35,7 @@ public class ConfigurationVerificationIntegrityCheck {
     void checkADFs() throws Exception {
         for(UserUploadedFile adf: adfMetaDataRepository.findAll()) {
             try {
-                this.configurationService.validateConfigurationPayload(adf.getConfiguration());
+                this.configurationService.validateConfigurationPayload(adf.getConfiguration(), false);
             } catch (InvalidConfigurationPayload invalidConfigurationPayload) {
                 throw new Exception("Invalid ADF (Configuration Payload) ID '" + adf.getId() +"' due to : " + invalidConfigurationPayload.getMessage());
             }
@@ -45,7 +45,7 @@ public class ConfigurationVerificationIntegrityCheck {
     void checkTemplates() throws Exception {
         for(ReportTemplate template: templateRepository.findAll()) {
             try {
-                this.configurationService.validateConfigurationPayload(template.getConfiguration());
+                this.configurationService.validateConfigurationPayload(template.getConfiguration(), false);
             } catch (InvalidConfigurationPayload invalidConfigurationPayload) {
                 throw new Exception("Invalid Report Template (Configuration Payload) ID '" + template.getId() +"' due to : " + invalidConfigurationPayload.getMessage());
             }
@@ -55,7 +55,7 @@ public class ConfigurationVerificationIntegrityCheck {
     void checkConfigurations() throws Exception {
         for(DigestConfiguration configuration: configurationRepository.findAll()) {
             try {
-                this.configurationService.validateConfigurationPayload(configuration.getPayload());
+                this.configurationService.validateConfigurationPayload(configuration.getPayload(), false);
             } catch (InvalidConfigurationPayload invalidConfigurationPayload) {
                 throw new Exception("Invalid Digest Configuration ID '" + configuration.getId() +"' due to : " + invalidConfigurationPayload.getMessage());
             }

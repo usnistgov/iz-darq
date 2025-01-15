@@ -50,7 +50,7 @@ public class SimpleDigestRunner implements DigestRunner {
 	public void digest(ConfigurationPayload configuration, String patient, String vaccines, DqDateFormat dateFormat, ADFWriter writer, Path output, Path temporaryDirectory) throws Exception {
 		logger.info("[REPORT] Initializing Local Report Engine");
 		logger.info("[PREPROCESS] Validating Configuration");
-		configurationPayloadValidator.validateConfigurationPayload(configuration);
+		configurationPayloadValidator.validateConfigurationPayload(configuration, true);
 		logger.info("[START] Processing Extract");
 		Path patientsFilePath = Paths.get(patient);
 		size = (int) Files.lines(patientsFilePath).parallel().count();

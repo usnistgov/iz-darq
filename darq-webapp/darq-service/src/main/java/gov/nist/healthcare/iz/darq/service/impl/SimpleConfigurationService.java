@@ -78,8 +78,8 @@ public class SimpleConfigurationService implements ConfigurationService {
 	}
 
 	@Override
-	public void validateConfigurationPayload(ConfigurationPayload configurationPayload) throws InvalidConfigurationPayload {
-		this.configurationPayloadValidator.validateConfigurationPayload(configurationPayload);
+	public void validateConfigurationPayload(ConfigurationPayload configurationPayload, boolean validateMismoConfiguration) throws InvalidConfigurationPayload {
+		this.configurationPayloadValidator.validateConfigurationPayload(configurationPayload, validateMismoConfiguration);
 	}
 
 	@Override

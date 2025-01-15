@@ -12,7 +12,7 @@ public interface ConfigurationService {
 
 	boolean compatible(ConfigurationPayload source, ConfigurationPayload target);
 
-	void validateConfigurationPayload(ConfigurationPayload configurationPayload) throws InvalidConfigurationPayload;
+	void validateConfigurationPayload(ConfigurationPayload configurationPayload, boolean validateMismoConfiguration) throws InvalidConfigurationPayload;
 
 	void validateAgeGroups(List<Range> ageGroups, boolean allowEmptyGroupSameMinAndMax) throws InvalidConfigurationPayload;
 }
