@@ -34,5 +34,15 @@
             <artifactId>darq-shared</artifactId>
             <version>${qdar.api.version}</version>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.healthcare.iz</groupId>
+            <artifactId>darq-shared</artifactId>
+            <version>${qdar.api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.immregistries.vaccination_deduplication</groupId>
+            <artifactId>vaccination-deduplication-api</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

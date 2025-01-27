@@ -9,9 +9,11 @@ import gov.nist.healthcare.iz.darq.adf.module.json.BsonADFModule;
 import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
 import gov.nist.healthcare.iz.darq.detections.DetectionProvider;
+import gov.nist.healthcare.iz.darq.detections.codes.VaccinationDuplicateDetection;
 import gov.nist.healthcare.iz.darq.digest.service.detection.provider.complex.ComplexDetectionProvider;
 import gov.nist.healthcare.iz.darq.digest.service.detection.provider.mismo.MismoMatcherDetectionProvider;
 import gov.nist.healthcare.iz.darq.digest.service.detection.provider.mqe.MQEDetectionProvider;
+import gov.nist.healthcare.iz.darq.digest.service.detection.provider.vaccinationduplicate.VaccinationDuplicateDetectionProvider;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.patient.matching.mismo.MismoPatientMatchingService;
 import gov.nist.healthcare.iz.darq.localreport.AvailableLocalReportServices;
@@ -52,9 +54,11 @@ public class DigestConfiguration {
 		MQEDetectionProvider mqeDetectionProvider = new MQEDetectionProvider();
 		MismoMatcherDetectionProvider mismoMatcherDetectionProvider = new MismoMatcherDetectionProvider(patientMatchingService());
 		ComplexDetectionProvider complexDetectionProvider = new ComplexDetectionProvider();
+		VaccinationDuplicateDetectionProvider vaccinationDuplicateDetectionProvider = new VaccinationDuplicateDetectionProvider();
 		Map<String, DetectionProvider> providers = new HashMap<>();
 		providers.put(AvailableDetectionEngines.DP_ID_MQE, mqeDetectionProvider);
 		providers.put(AvailableDetectionEngines.DP_ID_PM, mismoMatcherDetectionProvider);
+		providers.put(AvailableDetectionEngines.DP_ID_VD, vaccinationDuplicateDetectionProvider);
 		providers.put(AvailableDetectionEngines.DP_ID_COMPLEX_DETECTIONS, complexDetectionProvider);
 		return new DetectionEngine(providers);
 	}
@@ -75,5 +79,5 @@ public class DigestConfiguration {
 		manager.register(new BsonADFModule(), true, false);
 		return manager;
 	}
-	
+
 }

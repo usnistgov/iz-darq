@@ -202,6 +202,8 @@ public class CLIApp {
 						if(!deActivatePatientMatching && (configurationPayload.isActivatePatientMatching() || activePatientMatching)) {
 							detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_PM);
 						}
+						detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_VD);
+						// The order is important here, complex_detections should be last since they rely on other detections being detected prior
 						if(!configurationPayload.getComplexDetections().isEmpty()) {
 							detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_COMPLEX_DETECTIONS);
 						}

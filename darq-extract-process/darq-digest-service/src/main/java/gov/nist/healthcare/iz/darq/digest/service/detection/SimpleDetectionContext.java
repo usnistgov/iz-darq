@@ -46,7 +46,7 @@ public class SimpleDetectionContext implements DetectionContext {
 
 	@Override
 	public String obfuscateReportingGroup(String value) {
-		return DigestUtils.md5DigestAsHex(value.getBytes());
+		return value != null ? DigestUtils.md5DigestAsHex(value.getBytes()) : "";
 	}
 
 	@Override

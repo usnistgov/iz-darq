@@ -1,5 +1,6 @@
 package gov.nist.healthcare.iz.darq.detections;
 
+import gov.nist.healthcare.iz.darq.detections.codes.VaccinationDuplicateDetection;
 import gov.nist.healthcare.iz.darq.patient.matching.model.PatientMatchingDetection;
 import org.immregistries.mqe.validator.detection.Detection;
 import org.immregistries.mqe.validator.detection.MqeCode;
@@ -12,12 +13,14 @@ import java.util.stream.Collectors;
 
 public class AvailableDetectionEngines {
 	public static final String DP_ID_MQE = "MQE";
+	public static final String DP_ID_VD = "VACCINATION_DUPLICATE";
 	public static final String DP_ID_PM = "PATIENT_MATCHER";
 	public static final String DP_ID_COMPLEX_DETECTIONS = "COMPLEX_DETECTIONS";
 
 	public static final Map<String, Set<String>> CODES_BY_DETECTION_PROVIDER = new HashMap<String, Set<String>>() {{
 		put(DP_ID_MQE, Arrays.stream(MqeCode.values()).map((MqeCode::name)).collect(Collectors.toSet()));
 		put(DP_ID_PM, Arrays.stream(PatientMatchingDetection.values()).map((PatientMatchingDetection::name)).collect(Collectors.toSet()));
+		put(DP_ID_VD, Arrays.stream(VaccinationDuplicateDetection.values()).map((VaccinationDuplicateDetection::name)).collect(Collectors.toSet()));
 	}};
 	public static final Set<String> ALL_DETECTION_CODES = CODES_BY_DETECTION_PROVIDER.values().stream().flatMap(Set::stream).collect(Collectors.toSet());
 	public static final Set<DetectionDescriptor> ALL_DETECTION_DESCRIPTORS = new HashSet<DetectionDescriptor>() {{
@@ -33,5 +36,8 @@ public class AvailableDetectionEngines {
 
 		// Patient Matching Detections
 		this.add(new DetectionDescriptor(PatientMatchingDetection.PM001.name(), PatientMatchingDetection.PM001.getMessage(), VxuObject.PATIENT.name(), true));
+
+		// Vaccination Duplicate Detections
+		this.add(new DetectionDescriptor(VaccinationDuplicateDetection.VD0001.name(), VaccinationDuplicateDetection.VD0001.getMessage(), VxuObject.VACCINATION.name(), true));
 	}};
 }
