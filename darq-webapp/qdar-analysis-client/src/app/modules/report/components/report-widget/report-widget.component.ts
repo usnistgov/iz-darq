@@ -158,7 +158,7 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
         .join('\n') + '\n';
     }
     const a = document.createElement('a');
-    const file = new window.Blob([content], { type: 'text/csv' });
+    const file = new window.Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), content], { type: 'text/csv;charset=utf-8' });
     a.style.display = 'none';
     const fileURL = URL.createObjectURL(file);
     a.href = fileURL;
@@ -170,7 +170,10 @@ export class ReportWidgetComponent extends DamWidgetComponent implements OnInit,
   downloadAllTables() {
     const zip = new JSZip();
     for (const table of this.reportsTable.getTables()) {
-      zip.file(table.getFileName(), table.getCSVFileContent());
+      zip.file(
+        table.getFileName(),
+        new window.Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), table.getCSVFileContent()], { type: 'text/csv;charset=utf-8' })
+      );
     }
     zip.generateAsync({ type: 'blob' }).then((blob) => {
       const a = document.createElement('a');

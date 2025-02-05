@@ -11,9 +11,10 @@
   [value]="filtered$ | async"
   [paginator]="true"
   [rows]="10"
+  [sortField]="'uploadedOn'"
+  [sortOrder]="-1"
   [frozenColumns]
   class="ui-table-dash"
-  sortMode="multiple"
   [styleClass]="'table table-sm table-striped'">
   <ng-template pTemplate="header">
     <tr>

@@ -43,19 +43,12 @@ public class BadPhoneNumberReportMock implements DataExtractMock {
 	public final String invalidPhoneShort = "555-1212";
 	public final String invalidPhoneFormat = "800-555-ABCD";
 	public final String invalidPhoneArea = "000-555-1212";
-
-
-
-
-	AgeGroupHelper ageGroupHelper;
+	public final AgeGroupHelper ageGroupHelper;
+	public final ConfigurationPayload configurationPayload;
 
 	protected BadPhoneNumberReportMock() {
 		ageGroupHelper = new AgeGroupHelper(LocalDate.parse("2020-12-14", DATE_FORMATTER), 3);
-	}
-
-	@Override
-	public ConfigurationPayload getConfigurationPayload() {
-		ConfigurationPayload configurationPayload = new ConfigurationPayload();
+		configurationPayload = new ConfigurationPayload();
 		configurationPayload.setAsOf("12/14/2020");
 		configurationPayload.setDetections(Stream.of(
 				Detection.PatientPhoneIsIncomplete,
@@ -76,6 +69,10 @@ public class BadPhoneNumberReportMock implements DataExtractMock {
 		configurationPayload.setAgeGroups(ageGroupHelper.getAgeGroups());
 		configurationPayload.setActivatePatientMatching(false);
 		configurationPayload.setVaxCodeAbstraction(null);
+	}
+
+	@Override
+	public ConfigurationPayload getConfigurationPayload() {
 		return configurationPayload;
 	}
 

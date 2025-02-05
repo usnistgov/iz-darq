@@ -29,7 +29,8 @@ import java.util.stream.Collectors;
 public class MQEDetectionProvider implements DetectionProvider {
 
 	private final MessageValidator validator = MessageValidator.INSTANCE;
-	private final Set<DetectionDescriptor> descriptors = new HashSet<>();
+	private final Map<String, DetectionDescriptor> allMqeDescriptors = new HashMap<>();
+	private Set<DetectionDescriptor> configuredMqeDecriptors = new HashSet<>();
 	private final MQETransformService transformer = new MQETransformService();
 	private final static Logger logger = LoggerFactory.getLogger(MQEDetectionProvider.class.getName());
 
@@ -40,25 +41,24 @@ public class MQEDetectionProvider implements DetectionProvider {
 				TargetType.Vaccination
 		)));
 		for(Detection d : active) {
-			descriptors.add(new DetectionDescriptor(d.getMqeMqeCode(), d.getDisplayText(),d.getTargetObject().toString(), active.contains(d)));
+			allMqeDescriptors.put(d.getMqeMqeCode(), new DetectionDescriptor(d.getMqeMqeCode(), d.getDisplayText(),d.getTargetObject().toString(), active.contains(d)));
 		}
 	}
 
 	@Override
 	public void configure(DetectionEngineConfiguration configuration, List<DetectionProvider> before) {
 		logger.info("Configuring MQE Detection Provider");
-		MessageValidator.INSTANCE.configure(
-				configuration.getConfigurationPayload().getAllDetectionCodes().stream()
-						.map((code) -> {
-							try {
-								return MqeCode.valueOf(code);
-							} catch (Exception e) {
-								return null;
-							}
-						})
-						.filter(Objects::nonNull)
-						.collect(Collectors.toSet())
-		);
+		configuredMqeDecriptors = new HashSet<>();
+		Set<MqeCode> configuredMqeCodes = new HashSet<>();
+		configuration.getConfigurationPayload().getAllDetectionCodes().forEach(code -> {
+			if(allMqeDescriptors.containsKey(code)) {
+				DetectionDescriptor descriptor = allMqeDescriptors.get(code);
+				configuredMqeDecriptors.add(descriptor);
+				MqeCode mqeCode = MqeCode.valueOf(code);
+				configuredMqeCodes.add(mqeCode);
+			}
+		});
+		MessageValidator.INSTANCE.configure(configuredMqeCodes);
 		logger.info("MQE Validator Configured");
 		Set<ValidationRule> rules = RulePairBuilder.INSTANCE.getActiveValidationRules().getRules();
 		logger.info("MQE Active Rules (" + rules.size() + ") :");
@@ -72,12 +72,12 @@ public class MQEDetectionProvider implements DetectionProvider {
 		return configuration.getConfigurationPayload()
 		                    .getAllDetectionCodes()
 		                    .stream()
-		                    .anyMatch((code) -> descriptors.stream().anyMatch((descriptors) -> descriptors.getCode().equals(code)));
+		                    .anyMatch(allMqeDescriptors::containsKey);
 	}
 
 	@Override
 	public Set<DetectionDescriptor> getDetections() {
-		return Collections.unmodifiableSet(descriptors);
+		return Collections.unmodifiableSet(configuredMqeDecriptors);
 	}
 
 	@Override

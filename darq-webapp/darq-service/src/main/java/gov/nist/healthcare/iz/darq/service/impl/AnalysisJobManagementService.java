@@ -58,7 +58,7 @@ public class AnalysisJobManagementService implements JobManagementService<Analys
 
 		AnalysisJob job = new AnalysisJob(jobCreateData.getName(),
 		                                  jobCreateData.getAdfId(),
-		                                  adf.getId(),
+		                                  adf.getName(),
 		                                  template,
 		                                  null, jobCreateData.getOwnerId(),
 		                                  adf.getFacilityId());

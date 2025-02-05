@@ -194,7 +194,7 @@ export class DataTableComponent implements OnChanges, OnInit, OnDestroy {
   public downloadCSV() {
     const value = this.getCSVFileContent();
     const filename = this.getFileName();
-    const file = new window.Blob([value], { type: 'text/csv' });
+    const file = new window.Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), value], { type: 'text/csv;charset=utf-8' });
     const a = document.createElement('a');
     a.style.display = 'none';
     const fileURL = URL.createObjectURL(file);
