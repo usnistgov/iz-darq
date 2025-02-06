@@ -70,7 +70,7 @@ public class VaccinationDuplicateDetectionProvider implements DetectionProvider 
 	private boolean isDuplicate(Immunization immunization, List<Immunization> immunizations) {
 		for(Immunization candidate: immunizations) {
 			ComparisonResult comparison = comparer.compare(immunization, candidate);
-			if (comparison.equals(ComparisonResult.EQUAL)) {
+			if (comparison.equals(ComparisonResult.EQUAL) || comparison.equals(ComparisonResult.UNSURE)) {
 				return true;
 			}
 		}
