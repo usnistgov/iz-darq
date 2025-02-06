@@ -43,6 +43,12 @@
             <groupId>org.immregistries.vaccination_deduplication</groupId>
             <artifactId>vaccination-deduplication-api</artifactId>
             <version>0.1-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>codebase-client</artifactId>
+                    <groupId>org.immregistries</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>

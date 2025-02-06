@@ -1,6 +1,6 @@
 set -e
 
-while getopts :v:u:c:l:q:m:o: flag
+while getopts :v:u:c:l:q:m:d:o: flag
 do
     case "${flag}" in
         v) MQE_VALIDATOR=${OPTARG};;
@@ -9,6 +9,7 @@ do
         l) LONESTAR_FORECASTER=${OPTARG};;
         m) MISMO=${OPTARG};;
         q) QDAR=${OPTARG};;
+        d) VACCINE_DEDUP=${OPTARG};;
         o) OUTPUT=${OPTARG};;
     esac
 done
@@ -57,6 +58,12 @@ if [[ -n "${MQE_VALIDATOR}" ]]; then
     echo "Building MQE Validator"
     cd $MQE_VALIDATOR
     mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dmaven.repo.local=$TMP_LOCAL_REPO
+fi
+
+if [[ -n "${VACCINE_DEDUP}" ]]; then
+    echo "Building Vaccine Deduplication"
+    cd $VACCINE_DEDUP
+    mvn clean install -Dmaven.repo.local=$TMP_LOCAL_REPO
 fi
 
 echo "Building qDAR"
