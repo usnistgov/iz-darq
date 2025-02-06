@@ -32,7 +32,7 @@ fi
 if [[ -n "${LONESTAR_FORECASTER}" ]]; then
     echo "Building Lonestar Forecaster"
     cd $LONESTAR_FORECASTER
-    mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dexec.skip=true -Dmaven.repo.local=$TMP_LOCAL_REPO
+    mvn jar:jar package install:install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dexec.skip=true -Dmaven.repo.local=$TMP_LOCAL_REPO
 fi
 
 if [[ -n "${MISMO}" ]]; then
