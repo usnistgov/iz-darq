@@ -53,7 +53,8 @@ public class VaccinationDuplicateDetectionProvider implements DetectionProvider 
 		for(VaccineRecord vaccination: record.getRecord().history) {
 			String vaccinationEventId = vaccination.vax_event_id.getValue();
 			Immunization immunization = transformImmunization(vaccination);
-			boolean duplicate = isDuplicate(immunization, immunizations);
+			Set<String> duplicates = getDuplicates(immunization, immunizations);
+			boolean duplicate = !duplicates.isEmpty();
 			Map<String, DetectionSum> vaccinationDetections = detections.getVaccinationDetectionsById().computeIfAbsent(
 					vaccinationEventId,
 					(key) -> new HashMap<>()
@@ -63,18 +64,22 @@ public class VaccinationDuplicateDetectionProvider implements DetectionProvider 
 					duplicate,
 					vaccinationDetections
 			);
+			detections.getPossibleVaccinationDuplicates()
+			          .computeIfAbsent(vaccinationEventId, (key) -> new HashSet<>())
+			          .addAll(duplicates);
 			immunizations.add(immunization);
 		}
 	}
 
-	private boolean isDuplicate(Immunization immunization, List<Immunization> immunizations) {
+	private Set<String> getDuplicates(Immunization immunization, List<Immunization> immunizations) {
+		Set<String> duplicates = new HashSet<>();
 		for(Immunization candidate: immunizations) {
 			ComparisonResult comparison = comparer.compare(immunization, candidate);
 			if (comparison.equals(ComparisonResult.EQUAL) || comparison.equals(ComparisonResult.UNSURE)) {
-				return true;
+				duplicates.add(candidate.getImmunizationID());
 			}
 		}
-		return false;
+		return duplicates;
 	}
 
 	private Immunization transformImmunization(VaccineRecord record) throws ParseException {

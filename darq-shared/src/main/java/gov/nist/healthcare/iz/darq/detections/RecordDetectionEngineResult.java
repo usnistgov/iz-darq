@@ -4,12 +4,14 @@ import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
 
 public class RecordDetectionEngineResult {
 	Map<String, DetectionSum> patientDetections = new HashMap<>();
 	Map<String, Map<String, DetectionSum>> vaccinationDetectionsById = new HashMap<>();
 	Map<String, String> possiblePatientRecordDuplicatesWithSignature = new HashMap<>();
-
+	Map<String, Set<String>> possibleVaccinationDuplicates = new HashMap<>();
 
 	public Map<String, DetectionSum> getPatientDetections() {
 		return patientDetections;
@@ -62,6 +64,13 @@ public class RecordDetectionEngineResult {
 				possiblePatientRecordDuplicatesWithSignature.putAll(other.getPossiblePatientRecordDuplicatesWithSignature());
 			}
 		}
+		if(other.getPossibleVaccinationDuplicates() != null) {
+			if(possibleVaccinationDuplicates == null) {
+				possibleVaccinationDuplicates = other.getPossibleVaccinationDuplicates();
+			} else {
+				possibleVaccinationDuplicates.putAll(other.getPossibleVaccinationDuplicates());
+			}
+		}
 	}
 
 	private DetectionSum getPatientDetectionSum(String code) {
@@ -70,5 +79,13 @@ public class RecordDetectionEngineResult {
 
 	private DetectionSum getVaccinationDetectionSum(String vaccinationId, String code) {
 		return this.getVaccinationDetectionsById().get(vaccinationId).get(code);
+	}
+
+	public Map<String, Set<String>> getPossibleVaccinationDuplicates() {
+		return possibleVaccinationDuplicates;
+	}
+
+	public void setPossibleVaccinationDuplicates(Map<String, Set<String>> possibleVaccinationDuplicates) {
+		this.possibleVaccinationDuplicates = possibleVaccinationDuplicates;
 	}
 }

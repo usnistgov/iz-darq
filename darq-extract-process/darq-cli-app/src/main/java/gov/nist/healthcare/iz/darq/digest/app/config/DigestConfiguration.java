@@ -9,19 +9,15 @@ import gov.nist.healthcare.iz.darq.adf.module.json.BsonADFModule;
 import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
 import gov.nist.healthcare.iz.darq.detections.DetectionProvider;
-import gov.nist.healthcare.iz.darq.detections.codes.VaccinationDuplicateDetection;
 import gov.nist.healthcare.iz.darq.digest.service.detection.provider.complex.ComplexDetectionProvider;
 import gov.nist.healthcare.iz.darq.digest.service.detection.provider.mismo.MismoMatcherDetectionProvider;
 import gov.nist.healthcare.iz.darq.digest.service.detection.provider.mqe.MQEDetectionProvider;
 import gov.nist.healthcare.iz.darq.digest.service.detection.provider.vaccinationduplicate.VaccinationDuplicateDetectionProvider;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
 import gov.nist.healthcare.iz.darq.digest.service.patient.matching.mismo.MismoPatientMatchingService;
+import gov.nist.healthcare.iz.darq.digest.service.report.instances.*;
 import gov.nist.healthcare.iz.darq.localreport.AvailableLocalReportServices;
 import gov.nist.healthcare.iz.darq.localreport.LocalReportEngine;
-import gov.nist.healthcare.iz.darq.digest.service.report.instances.BadPhoneNumberReportService;
-import gov.nist.healthcare.iz.darq.digest.service.report.instances.DuplicateRecordsReportService;
-import gov.nist.healthcare.iz.darq.digest.service.report.instances.LotNumberReportService;
-import gov.nist.healthcare.iz.darq.digest.service.report.instances.PlaceholderNameReportService;
 import gov.nist.healthcare.iz.darq.localreport.LocalReportService;
 import gov.nist.healthcare.iz.darq.patient.matching.service.mismo.MismoPatientMatcherService;
 import gov.nist.healthcare.iz.darq.patient.matching.service.mismo.MismoSQLitePatientBlockHandler;
@@ -70,11 +66,12 @@ public class DigestConfiguration {
 		localReportServices.put(AvailableLocalReportServices.LR_DUPLICATE_RECORDS, new DuplicateRecordsReportService());
 		localReportServices.put(AvailableLocalReportServices.LR_LOT_NUMBERS, new LotNumberReportService());
 		localReportServices.put(AvailableLocalReportServices.LR_PLACEHOLDER_NAMES, new PlaceholderNameReportService());
+		localReportServices.put(AvailableLocalReportServices.LR_DUPLICATE_VACCINATIONS, new DuplicateVaccinationReportService());
 		return new LocalReportEngine(localReportServices);
 	}
 
 	@Bean
-	public ADFManager adfWriter() throws Exception {
+	public ADFManager adfWriter() {
 		ADFManager manager = new ADFManager();
 		manager.register(new BsonADFModule(), true, false);
 		return manager;

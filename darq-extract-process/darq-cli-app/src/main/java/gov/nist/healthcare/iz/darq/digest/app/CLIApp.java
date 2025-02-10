@@ -220,6 +220,7 @@ public class CLIApp {
 						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_DUPLICATE_RECORDS);
 						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_LOT_NUMBERS);
 						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_PLACEHOLDER_NAMES);
+						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_DUPLICATE_VACCINATIONS);
 						localReportEngine.configure(localReportEngineConfiguration, detectionEngine);
 
 

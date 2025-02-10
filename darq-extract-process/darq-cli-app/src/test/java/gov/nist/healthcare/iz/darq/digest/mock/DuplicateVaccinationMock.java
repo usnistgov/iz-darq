@@ -6,7 +6,6 @@ import gov.nist.healthcare.iz.darq.test.data.DataExtractMock;
 import gov.nist.healthcare.iz.darq.test.helper.AgeGroupHelper;
 import gov.nist.healthcare.iz.darq.test.helper.ExtractBuilder;
 import gov.nist.healthcare.iz.darq.test.helper.Record;
-import org.immregistries.mqe.validator.detection.Detection;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -24,10 +23,10 @@ import java.util.stream.Stream;
 		V1
 		V2
 		V3 -> duplicate of v2
+		V4 -> duplicate of v3, v2
 	RECORD 3
 		V1
 		V2
-
  */
 
 public class DuplicateVaccinationMock implements DataExtractMock {
@@ -116,6 +115,13 @@ public class DuplicateVaccinationMock implements DataExtractMock {
 					.withReportingGroup("ANY")
 					.withValue(CVX, "08")
 					.withValue(LOT_NUMBER, "BBB")
+					.withValue(EVENT, "00")
+				.and()
+				.withVaccination()
+					.withAdminAtAgeGroup(0)
+					.withReportingGroup("ANY")
+					.withValue(CVX, "145")
+					.withValue(LOT_NUMBER, "AAA")
 					.withValue(EVENT, "00")
 				.and()
 				.withVaccination()

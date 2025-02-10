@@ -54,7 +54,7 @@ public class DuplicateVaccinationDetectionTestCase {
 				Arrays.asList(
 						d.findId(Field.PROVIDER, DigestUtils.md5DigestAsHex("ANY".getBytes())),
 						d.findId(Field.AGE_GROUP, "0g"),
-						d.findId(Field.DETECTION, DETECTION_CODE), 6, 2)
+						d.findId(Field.DETECTION, DETECTION_CODE), 6, 3)
 		);
 		sqliteAdfHelper.checkTableContent(search, count, rows);
 	}
