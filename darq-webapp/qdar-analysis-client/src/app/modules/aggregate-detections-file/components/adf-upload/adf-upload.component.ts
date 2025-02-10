@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { FileService, PRIVATE_FACILITY_ID } from '../../services/file.service';
-import { RxjsStoreHelperService, MessageType } from 'ngx-dam-framework';
+import { RxjsStoreHelperService, MessageType } from '@usnistgov/ngx-dam-framework-legacy';
 import { map } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, combineLatest, Subscription, of } from 'rxjs';

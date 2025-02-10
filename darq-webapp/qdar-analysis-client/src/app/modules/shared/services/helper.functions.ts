@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { MessageService } from 'ngx-dam-framework';
+import { MessageService } from '@usnistgov/ngx-dam-framework-legacy';
 import { Action } from '@ngrx/store';
 import { Type } from '@angular/core';
 

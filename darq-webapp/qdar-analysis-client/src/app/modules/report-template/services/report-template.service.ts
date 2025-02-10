@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Message, LoadPayloadData, InsertResourcesInCollection, SetValue, DeleteResourcesFromCollection, LoadResourcesInRepository } from 'ngx-dam-framework';
+import { Message, LoadPayloadData, InsertResourcesInCollection, SetValue, DeleteResourcesFromCollection, LoadResourcesInRepository } from '@usnistgov/ngx-dam-framework-legacy';
 import { EntityType } from '../../shared/model/entity.model';
 import {
   IReportTemplateDescriptor,

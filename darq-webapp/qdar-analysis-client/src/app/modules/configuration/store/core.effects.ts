@@ -21,7 +21,7 @@ import {
   GlobalSave,
   OpenEditorFailure,
   MessageService
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { IDetectionResource } from '../../shared/model/public.model';
 import { IConfigurationDescriptor } from '../model/configuration.model';
 import { CONFIG_WIDGET } from '../components/configuration-widget/configuration-widget.component';

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ConfigurationRoutingModule } from './configuration-routing.module';
 import { ConfigurationWidgetComponent } from './components/configuration-widget/configuration-widget.component';
 import { SharedModule } from '../shared/shared.module';
-import { DamFrameworkModule, DamMessagesModule } from 'ngx-dam-framework';
+import { DamFrameworkModule, DamMessagesModule } from '@usnistgov/ngx-dam-framework-legacy';
 import { EffectsModule } from '@ngrx/effects';
 import { CoreEffects } from './store/core.effects';
 import { ConfigurationToolbarComponent } from './components/configuration-toolbar/configuration-toolbar.component';

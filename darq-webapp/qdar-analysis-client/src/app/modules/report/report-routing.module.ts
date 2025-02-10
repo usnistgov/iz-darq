@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DamWidgetRoute, AuthenticatedGuard, EditorActivateGuard, EditorDeactivateGuard } from 'ngx-dam-framework';
+import { DamWidgetRoute, AuthenticatedGuard, EditorActivateGuard, EditorDeactivateGuard } from '@usnistgov/ngx-dam-framework-legacy';
 import { REPORT_WIDGET, ReportWidgetComponent } from './components/report-widget/report-widget.component';
 import { LoadReport, CoreActionTypes, OpenReportEditor } from './store/core.actions';
 import { ReportEditorComponent, REPORT_EDITOR_METADATA } from './components/report-editor/report-editor.component';

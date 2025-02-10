@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
 import { Action, Store } from '@ngrx/store';
-import { DamAbstractEditorComponent, EditorSave, EditorUpdate, IEditorMetadata, MessageService, UserMessage, MessageType } from 'ngx-dam-framework';
+import { DamAbstractEditorComponent, EditorSave, EditorUpdate, IEditorMetadata, MessageService, UserMessage, MessageType } from '@usnistgov/ngx-dam-framework-legacy';
 import { Observable, of, throwError, Subscription } from 'rxjs';
 import { Actions } from '@ngrx/effects';
 import { IWebContent } from '../../model/web-content.model';

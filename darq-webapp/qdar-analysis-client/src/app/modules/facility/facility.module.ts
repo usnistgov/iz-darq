@@ -4,7 +4,7 @@ import { FacilityRoutingModule } from './facility-routing.module';
 import { FacilityWidgetComponent } from './components/facility-widget/facility-widget.component';
 import { FacilityEditorComponent } from './components/facility-editor/facility-editor.component';
 import { SharedModule } from '../shared/shared.module';
-import { DamFrameworkModule, DamMessagesModule } from 'ngx-dam-framework';
+import { DamFrameworkModule, DamMessagesModule } from '@usnistgov/ngx-dam-framework-legacy';
 import { FacilityListComponent } from './components/facility-list/facility-list.component';
 import { EffectsModule } from '@ngrx/effects';
 import { CoreEffects } from './store/core.effects';

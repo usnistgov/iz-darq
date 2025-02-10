@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { Field, fieldsForAnalysis, AnalysisType } from '../../../../report-template/model/analysis.values';
-import { UserMessage, MessageType } from 'ngx-dam-framework';
+import { UserMessage, MessageType } from '@usnistgov/ngx-dam-framework-legacy';
 import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
 import { IValueContainer, IComplexThreshold } from '../../../../report-template/model/report-template.model';
 

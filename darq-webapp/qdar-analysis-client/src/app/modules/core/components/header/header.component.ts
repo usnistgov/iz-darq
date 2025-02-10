@@ -6,7 +6,7 @@ import {
   OnInit,
   Input,
 } from '@angular/core';
-import { selectRouterURL, selectIsAdmin, selectIsLoggedIn, LogoutRequest } from 'ngx-dam-framework';
+import { selectRouterURL, selectIsAdmin, selectIsLoggedIn, LogoutRequest } from '@usnistgov/ngx-dam-framework-legacy';
 import { IServerInfo } from '../../services/app-info.service';
 import { ICurrentUser } from '../../model/user.model';
 import { selectCurrentUser } from '../../store/core.selectors';

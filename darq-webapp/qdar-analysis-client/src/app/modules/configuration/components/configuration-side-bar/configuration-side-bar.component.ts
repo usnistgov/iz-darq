@@ -7,14 +7,14 @@ import {
   DeleteResourcesFromRepository,
   InsertResourcesInCollection,
   RxjsStoreHelperService,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { MatDialog } from '@angular/material/dialog';
 import { concatMap, map, flatMap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { of, BehaviorSubject, Observable, combineLatest, from } from 'rxjs';
 import { GoToEntity } from '../../../shared/store/core.actions';
 import { EntityType } from 'src/app/modules/shared/model/entity.model';
-import { DamWidgetComponent } from 'ngx-dam-framework';
+import { DamWidgetComponent } from '@usnistgov/ngx-dam-framework-legacy';
 import { FilterType, filterDescriptorByType } from '../../../shared/model/filter.model';
 import { selectCurrentUserId } from '../../../core/store/core.selectors';
 

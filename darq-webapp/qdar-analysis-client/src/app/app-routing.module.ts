@@ -7,7 +7,7 @@ import {
   TokenValidGuard,
   UserPredicateGuard,
   IDamUser,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { HomeComponent } from './modules/core/components/home/home.component';
 import { ErrorPageComponent } from './modules/core/components/error-page/error-page.component';
 import { RegistrationComponent } from './modules/core/components/registration/registration.component';

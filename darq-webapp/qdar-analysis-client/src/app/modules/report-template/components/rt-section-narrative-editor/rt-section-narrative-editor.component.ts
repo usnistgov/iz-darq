@@ -7,7 +7,7 @@ import {
   selectIsAdmin,
   LoadPayloadData,
   InsertResourcesInCollection,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { ReportTemplateService } from '../../services/report-template.service';

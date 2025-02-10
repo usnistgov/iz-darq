@@ -3,7 +3,7 @@ import { VariableSelectDialogComponent } from './../../variable-select-dialog/va
 import { IDataViewQuery } from './../../../../report-template/model/report-template.model';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
-import { MessageType, UserMessage } from 'ngx-dam-framework';
+import { MessageType, UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
 import { MatDialog } from '@angular/material/dialog';
 import { QueryVariableService } from '../../../services/query-variable.service';
 import { QueryService } from '../../../services/query.service';

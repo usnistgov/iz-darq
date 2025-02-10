@@ -9,7 +9,7 @@ import {
   ConfirmDialogComponent,
   InsertResourcesInCollection,
   DeleteResourcesFromCollection,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { UserService } from '../../../core/services/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { concatMap, map } from 'rxjs/operators';
@@ -17,7 +17,7 @@ import { UserProfileDialogComponent } from '../user-profile-dialog/user-profile-
 import { UserRoleDialogComponent } from '../user-role-dialog/user-role-dialog.component';
 import { selectCurrentUserId } from '../../../core/store/core.selectors';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Message } from 'ngx-dam-framework';
+import { Message } from '@usnistgov/ngx-dam-framework-legacy';
 
 export interface IUserFilter {
   name: string;

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DamWidgetRoute, AuthenticatedGuard, EditorActivateGuard, EditorDeactivateGuard } from 'ngx-dam-framework';
+import { DamWidgetRoute, AuthenticatedGuard, EditorActivateGuard, EditorDeactivateGuard } from '@usnistgov/ngx-dam-framework-legacy';
 import { FACILITY_WIDGET, FacilityWidgetComponent } from './components/facility-widget/facility-widget.component';
 import { LoadFacilities, CoreActionTypes, LoadFacility, OpenFacilityEditor } from './store/core.actions';
 import { FacilityEditorComponent, FACILITY_EDITOR_METADATA } from './components/facility-editor/facility-editor.component';

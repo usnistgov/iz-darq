@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { IReportTemplateDescriptor, IReportTemplate } from '../model/report-template.model';
-import { OpenEditorBase, IEditorMetadata } from 'ngx-dam-framework';
+import { OpenEditorBase, IEditorMetadata } from '@usnistgov/ngx-dam-framework-legacy';
 
 export enum CoreActionTypes {
   LoadReportTemplates = '[Report Template] Load Report Templates',

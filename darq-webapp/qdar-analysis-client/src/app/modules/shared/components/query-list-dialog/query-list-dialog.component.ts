@@ -1,5 +1,5 @@
 import { IConfigurationPayload } from './../../../configuration/model/configuration.model';
-import { ConfirmDialogComponent, IMessage, MessageService, UserMessage } from 'ngx-dam-framework';
+import { ConfirmDialogComponent, IMessage, MessageService, UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
 import { map, flatMap, catchError } from 'rxjs/operators';
 import { Labelizer } from './../../services/values.service';
 import { IQueryDescriptor } from './../../model/query.model';

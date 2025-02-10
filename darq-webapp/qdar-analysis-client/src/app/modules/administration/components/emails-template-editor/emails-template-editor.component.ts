@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DamAbstractEditorComponent, EditorSave, EditorUpdate, IEditorMetadata, MessageService, MessageType, UserMessage } from 'ngx-dam-framework';
+import { DamAbstractEditorComponent, EditorSave, EditorUpdate, IEditorMetadata, MessageService, MessageType, UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
 import { Actions } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
 import { AdminService } from '../../services/admin.service';

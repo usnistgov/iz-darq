@@ -1,5 +1,5 @@
 import { EntityType } from './entity.model';
-import { IDamResource } from 'ngx-dam-framework';
+import { IDamResource } from '@usnistgov/ngx-dam-framework-legacy';
 
 export interface IDescriptor extends IDamResource {
   id: string;

@@ -1,4 +1,4 @@
-import { MessageService } from 'ngx-dam-framework';
+import { MessageService } from '@usnistgov/ngx-dam-framework-legacy';
 import { Store } from '@ngrx/store';
 import { IQueryPayload } from './../../../report-template/model/report-template.model';
 import { IQuerySaveRequest, QueryService } from './../../../shared/services/query.service';

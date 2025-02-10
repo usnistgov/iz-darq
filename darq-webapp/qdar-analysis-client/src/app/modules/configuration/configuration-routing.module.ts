@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DamWidgetRoute, AuthenticatedGuard, EditorActivateGuard, EditorDeactivateGuard } from 'ngx-dam-framework';
+import { DamWidgetRoute, AuthenticatedGuard, EditorActivateGuard, EditorDeactivateGuard } from '@usnistgov/ngx-dam-framework-legacy';
 import { CONFIG_WIDGET, ConfigurationWidgetComponent } from './components/configuration-widget/configuration-widget.component';
 import { RouteLoadConfigurationPage, CoreActionTypes, OpenConfigurationEditor } from './store/core.actions';
 import { ConfigurationEditorComponent, CONFIGURATION_EDITOR_MD } from './components/configuration-editor/configuration-editor.component';

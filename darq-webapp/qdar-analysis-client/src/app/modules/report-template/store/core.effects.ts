@@ -10,7 +10,7 @@ import {
   LoadReportTemplatesSuccess,
 } from './core.actions';
 import { IReportTemplateDescriptor } from '../model/report-template.model';
-import { LoadResourcesInRepository, MessageService } from 'ngx-dam-framework';
+import { LoadResourcesInRepository, MessageService } from '@usnistgov/ngx-dam-framework-legacy';
 import { ReportTemplateService } from '../services/report-template.service';
 import { ConfigurationService } from '../../configuration/services/configuration.service';
 import { IConfigurationDescriptor } from '../../configuration/model/configuration.model';

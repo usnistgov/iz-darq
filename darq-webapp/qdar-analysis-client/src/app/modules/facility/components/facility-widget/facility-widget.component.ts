@@ -1,5 +1,5 @@
 import { Component, OnInit, forwardRef } from '@angular/core';
-import { DamWidgetComponent, IDamDataModel, selectWorkspaceActive } from 'ngx-dam-framework';
+import { DamWidgetComponent, IDamDataModel, selectWorkspaceActive } from '@usnistgov/ngx-dam-framework-legacy';
 import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';

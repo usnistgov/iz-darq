@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AnalysisType, Field } from '../../report-template/model/analysis.values';
 import { ISimpleViewQuery, IDataViewQuery, Comparator, IQueryResultFilter, IQueryPayload, QueryPayloadType } from '../../report-template/model/report-template.model';
-import { IMessage } from 'ngx-dam-framework';
+import { IMessage } from '@usnistgov/ngx-dam-framework-legacy';
 
 export interface IQueryFlag {
   detections: boolean;

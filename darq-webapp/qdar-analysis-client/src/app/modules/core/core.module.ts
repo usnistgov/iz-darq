@@ -5,7 +5,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './components/home/home.component';
 import { ErrorPageComponent } from './components/error-page/error-page.component';
-import { DamAuthenticationModule, DamMessagesModule } from 'ngx-dam-framework';
+import { DamAuthenticationModule, DamMessagesModule } from '@usnistgov/ngx-dam-framework-legacy';
 import { CardModule } from 'primeng/card';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RegistrationComponent } from './components/registration/registration.component';

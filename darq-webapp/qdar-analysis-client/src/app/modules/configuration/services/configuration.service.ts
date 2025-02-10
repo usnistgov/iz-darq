@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IConfigurationDescriptor, IDigestConfiguration } from '../model/configuration.model';
-import { Message } from 'ngx-dam-framework';
+import { Message } from '@usnistgov/ngx-dam-framework-legacy';
 import { EntityType } from '../../shared/model/entity.model';
 
 @Injectable({

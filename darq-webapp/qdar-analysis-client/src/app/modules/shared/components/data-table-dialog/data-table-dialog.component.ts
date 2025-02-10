@@ -1,5 +1,5 @@
 import { Store } from '@ngrx/store';
-import { IMessage, MessageService, UserMessage } from 'ngx-dam-framework';
+import { IMessage, MessageService, UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
 import { IQuerySaveDetails, QuerySaveDialogComponent } from './../query-save-dialog/query-save-dialog.component';
 import { IConfigurationPayload } from './../../../configuration/model/configuration.model';
 import { IQuerySaveRequest, QueryService } from './../../services/query.service';

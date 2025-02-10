@@ -8,7 +8,7 @@ import { AnalysisType, Field } from 'src/app/modules/report-template/model/analy
 import { Comparator, IThreshold } from 'src/app/modules/report-template/model/report-template.model';
 import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
 import { ISimpleViewQuery } from '../../../../report-template/model/report-template.model';
-import { MessageType, UserMessage } from 'ngx-dam-framework';
+import { MessageType, UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
 import { Input } from '@angular/core';
 import { IFieldInputOptions } from '../../field-input/field-input.component';
 import { QueryService } from '../../../services/query.service';

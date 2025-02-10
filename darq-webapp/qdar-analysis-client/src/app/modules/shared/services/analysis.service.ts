@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { IDataViewQuery } from '../../report-template/model/report-template.model';
 import { Observable } from 'rxjs';
 import { IDataTable, IAnalysisJobRequest, IAnalysisJob } from '../../report/model/report.model';
-import { Message } from 'ngx-dam-framework';
+import { Message } from '@usnistgov/ngx-dam-framework-legacy';
 import { PRIVATE_FACILITY_ID } from '../../aggregate-detections-file/services/file.service';
 
 @Injectable({

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, combineLatest, of } from 'rxjs';
-import { Message } from 'ngx-dam-framework';
+import { Message } from '@usnistgov/ngx-dam-framework-legacy';
 import { IADFDescriptor, IADFMergeJobDescriptor, IADFMetadata } from '../model/adf.model';
 import { IReportTemplateDescriptor } from '../../report-template/model/report-template.model';
 import { IUserFacilityDescriptor } from '../../facility/model/facility.model';

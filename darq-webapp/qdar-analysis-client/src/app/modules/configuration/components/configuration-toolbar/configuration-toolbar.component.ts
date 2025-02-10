@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, TemplateRef } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { DamWidgetComponent } from 'ngx-dam-framework';
+import { DamWidgetComponent } from '@usnistgov/ngx-dam-framework-legacy';
 import { Observable, combineLatest } from 'rxjs';
 import { selectCurrentConfiguration } from '../../store/core.selectors';
 import { ResourceType } from '../../../core/model/resouce-type.enum';

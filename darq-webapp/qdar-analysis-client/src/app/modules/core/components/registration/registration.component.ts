@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { IUserAccountRegister } from '../../model/user.model';
 import { UserService } from '../../services/user.service';
-import { RxjsStoreHelperService } from 'ngx-dam-framework';
+import { RxjsStoreHelperService } from '@usnistgov/ngx-dam-framework-legacy';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { WebContentService } from '../../services/web-content.service';

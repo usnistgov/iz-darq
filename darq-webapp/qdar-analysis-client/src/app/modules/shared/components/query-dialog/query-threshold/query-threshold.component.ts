@@ -3,7 +3,7 @@ import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.co
 import { IDataViewQuery, Comparator, IComplexThreshold } from '../../../../report-template/model/report-template.model';
 import { NgForm } from '@angular/forms';
 import { IFieldInputOptions } from '../../field-input/field-input.component';
-import { UserMessage } from 'ngx-dam-framework';
+import { UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Field } from 'src/app/modules/report-template/model/analysis.values';

@@ -1,5 +1,5 @@
 import { Component, OnInit, forwardRef } from '@angular/core';
-import { DamWidgetComponent, IWorkspaceActive, selectWorkspaceActive, selectWorkspaceCurrentIsChanged } from 'ngx-dam-framework';
+import { DamWidgetComponent, IWorkspaceActive, selectWorkspaceActive, selectWorkspaceCurrentIsChanged } from '@usnistgov/ngx-dam-framework-legacy';
 import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, combineLatest } from 'rxjs';

@@ -3,7 +3,7 @@ import { selectFacilities } from './../../../facility/store/core.selectors';
 import { ExternalVariableDialogComponent } from './../external-variable-dialog/external-variable-dialog.component';
 import { ExternalVariableService } from './../../services/external-variables.service';
 import { IExternalQueryVariable } from './../../../shared/model/query-variable.model';
-import { DamAbstractEditorComponent, EditorSave, IEditorMetadata, MessageService, EditorUpdate, ConfirmDialogComponent, IMessage } from 'ngx-dam-framework';
+import { DamAbstractEditorComponent, EditorSave, IEditorMetadata, MessageService, EditorUpdate, ConfirmDialogComponent, IMessage } from '@usnistgov/ngx-dam-framework-legacy';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Actions } from '@ngrx/effects';

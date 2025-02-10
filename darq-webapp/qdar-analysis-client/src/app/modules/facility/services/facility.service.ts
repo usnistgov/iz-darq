@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Message } from 'ngx-dam-framework';
+import { Message } from '@usnistgov/ngx-dam-framework-legacy';
 import { IFacility, IFacilityDescriptor } from '../model/facility.model';
 import { EntityType } from '../../shared/model/entity.model';
 

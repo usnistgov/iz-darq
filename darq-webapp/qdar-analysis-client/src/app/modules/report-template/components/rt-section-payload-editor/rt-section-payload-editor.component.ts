@@ -6,7 +6,7 @@ import {
   EditorSave,
   LoadPayloadData,
   InsertResourcesInCollection
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { ReportTemplateService } from '../../services/report-template.service';
@@ -28,7 +28,7 @@ import { QueryDialogComponent } from '../../../shared/components/query-dialog/qu
 import { AnalysisType, names } from '../../model/analysis.values';
 import { IFieldInputOptions } from 'src/app/modules/shared/components/field-input/field-input.component';
 import { ValuesService, Labelizer } from '../../../shared/services/values.service';
-import { ConfirmDialogComponent } from 'ngx-dam-framework';
+import { ConfirmDialogComponent } from '@usnistgov/ngx-dam-framework-legacy';
 import { ResourceType } from '../../../core/model/resouce-type.enum';
 import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
 import { PermissionService } from '../../../core/services/permission.service';

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { TurnOnLoader } from 'ngx-dam-framework';
+import { TurnOnLoader } from '@usnistgov/ngx-dam-framework-legacy';
 
 @Injectable({
   providedIn: 'root'

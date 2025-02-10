@@ -10,7 +10,7 @@ import {
   LoadADFileFailure,
 } from './core.actions';
 import { FileService } from '../services/file.service';
-import { MessageService, LoadResourcesInRepository, SetValue, IDamResource } from 'ngx-dam-framework';
+import { MessageService, LoadResourcesInRepository, SetValue, IDamResource } from '@usnistgov/ngx-dam-framework-legacy';
 import { IADFDescriptor } from '../model/adf.model';
 import { SupportDataService } from '../../shared/services/support-data.service';
 import { IDetectionResource, ICvxResource } from '../../shared/model/public.model';

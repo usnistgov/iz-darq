@@ -1,6 +1,6 @@
 import { createEntityAdapter, Dictionary } from '@ngrx/entity';
 import { IADFDescriptor, IADFMetadata } from '../model/adf.model';
-import { selectFromCollection, selectValue } from 'ngx-dam-framework';
+import { selectFromCollection, selectValue } from '@usnistgov/ngx-dam-framework-legacy';
 import { createSelector } from '@ngrx/store';
 import { IAnalysisJob, IReportDescriptor } from '../../report/model/report.model';
 import { IFacilityDescriptor, IUserFacilityDescriptor } from '../../facility/model/facility.model';

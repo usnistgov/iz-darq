@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, TemplateRef } from '@angular/core';
-import { IWorkspaceActive } from 'ngx-dam-framework';
+import { IWorkspaceActive } from '@usnistgov/ngx-dam-framework-legacy';
 
 @Component({
   selector: 'app-rt-active-title',

@@ -6,7 +6,7 @@ import { SharedModule } from '../shared/shared.module';
 import { EffectsModule } from '@ngrx/effects';
 import { CoreEffects } from './store/core.effects';
 import { ReportTemplateWidgetComponent } from './components/report-template-widget/report-template-widget.component';
-import { DamFrameworkModule, DamMessagesModule } from 'ngx-dam-framework';
+import { DamFrameworkModule, DamMessagesModule } from '@usnistgov/ngx-dam-framework-legacy';
 import { RtSideBarComponent } from './components/rt-side-bar/rt-side-bar.component';
 import { RtToolbarComponent } from './components/rt-toolbar/rt-toolbar.component';
 import { RtActiveTitleComponent } from './components/rt-active-title/rt-active-title.component';

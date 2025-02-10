@@ -9,7 +9,7 @@ import {
   UpdateAuthStatus,
   selectIsAdmin,
   AuthenticationService
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { of, Observable } from 'rxjs';
 import { ICurrentUser } from '../../model/user.model';
 import { UserService } from '../../services/user.service';

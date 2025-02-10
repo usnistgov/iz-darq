@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ReportRoutingModule } from './report-routing.module';
 import { ReportWidgetComponent } from './components/report-widget/report-widget.component';
-import { DamFrameworkModule, DamMessagesModule } from 'ngx-dam-framework';
+import { DamFrameworkModule, DamMessagesModule } from '@usnistgov/ngx-dam-framework-legacy';
 import { EffectsModule } from '@ngrx/effects';
 import { CoreEffects } from './store/core.effects';
 import { ReportEditorComponent } from './components/report-editor/report-editor.component';

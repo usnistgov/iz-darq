@@ -5,7 +5,7 @@ import {
   LoadReportTemplates,
   CoreActionTypes, LoadReportTemplate, OpenReportTemplateMetadata, OpenReportTemplateSection, OpenReportTemplateLabels
 } from './store/core.actions';
-import { DataLoaderGuard, DamWidgetRoute, EditorActivateGuard, EditorDeactivateGuard } from 'ngx-dam-framework';
+import { DataLoaderGuard, DamWidgetRoute, EditorActivateGuard, EditorDeactivateGuard } from '@usnistgov/ngx-dam-framework-legacy';
 import { RT_WIDGET_ID, ReportTemplateWidgetComponent } from './components/report-template-widget/report-template-widget.component';
 import { RtMetadataEditorComponent, RT_METADATA_EDITOR_METADATA } from './components/rt-metadata-editor/rt-metadata-editor.component';
 import { RT_SECTION_NARRATIVE_EDITOR_METADATA, RtSectionNarrativeEditorComponent } from './components/rt-section-narrative-editor/rt-section-narrative-editor.component';

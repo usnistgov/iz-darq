@@ -9,12 +9,12 @@ import {
   DamAbstractEditorComponent,
   EditorSave,
   EditorUpdate,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { map, concatMap, flatMap, filter, takeUntil, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportService } from '../../../report/services/report.service';
 import { Actions } from '@ngrx/effects';
-import { IEditorMetadata } from 'ngx-dam-framework';
+import { IEditorMetadata } from '@usnistgov/ngx-dam-framework-legacy';
 
 export const REPORT_LIST_EDITOR_METADATA: IEditorMetadata = {
   id: 'REPORT_LIST_EDITOR_METADATA',

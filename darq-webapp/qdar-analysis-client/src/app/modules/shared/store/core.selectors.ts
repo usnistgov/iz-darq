@@ -1,6 +1,6 @@
 import { createEntityAdapter, Dictionary } from '@ngrx/entity';
 import { IDetectionResource, ICvxResource } from '../model/public.model';
-import { selectFromCollection, selectValue } from 'ngx-dam-framework';
+import { selectFromCollection, selectValue } from '@usnistgov/ngx-dam-framework-legacy';
 import { createSelector } from '@ngrx/store';
 import { IUser } from '../../core/model/user.model';
 

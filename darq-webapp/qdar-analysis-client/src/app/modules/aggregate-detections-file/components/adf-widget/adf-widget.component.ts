@@ -6,7 +6,7 @@ import {
   TurnOffLoader,
   selectIsAdmin,
   RxjsStoreHelperService,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, combineLatest, EMPTY, of } from 'rxjs';

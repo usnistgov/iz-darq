@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { TurnOffLoader } from 'ngx-dam-framework';
+import { TurnOffLoader } from '@usnistgov/ngx-dam-framework-legacy';
 
 @Component({
   selector: 'app-home',

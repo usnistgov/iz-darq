@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AdministrationRoutingModule } from './administration-routing.module';
 import { AdminSidebarComponent } from './components/admin-sidebar/admin-sidebar.component';
 import { EmailsTemplateEditorComponent } from './components/emails-template-editor/emails-template-editor.component';
-import { DamFrameworkModule } from 'ngx-dam-framework';
+import { DamFrameworkModule } from '@usnistgov/ngx-dam-framework-legacy';
 import { SharedModule } from '../shared/shared.module';
 import { AdminWidgetComponent } from './components/admin-widget/admin-widget.component';
 import { UsersManagementEditorComponent } from './components/users-management-editor/users-management-editor.component';

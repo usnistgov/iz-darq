@@ -13,7 +13,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { CoreEffects } from './store/core.effects';
 import { EditorModule } from 'primeng/editor';
 import { CalendarModule } from 'primeng/calendar';
-import { DamMessagesModule } from 'ngx-dam-framework';
+import { DamMessagesModule } from '@usnistgov/ngx-dam-framework-legacy';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadFieldComponent } from './components/file-upload-field/file-upload-field.component';
 import { FileDropDirective } from './directives/file-drop.directive';

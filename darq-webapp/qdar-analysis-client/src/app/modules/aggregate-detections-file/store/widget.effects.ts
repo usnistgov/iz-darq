@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Effect, ofType, Actions } from '@ngrx/effects';
 import { Store, Action } from '@ngrx/store';
-import { DamWidgetEffect, SetValue, LoadResourcesInRepository, OpenEditor, OpenEditorFailure, MessageService } from 'ngx-dam-framework';
+import { DamWidgetEffect, SetValue, LoadResourcesInRepository, OpenEditor, OpenEditorFailure, MessageService } from '@usnistgov/ngx-dam-framework-legacy';
 import { combineLatest, of, Observable } from 'rxjs';
 import { concatMap, flatMap, catchError, take } from 'rxjs/operators';
 import { AnalysisService } from '../../shared/services/analysis.service';

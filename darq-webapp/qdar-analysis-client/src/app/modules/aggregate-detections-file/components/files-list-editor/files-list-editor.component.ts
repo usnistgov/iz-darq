@@ -11,7 +11,7 @@ import {
   TurnOffLoader,
   MessageService,
   IMessage
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { Action, Store } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { combineLatest, Observable, of, EMPTY, throwError, BehaviorSubject, Subscription } from 'rxjs';

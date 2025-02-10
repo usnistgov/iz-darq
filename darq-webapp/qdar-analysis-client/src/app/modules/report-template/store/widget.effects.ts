@@ -13,7 +13,7 @@ import {
   SetValue,
   LoadResourcesInRepository,
   EditorReset
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { RT_WIDGET_ID } from '../components/report-template-widget/report-template-widget.component';
 import { map, concatMap, take, catchError, flatMap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';

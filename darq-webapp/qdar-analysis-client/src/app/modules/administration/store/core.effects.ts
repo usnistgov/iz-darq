@@ -24,7 +24,7 @@ import {
   DamActionTypes,
   GlobalSave,
   EditorSave,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { ADMIN_WIDGET } from '../components/admin-widget/admin-widget.component';
 import { IUser } from '../../core/model/user.model';
 import { handleError } from '../../shared/services/helper.functions';

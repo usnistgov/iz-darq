@@ -6,7 +6,7 @@ import { IFieldInputOptions } from '../../field-input/field-input.component';
 import { NgForm } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { UserMessage, MessageType } from 'ngx-dam-framework';
+import { UserMessage, MessageType } from '@usnistgov/ngx-dam-framework-legacy';
 import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
 
 @Component({

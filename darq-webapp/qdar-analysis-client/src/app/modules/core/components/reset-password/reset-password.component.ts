@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { MessageService, RxjsStoreHelperService } from 'ngx-dam-framework';
+import { MessageService, RxjsStoreHelperService } from '@usnistgov/ngx-dam-framework-legacy';
 import { Observable, of } from 'rxjs';
 import { map, take, flatMap } from 'rxjs/operators';
 import { UserService } from '../../services/user.service';

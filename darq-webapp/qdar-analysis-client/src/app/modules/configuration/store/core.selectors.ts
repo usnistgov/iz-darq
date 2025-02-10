@@ -1,4 +1,4 @@
-import { selectFromCollection, selectWorkspaceCurrent } from 'ngx-dam-framework';
+import { selectFromCollection, selectWorkspaceCurrent } from '@usnistgov/ngx-dam-framework-legacy';
 import { createEntityAdapter, Dictionary } from '@ngrx/entity';
 import { IConfigurationDescriptor, IDigestConfiguration } from '../model/configuration.model';
 import { createSelector } from '@ngrx/store';

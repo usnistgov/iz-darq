@@ -8,7 +8,7 @@ import {
   LoadPayloadData,
   MessageService,
   Message,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { Observable, Subscription, throwError, combineLatest, of } from 'rxjs';
@@ -22,7 +22,7 @@ import { PermissionService } from '../../../core/services/permission.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CustomLabelDialogComponent } from '../../../shared/components/custom-label-dialog/custom-label-dialog.component';
 import { selectAllDetections, selectDetectionById } from '../../../shared/store/core.selectors';
-import { MessageType } from 'ngx-dam-framework';
+import { MessageType } from '@usnistgov/ngx-dam-framework-legacy';
 
 export const RT_LABEL_EDITOR_METADATA: IEditorMetadata = {
   id: 'RT_LABEL_EDITOR_ID',

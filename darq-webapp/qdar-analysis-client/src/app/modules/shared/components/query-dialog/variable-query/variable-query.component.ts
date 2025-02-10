@@ -3,7 +3,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
 import { MatDialog } from '@angular/material/dialog';
 import { IQueryVariableDisplay } from '../../variable-ref-display/variable-ref-display.component';
-import { MessageType, UserMessage } from 'ngx-dam-framework';
+import { MessageType, UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
 import { VariableSelectDialogComponent } from '../../variable-select-dialog/variable-select-dialog.component';
 import { map } from 'rxjs/operators';
 

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdfUploadComponent } from './components/adf-upload/adf-upload.component';
-import { DataLoaderGuard, DamWidgetRoute, EditorActivateGuard, EditorDeactivateGuard } from 'ngx-dam-framework';
+import { DataLoaderGuard, DamWidgetRoute, EditorActivateGuard, EditorDeactivateGuard } from '@usnistgov/ngx-dam-framework-legacy';
 import {
   CoreActionTypes,
   LoadADFile,

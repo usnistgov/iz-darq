@@ -17,7 +17,7 @@ import {
   DamFrameworkModule,
   DamMessagesModule,
   DamRoutingModule,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { TreeModule } from 'angular-tree-component';

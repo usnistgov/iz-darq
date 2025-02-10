@@ -5,7 +5,7 @@ import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
-import { UserMessage } from 'ngx-dam-framework';
+import { UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
 
 @Component({
   selector: 'app-general-query-data',

@@ -1,4 +1,4 @@
-import { IDamResource } from 'ngx-dam-framework';
+import { IDamResource } from '@usnistgov/ngx-dam-framework-legacy';
 export interface IEmailTemplate extends IDamResource {
   type: EmailType;
   enabled: boolean;

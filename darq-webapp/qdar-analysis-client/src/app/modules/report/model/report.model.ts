@@ -1,7 +1,7 @@
 import { IQueryVariableRefInstance } from './../../shared/model/query-variable.model';
 import { IReportTemplate, IThreshold, ISection, QueryType } from '../../report-template/model/report-template.model';
 import { Field } from '../../report-template/model/analysis.values';
-import { IDamResource } from 'ngx-dam-framework';
+import { IDamResource } from '@usnistgov/ngx-dam-framework-legacy';
 import { EntityType } from '../../shared/model/entity.model';
 import { IConfigurationPayload } from '../../configuration/model/configuration.model';
 

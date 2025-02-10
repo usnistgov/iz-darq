@@ -10,7 +10,7 @@ import {
   MessageType,
   DeleteResourcesFromRepository,
   InsertResourcesInCollection,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { MatDialog } from '@angular/material/dialog';
 import { concatMap, map, take, flatMap } from 'rxjs/operators';
 import { ReportTemplateService } from '../../services/report-template.service';

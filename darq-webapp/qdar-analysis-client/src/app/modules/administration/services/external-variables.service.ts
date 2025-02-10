@@ -9,7 +9,7 @@ import {
 } from './../../shared/model/query-variable.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IMessage } from 'ngx-dam-framework';
+import { IMessage } from '@usnistgov/ngx-dam-framework-legacy';
 
 @Injectable({
     providedIn: 'root'

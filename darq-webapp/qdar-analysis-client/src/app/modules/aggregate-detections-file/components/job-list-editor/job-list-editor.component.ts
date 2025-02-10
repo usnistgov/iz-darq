@@ -13,10 +13,10 @@ import {
   DamAbstractEditorComponent,
   EditorSave,
   EditorUpdate
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { MatDialog } from '@angular/material/dialog';
 import { Actions } from '@ngrx/effects';
-import { IEditorMetadata } from 'ngx-dam-framework';
+import { IEditorMetadata } from '@usnistgov/ngx-dam-framework-legacy';
 
 export const ANALYSIS_JOB_LIST_EDITOR_METADATA: IEditorMetadata = {
   id: 'ANALYSIS_JOB_LIST_EDITOR_METADATA',

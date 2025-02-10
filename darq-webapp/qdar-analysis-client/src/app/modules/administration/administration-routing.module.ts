@@ -1,7 +1,7 @@
 import { ExternalVariableEditorComponent, EXTERNAL_VARIABLE_EDITOR_METADATA } from './components/external-variable-editor/external-variable-editor.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DamWidgetRoute, DataLoaderGuard, EditorActivateGuard, EditorDeactivateGuard } from 'ngx-dam-framework';
+import { DamWidgetRoute, DataLoaderGuard, EditorActivateGuard, EditorDeactivateGuard } from '@usnistgov/ngx-dam-framework-legacy';
 import { ADMIN_WIDGET, AdminWidgetComponent } from './components/admin-widget/admin-widget.component';
 import {
   LoadAdministrationWidget,

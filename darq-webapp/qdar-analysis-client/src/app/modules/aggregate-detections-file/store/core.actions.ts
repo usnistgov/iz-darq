@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { IADFDescriptor, IADFMetadata } from '../model/adf.model';
 import { IFacilityDescriptor } from '../../facility/model/facility.model';
-import { IEditorMetadata, OpenEditorBase } from 'ngx-dam-framework';
+import { IEditorMetadata, OpenEditorBase } from '@usnistgov/ngx-dam-framework-legacy';
 
 export enum CoreActionTypes {
   LoadADFDashboard = '[ADF] Load ADF Dashboard',

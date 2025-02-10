@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
-import { IEditorMetadata, DamAbstractEditorComponent, EditorSave, IWorkspaceCurrent, InsertResourcesInCollection, MessageService } from 'ngx-dam-framework';
+import { IEditorMetadata, DamAbstractEditorComponent, EditorSave, IWorkspaceCurrent, InsertResourcesInCollection, MessageService } from '@usnistgov/ngx-dam-framework-legacy';
 import { Observable, Subscription, throwError, combineLatest } from 'rxjs';
 import { IFacilityContent } from '../../model/facility.model';
 import { map, take, flatMap, concatMap, catchError } from 'rxjs/operators';

@@ -8,7 +8,7 @@ import {
   MessageService,
   ConfirmDialogComponent,
   InsertResourcesInCollection,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
@@ -19,7 +19,7 @@ import { IRange } from '../../../shared/model/age-group.model';
 import { IDetectionResource } from '../../../shared/model/public.model';
 import { selectAllDetections } from '../../../shared/store/core.selectors';
 import { ConfigurationService } from '../../services/configuration.service';
-import { DamWidgetComponent, Message } from 'ngx-dam-framework';
+import { DamWidgetComponent, Message } from '@usnistgov/ngx-dam-framework-legacy';
 import { MatDialog } from '@angular/material/dialog';
 import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
 import { ResourceType } from '../../../core/model/resouce-type.enum';

@@ -8,7 +8,7 @@ import { CoreEffects } from './store/core.effects';
 import { AdfSummaryComponent } from './components/adf-summary/adf-summary.component';
 import { AdfJobDialogComponent } from './components/adf-job-dialog/adf-job-dialog.component';
 import { AdfWidgetComponent } from './components/adf-widget/adf-widget.component';
-import { DamFrameworkModule } from 'ngx-dam-framework';
+import { DamFrameworkModule } from '@usnistgov/ngx-dam-framework-legacy';
 import { IisSidebarComponent } from './components/iis-sidebar/iis-sidebar.component';
 import { FilesListEditorComponent } from './components/files-list-editor/files-list-editor.component';
 import { JobListEditorComponent } from './components/job-list-editor/job-list-editor.component';

@@ -9,7 +9,7 @@ import {
   MessageType,
   LoadPayloadData,
   TurnOffLoader
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { Observable, of, combineLatest, from, throwError } from 'rxjs';
 import { IReport } from '../../model/report.model';
 import { selectReportPayload, selectReportGeneralFilter, selectReportTocNodes, selectReportingGroups } from '../../store/core.selectors';
@@ -21,7 +21,7 @@ import { selectAllDetections, selectAllCvx, selectPatientTables, selectVaccinati
 import { ValuesService } from '../../../shared/services/values.service';
 import { ReportFilterDialogComponent } from '../report-filter-dialog/report-filter-dialog.component';
 import { IFieldInputOptions } from '../../../shared/components/field-input/field-input.component';
-import { SetValue, MessageService, Message } from 'ngx-dam-framework';
+import { SetValue, MessageService, Message } from '@usnistgov/ngx-dam-framework-legacy';
 import { PermissionService } from '../../../core/services/permission.service';
 import { ResourceType } from 'src/app/modules/core/model/resouce-type.enum';
 import { Action } from '../../../core/model/action.enum';

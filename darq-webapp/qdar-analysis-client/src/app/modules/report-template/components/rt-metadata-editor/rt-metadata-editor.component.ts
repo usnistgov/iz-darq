@@ -7,7 +7,7 @@ import {
   IWorkspaceCurrent,
   LoadPayloadData,
   MessageService,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { Observable, Subscription, throwError } from 'rxjs';

@@ -22,7 +22,7 @@ import {
   DamActionTypes,
   GlobalSave,
   EditorSave,
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { IFacilityDescriptor } from '../model/facility.model';
 import { handleError } from '../../shared/services/helper.functions';
 import { UserService } from '../../core/services/user.service';

@@ -1,6 +1,6 @@
 import { IConfigurationPayload } from './../../../configuration/model/configuration.model';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DamAbstractEditorComponent, MessageService, IEditorMetadata, EditorSave, LoadPayloadData, SetValue } from 'ngx-dam-framework';
+import { DamAbstractEditorComponent, MessageService, IEditorMetadata, EditorSave, LoadPayloadData, SetValue } from '@usnistgov/ngx-dam-framework-legacy';
 import { Store, Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { ValuesService, Labelizer } from '../../../shared/services/values.service';

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
 import { IDataViewQuery, Comparator, IQueryResultFilter } from '../../../../report-template/model/report-template.model';
-import { UserMessage, MessageType } from 'ngx-dam-framework';
+import { UserMessage, MessageType } from '@usnistgov/ngx-dam-framework-legacy';
 import { IFieldInputOptions } from '../../field-input/field-input.component';
 import { NgForm } from '@angular/forms';
 import { map } from 'rxjs/operators';

@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { IFacilityDescriptor } from '../../model/facility.model';
 import { BehaviorSubject, Observable, combineLatest, of, from } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
-import { DamWidgetComponent, RxjsStoreHelperService, MessageType, InsertResourcesInCollection } from 'ngx-dam-framework';
+import { DamWidgetComponent, RxjsStoreHelperService, MessageType, InsertResourcesInCollection } from '@usnistgov/ngx-dam-framework-legacy';
 import { FacilityService } from '../../services/facility.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';

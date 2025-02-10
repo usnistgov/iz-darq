@@ -15,7 +15,7 @@ import {
   DamActionTypes,
   GlobalSave,
   EditorSave
-} from 'ngx-dam-framework';
+} from '@usnistgov/ngx-dam-framework-legacy';
 import { combineLatest } from 'rxjs';
 import { ReportService } from '../services/report.service';
 import { REPORT_WIDGET } from '../components/report-widget/report-widget.component';

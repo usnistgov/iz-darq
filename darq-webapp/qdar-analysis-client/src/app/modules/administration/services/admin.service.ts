@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { IEmailTemplate } from '../model/email-template.model';
 import { IWebContent } from '../model/web-content.model';
 import { IToolConfiguration, IToolConfigurationKeyValue } from '../model/tool-config.model';
-import { Message } from 'ngx-dam-framework';
+import { Message } from '@usnistgov/ngx-dam-framework-legacy';
 
 @Injectable({
   providedIn: 'root'

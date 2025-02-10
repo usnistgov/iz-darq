@@ -1,5 +1,5 @@
 import { IConfigurationDescriptor, IConfigurationPayload } from '../../configuration/model/configuration.model';
-import { IDamResource } from 'ngx-dam-framework';
+import { IDamResource } from '@usnistgov/ngx-dam-framework-legacy';
 import { EntityType } from '../../shared/model/entity.model';
 import { IRange } from '../../shared/model/age-group.model';
 import { JobStatus } from '../../report/model/report.model';

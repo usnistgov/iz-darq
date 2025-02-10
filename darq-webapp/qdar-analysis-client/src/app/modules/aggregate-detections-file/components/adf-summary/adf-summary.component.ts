@@ -8,7 +8,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { selectDetectionById } from '../../../shared/store/core.selectors';
 import { IDetectionResource } from '../../../shared/model/public.model';
 import { ActivatedRoute } from '@angular/router';
-import { selectIsAdmin } from 'ngx-dam-framework';
+import { selectIsAdmin } from '@usnistgov/ngx-dam-framework-legacy';
 
 @Component({
   selector: 'app-adf-summary',

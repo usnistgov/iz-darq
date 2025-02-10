@@ -1,5 +1,5 @@
 import { EntityType } from '../../shared/model/entity.model';
-import { IDamResource } from 'ngx-dam-framework';
+import { IDamResource } from '@usnistgov/ngx-dam-framework-legacy';
 import { IUser } from '../../core/model/user.model';
 
 

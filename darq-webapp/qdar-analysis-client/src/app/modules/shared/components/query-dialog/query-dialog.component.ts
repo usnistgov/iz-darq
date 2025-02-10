@@ -14,7 +14,7 @@ import { SelectItem } from 'primeng/api/selectitem';
 import { AnalysisType, names, Field } from '../../../report-template/model/analysis.values';
 import { IDataSelector, QueryPayloadType, QueryType } from '../../../report-template/model/report-template.model';
 import { IFieldInputOptions } from '../field-input/field-input.component';
-import { UserMessage, MessageService, IMessage } from 'ngx-dam-framework';
+import { UserMessage, MessageService, IMessage } from '@usnistgov/ngx-dam-framework-legacy';
 import * as _ from 'lodash';
 import { QueryService } from '../../services/query.service';
 import { of, throwError } from 'rxjs';
