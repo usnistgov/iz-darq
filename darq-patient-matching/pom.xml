@@ -3,7 +3,7 @@
     <parent>
         <artifactId>darq</artifactId>
         <groupId>gov.nist.healthcare.iz</groupId>
-        <version>3.1.0-SNAPSHOT.rev2</version>
+        <version>3.1.0-SNAPSHOT.rev3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>darq-patient-matching</artifactId>

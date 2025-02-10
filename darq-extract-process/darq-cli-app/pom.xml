@@ -3,17 +3,17 @@
     <parent>
         <groupId>gov.nist.healthcare.iz</groupId>
         <artifactId>darq-extract-process</artifactId>
-        <version>3.1.0-SNAPSHOT.rev2</version>
+        <version>3.1.0-SNAPSHOT.rev3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <properties>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>MM-dd-yyyy</maven.build.timestamp.format>
-        <qdar.api.version>3.1.0-SNAPSHOT.rev2</qdar.api.version>
+        <qdar.api.version>3.1.0-SNAPSHOT.rev3</qdar.api.version>
         <mqe.version>2022.9-BETA</mqe.version>
     </properties>
     <artifactId>darq-cli-app</artifactId>
-    <version>3.1.0-SNAPSHOT.rev2</version>
+    <version>3.1.0-SNAPSHOT.rev3</version>
     <dependencies>
         <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>
