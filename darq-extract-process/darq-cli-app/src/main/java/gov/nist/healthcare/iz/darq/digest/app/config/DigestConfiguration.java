@@ -38,9 +38,7 @@ public class DigestConfiguration {
 	@Bean
 	@Qualifier("MATCHER_SERVICE")
 	public MismoPatientMatchingService patientMatchingService() {
-	  MismoPatientMatcherService matcher = new MismoPatientMatcherService(new PatientMatcher(
-			  DigestConfiguration.class.getResourceAsStream("/Configuration.yml")
-	  ));
+	  MismoPatientMatcherService matcher = new MismoPatientMatcherService(new PatientMatcher());
 	  MismoSQLitePatientBlockHandler blockHandler = new MismoSQLitePatientBlockHandler();
 	  return new MismoPatientMatchingService(matcher, blockHandler);
 	}

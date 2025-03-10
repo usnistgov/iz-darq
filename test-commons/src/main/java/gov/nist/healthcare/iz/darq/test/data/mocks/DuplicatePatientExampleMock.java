@@ -5,7 +5,9 @@ import gov.nist.healthcare.iz.darq.test.data.DataExtractMock;
 import gov.nist.healthcare.iz.darq.test.helper.AgeGroupHelper;
 import gov.nist.healthcare.iz.darq.test.helper.ExtractBuilder;
 import gov.nist.healthcare.iz.darq.test.helper.Record;
+import org.apache.commons.io.IOUtils;
 
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -57,7 +59,15 @@ public class DuplicatePatientExampleMock implements DataExtractMock {
 		configurationPayload.setAsOf("12/14/2020");
 		configurationPayload.setDetections(Collections.singletonList("PM001"));
 		configurationPayload.setAgeGroups(ageGroupHelper.getAgeGroups());
+		String configuration = String.join(
+				"\n",
+				IOUtils.readLines(
+						DuplicatePatientExampleMock.class.getResourceAsStream("/test_configuration/Configuration.yml"),
+						Charset.defaultCharset()
+				)
+		);
 		configurationPayload.setActivatePatientMatching(true);
+		configurationPayload.setMismoPatientMatchingConfiguration(configuration);
 		configurationPayload.setVaxCodeAbstraction(null);
 		return configurationPayload;
 	}

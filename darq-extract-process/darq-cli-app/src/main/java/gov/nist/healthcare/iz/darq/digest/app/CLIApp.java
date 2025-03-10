@@ -107,7 +107,7 @@ public class CLIApp {
 			}
 			else {
 				Date timestamp = new Date();
-				SimpleDateFormat timestampFormat = new SimpleDateFormat("dd_MM_YYYY_hh_mm_ss");
+				SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
 				String prefix = cmd.hasOption("s") ? cmd.getOptionValue("s") : timestampFormat.format(timestamp);
 
 				System.out.println("===================================================================================================");

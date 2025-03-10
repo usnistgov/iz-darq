@@ -17,7 +17,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -51,8 +51,20 @@ public class DuplicateVaccinationLocalReportTestCase {
 		Path reportPath = utils.getLocalReport(DuplicateVaccinationReportService.FILENAME);
 		assertTrue(Files.exists(reportPath));
 	}
-
-
+/*
+	RECORD 1
+		V1
+		v2 -> Duplicate of V1
+		v3
+	RECORD 2
+		V1
+		V2
+		V3 -> duplicate of v2
+		V4 -> duplicate of v3, v2
+	RECORD 3
+		V1
+		V2
+ */
 	@Test
 	public void checkLocalReportContent() throws Exception {
 		Path reportPath = utils.getLocalReport(DuplicateVaccinationReportService.FILENAME);
@@ -61,37 +73,37 @@ public class DuplicateVaccinationLocalReportTestCase {
 		List<CSVRecord> lines = parser.getRecords();
 		assertEquals(5, lines.size());
 		List<Record> records = utils.getRecords();
-		{
-			String recordId = records.get(0).getPatientColumns().get(0);
-			String vaccineId = records.get(0).getVaccinationsColumns().get(1).get(1);
-			String duplicationId = records.get(0).getVaccinationsColumns().get(0).get(1);
-			assertEquals(lines.get(1).get(0), recordId);
-			assertEquals(lines.get(1).get(1), vaccineId);
-			assertEquals(lines.get(1).get(2), duplicationId);
-		}
-		{
-			String recordId = records.get(1).getPatientColumns().get(0);
-			String vaccineId = records.get(1).getVaccinationsColumns().get(2).get(1);
-			String duplicationId = records.get(1).getVaccinationsColumns().get(1).get(1);
-			assertEquals(lines.get(2).get(0), recordId);
-			assertEquals(lines.get(2).get(1), vaccineId);
-			assertEquals(lines.get(2).get(2), duplicationId);
-		}
-		{
-			String recordId = records.get(1).getPatientColumns().get(0);
-			String vaccineId = records.get(1).getVaccinationsColumns().get(3).get(1);
-			String duplicationId = records.get(1).getVaccinationsColumns().get(1).get(1);
-			assertEquals(lines.get(3).get(0), recordId);
-			assertEquals(lines.get(3).get(1), vaccineId);
-			assertEquals(lines.get(3).get(2), duplicationId);
-		}
-		{
-			String recordId = records.get(1).getPatientColumns().get(0);
-			String vaccineId = records.get(1).getVaccinationsColumns().get(3).get(1);
-			String duplicationId = records.get(1).getVaccinationsColumns().get(2).get(1);
-			assertEquals(lines.get(4).get(0), recordId);
-			assertEquals(lines.get(4).get(1), vaccineId);
-			assertEquals(lines.get(4).get(2), duplicationId);
+		checkLineMatch(
+				records.get(0),
+				lines,
+				1,
+				new HashSet<>(Collections.singletonList(0))
+		);
+		checkLineMatch(
+				records.get(1),
+				lines,
+				2,
+				new HashSet<>(Collections.singletonList(1))
+		);
+		checkLineMatch(
+				records.get(1),
+				lines,
+				3,
+				new HashSet<>(Arrays.asList(1, 2))
+		);
+	}
+
+	public void checkLineMatch(
+			Record record,
+			List<CSVRecord> lines,
+			int vaccine,
+			Set<Integer> duplicates
+	) {
+		String recordId = record.getPatientColumns().get(0);
+		String vaccineId = record.getVaccinationsColumns().get(vaccine).get(1);
+		for(int duplicate : duplicates) {
+			String duplicateId = record.getVaccinationsColumns().get(duplicate).get(1);
+			assertTrue(lines.stream().anyMatch(line -> line.get(0).equals(recordId) && line.get(1).equals(vaccineId) && line.get(2).equals(duplicateId)));
 		}
 	}
 
