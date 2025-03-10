@@ -5,14 +5,14 @@
     <parent>
         <artifactId>darq</artifactId>
         <groupId>gov.nist.healthcare.iz</groupId>
-        <version>3.1.0-SNAPSHOT.rev3</version>
+        <version>3.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>darq-shared</artifactId>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mqe.version>2022.9-BETA</mqe.version>
-        <qdar.api.version>3.1.0-SNAPSHOT.rev3</qdar.api.version>
+        <qdar.api.version>3.1.0</qdar.api.version>
     </properties>
     <dependencies>
         <dependency>
