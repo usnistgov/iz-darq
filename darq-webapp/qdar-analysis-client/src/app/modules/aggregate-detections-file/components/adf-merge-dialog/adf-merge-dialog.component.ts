@@ -21,6 +21,7 @@ export class AdfMergeDialogComponent implements OnInit {
     ['2.1.0', '2.1.1', '2.1.2', '2.1.3'],
     ['3.0.0-SNAPSHOT', '3.0.0-SNAPSHOT.rev1'],
     ['3.0.0', '3.0.1'],
+    ['3.1.0', '3.1.1'],
   ];
 
   name: string;
