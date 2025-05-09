@@ -63,9 +63,10 @@
     <ngx-codemirror
       placeholder="MISMO Configuration"
       [ngClass]="{ 'expand-textarea': !configurationTextAreaCollapsed }"
-      name="mismo-configuration" id="mismo-configuration"
+      name="mismo-configuration"
+      id="mismo-configuration"
       [ngModel]="value.payload.mismoPatientMatchingConfiguration"
-      (input)="mismoConfigChange($event.target.value)"
+      (ngModelChange)="mismoConfigChange($event)"
       [disabled]="(viewOnly$ | async) || !value.payload.activatePatientMatching"
       [options]="yamlEditorOptions"
     ></ngx-codemirror>

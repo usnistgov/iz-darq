@@ -56,7 +56,7 @@ public class DuplicatePatientRecordTestCase {
 
 	@Test
 	public void checkDuplicateSignatures() throws Exception {
-		String SIGNATURE = "cK9E6EH243DMd14:hKAAQA:hKAAQA:hKAAQA:hKAAQA";
+		String SIGNATURE = "cK9E6EH243DMd14:hKAAQcA:hKAAQcA:hKAAQcA:hKAAQcA";
 		Dictionaries d = reader.getDictionaries();
 		PreparedStatement search = reader.getConnection().prepareStatement("SELECT (count(*) = 1) as found FROM P_MATCH_SIGNATURE WHERE MATCH_SIGNATURE = ? AND N = ?");
 		PreparedStatement count = reader.getConnection().prepareStatement("SELECT count(*) as nb FROM P_MATCH_SIGNATURE");

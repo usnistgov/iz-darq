@@ -58,7 +58,7 @@ public class PatientDuplicateLocalReportTestCase {
 
 	@Test
 	public void checkLocalReportContent() throws Exception {
-		String SIGNATURE = "cK9E6EH243DMd14:hKAAQA:hKAAQA:hKAAQA:hKAAQA";
+		String SIGNATURE = "cK9E6EH243DMd14:hKAAQcA:hKAAQcA:hKAAQcA:hKAAQcA";
 		Path reportPath = utils.getLocalReport(DuplicateRecordsReportService.FILENAME);
 		FileReader reader = new FileReader(reportPath.toFile());
 		CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT);
