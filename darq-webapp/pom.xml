@@ -7,7 +7,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>darq-webapp</artifactId>
-	<version>4.1.1</version>
+	<version>4.1.2</version>
 	<packaging>pom</packaging>
 	<properties>
 		<qdar.api.version>3.1.1</qdar.api.version>
