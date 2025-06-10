@@ -14,6 +14,7 @@ public interface PartialAnalysisReportRepository extends MongoRepository<Analysi
     AnalysisReport findByIdAndPublished(String id, boolean published);
     List<AnalysisReport> findByPublishedAndOwnerIdAndFacilityId(boolean published, String ownerId, String facility);
     List<AnalysisReport> findByPublishedAndFacilityId(boolean published, String facilityId);
+    int countByPublishedAndFacilityId(boolean published, String facilityId);
     List<AnalysisReport> findByOwnerIdAndFacilityIdIsNull(String id);
     List<AnalysisReport> findByPublishedAndFacilityIdNotNull(boolean published);
 

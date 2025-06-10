@@ -164,6 +164,10 @@ public class AnalysisReportService {
         return this.getFromGridFs(reports);
     }
 
+    public int countByPublishedAndFacilityId(boolean published, String facilityId) {
+        return this.analysisReportRepository.countByPublishedAndFacilityId(published, facilityId);
+    }
+
     public List<AnalysisReport> findByOwnerIdAndFacilityIdIsNull(String id) {
         List<AnalysisReport> reports = this.analysisReportRepository.findByOwnerIdAndFacilityIdIsNull(id);
         return this.getFromGridFs(reports);

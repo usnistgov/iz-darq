@@ -13,7 +13,6 @@ export interface IADFDescriptor extends IDamResource {
   uploadedOn: Date;
   size: string;
   version: string;
-  compatibilities: IConfigurationDescriptor[];
   facilityId: string;
   cliVersion: string;
   build: string;
@@ -44,7 +43,6 @@ export interface IADFMetadata extends IDamResource {
     analysedOn: Date;
     uploadedOn: Date;
     size: string;
-    summary: IADFSummary;
     facilityId: string;
   }[];
   totalAnalysisTime: number;

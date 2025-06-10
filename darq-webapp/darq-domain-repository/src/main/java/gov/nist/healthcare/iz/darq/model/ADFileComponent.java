@@ -1,4 +1,5 @@
 package gov.nist.healthcare.iz.darq.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.nist.healthcare.iz.darq.digest.domain.Summary;
 
 import java.util.Date;
@@ -10,6 +11,7 @@ public class ADFileComponent {
     Date analysedOn;
     Date uploadedOn;
     String size;
+    @JsonIgnore
     Summary summary;
     String facilityId;
 
@@ -75,6 +77,7 @@ public class ADFileComponent {
         this.size = size;
     }
 
+    @JsonIgnore
     public Summary getSummary() {
         return summary;
     }

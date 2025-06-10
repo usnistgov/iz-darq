@@ -78,8 +78,8 @@ public class ADFController {
 		return user.getPermissions().getFacilities().stream().map((facilityId) -> {
 			try {
 				Facility facility = this.facilityService.getFacilityById(facilityId);
-				int files = this.repo.findByFacilityId(facilityId).size();
-				int reports = this.analysisReportService.findByPublishedAndFacilityId(true, facilityId).size();
+				int files = this.repo.countByFacilityId(facilityId);
+				int reports = this.analysisReportService.countByPublishedAndFacilityId(true, facilityId);
 				return new UserFacilityView(facilityId, facility.getName(), reports, files);
 			} catch (NotFoundException e) {
 				return null;
@@ -93,7 +93,7 @@ public class ADFController {
 	public int numberOfPrivateADF(
 			@AuthenticationPrincipal User user
 	) {
-		return this.repo.findByOwnerIdAndFacilityId(user.getId(), null).size();
+		return this.repo.countByOwnerIdAndFacilityId(user.getId(), null);
 	}
 
 	/// TODO Add tags on upload?
@@ -131,10 +131,9 @@ public class ADFController {
 	@ResponseBody
 	@PreAuthorize("AccessOperation(ADF, VIEW, FACILITY(#facilityId))")
 	public List<ADFDescriptor> listFacility(
-			@AuthenticationPrincipal User user,
 			@PathVariable("facilityId") String facilityId) {
 		List<UserUploadedFile> files = repo.findByFacilityId(facilityId);
-		return getADFDescriptorFromFiles(files, user);
+		return getADFDescriptorFromFiles(files);
 	}
 
 	@RequestMapping(value="/adf/files", method=RequestMethod.GET)
@@ -146,7 +145,7 @@ public class ADFController {
 						.map(repo::findByFacilityId)
 						.flatMap(Collection::stream)
 		).collect(Collectors.toList());
-		return getADFDescriptorFromFiles(files, user);
+		return getADFDescriptorFromFiles(files);
 	}
 
 
@@ -154,9 +153,10 @@ public class ADFController {
 	@ResponseBody
 	@PreAuthorize("AccessOperation(ADF, VIEW, GLOBAL, OWNED())")
 	public List<ADFDescriptor> list(
-			@AuthenticationPrincipal User user) {
+			@AuthenticationPrincipal User user
+	) {
 		List<UserUploadedFile> files = repo.findByOwnerIdAndFacilityIdIsNull(user.getId());
-		return getADFDescriptorFromFiles(files, user);
+		return getADFDescriptorFromFiles(files);
 	}
 
 	@RequestMapping(value="/adf/{id}", method=RequestMethod.GET)
@@ -172,7 +172,6 @@ public class ADFController {
 	@ResponseBody
 	@PreAuthorize("AccessResource(#request, ADF, EDIT, #id)")
 	public OpAck<ADFDescriptor> post(
-			@AuthenticationPrincipal User user,
 			HttpServletRequest request,
 			@PathVariable("id") String id,
 			@RequestBody ADFEditRequest editRequest) throws Exception {
@@ -181,7 +180,7 @@ public class ADFController {
 				editRequest.getName(),
 				editRequest.getTags()
 		);
-		return new OpAck<>(AckStatus.SUCCESS, "File Updated Successfully", getADFDescriptorFromFile(updated, user), "adf-update");
+		return new OpAck<>(AckStatus.SUCCESS, "File Updated Successfully", getADFDescriptorFromFile(updated), "adf-update");
 	}
 
 	@RequestMapping(value="/adf/{id}/download", method=RequestMethod.GET)
@@ -275,18 +274,16 @@ public class ADFController {
 		return result;
 	}
 
-	List<ADFDescriptor> getADFDescriptorFromFiles(List<UserUploadedFile> files, User user) {
+	List<ADFDescriptor> getADFDescriptorFromFiles(List<UserUploadedFile> files) {
 		List<ADFDescriptor> result = new ArrayList<>();
-		List<DigestConfiguration> configurations = this.confRepo.findAccessibleTo(user.getId());
 		for(UserUploadedFile md : files){
-			result.add(this.descriptorService.getADFDescriptor(md, this.configService.compatibilities(md.getConfiguration(), configurations)));
+			result.add(this.descriptorService.getADFDescriptor(md));
 		}
 		return result;
 	}
 
-	ADFDescriptor getADFDescriptorFromFile(UserUploadedFile file, User user) {
-		List<DigestConfiguration> configurations = this.confRepo.findAccessibleTo(user.getId());
-		return this.descriptorService.getADFDescriptor(file, this.configService.compatibilities(file.getConfiguration(), configurations));
+	ADFDescriptor getADFDescriptorFromFile(UserUploadedFile file) {
+		return this.descriptorService.getADFDescriptor(file);
 	}
 
 }

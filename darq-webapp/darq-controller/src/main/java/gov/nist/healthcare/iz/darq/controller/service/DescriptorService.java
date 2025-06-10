@@ -54,7 +54,7 @@ public class DescriptorService {
         );
     }
 
-    public ADFDescriptor getADFDescriptor(UserUploadedFile userUploadedFile, List<DigestConfiguration> compatibilities) {
+    public ADFDescriptor getADFDescriptor(UserUploadedFile userUploadedFile) {
         return new ADFDescriptor(
                 userUploadedFile.getId(),
                 userUploadedFile.getName(),
@@ -65,7 +65,6 @@ public class DescriptorService {
                 userUploadedFile.getAnalysedOn(),
                 userUploadedFile.getUploadedOn(),
                 userUploadedFile.getSize(),
-                compatibilities.stream().map(this::getConfigurationDescriptor).collect(Collectors.toList()),
                 userUploadedFile.getVersion(),
                 userUploadedFile.getBuild(),
                 userUploadedFile.getMqeVersion(),
@@ -124,7 +123,7 @@ public class DescriptorService {
                 job.getOwnerId(),
                 this.userManagementService.getUserDisplayName(job.getOwnerId()),
                 job.getFailure(),
-                files.stream().map((f) -> f == null ? null : this.getADFDescriptor(f, new ArrayList<>())).collect(Collectors.toList()),
+                files.stream().map((f) -> f == null ? null : this.getADFDescriptor(f)).collect(Collectors.toList()),
                 job.getFacilityId(),
                 job.getMergedAdfId()
         );
