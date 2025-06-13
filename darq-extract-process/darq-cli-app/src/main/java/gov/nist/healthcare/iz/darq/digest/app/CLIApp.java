@@ -1,6 +1,8 @@
 package gov.nist.healthcare.iz.darq.digest.app;
 
 import java.io.File;
+import java.io.UncheckedIOException;
+import java.nio.charset.MalformedInputException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -265,6 +267,16 @@ public class CLIApp {
 		}
 		catch (TerminalException terminalException) {
 			throw terminalException;
+		}
+		catch(UncheckedIOException uncheckedIOException) {
+			if(uncheckedIOException.getCause() instanceof MalformedInputException) {
+				throw new FileEncodingException(uncheckedIOException);
+			} else {
+				throw new ExecutionException(uncheckedIOException, "Execution Failed due to exception");
+			}
+		}
+		catch(MalformedInputException malformedInputException) {
+			throw new FileEncodingException(malformedInputException);
 		}
 		catch (Exception exp) {
 			throw new ExecutionException(exp, "Execution Failed due to exception");
