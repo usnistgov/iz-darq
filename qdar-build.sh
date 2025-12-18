@@ -24,6 +24,9 @@ if [ -z "$MQE_VALIDATOR" ]; then
     exit 1
 fi
 
+# Fetch and load codebase Compiled.xml file
+sh ./load-codebase.sh -q $QDAR
+
 TMP_LOCAL_REPO="$(mktemp -d)"
 
 if [ -z "$OUTPUT" ]; then 
@@ -60,6 +63,9 @@ if [[ -n "${MQE_VALIDATOR}" ]]; then
     mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dmaven.repo.local=$TMP_LOCAL_REPO
 fi
 
+# Vaccine Deduplication Project Requires Compiled.xml to run tests
+mkdir -p $VACCINE_DEDUP/src/test/resources
+cp $QDAR/darq-extract-process/darq-cli-app/src/main/resources/Compiled.xml $VACCINE_DEDUP/src/test/resources/Compiled.xml
 if [[ -n "${VACCINE_DEDUP}" ]]; then
     echo "Building Vaccine Deduplication"
     cd $VACCINE_DEDUP
@@ -70,26 +76,19 @@ echo "Building qDAR"
 echo "Building qDAR Client"
 cd $QDAR/darq-webapp/qdar-analysis-client
 npm run build-prod
-echo "Moving MQE's Latest Compiled.xml file into project"
-echo "- Moving into CLI"
-cp $MQE_VALIDATOR/src/test/resources/Compiled.xml $QDAR/darq-extract-process/darq-cli-app/src/main/resources/Compiled.xml
-echo "- Moving into WebApp"
-cp $MQE_VALIDATOR/src/test/resources/Compiled.xml $QDAR/darq-webapp/darq-app/src/main/resources/Compiled.xml
-echo "- Moving into output directory"
-mkdir $OUTPUT/resources
-mkdir $OUTPUT/resources/WEB-INF
-mkdir $OUTPUT/resources/WEB-INF/classes
-cp $MQE_VALIDATOR/src/test/resources/Compiled.xml $OUTPUT/resources/WEB-INF/classes/Compiled.xml
+echo "Moving Compiled.xml file into output directory"
+mkdir -p $OUTPUT/resources/WEB-INF/classes
+cp $QDAR/darq-extract-process/darq-cli-app/src/main/resources/Compiled.xml $OUTPUT/resources/WEB-INF/classes/Compiled.xml
 echo "Building qDAR CLI"
 cd $QDAR
 mvn clean install -pl :darq-cli-app -am -Dmaven.repo.local=$TMP_LOCAL_REPO
-echo "Update the Compiled.xml file in darq-cli-app-*-with-dependencies.jar"
+echo "Update the Compiled.xml file in darq-cli-app-*-with-dependencies.jar (overrides any Compiled.xml files)"
 jar -uvf $QDAR/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar -C $OUTPUT/resources/WEB-INF/classes Compiled.xml
 echo "Moving CLI into qDAR Webapp Resource"
 cp $QDAR/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar $QDAR/darq-webapp/darq-app/src/main/resources/qdar-cli.jar
 echo "Building qDAR WAR"
 mvn clean install -pl :darq-app -am -Dmaven.repo.local=$TMP_LOCAL_REPO
-echo "Update the Compiled.xml file in qdar.war"
+echo "Update the Compiled.xml file in qdar.war (overrides any Compiled.xml files)"
 jar -uvf $QDAR/darq-webapp/darq-app/target/qdar.war -C $OUTPUT/resources WEB-INF/classes/Compiled.xml
 echo "Moving Built artifacts into output directory"
 cp $QDAR/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar $OUTPUT/qdar-cli-nokey.jar

@@ -1,6 +1,6 @@
 *.classpath
 *.settings*
-*target*
+target/
 *.project*
 *.classpath*
 *.metadata
@@ -22,3 +22,4 @@ darq-webapp/darq-app/src/main/resources/public/
 /darq-analysis
 *.log
 darq-webapp/darq-app/src/main/resources/qdar-cli.jar
+Compiled.xml
