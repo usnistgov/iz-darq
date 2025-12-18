@@ -24,6 +24,15 @@ public class ADFMergeServiceImpl implements ADFMergeService {
         put("COMPATIBILITY_2", new HashSet<>(Arrays.asList(
                 "2.1.0", "2.1.1", "2.1.2", "2.1.3"
         )));
+        put("COMPATIBILITY_3", new HashSet<>(Arrays.asList(
+                "3.0.0-SNAPSHOT", "3.0.0-SNAPSHOT.rev1"
+        )));
+        put("COMPATIBILITY_4", new HashSet<>(Arrays.asList(
+                "3.0.0", "3.0.1"
+        )));
+        put("COMPATIBILITY_5", new HashSet<>(Arrays.asList(
+                "3.1.0", "3.1.1", "3.1.2"
+        )));
     }};
 
     @Override
