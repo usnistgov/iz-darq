@@ -1,15 +1,11 @@
+#!/bin/bash
+
 set -e
 
-while getopts :v:u:c:l:q:m:d:o: flag
+while getopts :q:o: flag
 do
     case "${flag}" in
-        v) MQE_VALIDATOR=${OPTARG};;
-        u) MQE_UTILS=${OPTARG};;
-        c) MQE_CODEBASE_CLIENT=${OPTARG};;
-        l) LONESTAR_FORECASTER=${OPTARG};;
-        m) MISMO=${OPTARG};;
         q) QDAR=${OPTARG};;
-        d) VACCINE_DEDUP=${OPTARG};;
         o) OUTPUT=${OPTARG};;
     esac
 done
@@ -19,80 +15,51 @@ if [ -z "$QDAR" ]; then
     exit 1
 fi
 
-if [ -z "$MQE_VALIDATOR" ]; then 
-    echo "MQE Validator Path is required. (-qdar)"
-    exit 1
-fi
-
-# Fetch and load codebase Compiled.xml file
-sh ./load-codebase.sh -q $QDAR
-
-TMP_LOCAL_REPO="$(mktemp -d)"
-
 if [ -z "$OUTPUT" ]; then 
     OUTPUT="$( pwd )"
 fi
 
-if [[ -n "${LONESTAR_FORECASTER}" ]]; then
-    echo "Building Lonestar Forecaster"
-    cd $LONESTAR_FORECASTER
-    mvn jar:jar package install:install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dexec.skip=true -Dmaven.repo.local=$TMP_LOCAL_REPO
-fi
+TMP_LOCATION="$(mktemp -d)"
+DEPENDENCIES_LOCATION="$(mktemp -d)"
 
-if [[ -n "${MISMO}" ]]; then
-    echo "Building MISMO"
-    cd $MISMO
-    mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dmaven.repo.local=$TMP_LOCAL_REPO
-fi
+# Fetch and load codebase Compiled.xml file
+./load-codebase.sh -q "$QDAR"
 
-if [[ -n "${MQE_CODEBASE_CLIENT}" ]]; then
-    echo "Building MQE Codebase Client"
-    cd $MQE_CODEBASE_CLIENT
-    mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dmaven.repo.local=$TMP_LOCAL_REPO
-fi
-
-if [[ -n "${MQE_UTILS}" ]]; then
-    echo "Building MQE Utils"
-    cd $MQE_UTILS
-    mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dmaven.repo.local=$TMP_LOCAL_REPO
-fi
-
-if [[ -n "${MQE_VALIDATOR}" ]]; then
-    echo "Building MQE Validator"
-    cd $MQE_VALIDATOR
-    mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dmaven.repo.local=$TMP_LOCAL_REPO
-fi
-
-# Vaccine Deduplication Project Requires Compiled.xml to run tests
-mkdir -p $VACCINE_DEDUP/src/test/resources
-cp $QDAR/darq-extract-process/darq-cli-app/src/main/resources/Compiled.xml $VACCINE_DEDUP/src/test/resources/Compiled.xml
-if [[ -n "${VACCINE_DEDUP}" ]]; then
-    echo "Building Vaccine Deduplication"
-    cd $VACCINE_DEDUP
-    mvn clean install -Dmaven.repo.local=$TMP_LOCAL_REPO
-fi
+# Fetch and build dependencies
+export QDAR
+export COMPILED_XML="$QDAR"/darq-extract-process/darq-cli-app/src/main/resources/Compiled.xml
+./dependencies.sh build "$DEPENDENCIES_LOCATION"
 
 echo "Building qDAR"
+
 echo "Building qDAR Client"
-cd $QDAR/darq-webapp/qdar-analysis-client
+cd "$QDAR"/darq-webapp/qdar-analysis-client
+npm install
 npm run build-prod
+
 echo "Moving Compiled.xml file into output directory"
-mkdir -p $OUTPUT/resources/WEB-INF/classes
-cp $QDAR/darq-extract-process/darq-cli-app/src/main/resources/Compiled.xml $OUTPUT/resources/WEB-INF/classes/Compiled.xml
+mkdir -p "$TMP_LOCATION"/resources/WEB-INF/classes
+cp "$QDAR"/darq-extract-process/darq-cli-app/src/main/resources/Compiled.xml "$TMP_LOCATION"/resources/WEB-INF/classes/Compiled.xml
+
 echo "Building qDAR CLI"
-cd $QDAR
-mvn clean install -pl :darq-cli-app -am -Dmaven.repo.local=$TMP_LOCAL_REPO
+cd "$QDAR"
+mvn clean install -pl :darq-cli-app -am
+
 echo "Update the Compiled.xml file in darq-cli-app-*-with-dependencies.jar (overrides any Compiled.xml files)"
-jar -uvf $QDAR/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar -C $OUTPUT/resources/WEB-INF/classes Compiled.xml
+jar -uvf "$QDAR"/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar -C "$TMP_LOCATION"/resources/WEB-INF/classes Compiled.xml
+
 echo "Moving CLI into qDAR Webapp Resource"
-cp $QDAR/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar $QDAR/darq-webapp/darq-app/src/main/resources/qdar-cli.jar
+cp "$QDAR"/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar $QDAR/darq-webapp/darq-app/src/main/resources/qdar-cli.jar
+
 echo "Building qDAR WAR"
-mvn clean install -pl :darq-app -am -Dmaven.repo.local=$TMP_LOCAL_REPO
+mvn clean install -pl :darq-app -am
+
 echo "Update the Compiled.xml file in qdar.war (overrides any Compiled.xml files)"
-jar -uvf $QDAR/darq-webapp/darq-app/target/qdar.war -C $OUTPUT/resources WEB-INF/classes/Compiled.xml
+jar -uvf "$QDAR"/darq-webapp/darq-app/target/qdar.war -C "$TMP_LOCATION"/resources WEB-INF/classes/Compiled.xml
+
 echo "Moving Built artifacts into output directory"
-cp $QDAR/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar $OUTPUT/qdar-cli-nokey.jar
-cp $QDAR/darq-webapp/darq-app/target/qdar.war $OUTPUT/qdar.war
-rm -rf $OUTPUT/resources
-rm -rf $TMP_LOCAL_REPO
+cp "$QDAR"/darq-extract-process/darq-cli-app/target/darq-cli-app-*-with-dependencies.jar "$OUTPUT"/qdar-cli-nokey.jar
+cp "$QDAR"/darq-webapp/darq-app/target/qdar.war "$OUTPUT"/qdar.war
+
+rm -rf "$TMP_LOCATION"
 exit 0

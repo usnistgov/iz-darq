@@ -1,0 +1,40 @@
+{
+  "dependencies": [
+    {
+      "name": "Vaccine Deduplication",
+      "repository": "https://github.com/usnistgov/vaccination_deduplication",
+      "sha1": "2f642f52fa667dc89e4cc88b2254de377fdcb843",
+      "cmd": "mkdir -p ./src/test/resources && cp $COMPILED_XML ./src/test/resources/Compiled.xml && mvn clean install"
+    },
+    {
+      "name": "Lonestar Forecaster",
+      "repository": "https://github.com/immregistries/LoneStarVaccineForecaster",
+      "sha1": "36b86aeca5b59f80ce91feac9d9e4e8b4c63512b",
+      "cmd": "mvn jar:jar package install:install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dexec.skip=true"
+    },
+    {
+      "name": "MISMO",
+      "repository": "https://github.com/immregistries/mismo-match",
+      "sha1": "cf81789bf7f78e28625c6304f48f9de3b0ddee84",
+      "cmd": "mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip"
+    },
+    {
+      "name": "MQE Codebase Client",
+      "repository": "https://github.com/immregistries/codebase-client",
+      "sha1": "1c015ce9362cee71b07e4c0e70b562e5d795a548",
+      "cmd": "mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip"
+    },
+    {
+      "name": "MQE Utils",
+      "repository": "https://github.com/immregistries/mqe-hl7-util",
+      "sha1": "207ef712572e04fc7bfefc14e2dafb6c4637dfb7",
+      "cmd": "mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip"
+    },
+    {
+      "name": "MQE Validator",
+      "repository":"https://github.com/immregistries/mqe-validator",
+      "sha1": "727a0a83c0734f456b2a47a22d126ce09fb2ac6e",
+      "cmd": "mvn jar:jar package install:install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dexec.skip=true"
+    }
+  ]
+}
