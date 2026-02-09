@@ -30,6 +30,9 @@ public class ADFManager {
 		put("COMPATIBILITY_5", new HashSet<>(Arrays.asList(
 				"3.1.0", "3.1.1"
 		)));
+		put("COMPATIBILITY_6", new HashSet<>(Arrays.asList(
+				"3.1.2", "3.1.3"
+		)));
 	}};
 
 
