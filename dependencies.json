@@ -15,7 +15,7 @@
     {
       "name": "MISMO",
       "repository": "https://github.com/immregistries/mismo-match",
-      "sha1": "cf81789bf7f78e28625c6304f48f9de3b0ddee84",
+      "sha1": "1cc8dc85cd0510fa2b3782897e02a38a28d0b538",
       "cmd": "mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip"
     },
     {
