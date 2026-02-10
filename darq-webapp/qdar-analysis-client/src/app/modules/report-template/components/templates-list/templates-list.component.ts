@@ -117,12 +117,24 @@ export class TemplatesListComponent implements OnInit {
   }
 
   clone(template: IReportTemplateDescriptor) {
-    return this.helper.getMessageAndHandle<IReportTemplate>(
-      this.store,
-      () => {
-        return this.templateService.clone(template.id);
+    return this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        action: 'Clone Template',
+        question: 'Are you sure you want to clone template ' + template.name + ',<br> this will make it globally available for all users ?',
       },
-      this.addAndOpenHandler,
+    }).afterClosed().pipe(
+      concatMap((answer) => {
+        if (answer) {
+          return this.helper.getMessageAndHandle<IReportTemplate>(
+            this.store,
+            () => {
+              return this.templateService.clone(template.id);
+            },
+            this.addAndOpenHandler,
+          );
+        }
+        return of();
+      }),
     ).subscribe();
   }
 
