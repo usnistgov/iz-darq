@@ -27,7 +27,7 @@
         <h4 style="margin: 0;"> {{ facility.name }} </h4>
         <i class="fa fa-chevron-right" style="font-size: 1.3em; margin-right: 20px; margin-left: 20px;"></i>
       </div>
-      <ul class="nav nav-pills" *ngIf="facilityIdFromURL$ | async as facilityId">
+      <ul class="scrollable-nav nav nav-pills " *ngIf="facilityIdFromURL$ | async as facilityId">
         <li class="nav-item">
           <a id="adf" class="nav-link" #rla="routerLinkActive" [routerLink]="[ facilityId, 'files']" routerLinkActive="active" >
             <h5 class="title-text"><i class="fa fa-file-text-o" style="color:crimson; margin-right: 5px;"></i> Aggregate Detections Files </h5>
@@ -59,6 +59,6 @@
   </ng-template>
 
   <ng-template #sideBar>
-    <app-iis-sidebar [facilities]="facilities$ | async" ></app-iis-sidebar>
+    <app-iis-sidebar [facilities]="facilities$ | async"></app-iis-sidebar>
   </ng-template>
 </dam-layout>
