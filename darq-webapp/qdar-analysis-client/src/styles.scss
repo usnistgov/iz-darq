@@ -295,12 +295,10 @@ body .pi {
 
 
 // To solve  issue in adf dashboard toolbar when IIS name is too long
-// TODO report to template ?
-.toolbar-controls {
+.dashboard .toolbar-controls {
   overflow: hidden;
 }
 
-// TODO report to template ?
-.toolbar-controls>div:nth-child(1) {
+.dashboard .toolbar-controls>div:nth-child(1) {
   width: 100%;
 }
