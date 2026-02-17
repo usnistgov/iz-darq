@@ -11,6 +11,7 @@ import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.service.impl.ADFStorage;
+import gov.nist.healthcare.iz.darq.service.impl.SimpleConfigurationService;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,8 @@ public class TemplateController {
 	private ADFStorage adfStorage;
 	@Autowired
 	private DescriptorService descriptorService;
+	@Autowired
+	private SimpleConfigurationService simpleConfigurationService;
 
 	// Get All Accessible Report Templates
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -176,10 +179,13 @@ public class TemplateController {
 					.filter(digestConfiguration -> configurationId.equals(digestConfiguration.getId()))
 					.findFirst()
 					.get();
+			if (simpleConfigurationService.compatible(template.getConfiguration(), configuration.getPayload() )) {
+				return new OpAck<>(AckStatus.FAILED, "Report Template Clone Failed due to Incompatible Configuration", null, "report-template-clone-compatible");
+			}
 			template.setConfiguration(configuration.getPayload());
 		}
 		ReportTemplate saved = this.templateRepo.save(template);
-		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Cloned", saved, "report-template-clone");
+		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Cloned", saved, "report-template-clone-compatible");
 	}
 
 	//  Delete Report Template by Id (Owned)
