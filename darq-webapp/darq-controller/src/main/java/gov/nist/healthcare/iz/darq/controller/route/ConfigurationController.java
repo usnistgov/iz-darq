@@ -12,16 +12,12 @@ import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
+import gov.nist.healthcare.iz.darq.service.impl.SimpleConfigurationService;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.domain.OpAck.AckStatus;
@@ -42,6 +38,8 @@ public class ConfigurationController {
 	private ObjectMapper mapper;
 	@Autowired
 	private DescriptorService descriptorService;
+	@Autowired
+	private SimpleConfigurationService simpleConfigurationService;
 
 	//  Get All Accessible Configuration (Descriptor)
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -50,6 +48,23 @@ public class ConfigurationController {
 	public List<ConfigurationDescriptor> all(
 			@AuthenticationPrincipal User user) {
     	return confRepo.findAccessibleTo(user.getId()).stream()
+    	.map(x -> this.descriptorService.getConfigurationDescriptor(x))
+    	.collect(Collectors.toList());
+    }
+
+	//  Get Accessible Configurations compatible with one configuration (Descriptor)
+    @RequestMapping(value="/{id}/compatible", method = RequestMethod.GET)
+    @ResponseBody
+	@PreAuthorize("AccessOperation(CONFIGURATION, VIEW, GLOBAL, PUBLIC()) && AccessResource(CONFIGURATION, VIEW, #id)")
+	public List<ConfigurationDescriptor> allCompatible(
+			@AuthenticationPrincipal User user,
+			@PathVariable("id") String id) {
+		DigestConfiguration sourceConfiguration = confRepo.findAccessibleTo(user.getId()).stream()
+				.filter(digestConfiguration -> id.equals(digestConfiguration.getId()))
+				.findFirst()
+				.get();
+    	return confRepo.findAccessibleTo(user.getId()).stream()
+		.filter(digestConfiguration -> simpleConfigurationService.compatible(sourceConfiguration.getPayload(), digestConfiguration.getPayload()))
     	.map(x -> this.descriptorService.getConfigurationDescriptor(x))
     	.collect(Collectors.toList());
     }

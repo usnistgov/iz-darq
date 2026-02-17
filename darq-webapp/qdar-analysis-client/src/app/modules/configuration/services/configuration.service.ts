@@ -37,6 +37,10 @@ export class ConfigurationService {
     return this.http.get<IConfigurationDescriptor[]>(this.URL_PREFIX);
   }
 
+  getConfigurationsCompatibleWith(id: string): Observable<IConfigurationDescriptor[]> {
+    return this.http.get<IConfigurationDescriptor[]>(this.URL_PREFIX + id + "/compatible");
+  }
+
   getById(id: string): Observable<IDigestConfiguration> {
     return this.http.get<IDigestConfiguration>(this.URL_PREFIX + id);
   }

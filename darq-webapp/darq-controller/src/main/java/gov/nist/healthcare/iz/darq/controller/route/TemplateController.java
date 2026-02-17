@@ -12,15 +12,11 @@ import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.service.impl.ADFStorage;
 import gov.nist.healthcare.iz.darq.users.domain.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.domain.OpAck.AckStatus;
@@ -155,6 +151,33 @@ public class TemplateController {
 		template.setOwner(user.getUsername());
 		template.setOwnerId(user.getId());
 		template.setPublished(false);
+		ReportTemplate saved = this.templateRepo.save(template);
+		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Cloned", saved, "report-template-clone");
+	}
+
+
+	//  Clone Report Template by Id (Owned or Published)
+	@RequestMapping(value="/{id}/cloneCompatible", method=RequestMethod.POST)
+	@ResponseBody
+	@PreAuthorize("AccessResource(#request, REPORT_TEMPLATE, CLONE, #id)")
+	public OpAck<ReportTemplate> cloneWithConfiguration(
+			HttpServletRequest request,
+			@AuthenticationPrincipal User user,
+			@PathVariable("id") String id,
+			@RequestParam(value = "configurationId", required = false) String configurationId) {
+		ReportTemplate template =  (ReportTemplate) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+		template.setId(null);
+		template.setName("[Clone] "+template.getName());
+		template.setOwner(user.getUsername());
+		template.setOwnerId(user.getId());
+		template.setPublished(false);
+		if (StringUtils.isNotBlank(configurationId)) {
+			DigestConfiguration configuration = confRepo.findAccessibleTo(user.getId()).stream()
+					.filter(digestConfiguration -> configurationId.equals(digestConfiguration.getId()))
+					.findFirst()
+					.get();
+			template.setConfiguration(configuration.getPayload());
+		}
 		ReportTemplate saved = this.templateRepo.save(template);
 		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Cloned", saved, "report-template-clone");
 	}

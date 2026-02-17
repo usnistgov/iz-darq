@@ -22,6 +22,8 @@ import { CreateRtDialogComponent } from '../create-rt-dialog/create-rt-dialog.co
 import { IConfigurationDescriptor } from '../../../configuration/model/configuration.model';
 import { selectConfigurations } from '../../../configuration/store/core.selectors';
 import { selectCurrentUserId } from 'src/app/modules/core/store/core.selectors';
+import { CloneRtDialogComponent } from '../clone-rt-dialog/clone-rt-dialog.component';
+import { ConfigurationService } from 'src/app/modules/configuration/services/configuration.service';
 
 @Component({
   selector: 'app-templates-list',
@@ -41,7 +43,8 @@ export class TemplatesListComponent implements OnInit {
     private store: Store<any>,
     private helper: RxjsStoreHelperService,
     private templateService: ReportTemplateService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private configurationService: ConfigurationService) {
     this.listTypeSubject = new BehaviorSubject(FilterType.ALL);
     this.configurations$ = this.store.select(selectConfigurations);
     this.userId$ = this.store.select(selectCurrentUserId);
@@ -117,10 +120,9 @@ export class TemplatesListComponent implements OnInit {
   }
 
   clone(template: IReportTemplateDescriptor) {
-    return this.dialog.open(ConfirmDialogComponent, {
+    return this.dialog.open(CloneRtDialogComponent, {
       data: {
-        action: 'Clone Template',
-        question: 'Are you sure you want to clone template ' + template.name + ',<br> this will make it globally available for all users ?',
+        template: template,
       },
     }).afterClosed().pipe(
       concatMap((answer) => {
@@ -128,14 +130,20 @@ export class TemplatesListComponent implements OnInit {
           return this.helper.getMessageAndHandle<IReportTemplate>(
             this.store,
             () => {
-              return this.templateService.clone(template.id);
+              return this.templateService.cloneCompatible(template.id, answer.configurationId);
             },
             this.addAndOpenHandler,
           );
         }
         return of();
-      }),
-    ).subscribe();
+      })
+    ).subscribe()
+    // this.configurationService.getConfigurationsCompatibleWith(template.compatibilities[0].id).pipe(
+    //   take(1),
+    //   flatMap((configurations) => {
+
+    //   })
+    // ).subscribe()
   }
 
   create() {
