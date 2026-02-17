@@ -292,13 +292,3 @@ body .pi {
 .CodeMirror {
   height: 200px;
 }
-
-
-// To solve  issue in adf dashboard toolbar when IIS name is too long
-.dashboard .toolbar-controls {
-  overflow: hidden;
-}
-
-.dashboard .toolbar-controls>div:nth-child(1) {
-  width: 100%;
-}

@@ -23,9 +23,3 @@ darq-webapp/darq-app/src/main/resources/public/
 *.log
 darq-webapp/darq-app/src/main/resources/qdar-cli.jar
 Compiled.xml
-**/pom.xml.versionsBackup
-.env.dev
-.sdkmanrc
-qdar.war
-qdar-cli.jar
-qdar-cli-nokey.jar
