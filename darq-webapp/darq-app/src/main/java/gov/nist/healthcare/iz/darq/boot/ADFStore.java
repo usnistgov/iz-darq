@@ -30,6 +30,8 @@ public class ADFStore {
 	CryptoKey adfKeys;
 	@Value("#{environment.QDAR_STORE}")
 	private String QDAR_STORE;
+	@Value("#{environment.QDAR_ADF_STORE_UPGRADE_CHECK:false}")
+	private boolean QDAR_ADF_STORE_UPGRADE_CHECK;
 	@Autowired
 	TransformerService transformerService;
 	@Autowired
@@ -54,48 +56,53 @@ public class ADFStore {
 			int nb = Objects.requireNonNull(f.list()).length;
 			System.out.println(" * Store Directory Exists");
 			System.out.println(" * Contains " + nb + " ADFs");
-			AtomicInteger i = new AtomicInteger();
-			Path storePath = Paths.get(QDAR_STORE);
-			try (Stream<Path> walk = Files.walk(storePath)) {
-				List<String> errors = walk.filter(Files::isDirectory)
-						.filter((path) -> path.compareTo(storePath) != 0)
-						.map((path) -> {
-							System.out.println(" + Checking ADF " + (i.incrementAndGet()) + "/" + nb + " @ " + path.toAbsolutePath());
-							File adf = Paths.get(path.toAbsolutePath().toString(), ADFStorage.ADF_FILENAME).toFile();
-							if(!adf.exists()) {
-								System.out.println(" ! No ADF file ( "+ ADFStorage.ADF_FILENAME +" ) found at " + path.toAbsolutePath());
-								return "No ADF file ( "+ ADFStorage.ADF_FILENAME +" ) found at " + path.toAbsolutePath();
-							}
-							try(ADFReader reader = manager.getADFReader(adf.getAbsolutePath())) {
-								System.out.println(" * Checking ADF encryption key");
-								if(reader.checkADFKey(adfKeys)) {
-									System.out.println(" * Checking ADF Version ("+reader.getVersion()+")");
-									if(!reader.getVersion().equals(supportedVersion)) {
-										System.out.println(" * Converting ADF to " + supportedVersion);
-										reader.read(adfKeys);
-										transformerService.transform(
-												reader.getVersion(),
-												supportedVersion,
-												adfKeys,
-												reader,
-												adf.toPath(),
-												false
-										);
-									}
-								} else {
-									System.out.println(" ! Current ADF KeyPair is not valid from ADF at " + adf.getAbsolutePath());
-									return "Current ADF KeyPair is not valid from ADF at " + adf.getAbsolutePath();
+			if (!QDAR_ADF_STORE_UPGRADE_CHECK) {
+				System.out.println(" * ADF Encryption Key and version checks and conversion disabled");
+				System.out.println(" * Set Environment Variable QDAR_ADF_STORE_UPGRADE_CHECK to true to check and upgrade ADFs");
+			} else {
+				AtomicInteger i = new AtomicInteger();
+				Path storePath = Paths.get(QDAR_STORE);
+				try (Stream<Path> walk = Files.walk(storePath)) {
+					List<String> errors = walk.filter(Files::isDirectory)
+							.filter((path) -> path.compareTo(storePath) != 0)
+							.map((path) -> {
+								System.out.println(" + Checking ADF " + (i.incrementAndGet()) + "/" + nb + " @ " + path.toAbsolutePath());
+								File adf = Paths.get(path.toAbsolutePath().toString(), ADFStorage.ADF_FILENAME).toFile();
+								if(!adf.exists()) {
+									System.out.println(" ! No ADF file ( "+ ADFStorage.ADF_FILENAME +" ) found at " + path.toAbsolutePath());
+									return "No ADF file ( "+ ADFStorage.ADF_FILENAME +" ) found at " + path.toAbsolutePath();
 								}
-								System.out.println(" * All Checks Pass ");
-								return null;
-							} catch (Exception e) {
-								e.printStackTrace();
-								System.out.println(" ! Exception encountered while checking ADF at " + adf.getAbsolutePath() + " " + e.getMessage());
-								return "Exception encountered while checking ADF at " + adf.getAbsolutePath() + " " + e.getMessage();
-							}
-						}).filter(Objects::nonNull).collect(Collectors.toList());
-				if(errors.size() > 0) {
-					throw new Exception("[QDAR_ADF_STORE_CHECK] " + String.join(", ", errors));
+								try(ADFReader reader = manager.getADFReader(adf.getAbsolutePath())) {
+									System.out.println(" * Checking ADF encryption key");
+									if(reader.checkADFKey(adfKeys)) {
+										System.out.println(" * Checking ADF Version ("+reader.getVersion()+")");
+										if(!reader.getVersion().equals(supportedVersion)) {
+											System.out.println(" * Converting ADF to " + supportedVersion);
+											reader.read(adfKeys);
+											transformerService.transform(
+													reader.getVersion(),
+													supportedVersion,
+													adfKeys,
+													reader,
+													adf.toPath(),
+													false
+											);
+										}
+									} else {
+										System.out.println(" ! Current ADF KeyPair is not valid from ADF at " + adf.getAbsolutePath());
+										return "Current ADF KeyPair is not valid from ADF at " + adf.getAbsolutePath();
+									}
+									System.out.println(" * All Checks Pass ");
+									return null;
+								} catch (Exception e) {
+									e.printStackTrace();
+									System.out.println(" ! Exception encountered while checking ADF at " + adf.getAbsolutePath() + " " + e.getMessage());
+									return "Exception encountered while checking ADF at " + adf.getAbsolutePath() + " " + e.getMessage();
+								}
+							}).filter(Objects::nonNull).collect(Collectors.toList());
+					if(errors.size() > 0) {
+						throw new Exception("[QDAR_ADF_STORE_CHECK] " + String.join(", ", errors));
+					}
 				}
 			}
 		}

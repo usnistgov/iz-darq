@@ -30,6 +30,14 @@ The system requires AIRA Compiled Code Sets (`Compiled.xml`).
 * **Management:** Handled by `load-codebase.sh`.
 * **Version:** Determined by the commit SHA in `codebase-compiled-xml.sha`.
 
+### Keeping ADF store on Application Upgrade
+The application has the ability to check the Encryption and Compatibility of the ADF's and automatically upgrade them.
+ - This step can be expensive in memory 
+ - It is only important to run after an application upgrade.
+
+Running the app with the Environment Variable
+```QDAR_ADF_STORE_UPGRADE_CHECK=true``` performs the upgrade.
+
 ## Build Instructions
 
 ### Docker Build (Recommended)
@@ -129,3 +137,4 @@ The application relies on the AIRA `Compiled.xml` file for standard code sets an
 
 * **Versioning:** The version is determined by the specific commit hash found in the `codebase-compiled-xml.sha` file.
 * **Execution:** The script downloads the `Compiled.xml` file from the remote `immregistries/codebase` repository at that specific commit and installs it into the resource directories for both the CLI (`darq-cli-app`) and WebApp (`darq-webapp`).
+
