@@ -9,6 +9,7 @@ import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportTemplate;
 import gov.nist.healthcare.iz.darq.controller.domain.ReportTemplateCreate;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
+import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.service.impl.ADFStorage;
 import gov.nist.healthcare.iz.darq.service.impl.SimpleConfigurationService;
@@ -160,14 +161,14 @@ public class TemplateController {
 
 
 	//  Clone Report Template by Id (Owned or Published)
-	@RequestMapping(value="/{id}/cloneCompatible", method=RequestMethod.POST)
+	@RequestMapping(value="/{id}/clone-compatible", method=RequestMethod.POST)
 	@ResponseBody
 	@PreAuthorize("AccessResource(#request, REPORT_TEMPLATE, CLONE, #id)")
 	public OpAck<ReportTemplate> cloneWithConfiguration(
 			HttpServletRequest request,
 			@AuthenticationPrincipal User user,
 			@PathVariable("id") String id,
-			@RequestParam(value = "configurationId", required = false) String configurationId) {
+			@RequestParam(value = "configurationId", required = false) String configurationId) throws NotFoundException {
 		ReportTemplate template =  (ReportTemplate) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
 		template.setId(null);
 		template.setName("[Clone] "+template.getName());
@@ -175,10 +176,10 @@ public class TemplateController {
 		template.setOwnerId(user.getId());
 		template.setPublished(false);
 		if (StringUtils.isNotBlank(configurationId)) {
-			DigestConfiguration configuration = confRepo.findAccessibleTo(user.getId()).stream()
-					.filter(digestConfiguration -> configurationId.equals(digestConfiguration.getId()))
-					.findFirst()
-					.get();
+			DigestConfiguration configuration = confRepo.findByOwnerIdOrReadOnly(configurationId, user.getId());
+			if (configuration == null) {
+				throw new NotFoundException("Configuration",configurationId);
+			}
 			if (simpleConfigurationService.compatible(template.getConfiguration(), configuration.getPayload() )) {
 				return new OpAck<>(AckStatus.FAILED, "Report Template Clone Failed due to Incompatible Configuration", null, "report-template-clone-compatible");
 			}

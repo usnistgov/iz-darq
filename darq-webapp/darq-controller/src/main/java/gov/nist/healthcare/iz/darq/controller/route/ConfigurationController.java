@@ -59,11 +59,12 @@ public class ConfigurationController {
 	public List<ConfigurationDescriptor> allCompatible(
 			@AuthenticationPrincipal User user,
 			@PathVariable("id") String id) {
-		DigestConfiguration sourceConfiguration = confRepo.findAccessibleTo(user.getId()).stream()
+		List<DigestConfiguration> accessibleConfigurations = confRepo.findAccessibleTo(user.getId());
+		DigestConfiguration sourceConfiguration = accessibleConfigurations.stream()
 				.filter(digestConfiguration -> id.equals(digestConfiguration.getId()))
 				.findFirst()
 				.get();
-    	return confRepo.findAccessibleTo(user.getId()).stream()
+    	return accessibleConfigurations.stream()
 		.filter(digestConfiguration -> simpleConfigurationService.compatible(sourceConfiguration.getPayload(), digestConfiguration.getPayload()))
     	.map(x -> this.descriptorService.getConfigurationDescriptor(x))
     	.collect(Collectors.toList());

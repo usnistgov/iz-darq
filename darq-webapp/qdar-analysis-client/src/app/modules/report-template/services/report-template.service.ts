@@ -325,7 +325,7 @@ export class ReportTemplateService {
   }
 
   cloneCompatible(id: string, configurationId: string): Observable<Message<IReportTemplate>> {
-    return this.http.post<Message<IReportTemplate>>(this.URL_PREFIX + id + '/cloneCompatible', {}, { params: { "configurationId": configurationId ?? "" } });
+    return this.http.post<Message<IReportTemplate>>(this.URL_PREFIX + id + '/clone-compatible', {}, { params: { "configurationId": configurationId ?? "" } });
   }
 
   getDescriptorById(id: string): Observable<IReportTemplateDescriptor> {
