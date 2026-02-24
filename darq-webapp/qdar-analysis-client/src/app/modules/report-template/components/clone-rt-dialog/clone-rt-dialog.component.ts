@@ -12,7 +12,7 @@ import { IDescriptor } from 'src/app/modules/shared/model/descriptor.model';
 })
 export class CloneRtDialogComponent implements OnInit {
 
-  configurations: { value: string, descriptor: IDescriptor }[];
+  configurations: { value: string, label: IDescriptor }[];
   configurationId: string;
 
   template: IReportTemplateDescriptor;
@@ -22,16 +22,20 @@ export class CloneRtDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<CloneRtDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
+    console.log(data)
     this.template = data.template
-    if (this.template?.compatibilities.length > 0) {
-      this.configurationId = this.template.compatibilities[0].id
-      this.configurations = this.template.compatibilities.map((comp) => {
+    if (data.template?.compatibilities.length > 0) {
+      this.configurationId = data.template.compatibilities[0].id
+      this.configurations = data.template.compatibilities.map((comp) => {
         return {
           value: comp.id,
-          descriptor: comp,
+          label: comp,
         };
       });
     }
+    console.log(this.configurations)
+    console.log(this.configurations[0])
+
   }
 
   valid() {

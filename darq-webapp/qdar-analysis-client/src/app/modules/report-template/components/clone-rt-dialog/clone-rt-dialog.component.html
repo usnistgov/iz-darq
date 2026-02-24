@@ -8,10 +8,10 @@
     <p-dropdown name="configuration" [options]="configurations" [autoDisplayFirst]="false" [(ngModel)]="configurationId"
       [style]="{ 'width' : '100%' }" appendTo="body">
       <ng-template let-configuration pTemplate="selectedItem">
-        <app-descriptor-display [descriptor]="configuration.descriptor"></app-descriptor-display>
+        <app-descriptor-display [descriptor]="configuration.label"></app-descriptor-display>
       </ng-template>
       <ng-template let-configuration pTemplate="item">
-        <app-descriptor-display [descriptor]="configuration.descriptor"></app-descriptor-display>
+        <app-descriptor-display [descriptor]="configuration.label"></app-descriptor-display>
       </ng-template>
     </p-dropdown>
   </div>
