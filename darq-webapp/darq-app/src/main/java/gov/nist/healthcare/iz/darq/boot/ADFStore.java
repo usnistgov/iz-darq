@@ -30,7 +30,7 @@ public class ADFStore {
 	CryptoKey adfKeys;
 	@Value("#{environment.QDAR_STORE}")
 	private String QDAR_STORE;
-	@Value("#{environment.QDAR_ADF_STORE_UPGRADE_CHECK:false}")
+	@Value("${QDAR_ADF_STORE_UPGRADE_CHECK:false}")
 	private boolean QDAR_ADF_STORE_UPGRADE_CHECK;
 	@Autowired
 	TransformerService transformerService;

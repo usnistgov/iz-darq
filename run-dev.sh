@@ -23,6 +23,7 @@ if [ -f "$RC_FILE" ]; then
   set -a;
   source $ENV_FILE;
   set +a;
+  echo "ENV FILE $ENV_FILE loaded"
 else
   echo "ENV FILE $ENV_FILE not found"
 fi
