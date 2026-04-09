@@ -16,6 +16,7 @@ import { RtSectionNarrativeEditorComponent } from './components/rt-section-narra
 import { RtSectionPayloadEditorComponent } from './components/rt-section-payload-editor/rt-section-payload-editor.component';
 import { CreateRtDialogComponent } from './components/create-rt-dialog/create-rt-dialog.component';
 import { RtLabelsEditorComponent } from './components/rt-labels-editor/rt-labels-editor.component';
+import { CloneRtDialogComponent } from './components/clone-rt-dialog/clone-rt-dialog.component';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { RtLabelsEditorComponent } from './components/rt-labels-editor/rt-labels
     RtSectionPayloadEditorComponent,
     CreateRtDialogComponent,
     RtLabelsEditorComponent,
+    CloneRtDialogComponent,
   ],
   imports: [
     CommonModule,

@@ -22,6 +22,8 @@ import { CreateRtDialogComponent } from '../create-rt-dialog/create-rt-dialog.co
 import { IConfigurationDescriptor } from '../../../configuration/model/configuration.model';
 import { selectConfigurations } from '../../../configuration/store/core.selectors';
 import { selectCurrentUserId } from 'src/app/modules/core/store/core.selectors';
+import { CloneRtDialogComponent } from '../clone-rt-dialog/clone-rt-dialog.component';
+import { ConfigurationService } from 'src/app/modules/configuration/services/configuration.service';
 
 @Component({
   selector: 'app-templates-list',
@@ -41,7 +43,8 @@ export class TemplatesListComponent implements OnInit {
     private store: Store<any>,
     private helper: RxjsStoreHelperService,
     private templateService: ReportTemplateService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private configurationService: ConfigurationService) {
     this.listTypeSubject = new BehaviorSubject(FilterType.ALL);
     this.configurations$ = this.store.select(selectConfigurations);
     this.userId$ = this.store.select(selectCurrentUserId);
@@ -117,13 +120,30 @@ export class TemplatesListComponent implements OnInit {
   }
 
   clone(template: IReportTemplateDescriptor) {
-    return this.helper.getMessageAndHandle<IReportTemplate>(
-      this.store,
-      () => {
-        return this.templateService.clone(template.id);
+    return this.dialog.open(CloneRtDialogComponent, {
+      data: {
+        template: template,
       },
-      this.addAndOpenHandler,
-    ).subscribe();
+    }).afterClosed().pipe(
+      concatMap((answer) => {
+        if (answer) {
+          return this.helper.getMessageAndHandle<IReportTemplate>(
+            this.store,
+            () => {
+              return this.templateService.cloneCompatible(template.id, answer.configurationId);
+            },
+            this.addAndOpenHandler,
+          );
+        }
+        return of();
+      })
+    ).subscribe()
+    // this.configurationService.getConfigurationsCompatibleWith(template.compatibilities[0].id).pipe(
+    //   take(1),
+    //   flatMap((configurations) => {
+
+    //   })
+    // ).subscribe()
   }
 
   create() {

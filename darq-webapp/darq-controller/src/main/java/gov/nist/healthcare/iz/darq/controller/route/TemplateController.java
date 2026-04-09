@@ -9,18 +9,16 @@ import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportTemplate;
 import gov.nist.healthcare.iz.darq.controller.domain.ReportTemplateCreate;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
+import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.service.impl.ADFStorage;
+import gov.nist.healthcare.iz.darq.service.impl.SimpleConfigurationService;
 import gov.nist.healthcare.iz.darq.users.domain.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.domain.OpAck.AckStatus;
@@ -49,6 +47,8 @@ public class TemplateController {
 	private ADFStorage adfStorage;
 	@Autowired
 	private DescriptorService descriptorService;
+	@Autowired
+	private SimpleConfigurationService simpleConfigurationService;
 
 	// Get All Accessible Report Templates
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -157,6 +157,36 @@ public class TemplateController {
 		template.setPublished(false);
 		ReportTemplate saved = this.templateRepo.save(template);
 		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Cloned", saved, "report-template-clone");
+	}
+
+
+	//  Clone Report Template by Id (Owned or Published)
+	@RequestMapping(value="/{id}/clone-compatible", method=RequestMethod.POST)
+	@ResponseBody
+	@PreAuthorize("AccessResource(#request, REPORT_TEMPLATE, CLONE, #id)")
+	public OpAck<ReportTemplate> cloneWithConfiguration(
+			HttpServletRequest request,
+			@AuthenticationPrincipal User user,
+			@PathVariable("id") String id,
+			@RequestParam(value = "configurationId", required = false) String configurationId) throws NotFoundException {
+		ReportTemplate template =  (ReportTemplate) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+		template.setId(null);
+		template.setName("[Clone] "+template.getName());
+		template.setOwner(user.getUsername());
+		template.setOwnerId(user.getId());
+		template.setPublished(false);
+		if (StringUtils.isNotBlank(configurationId)) {
+			DigestConfiguration configuration = confRepo.findByOwnerIdOrReadOnly(configurationId, user.getId());
+			if (configuration == null) {
+				throw new NotFoundException("Configuration",configurationId);
+			}
+			if (simpleConfigurationService.compatible(template.getConfiguration(), configuration.getPayload() )) {
+				return new OpAck<>(AckStatus.FAILED, "Report Template Clone Failed due to Incompatible Configuration", null, "report-template-clone-compatible");
+			}
+			template.setConfiguration(configuration.getPayload());
+		}
+		ReportTemplate saved = this.templateRepo.save(template);
+		return new OpAck<>(AckStatus.SUCCESS, "Report Template Successfully Cloned", saved, "report-template-clone-compatible");
 	}
 
 	//  Delete Report Template by Id (Owned)
