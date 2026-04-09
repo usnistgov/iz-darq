@@ -11,7 +11,7 @@ do
 done
 
 if [ -z "$QDAR" ]; then 
-    echo "qDAR Path is required. (-qdar)"
+    echo "qDAR Path is required. (-q)"
     exit 1
 fi
 
