@@ -180,7 +180,7 @@ public class TemplateController {
 			if (configuration == null) {
 				throw new NotFoundException("Configuration",configurationId);
 			}
-			if (simpleConfigurationService.compatible(template.getConfiguration(), configuration.getPayload() )) {
+			if (!simpleConfigurationService.compatible(template.getConfiguration(), configuration.getPayload())) {
 				return new OpAck<>(AckStatus.FAILED, "Report Template Clone Failed due to Incompatible Configuration", null, "report-template-clone-compatible");
 			}
 			template.setConfiguration(configuration.getPayload());
