@@ -51,7 +51,7 @@ public class DetectionEngine {
 	}
 
 	public void close() throws Exception {
-		for(DetectionProvider provider: providers.values()) {
+		for(DetectionProvider provider: activeDetectionProviders) {
 			provider.close();
 		}
 	}

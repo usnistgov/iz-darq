@@ -2,6 +2,7 @@ package gov.nist.healthcare.iz.darq.digest.app;
 
 import java.io.File;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.nio.charset.MalformedInputException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,18 +10,23 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFWriter;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFModule;
+import gov.nist.healthcare.iz.darq.configuration.validation.ConfigurationPayloadValidator;
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
 import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngineConfiguration;
+import gov.nist.healthcare.iz.darq.digest.app.config.DigestConfiguration;
 import gov.nist.healthcare.iz.darq.digest.app.exception.*;
 import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
+import gov.nist.healthcare.iz.darq.digest.service.impl.DetectionTestResult;
+import gov.nist.healthcare.iz.darq.digest.service.impl.DetectionTestRunner;
 import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
 import gov.nist.healthcare.iz.darq.localreport.AvailableLocalReportServices;
 import gov.nist.healthcare.iz.darq.localreport.LocalReportEngine;
@@ -30,6 +36,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
@@ -63,25 +70,16 @@ public class CLIApp {
 
 	public static void run(String[] args) throws TerminalException {
 		try {
-			ApplicationContext context = new AnnotationConfigApplicationContext(CLIApp.class);
+			boolean detectionTestMode = args.length > 0 && "test".equalsIgnoreCase(args[0]);
+			String[] parserArgs = detectionTestMode ? Arrays.copyOfRange(args, 1, args.length) : args;
 			Properties properties = new Properties();
 			properties.load(CLIApp.class.getResourceAsStream("/application.properties"));
 			String version = properties.getProperty("app.version");
 			String build = properties.getProperty("app.date");
 			String mqeVersion = properties.getProperty("mqe.version");
-			CryptoKey cryptoKey = context.getBean(CryptoKey.class);
 			String publicKeyHash = "";
-
-			if(cryptoKey instanceof PublicOnlyCryptoKey) {
-				try {
-					((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromResource();
-					publicKeyHash = DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash());
-				} catch (Exception e) {
-					System.out.println("! No public key found in bundle");
-					logger.warn("! No public found in bundle", e);
-				}
-			}
-
+			ApplicationContext context = null;
+			CryptoKey cryptoKey = null;
 			String tag = String.format("v%s (%s) [MQE v%s] " + (!Strings.isNullOrEmpty(publicKeyHash) ? "[Key MD5 " + publicKeyHash + "]" : "") , version, build, mqeVersion);
 
 			//--- OPTIONS
@@ -98,16 +96,34 @@ public class CLIApp {
 			options.addOption("pub", "publicKey", true, "qDAR Public Key");
 			options.addOption("pm", "patientMatching", false, "Activate patient matching");
 			options.addOption("npm", "noPatientMatching", false, "Deactivate patient matching");
+			options.addOption(Option.builder().longOpt("detection").hasArg().desc("Detection ID to test; may be repeated").build());
+			options.addOption(Option.builder().longOpt("verbose").desc("Print each detection test row to the console").build());
 
 
 			CommandLineParser parser = new DefaultParser();
-			CommandLine cmd = parser.parse(options, args);
+			CommandLine cmd = parser.parse(options, parserArgs);
 			if(cmd.hasOption("help")){
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("Data At Rest Quality Analysis Command Line Tool "+ tag, options);
 				System.exit(0);
 			}
 			else {
+				if(!detectionTestMode) {
+					context = new AnnotationConfigApplicationContext(CLIApp.class);
+					cryptoKey = context.getBean(CryptoKey.class);
+				}
+
+				if(cryptoKey instanceof PublicOnlyCryptoKey) {
+					try {
+						((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromResource();
+						publicKeyHash = DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash());
+					} catch (Exception e) {
+						System.out.println("! No public key found in bundle");
+						logger.warn("! No public found in bundle", e);
+					}
+				}
+				tag = String.format("v%s (%s) [MQE v%s] " + (!Strings.isNullOrEmpty(publicKeyHash) ? "[Key MD5 " + publicKeyHash + "]" : "") , version, build, mqeVersion);
+
 				Date timestamp = new Date();
 				SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
 				String prefix = cmd.hasOption("s") ? cmd.getOptionValue("s") : timestampFormat.format(timestamp);
@@ -167,6 +183,20 @@ public class CLIApp {
 							} catch (Exception e) {
 								throw new InvalidDateFormatException(e, "Date Format " + dateFormat + " is Invalid ");
 							}
+						}
+
+						if(detectionTestMode) {
+							runDetectionTest(
+									cmd,
+									configurationPayload,
+									pFilePath,
+									vFilePath,
+									tmpDirLocation,
+									simpleDateFormat,
+									activePatientMatching,
+									deActivatePatientMatching
+							);
+							return;
 						}
 
 						// --- Read Public Key
@@ -290,6 +320,88 @@ public class CLIApp {
 		finally {
 			running = false;
 		}
+	}
+
+	private static void runDetectionTest(
+			CommandLine cmd,
+			ConfigurationPayload configurationPayload,
+			String pFilePath,
+			String vFilePath,
+			String tmpDirLocation,
+			DqDateFormat dateFormat,
+			boolean activePatientMatching,
+			boolean deActivatePatientMatching
+	) throws Exception {
+		String[] requestedDetections = cmd.getOptionValues("detection");
+		if(requestedDetections == null || requestedDetections.length == 0) {
+			throw new DetectionTestException("At least one --detection value is required in test mode.");
+		}
+
+		if(activePatientMatching) {
+			configurationPayload.setActivatePatientMatching(true);
+		}
+		if(deActivatePatientMatching) {
+			configurationPayload.setActivatePatientMatching(false);
+		}
+
+		List<String> selectedDetections = Arrays.stream(requestedDetections)
+				.filter(value -> !Strings.isNullOrEmpty(value))
+				.map(String::trim)
+				.filter(value -> !value.isEmpty())
+				.distinct()
+				.collect(Collectors.toList());
+
+		DetectionTestRunner testRunner = createDetectionTestRunner();
+		try {
+			testRunner.validateDetections(configurationPayload, selectedDetections);
+		} catch(IllegalArgumentException e) {
+			throw new DetectionTestException(e.getMessage());
+		}
+
+		String outputRoot = cmd.hasOption("out") ? cmd.getOptionValue("out") : ".";
+		SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+		File output = Paths.get(outputRoot, "darq-detection-test_" + timestampFormat.format(new Date())).toFile();
+		temporaryDirectory = createTemporaryDirectory(Optional.ofNullable(tmpDirLocation));
+
+		DetectionTestResult result;
+		try {
+			result = testRunner.run(
+					configurationPayload,
+					selectedDetections,
+					pFilePath,
+					vFilePath,
+					dateFormat,
+					output.toPath(),
+					temporaryDirectory
+			);
+		} catch(IllegalArgumentException e) {
+			throw new DetectionTestException(e.getMessage());
+		}
+
+		System.out.println("Detection Test Finished");
+		for(Map.Entry<String, DetectionTestResult.Summary> entry : result.getSummaries().entrySet()) {
+			DetectionTestResult.Summary summary = entry.getValue();
+			System.out.println(entry.getKey());
+			System.out.println("Records evaluated:     " + summary.getRecordsEvaluated());
+			System.out.println("Detection seen:        " + summary.getDetected());
+			System.out.println("Not detected:          " + summary.getNotDetected());
+			System.out.println("Not evaluable:         " + summary.getNotEvaluable());
+		}
+		System.out.println("Detailed results: " + result.getDetailsFile().toAbsolutePath());
+
+		if(cmd.hasOption("verbose")) {
+			try(java.util.stream.Stream<String> lines = Files.lines(result.getDetailsFile())) {
+				lines.forEach(System.out::println);
+			}
+		}
+	}
+
+	private static DetectionTestRunner createDetectionTestRunner() {
+		DigestConfiguration digestConfiguration = new DigestConfiguration();
+		return new DetectionTestRunner(
+				new ConfigurationPayloadValidator(),
+				digestConfiguration.detectionEngine()
+		);
 	}
 
 	public static TemporaryFolderCleanupException cleanUp() {
