@@ -5,7 +5,7 @@
   <div class="page-title summary-page-title">
     <ul class="nav nav-pills pull-left">
       <li class="nav-item">
-        <a class="nav-link" [routerLink]="dashboardRoute$ | async" >
+        <a class="nav-link" [routerLink]="dashboardRoute$ | async">
           <h5 class="title-text">
             <i class="fa fa-chevron-left" style="margin-right: 15px;"></i>
             <i class="fa fa-database" style="color: crimson;"></i>
@@ -16,17 +16,21 @@
     </ul>
     <div style="display: flex; margin: 0px auto; align-items: flex-end;">
       <h4 class="title-text title-heading">
-        <a download style="margin-right: 10px;" [href]="'api/adf/'+adfMeta.id+'/download'" *ngIf="isAdmin$ | async" >
-          <button  class="btn btn-sm btn-dark">
+        <a download style="margin-right: 10px;" [href]="'api/adf/'+adfMeta.id+'/download'" *ngIf="isAdmin$ | async">
+          <button class="btn btn-sm btn-dark">
             <i class="fa fa-download"></i>
           </button>
         </a>
         <i class="fa fa-list" style="color: rgb(223, 148, 10);"></i>
-        {{ adfMeta.name}} [Summary] </h4>
+        {{ adfMeta.name}} [Summary]
+      </h4>
       <div style="height: 100%; display: flex; align-items: flex-end;">
-        <span class="badge badge" style="margin-right: 5px; font-weight: 300; color: #afafaf;">Uploaded On {{ adfMeta.uploadedOn | date:'MM-dd-yyyy HH:mm' }}</span>
-        <span class="badge badge" style="margin-right: 5px; font-weight: 300; color: #afafaf;">Analysed On {{ adfMeta.analysedOn | date:'MM-dd-yyyy HH:mm' }}</span>
-        <span class="badge badge" style="margin-right: 5px; font-weight: 300; color: #afafaf;">As Of Date {{ adfMeta.summary.asOfDate? adfMeta.summary.asOfDate : adfMeta.analysedOn | date:'MM-dd-yyyy' }}</span>
+        <span class="badge badge" style="margin-right: 5px; font-weight: 300; color: #afafaf;">Uploaded On {{
+          adfMeta.uploadedOn | date:'MM-dd-yyyy HH:mm' }}</span>
+        <span class="badge badge" style="margin-right: 5px; font-weight: 300; color: #afafaf;">Analysed On {{
+          adfMeta.analysedOn | date:'MM-dd-yyyy HH:mm' }}</span>
+        <span class="badge badge" style="margin-right: 5px; font-weight: 300; color: #afafaf;">As Of Date {{
+          adfMeta.summary.asOfDate? adfMeta.summary.asOfDate : adfMeta.analysedOn | date:'MM-dd-yyyy' }}</span>
       </div>
     </div>
 
@@ -37,7 +41,8 @@
       <div style="flex-grow: 1; margin-bottom: 15px;" *ngIf="adfMeta.tags && adfMeta.tags.length > 0">
         <h5 style="display: inline; margin-right: 10px;">Tags</h5>
         <div style="display: inline-flex; gap: 2px; margin-top: 5px;">
-          <span *ngFor="let item of (adfMeta.tags || [])" style="font-size: 1.1em;" class="badge badge-dark">{{item}}</span>
+          <span *ngFor="let item of (adfMeta.tags || [])" style="font-size: 1.1em;"
+            class="badge badge-dark">{{item}}</span>
         </div>
       </div>
       <div style="flex-grow: 1; margin-bottom: 15px;" *ngIf="adfMeta.composed">
@@ -69,7 +74,7 @@
                 <strong>{{ component.name }}</strong>
               </td>
               <td>{{ component.uploadedOn | date:'MM-dd-yyyy HH:mm' }}</td>
-              <td>{{ component.analysedOn | date:'MM-dd-yyyy HH:mm'  }}</td>
+              <td>{{ component.analysedOn | date:'MM-dd-yyyy HH:mm' }}</td>
               <td>
                 {{component.size }}
               </td>
@@ -97,7 +102,7 @@
               <td>{{adfMeta.mqeVersion}}</td>
             </tr>
           </tbody>
-          </table>
+        </table>
       </div>
       <div *ngIf="humanReadableDuration" style="flex-grow: 1; margin-bottom: 15px;">
         <table class="table table-bordered table-sm table-striped">
@@ -115,48 +120,48 @@
           <h5>General Counts</h5>
           <table class="table table-bordered table-sm table-striped">
             <thead>
-            <tr>
-              <th>Label</th>
-              <th>Count</th>
-            </tr>
+              <tr>
+                <th>Label</th>
+                <th>Count</th>
+              </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>Total Read Patient Records</td>
-              <td>{{adfMeta.summary.counts.totalReadPatientRecords}}</td>
-            </tr>
-            <tr>
-              <td>Total Skipped Patient Records Due To Errors</td>
-              <td>{{adfMeta.summary.counts.totalSkippedPatientRecords}}</td>
-            </tr>
-            <tr>
-              <td>Total Read Vaccination Records</td>
-              <td>{{adfMeta.summary.counts.totalReadVaccinations}}</td>
-            </tr>
-            <tr>
-              <td>Minimum Vaccinations per Patient</td>
-              <td>{{adfMeta.summary.counts.minVaccinationsPerRecord}}</td>
-            </tr>
-            <tr>
-              <td>Maximum Vaccinations per Patient</td>
-              <td>{{adfMeta.summary.counts.maxVaccinationsPerRecord}}</td>
-            </tr>
-            <tr>
-              <td>Total Number of Administered Vaccinations</td>
-              <td>{{adfMeta.summary.counts.administered}}</td>
-            </tr>
-            <tr>
-              <td>Total Number of Historical Vaccinations</td>
-              <td>{{adfMeta.summary.counts.historical}}</td>
-            </tr>
-            <tr>
-              <td>Average Vaccinations per Patient</td>
-              <td>{{adfMeta.summary.counts.avgVaccinationsPerRecord}}</td>
-            </tr>
-            <tr>
-              <td>Total Number of Providers</td>
-              <td>{{adfMeta.summary.counts.numberOfProviders}}</td>
-            </tr>
+              <tr>
+                <td>Total Read Patient Records</td>
+                <td>{{adfMeta.summary.counts.totalReadPatientRecords}}</td>
+              </tr>
+              <tr>
+                <td>Total Skipped Patient Records Due To Errors</td>
+                <td>{{adfMeta.summary.counts.totalSkippedPatientRecords}}</td>
+              </tr>
+              <tr>
+                <td>Total Read Vaccination Records</td>
+                <td>{{adfMeta.summary.counts.totalReadVaccinations}}</td>
+              </tr>
+              <tr>
+                <td>Minimum Vaccinations per Patient</td>
+                <td>{{adfMeta.summary.counts.minVaccinationsPerRecord}}</td>
+              </tr>
+              <tr>
+                <td>Maximum Vaccinations per Patient</td>
+                <td>{{adfMeta.summary.counts.maxVaccinationsPerRecord}}</td>
+              </tr>
+              <tr>
+                <td>Total Number of Administered Vaccinations</td>
+                <td>{{adfMeta.summary.counts.administered}}</td>
+              </tr>
+              <tr>
+                <td>Total Number of Historical Vaccinations</td>
+                <td>{{adfMeta.summary.counts.historical}}</td>
+              </tr>
+              <tr>
+                <td>Average Vaccinations per Patient</td>
+                <td>{{adfMeta.summary.counts.avgVaccinationsPerRecord}}</td>
+              </tr>
+              <tr>
+                <td>Total Number of Providers</td>
+                <td>{{adfMeta.summary.counts.numberOfProviders}}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -165,44 +170,37 @@
           <h5>Age Groups</h5>
           <table class="table table-bordered table-sm table-striped">
             <thead>
-            <tr>
-              <th>Range</th>
-              <th>Count</th>
-            </tr>
+              <tr>
+                <th>Range</th>
+                <th>Count</th>
+              </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let ageGroup of adfMeta.summary.countByAgeGroup">
-              <td>{{agService.getAgeGroupLabel(ageGroup.range)}}</td>
-              <td>{{ageGroup.nb}}</td>
-            </tr>
-            <tr>
-              <td>+</td>
-              <td>{{adfMeta.summary.outOfRange}}</td>
-            </tr>
+              <tr *ngFor="let ageGroup of adfMeta.summary.countByAgeGroup">
+                <td>{{agService.getAgeGroupLabel(ageGroup.range)}}</td>
+                <td>{{ageGroup.nb}}</td>
+              </tr>
+              <tr>
+                <td>+</td>
+                <td>{{adfMeta.summary.outOfRange}}</td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
       <hr>
       <h5>Extract Percentages</h5>
-      <p-table #tte
-      [value]="extractItems$ | async"
-      [globalFilterFields]="['label']"
-      [rowHover]="true"
-      [rows]="10"
-      [showCurrentPageReport]="true"
-      [rowsPerPageOptions]="[10, 25, 50, 100]"
-      [paginatorDropdownAppendTo]="'body'"
-      [paginator]="true"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      [filterDelay]="0">
-				<ng-template pTemplate="caption">
-					<input type="text" pInputText size="50" placeholder="Filter"
-						   (input)="tte.filterGlobal($event.target.value, 'contains')" style="width:100%;">
-				</ng-template>
-				<ng-template pTemplate="header" let-columns>
-					<tr>
-						<th [pSortableColumn]="'label'" style="width: 400px;">Element <p-sortIcon field="label"></p-sortIcon></th>
+      <p-table #tte [value]="extractItems$ | async" [globalFilterFields]="['label']" [rowHover]="true" [rows]="10"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50, 100]" [paginatorDropdownAppendTo]="'body'"
+        [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [filterDelay]="0">
+        <ng-template pTemplate="caption">
+          <input type="text" pInputText size="50" placeholder="Filter"
+            (input)="tte.filterGlobal($event.target.value, 'contains')" style="width:100%;">
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th [pSortableColumn]="'label'" style="width: 400px;">Element <p-sortIcon field="label"></p-sortIcon></th>
             <th [pSortableColumn]="'valued'">Valued <p-sortIcon field="valued"></p-sortIcon></th>
             <th [pSortableColumn]="'empty'">Empty <p-sortIcon field="empty"></p-sortIcon></th>
             <th [pSortableColumn]="'valueLength'">Value Length <p-sortIcon field="valueLength"></p-sortIcon></th>
@@ -211,21 +209,22 @@
             <th [pSortableColumn]="'excluded'">Excluded <p-sortIcon field="excluded"></p-sortIcon></th>
             <th [pSortableColumn]="'notCollected'">Not Collected <p-sortIcon field="notCollected"></p-sortIcon></th>
             <th [pSortableColumn]="'notExtracted'">Not Extracted <p-sortIcon field="notExtracted"></p-sortIcon></th>
-					</tr>
-				</ng-template>
-				<ng-template pTemplate="body" let-node>
-					<tr>
-						<td style="width: 350px;">{{node.label}}</td>
-            <td>{{node.valued | number:'.1'}}%</td>
-            <td>{{node.empty | number:'.1'}}%</td>
-            <td>{{node.valueLength | number:'.1'}}%</td>
-            <td>{{node.valuePresent | number:'.1'}}%</td>
-            <td>{{node.valueNotPresent | number:'.1'}}%</td>
-            <td>{{node.excluded | number:'.1'}}%</td>
-            <td>{{node.notCollected | number:'.1'}}%</td>
-            <td>{{node.notExtracted | number:'.1'}}%</td>
-					</tr>
-				</ng-template>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-node>
+          <tr>
+            <td style="width: 350px;">{{node.label}}</td>
+            <td [style]="node.valued > 0 ? {'font-weight': 'bold'}: {}">{{node.valued | number:'.1'}}%</td>
+            <td [style]="node.empty > 0 ? {'font-weight': 'bold'}: {}">{{node.empty | number:'.1'}}%</td>
+            <td [style]="node.valueLength > 0 ? {'font-weight': 'bold'}: {}">{{node.valueLength | number:'.1'}}%</td>
+            <td [style]="node.valuePresent > 0 ? {'font-weight': 'bold'}: {}">{{node.valuePresent | number:'.1'}}%</td>
+            <td [style]="node.valueNotPresent > 0 ? {'font-weight': 'bold'}: {}">{{node.valueNotPresent | number:'.1'}}%
+            </td>
+            <td [style]="node.excluded > 0 ? {'font-weight': 'bold'}: {}">{{node.excluded | number:'.1'}}%</td>
+            <td [style]="node.notCollected  > 0 ? {'font-weight': 'bold'}: {}">{{node.notCollected | number:'.1'}}%</td>
+            <td [style]="node.notExtracted > 0 ? {'font-weight': 'bold'}: {}">{{node.notExtracted | number:'.1'}}%</td>
+          </tr>
+        </ng-template>
       </p-table>
       <hr>
       <h5 style="margin-top: 10px;">Supported Detections</h5>
@@ -235,48 +234,44 @@
         </div>
       </ng-container>
 
-      <p-table #dt
-      [value]="supported$ | async"
-      dataKey="id"
-      [rowHover]="true"
-      [rows]="10"
-      [showCurrentPageReport]="true"
-      [rowsPerPageOptions]="[10, 25, 50, 100]"
-      [paginatorDropdownAppendTo]="'body'"
-      [paginator]="true"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      [filterDelay]="0"
-      [globalFilterFields]="['id','description','target']">
+      <p-table #dt [value]="supported$ | async" dataKey="id" [rowHover]="true" [rows]="10"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50, 100]" [paginatorDropdownAppendTo]="'body'"
+        [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [filterDelay]="0" [globalFilterFields]="['id','description','target']">
         <ng-template pTemplate="caption">
           <div class="input-group" style="margin-left: 5px; min-width: 300px;">
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="fa fa-search"></i></span>
             </div>
-            <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search">
+            <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+              placeholder="Search">
           </div>
         </ng-template>
         <ng-template pTemplate="header">
-            <tr>
-              <th style="width: 100px;" pSortableColumn="name"> Code <p-sortIcon field="id"></p-sortIcon></th>
-              <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
-              <th pSortableColumn="target">Target <p-sortIcon field="target"></p-sortIcon></th>
-            </tr>
-            <tr>
-              <th>
-                  <input type="text" (input)="dt.filter($event.target.value, 'id', 'contains')" placeholder="Code" class="form-control">
-              </th>
-              <th>
-                  <input pInputText type="text" (input)="dt.filter($event.target.value, 'description', 'contains')" placeholder="Description" class="form-control">
-              </th>
-              <th>
-                <input pInputText type="text" (input)="dt.filter($event.target.value, 'target', 'contains')" placeholder="Target" class="form-control">
-              </th>
-            </tr>
+          <tr>
+            <th style="width: 100px;" pSortableColumn="name"> Code <p-sortIcon field="id"></p-sortIcon></th>
+            <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+            <th pSortableColumn="target">Target <p-sortIcon field="target"></p-sortIcon></th>
+          </tr>
+          <tr>
+            <th>
+              <input type="text" (input)="dt.filter($event.target.value, 'id', 'contains')" placeholder="Code"
+                class="form-control">
+            </th>
+            <th>
+              <input pInputText type="text" (input)="dt.filter($event.target.value, 'description', 'contains')"
+                placeholder="Description" class="form-control">
+            </th>
+            <th>
+              <input pInputText type="text" (input)="dt.filter($event.target.value, 'target', 'contains')"
+                placeholder="Target" class="form-control">
+            </th>
+          </tr>
         </ng-template>
         <ng-template pTemplate="body" let-value>
           <tr>
             <td>
-                {{value.id}}
+              {{value.id}}
             </td>
             <td>
               {{value.description}}
@@ -288,48 +283,44 @@
         </ng-template>
       </p-table>
       <h5 style="margin-top: 10px;">Inactive Detections</h5>
-      <p-table #dt
-      [value]="inactive$ | async"
-      dataKey="id"
-      [rowHover]="true"
-      [rows]="10"
-      [showCurrentPageReport]="true"
-      [rowsPerPageOptions]="[10, 25, 50, 100]"
-      [paginatorDropdownAppendTo]="'body'"
-      [paginator]="true"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      [filterDelay]="0"
-      [globalFilterFields]="['id','description','target']">
+      <p-table #dt [value]="inactive$ | async" dataKey="id" [rowHover]="true" [rows]="10" [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10, 25, 50, 100]" [paginatorDropdownAppendTo]="'body'" [paginator]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [filterDelay]="0"
+        [globalFilterFields]="['id','description','target']">
         <ng-template pTemplate="caption">
           <div class="input-group" style="margin-left: 5px; min-width: 300px;">
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="fa fa-search"></i></span>
             </div>
-            <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search">
+            <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+              placeholder="Search">
           </div>
         </ng-template>
         <ng-template pTemplate="header">
-            <tr>
-              <th style="width: 100px;" pSortableColumn="name"> Code <p-sortIcon field="id"></p-sortIcon></th>
-              <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
-              <th pSortableColumn="target">Target <p-sortIcon field="target"></p-sortIcon></th>
-            </tr>
-            <tr>
-              <th>
-                  <input type="text" (input)="dt.filter($event.target.value, 'id', 'contains')" placeholder="Code" class="form-control">
-              </th>
-              <th>
-                  <input pInputText type="text" (input)="dt.filter($event.target.value, 'description', 'contains')" placeholder="Description" class="form-control">
-              </th>
-              <th>
-                <input pInputText type="text" (input)="dt.filter($event.target.value, 'target', 'contains')" placeholder="Target" class="form-control">
-              </th>
-            </tr>
+          <tr>
+            <th style="width: 100px;" pSortableColumn="name"> Code <p-sortIcon field="id"></p-sortIcon></th>
+            <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+            <th pSortableColumn="target">Target <p-sortIcon field="target"></p-sortIcon></th>
+          </tr>
+          <tr>
+            <th>
+              <input type="text" (input)="dt.filter($event.target.value, 'id', 'contains')" placeholder="Code"
+                class="form-control">
+            </th>
+            <th>
+              <input pInputText type="text" (input)="dt.filter($event.target.value, 'description', 'contains')"
+                placeholder="Description" class="form-control">
+            </th>
+            <th>
+              <input pInputText type="text" (input)="dt.filter($event.target.value, 'target', 'contains')"
+                placeholder="Target" class="form-control">
+            </th>
+          </tr>
         </ng-template>
         <ng-template pTemplate="body" let-value>
           <tr>
             <td>
-                {{value.id}}
+              {{value.id}}
             </td>
             <td>
               {{value.description}}
