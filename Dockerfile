@@ -1,4 +1,4 @@
-FROM eclipse-temurin:8-jdk-focal
+FROM eclipse-temurin:8-jdk-focal as qdar-builder
 
 # 1. Setup Environment
 ENV NVM_DIR /root/.nvm
@@ -32,3 +32,8 @@ RUN chmod +x ./load-codebase.sh
 RUN chmod +x ./qdar-build.sh
 RUN chmod +x ./dependencies.sh
 RUN ./qdar-build.sh -q $(pwd) -o /output -d /dependencies
+
+
+# Final: Isolate the single output folder
+FROM scratch AS export-stage
+COPY --from=qdar-builder /output .
