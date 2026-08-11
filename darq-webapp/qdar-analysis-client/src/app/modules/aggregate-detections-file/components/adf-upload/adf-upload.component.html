@@ -18,7 +18,7 @@
       File </h4>
   </div>
   <div class="page-content upload-page-content" *ngIf="facilities$ | async as facilities">
-    <form class="upload-form" [formGroup]="form">
+    <form class="upload-form" [formGroup]="form" autocomplete="off">
       <div class="alert alert-warning" *ngIf="(facilities$ | async).length === 0">
         <ng-container *ngIf="info$ | async as info">
           You have not been assigned any IIS access, please contact us {{info.contact ? ('at ' + info.contact) : '' }}
@@ -30,8 +30,9 @@
           label="Aggregate Detections File"></app-file-upload-field>
       </div>
       <div class="form-group">
-        <label for="name"><strong>ADF Name</strong></label>
-        <input type="text" placeholder="ADF Name to store in QDAR" class="form-control" formControlName="name" name="name" id="name"
+        <label for="adf-name"><strong>ADF Name</strong></label>
+        <input type="text" placeholder="ADF Name to store in QDAR" class="form-control" formControlName="name"
+          name="adf-name" id="adf-name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
           required>
       </div>
       <div class="form-group">
