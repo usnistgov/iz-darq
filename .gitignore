@@ -24,3 +24,6 @@ darq-webapp/darq-app/src/main/resources/public/
 darq-webapp/darq-app/src/main/resources/qdar-cli.jar
 Compiled.xml
 /darq-webapp/qdar-analysis-client/.nvmrc
+/.env
+/certs/
+/adf-store/

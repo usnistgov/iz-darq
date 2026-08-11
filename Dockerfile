@@ -37,3 +37,17 @@ RUN ./qdar-build.sh -q $(pwd) -o /output -d /dependencies
 # Final: Isolate the single output folder
 FROM scratch AS export-stage
 COPY --from=qdar-builder /output .
+
+FROM tomcat:9.0.108-jdk8-temurin-noble AS deploy
+RUN rm -rf /usr/local/tomcat/webapps/*
+RUN rm -rf /usr/local/tomcat/webapps.dist
+RUN sed -i '/<\/web-app>/i \
+    <error-page>\n\
+      <exception-type>java.lang.Throwable<\/exception-type>\n\
+      <location>/error.html<\/location>\n\
+    <\/error-page>\n \
+    <error-page>\n\
+      <error-code>0<\/error-code>\n\
+      <location>/error.html<\/location>\n\
+    <\/error-page>\n' /usr/local/tomcat/conf/web.xml
+COPY --from=qdar-builder /output/qdar.war /usr/local/tomcat/webapps/qdar.war

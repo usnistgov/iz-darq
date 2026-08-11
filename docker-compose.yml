@@ -1,0 +1,88 @@
+# Container-side paths, shared by the keystore generator and the app so both
+# agree on where the keystores live. Everything else (aliases, passwords) comes
+# from .env — see .dev.example.env for the full list.
+x-qdar-paths: &qdar-paths
+  QDAR_STORE: /store
+  QDAR_ADF_JKS_PATH: /certs/adf.jks
+  QDAR_AUTH_JKS_PATH: /certs/auth.jks
+
+services:
+  qdar-app:
+    build: .
+    container_name: qdar-cherry-blossom
+    env_file:
+      - .env
+    environment:
+      <<: *qdar-paths
+    depends_on:
+      qdar-mongodb:
+        condition: service_healthy
+      keystore-generator:
+        condition: service_completed_successfully
+    volumes:
+      - ./certs:/certs
+      - ./adf-store:/store
+    ports:
+      - "8080:8080"
+  qdar-mongodb:
+    image: mongo:4.4.29-focal
+    container_name: qdar-mongodb-green-apple
+    restart: unless-stopped
+    healthcheck:  # mongo 4.4 predates mongosh, so use the legacy shell
+      test: ["CMD", "mongo", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    volumes:
+      - ./database/logs:/var/log/mongodb/
+      - ./database/db:/data/db
+      - ./database/config:/data/configdb
+  keystore-generator:
+    # Only used to run keytool. Alpine keeps it small; 21 rather than 17
+    # because temurin only publishes arm64 alpine builds from 21 onward.
+    image: eclipse-temurin:21-jre-alpine
+    volumes:
+      - ./certs:/certs
+    working_dir: /certs
+    user: "${UID:-1000}:${GID:-1000}"  # Prevents file ownership issues on Linux/macOS
+    env_file:
+      - .env
+    environment:
+      <<: *qdar-paths
+      QDAR_CERT_KEYALG: ${QDAR_CERT_KEYALG:-RSA}
+      QDAR_CERT_KEYSIZE: ${QDAR_CERT_KEYSIZE:-2048}
+      QDAR_CERT_VALIDITY: ${QDAR_CERT_VALIDITY:-365}
+      QDAR_CERT_DNAME: ${QDAR_CERT_DNAME:-CN=localhost, OU=Dev, O=MyCompany, L=MyCity, S=MyState, C=US}
+    entrypoint: [ "/bin/sh", "-c" ]
+    command:
+      - |
+        set -e
+
+        generate() {
+          keystore=$$1; alias=$$2; storepass=$$3; keypass=$$4
+
+          if [ -f "$$keystore" ] && keytool -list -keystore "$$keystore" -storepass "$$storepass" -alias "$$alias" >/dev/null 2>&1; then
+            echo "[keystore-generator] $$keystore already holds alias '$$alias' - skipping"
+            return 0
+          fi
+
+          mkdir -p "$$(dirname "$$keystore")"
+          echo "[keystore-generator] generating alias '$$alias' in $$keystore"
+          # -storetype JKS is required on Java 9+, where keytool defaults to
+          # PKCS12. The app reads keystores with KeyStore.getDefaultType() on
+          # Java 8, which resolves to JKS.
+          keytool -genkeypair \
+            -alias "$$alias" \
+            -storetype JKS \
+            -keyalg "$$QDAR_CERT_KEYALG" \
+            -keysize "$$QDAR_CERT_KEYSIZE" \
+            -validity "$$QDAR_CERT_VALIDITY" \
+            -keystore "$$keystore" \
+            -storepass "$$storepass" \
+            -keypass "$$keypass" \
+            -dname "$$QDAR_CERT_DNAME" \
+            -noprompt
+        }
+        generate "$$QDAR_ADF_JKS_PATH"  "$$QDAR_ADF_KEY_ALIAS"  "$$QDAR_ADF_JKS_PASSWORD"  "$$QDAR_ADF_KEY_PASSWORD"
+        generate "$$QDAR_AUTH_JKS_PATH" "$$QDAR_AUTH_KEY_ALIAS" "$$QDAR_AUTH_JKS_PASSWORD" "$$QDAR_AUTH_KEY_PASSWORD"
