@@ -61,6 +61,7 @@ public class DigestConfiguration {
 	public LocalReportEngine reportEngine() {
 		Map<String, LocalReportService> localReportServices = new HashMap<>();
 		localReportServices.put(AvailableLocalReportServices.LR_BAD_PHONES, new BadPhoneNumberReportService());
+		localReportServices.put(AvailableLocalReportServices.LR_BAD_ZIP_CODES, new BadZipCodeReportService());
 		localReportServices.put(AvailableLocalReportServices.LR_DUPLICATE_RECORDS, new DuplicateRecordsReportService());
 		localReportServices.put(AvailableLocalReportServices.LR_LOT_NUMBERS, new LotNumberReportService());
 		localReportServices.put(AvailableLocalReportServices.LR_PLACEHOLDER_NAMES, new PlaceholderNameReportService());
