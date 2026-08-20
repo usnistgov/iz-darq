@@ -15,13 +15,13 @@ public class BadZipCodeReportService extends AggregateLocalReportService {
 
     public final static String FILENAME = "zip_codes.csv";
 
-    Set<Detection> DETECTIONS = new HashSet<>(Arrays.asList(
+    public static final Set<Detection> DETECTIONS = new HashSet<>(Arrays.asList(
             Detection.NextOfKinAddressZipIsInvalid,
             Detection.PatientAddressZipIsInvalid
     ));
 
     public BadZipCodeReportService() {
-        super(FILENAME);
+        super(FILENAME, DETECTIONS.stream().map(Detection::getMqeMqeCode).toArray(String[]::new));
     }
 
     @Override
