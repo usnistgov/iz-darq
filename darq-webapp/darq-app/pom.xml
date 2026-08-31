@@ -10,7 +10,7 @@
     <artifactId>darq-app</artifactId>
     <properties>
         <qdar.webtool.version>4.1.5.3</qdar.webtool.version>
-        <mqe.version>2022.9-BETA</mqe.version>
+        <mqe.version>2026.8-BETA</mqe.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>MM-dd-yyyy</maven.build.timestamp.format>
         <maven.compiler.source>1.8</maven.compiler.source>

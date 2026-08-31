@@ -11,7 +11,7 @@
     <artifactId>darq-shared</artifactId>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mqe.version>2022.9-BETA</mqe.version>
+        <mqe.version>2026.8-BETA</mqe.version>
         <qdar.api.version>3.1.4.3</qdar.api.version>
     </properties>
     <dependencies>
