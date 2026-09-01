@@ -39,8 +39,20 @@ public class BadZipCodeReportMock implements DataExtractMock {
 	static public final int PNF = 1;
 	static public final int PNM = 2;
 	static public final int PNL = 3;
-	// Patient.address is at index 10, Address.zip is at sub-index 4
+	// Patient.address is at index 10, Address.street is at sub-index 0, Address.zip at sub-index 4
+	static public final int STREET = 10;
 	static public final int ZIP = 14;
+
+	/*
+	 * MqeAddress.equals/hashCode only consider street/street2/city/state - zip and country are
+	 * deliberately excluded. MessageTransformer runs every address in the message (patient,
+	 * responsible party, next-of-kin) through AddressCleanser, which collects them into a
+	 * HashMap<MqeAddress, MqeAddress>. If the patient address has no street/city/state it compares
+	 * equal to the blank responsible-party and next-of-kin addresses, they collapse into a single
+	 * map entry, and the patient's address is replaced by a blank one - silently dropping the zip
+	 * before any validation rule sees it. Giving the patient address a street keeps it distinct.
+	 */
+	public final String street = "100 Bureau Dr";
 
 	public final String validZip = "20899";
 	public final String invalidZipTooShort = "1234";
@@ -60,10 +72,7 @@ public class BadZipCodeReportMock implements DataExtractMock {
 		configurationPayload.setDetections(Stream.of(
 				Detection.PatientAddressZipIsInvalid,
 				Detection.PatientAddressZipIsMissing,
-				Detection.PatientAddressZipIsPresent,
-				Detection.NextOfKinAddressZipIsInvalid,
-				Detection.NextOfKinAddressZipIsMissing,
-				Detection.NextOfKinAddressZipIsPresent
+				Detection.PatientAddressZipIsPresent
 		).map(Detection::getMqeMqeCode).collect(Collectors.toList()));
 		configurationPayload.setAgeGroups(ageGroupHelper.getAgeGroups());
 		configurationPayload.setActivatePatientMatching(false);
@@ -90,35 +99,35 @@ public class BadZipCodeReportMock implements DataExtractMock {
 		ExtractBuilder extractBuilder = new ExtractBuilder(ageGroupHelper)
 				.withRecord()
 				.withAgeGroup(0)
-				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(ZIP, validZip)
+				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(STREET, street).withValue(ZIP, validZip)
 				.and()
 				.withRecord()
 				.withAgeGroup(0)
-				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(ZIP, invalidZipTooShort)
+				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(STREET, street).withValue(ZIP, invalidZipTooShort)
 				.and()
 				.withRecord()
 				.withAgeGroup(0)
-				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(ZIP, invalidZipTooLong)
+				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(STREET, street).withValue(ZIP, invalidZipTooLong)
 				.and()
 				.withRecord()
 				.withAgeGroup(0)
-				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(ZIP, invalidZipRepeatedLow)
+				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(STREET, street).withValue(ZIP, invalidZipRepeatedLow)
 				.and()
 				.withRecord()
 				.withAgeGroup(0)
-				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(ZIP, invalidZipRepeatedHigh)
+				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(STREET, street).withValue(ZIP, invalidZipRepeatedHigh)
 				.and()
 				.withRecord()
 				.withAgeGroup(0)
-				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(ZIP, invalidZipBelowRange)
+				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(STREET, street).withValue(ZIP, invalidZipBelowRange)
 				.and()
 				.withRecord()
 				.withAgeGroup(0)
-				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(ZIP, invalidZipAboveRange)
+				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(STREET, street).withValue(ZIP, invalidZipAboveRange)
 				.and()
 				.withRecord()
 				.withAgeGroup(0)
-				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(ZIP, "")
+				.withValue(PNF, "Alan").withValue(PNM, "Mathison").withValue(PNL, "Turing").withValue(STREET, street).withValue(ZIP, "")
 				.and();
 		return extractBuilder.get();
 	}

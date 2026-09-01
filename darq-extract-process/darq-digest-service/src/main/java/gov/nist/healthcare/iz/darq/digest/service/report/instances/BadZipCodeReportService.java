@@ -17,6 +17,8 @@ public class BadZipCodeReportService extends AggregateLocalReportService {
 
     public static final Set<Detection> DETECTIONS = new HashSet<>(Arrays.asList(
             Detection.PatientAddressZipIsInvalid
+//            Detection.PatientAddressZipIsMissing,
+//            Detection.PatientAddressZipIsPresent
     ));
 
     public BadZipCodeReportService() {

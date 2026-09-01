@@ -68,8 +68,9 @@ public class BadZipCodeReportTestCase {
 		99960  (Invalid - greater than 99950) x 1
 		""     (Empty)                            => not in file
 		 */
-		// TODO confirm expected line count once the zip detection rules are finalized
-		assertEquals(6, lines.size());
+		// CSVFormat.DEFAULT does not treat the first record as a header, so it is parsed as a
+		// record too: 1 header line + 6 aggregated invalid-zip rows.
+		assertEquals(7, lines.size());
 
 		// 1234 x 1 -- length not equal to 5
 		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.invalidZipTooShort) &&
