@@ -8,7 +8,33 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<!-- Jakarta JAXB stack, pinned to the 3.0.x line: codebase-client 3.0.0 uses the
+		     jakarta.xml.bind namespace, but its default API (4.0.2) and runtime are compiled
+		     for Java 11 (class major 55) and will not load on this project's Java 8 target.
+		     The 3.0.x artifacts are the same namespace built for Java 8 (major 52).  Temporary fix until maybe an upgrade to java 11-->
+		<jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
+		<jakarta.activation.version>2.0.1</jakarta.activation.version>
+		<jaxb.runtime.version>3.0.2</jaxb.runtime.version>
 	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>jakarta.xml.bind</groupId>
+				<artifactId>jakarta.xml.bind-api</artifactId>
+				<version>${jakarta.xml.bind.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>jakarta.activation</groupId>
+				<artifactId>jakarta.activation-api</artifactId>
+				<version>${jakarta.activation.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jaxb</groupId>
+				<artifactId>jaxb-runtime</artifactId>
+				<version>${jaxb.runtime.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<modules>
 		<module>file-parser</module>
 		<module>darq-webapp</module>

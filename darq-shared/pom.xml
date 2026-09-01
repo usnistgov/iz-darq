@@ -31,6 +31,15 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- codebase-client (via mqe-validator) only brings the jakarta.xml.bind *API*.
+             Without an implementation on the classpath, JAXBContext.newInstance fails at
+             runtime with "Implementation of Jakarta XML Binding-API has not been found"
+             (ClassNotFoundException: org.glassfish.jaxb.runtime.v2.ContextFactory). -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>
             <artifactId>darq-patient-matching</artifactId>
