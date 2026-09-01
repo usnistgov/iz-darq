@@ -55,7 +55,7 @@ public class BadPhoneNumberReportTestCase {
 		assertTrue(Files.exists(reportPath));}
 
 	@Test
-	public void checkLocalReportContent() throws Exception { //TODO update test case after MQE change
+	public void checkLocalReportContent() throws Exception {
 		Path reportPath = utils.getLocalReport(BadPhoneNumberReportService.FILENAME);
 		FileReader reader = new FileReader(reportPath.toFile());
 		CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT);
@@ -63,27 +63,27 @@ public class BadPhoneNumberReportTestCase {
 		/*
 		800-544-5555 (Valid) => not in file
 		800-555-12121 (Invalid) x 2
-		555-1212 (Invalid) x 1 no longer caught by this detection
-		800-555-ABCD (Invalid) x 2 no longer caught by this detection
+		555-1212 (Invalid) x 1
+		800-555-ABCD (Invalid) x 2
 		000-555-1212 (Invalid) x 1
 		"" (Empty) => not in file
 		 */
-		assertEquals(3, lines.size());
+		assertEquals(5, lines.size());
 		// 800-555-12121 x 2
-//		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.invalidPhoneLong) &&
-//				record.get(1).contains(Detection.PatientPhoneIsInvalid.getMqeMqeCode()) &&
-//				record.get(2).equals("2"))
-//		);
+		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.invalidPhoneLong) &&
+				record.get(1).contains(Detection.PatientPhoneIsInvalid.getMqeMqeCode()) &&
+				record.get(2).equals("2"))
+		);
 		// 555-1212 x 1
 		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.invalidPhoneShort) &&
 				record.get(1).contains(Detection.PatientPhoneIsInvalid.getMqeMqeCode()) &&
 				record.get(2).equals("1"))
 		);
 		// 800-555-ABCD x 2
-//		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.invalidPhoneFormat) &&
-//				record.get(1).contains(Detection.PatientPhoneIsInvalid.getMqeMqeCode()) &&
-//				record.get(2).equals("2"))
-//		);
+		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.invalidPhoneFormat) &&
+				record.get(1).contains(Detection.PatientPhoneIsInvalid.getMqeMqeCode()) &&
+				record.get(2).equals("2"))
+		);
 		// 000-555-1212 x 1
 		assertTrue(lines.stream().anyMatch((record) -> record.get(0).equals(mock.invalidPhoneArea) &&
 				record.get(1).contains(Detection.PatientPhoneIsInvalid.getMqeMqeCode()) &&
