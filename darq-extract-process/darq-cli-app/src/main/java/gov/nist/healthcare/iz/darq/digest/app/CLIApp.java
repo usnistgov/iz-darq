@@ -248,6 +248,7 @@ public class CLIApp {
 						localReportEngineConfiguration.setOutputDirectory(output.getAbsolutePath());
 						localReportEngineConfiguration.setTemporaryDirectory(temporaryDirectory.toAbsolutePath().toString());
 						localReportEngineConfiguration.setConfigurationPayload(configurationPayload);
+						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_BAD_ZIP_CODES);
 						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_BAD_PHONES);
 						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_DUPLICATE_RECORDS);
 						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_LOT_NUMBERS);
