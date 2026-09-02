@@ -69,7 +69,7 @@ public class DataController {
 	@RequestMapping(value = "/detections", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, DetectionDescriptor> detections() {
-        return this.detectionsMap;
+		return this.detectionsMap;
     }
 
 	// Get Code Set

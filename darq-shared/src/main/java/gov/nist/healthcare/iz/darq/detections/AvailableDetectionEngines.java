@@ -31,7 +31,7 @@ public class AvailableDetectionEngines {
 				TargetType.Vaccination
 		)));
 		for(Detection d : all) {
-			this.add(new DetectionDescriptor(d.getMqeMqeCode(), d.getDisplayText(),d.getTargetObject().toString(), active.contains(d)));
+			this.add(new DetectionDescriptor(d.getMqeMqeCode(), d.getDisplayText(),d.getTargetObject().toString(), active.contains(d), DetectionLifeCycleUtil.lifecycleStringFor(d)));
 		}
 
 		// Patient Matching Detections

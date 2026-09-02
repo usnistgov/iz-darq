@@ -8,6 +8,7 @@ import gov.nist.healthcare.iz.darq.parser.model.VaccineRecord;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 import org.immregistries.mqe.util.validation.MqeDetection;
 import org.immregistries.mqe.validator.detection.Detection;
+import org.immregistries.mqe.validator.detection.DetectionStatus;
 import org.immregistries.mqe.validator.detection.MqeCode;
 import org.immregistries.mqe.validator.detection.ValidationReport;
 import org.immregistries.mqe.validator.engine.MessageValidator;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,7 +43,7 @@ public class MQEDetectionProvider implements DetectionProvider {
 				TargetType.Vaccination
 		)));
 		for(Detection d : active) {
-			allMqeDescriptors.put(d.getMqeMqeCode(), new DetectionDescriptor(d.getMqeMqeCode(), d.getDisplayText(),d.getTargetObject().toString(), active.contains(d)));
+			allMqeDescriptors.put(d.getMqeMqeCode(), new DetectionDescriptor(d.getMqeMqeCode(), d.getDisplayText(),d.getTargetObject().toString(), active.contains(d), DetectionLifeCycleUtil.lifecycleStringFor(d)));
 		}
 	}
 
@@ -211,7 +213,5 @@ public class MQEDetectionProvider implements DetectionProvider {
 			sum.addNegative(1);
 		}
 	}
-
-
 
 }

@@ -4,6 +4,7 @@ export interface IDetectionDescriptor {
   description: string;
   target: string;
   active: boolean;
+  lifecycle?: string;
 }
 
 export interface IDetectionMap {
