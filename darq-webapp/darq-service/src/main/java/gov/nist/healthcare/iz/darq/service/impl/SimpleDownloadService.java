@@ -29,7 +29,7 @@ import gov.nist.healthcare.iz.darq.service.utils.DownloadService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 
 public class SimpleDownloadService implements DownloadService {
 	public static final String RESOURCES_JAR_FILE = "qdar-cli.jar";

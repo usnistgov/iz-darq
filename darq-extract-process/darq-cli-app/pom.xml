@@ -30,15 +30,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- Version comes from the parent's dependencyManagement (jakarta JAXB 3.0.x, Java 8).
+             The jakarta JAXB runtime (org.glassfish.jaxb:jaxb-runtime) arrives transitively
+             from darq-shared, which needs it for codebase-client's JAXBContext usage. -->
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <version>2.3.0</version>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
@@ -49,11 +46,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.3.0</version>
         </dependency>
         <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>

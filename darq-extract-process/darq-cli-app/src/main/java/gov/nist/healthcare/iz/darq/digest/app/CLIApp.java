@@ -55,7 +55,7 @@ import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
 import gov.nist.healthcare.iz.darq.digest.service.impl.Exporter;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 
 @Configuration
 @ComponentScan("gov.nist.healthcare")

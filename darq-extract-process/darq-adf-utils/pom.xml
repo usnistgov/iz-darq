@@ -11,6 +11,12 @@
         <qdar.api.version>3.1.4.3</qdar.api.version>
     </properties>
     <dependencies>
+        <!-- SqliteADFWriter imports jakarta.xml.bind.DatatypeConverter directly.
+             Version comes from the root pom's dependencyManagement. -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>
             <artifactId>darq-digest-model</artifactId>

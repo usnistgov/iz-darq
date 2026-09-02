@@ -11,7 +11,7 @@ import gov.nist.healthcare.iz.darq.adf.module.sqlite.model.Dictionaries;
 import gov.nist.healthcare.iz.darq.digest.domain.*;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;

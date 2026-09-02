@@ -11,7 +11,9 @@
 		<!-- Jakarta JAXB stack, pinned to the 3.0.x line: codebase-client 3.0.0 uses the
 		     jakarta.xml.bind namespace, but its default API (4.0.2) and runtime are compiled
 		     for Java 11 (class major 55) and will not load on this project's Java 8 target.
-		     The 3.0.x artifacts are the same namespace built for Java 8 (major 52).  Temporary fix until maybe an upgrade to java 11-->
+		     The 3.0.x artifacts are the same namespace built for Java 8 (major 52).  Temporary fix until maybe an upgrade to java 11
+		     Note: jakarta.activation-api has its own version line and never had a 4.x release -
+		     2.0.x pairs with JAXB 3.0.x (2.1.x pairs with JAXB 4.0.x). -->
 		<jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
 		<jakarta.activation.version>2.0.1</jakarta.activation.version>
 		<jaxb.runtime.version>3.0.2</jaxb.runtime.version>

@@ -13,6 +13,12 @@
         <mqe.version>2026.8-BETA</mqe.version>
     </properties>
     <dependencies>
+        <!-- SimpleDownloadService imports jakarta.xml.bind.DatatypeConverter directly.
+             Version comes from the root pom's dependencyManagement. -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>
             <artifactId>darq-domain-repository</artifactId>
