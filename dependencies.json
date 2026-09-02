@@ -33,7 +33,7 @@
     {
       "name": "MQE Validator",
       "repository":"https://github.com/immregistries/mqe-validator",
-      "sha1": "aafaaa3e9b8d92325e88435f898074b403564a9c",
+      "sha1": "d1e73fc0f8425a5138d1719d6c2a14f202e66d93",
       "cmd": "mvn jar:jar package install:install -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip -Dexec.skip=true"
     }
   ]
