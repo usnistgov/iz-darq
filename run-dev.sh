@@ -27,6 +27,17 @@ if [ -f "$RC_FILE" ]; then
 else
   echo "ENV FILE $ENV_FILE not found"
 fi
-rm -r /opt/homebrew/opt/tomcat@8/libexec/webapps/*;
-cp ./qdar.war /opt/homebrew/opt/tomcat@8/libexec/webapps/;
-/opt/homebrew/opt/tomcat@8/bin/catalina jpda run;
+rm -r /opt/homebrew/opt/tomcat@$TOMCAT_VERSION/libexec/webapps/*;
+cp ./dist/qdar.war /opt/homebrew/opt/tomcat@$TOMCAT_VERSION/libexec/webapps/;
+
+# Homebrew's tomcat@N/bin/catalina is a one-line wrapper that hardcodes
+#   JAVA_HOME="/opt/homebrew/opt/openjdk"
+# so it silently ignores the JDK `sdk env` just selected. Call catalina.sh
+# directly instead, and pass through the .sdkmanrc JDK.
+if [ -z "$JAVA_HOME" ]; then
+  echo "Error: JAVA_HOME is not set; cannot pin Tomcat to the .sdkmanrc JDK."
+  exit 1
+fi
+echo "Starting Tomcat $TOMCAT_VERSION with JAVA_HOME=$JAVA_HOME"
+JRE_HOME="$JAVA_HOME" \
+  /opt/homebrew/opt/tomcat@$TOMCAT_VERSION/libexec/bin/catalina.sh jpda run;
