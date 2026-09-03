@@ -17,6 +17,13 @@
 		<jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
 		<jakarta.activation.version>2.0.1</jakarta.activation.version>
 		<jaxb.runtime.version>3.0.2</jaxb.runtime.version>
+		<!-- Legacy javax.xml.bind stack. No qDAR code uses it - it is declared at runtime scope
+		     only because org.immregistries:mqe-hl7-utility calls javax.xml.bind.JAXBContext /
+		     Unmarshaller without declaring a dependency of its own. On Java 8 the JDK supplies
+		     javax.xml.bind from rt.jar so this is currently redundant, but it disappears from the
+		     JDK on Java 11+, where MQE would fail with NoClassDefFoundError without these.
+		     2.3.1 is the final javax release (api major 52, impl major 51 - both Java 8 safe). -->
+		<javax.xml.bind.version>2.3.1</javax.xml.bind.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -34,6 +41,16 @@
 				<groupId>org.glassfish.jaxb</groupId>
 				<artifactId>jaxb-runtime</artifactId>
 				<version>${jaxb.runtime.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.xml.bind</groupId>
+				<artifactId>jaxb-api</artifactId>
+				<version>${javax.xml.bind.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.xml.bind</groupId>
+				<artifactId>jaxb-impl</artifactId>
+				<version>${javax.xml.bind.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

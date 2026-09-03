@@ -29,6 +29,16 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
+                <!-- lonestar drags in jaxb-core 2.2.11, which shares 102 duplicate classes with
+                     the jaxb-impl 2.3.1 pinned below and would shadow it depending on classpath
+                     order. jaxb-core has no 2.3.1 release to align on, and jaxb-impl 2.3.1 already
+                     bundles com.sun.xml.bind.v2.*; the com.sun.istack / com.sun.xml.txw2 classes
+                     it does not bundle come from txw2 + istack-commons-runtime, already on the
+                     classpath via the jakarta jaxb-runtime. -->
+                <exclusion>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-core</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <!-- codebase-client (via mqe-validator) only brings the jakarta.xml.bind *API*.
@@ -38,6 +48,23 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Legacy javax.xml.bind, for mqe-hl7-utility only (it calls javax.xml.bind.JAXBContext
+             and Unmarshaller but declares no dependency for them). Deliberately *runtime* scope:
+             qDAR code compiles against jakarta.xml.bind only, and runtime scope makes it
+             impossible to import javax.xml.bind here by accident. Redundant on Java 8, where the
+             JDK still supplies javax.xml.bind; required on Java 11+, where it does not.
+             Versions come from the root pom's dependencyManagement. -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
