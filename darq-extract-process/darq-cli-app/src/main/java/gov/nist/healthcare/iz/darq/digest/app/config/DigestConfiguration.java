@@ -66,6 +66,7 @@ public class DigestConfiguration {
 		localReportServices.put(AvailableLocalReportServices.LR_LOT_NUMBERS, new LotNumberReportService());
 		localReportServices.put(AvailableLocalReportServices.LR_PLACEHOLDER_NAMES, new PlaceholderNameReportService());
 		localReportServices.put(AvailableLocalReportServices.LR_DUPLICATE_VACCINATIONS, new DuplicateVaccinationReportService());
+		localReportServices.put(AvailableLocalReportServices.LR_MISMERGED_PATIENT_CANDIDATES, new MismergedPatientCandidatesReportService());
 		return new LocalReportEngine(localReportServices);
 	}
 

@@ -254,6 +254,7 @@ public class CLIApp {
 						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_LOT_NUMBERS);
 						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_PLACEHOLDER_NAMES);
 						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_DUPLICATE_VACCINATIONS);
+						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_MISMERGED_PATIENT_CANDIDATES);
 						localReportEngine.configure(localReportEngineConfiguration, detectionEngine);
 
 

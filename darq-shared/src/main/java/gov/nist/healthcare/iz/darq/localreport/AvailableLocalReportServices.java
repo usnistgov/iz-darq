@@ -7,4 +7,5 @@ public class AvailableLocalReportServices {
 	public static final String LR_DUPLICATE_VACCINATIONS = "DUPLICATE_VACCINATIONS";
 	public static final String LR_LOT_NUMBERS = "LOT_NUMBERS";
 	public static final String LR_PLACEHOLDER_NAMES = "PLACEHOLDER_NAMES";
+	public static final String LR_MISMERGED_PATIENT_CANDIDATES = "MISMERGED_PATIENT_CANDIDATES";
 }
