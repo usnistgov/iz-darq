@@ -28,7 +28,7 @@ else
   echo "ENV FILE $ENV_FILE not found"
 fi
 rm -r /opt/homebrew/opt/tomcat@$TOMCAT_VERSION/libexec/webapps/*;
-cp ./dist/qdar.war /opt/homebrew/opt/tomcat@$TOMCAT_VERSION/libexec/webapps/;
+cp ./darq-webapp/darq-app/target/qdar.war/qdar.war /opt/homebrew/opt/tomcat@$TOMCAT_VERSION/libexec/webapps/;
 
 # Homebrew's tomcat@N/bin/catalina is a one-line wrapper that hardcodes
 #   JAVA_HOME="/opt/homebrew/opt/openjdk"
