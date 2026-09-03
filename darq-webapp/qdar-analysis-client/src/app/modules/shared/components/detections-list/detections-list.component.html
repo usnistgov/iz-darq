@@ -7,7 +7,8 @@
       <div class="input-group-prepend">
         <span class="input-group-text"><i class="fa fa-search"></i></span>
       </div>
-      <input class="form-control" type="text" placeholder="Search By Code, Description, Target" (input)="filter($event.target.value)">
+      <input class="form-control" type="text" placeholder="Search By Code, Description, Target"
+        (input)="filter($event.target.value)">
     </div>
   </div>
   <button class="btn btn-sm btn-primary" (click)="pick()" *ngIf="!viewOnly">
@@ -23,6 +24,7 @@
       <th> Description </th>
       <th> Target </th>
       <th> Active </th>
+      <th> Lifecycle </th>
       <th *ngIf="!viewOnly"></th>
     </tr>
   </thead>
@@ -31,7 +33,11 @@
       <td>{{item}}</td>
       <td>{{detectionsMap[item].description}}</td>
       <td>{{detectionsMap[item].target}}</td>
-      <td style="vertical-align: middle;"> <div style="width: 15px; height: 15px; border-radius: 15px;" [ngClass]="{ 'active' : detectionsMap[item].active, 'inactive' : !detectionsMap[item].active }"></div> </td>
+      <td style="vertical-align: middle;">
+        <div style="width: 15px; height: 15px; border-radius: 15px;"
+          [ngClass]="{ 'active' : detectionsMap[item].active, 'inactive' : !detectionsMap[item].active }"></div>
+      </td>
+      <td>{{detectionsMap[item].lifecycle}}</td>
       <td *ngIf="!viewOnly">
         <button class="btn btn-sm btn-danger float-right" (click)="remove(i)">
           <i class="fa fa-minus"></i>

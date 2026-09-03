@@ -25,6 +25,7 @@ export class SupportDataService {
             description: detectionsMap[code].description,
             target: detectionsMap[code].target,
             active: detectionsMap[code].active,
+            lifecycle: detectionsMap[code].lifecycle,
           };
         });
       }),
