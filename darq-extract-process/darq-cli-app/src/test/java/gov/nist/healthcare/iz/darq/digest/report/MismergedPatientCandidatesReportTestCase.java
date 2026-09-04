@@ -75,7 +75,8 @@ public class MismergedPatientCandidatesReportTestCase {
 	public void checkLocalReportContent() throws Exception {
 		List<CSVRecord> lines = readReport();
 
-		// TODO set to 1 header + one row per patient expected in the report
+		// 1 header + one row each for the invalid-dose, flu and COVID patients. The clean
+		// patient is below every threshold and is not reported.
 		assertEquals(4, lines.size());
 
 		// More than 5 invalid doses -> only column 1 marked
