@@ -12,12 +12,16 @@ import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
 import gov.nist.healthcare.iz.darq.digest.service.detection.SimpleDetectionContext;
 import gov.nist.healthcare.iz.darq.digest.service.exception.InvalidPatientRecord;
 import gov.nist.healthcare.iz.darq.localreport.LocalReportEngine;
+import gov.nist.healthcare.iz.darq.parser.exception.InvalidValueException;
 import gov.nist.healthcare.iz.darq.parser.model.AggregatePatientRecord;
+import gov.nist.healthcare.iz.darq.parser.model.VaccineRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.AggregateParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParseError;
 
 import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
+import gov.nist.healthcare.iz.darq.parser.type.DqString;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
@@ -27,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -140,7 +145,11 @@ public class SimpleDigestRunner implements DigestRunner {
 		String patientAgeGroup = detectionContext.calculateAgeGroupAsOfEvaluationDate(apr.patient.date_of_birth.getValue());
 		Map<String, String> providersByVaccinationId = apr.history.stream().collect(Collectors.toMap((vx) -> vx.vax_event_id.getValue(), (vx) -> vx.reporting_group.getValue()));
 		Map<String, String> ageGroupAtVaccinationByVaccinationId = apr.history.stream().collect(Collectors.toMap((vx) -> vx.vax_event_id.getValue(), (vx) -> detectionContext.calculateAgeGroup(apr.patient.date_of_birth.getValue(), vx.administration_date.getValue())));
-		return new PreProcessRecord(apr, patientAgeGroup, providersByVaccinationId, ageGroupAtVaccinationByVaccinationId);
+		Map<String, Integer> lowercaseMvxCodes = new HashMap<>();
+        for (VaccineRecord vaccineRecord : apr.history) {
+            processVaccinationManufacturer(vaccineRecord, lowercaseMvxCodes);
+        }
+        return new PreProcessRecord(apr, patientAgeGroup, providersByVaccinationId, ageGroupAtVaccinationByVaccinationId, lowercaseMvxCodes);
 	}
 
 	@Override
@@ -153,4 +162,15 @@ public class SimpleDigestRunner implements DigestRunner {
 		}		
 	}
 
+	public void processVaccinationManufacturer(VaccineRecord record, Map<String,Integer> mvxCountMap) {
+		String mvx = record.manufacturer.getValue();
+		if (!StringUtils.isAllUpperCase(mvx) && StringUtils.isNotBlank(mvx)) {
+			try {
+				record.manufacturer = new DqString(mvx.toUpperCase(), mvx.toUpperCase());
+			} catch (InvalidValueException ignored) {
+				// Will not throw as null value checked
+			}
+			mvxCountMap.put(mvx, mvxCountMap.getOrDefault(mvx, 0) + 1);
+		}
+	}
 }
