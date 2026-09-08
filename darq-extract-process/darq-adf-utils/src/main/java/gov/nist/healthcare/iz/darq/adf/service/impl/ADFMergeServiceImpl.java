@@ -1,12 +1,12 @@
 package gov.nist.healthcare.iz.darq.adf.service.impl;
 
-import gov.nist.healthcare.iz.darq.digest.domain.Summary;
 import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
-import gov.nist.healthcare.iz.darq.digest.domain.ADPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
 import gov.nist.healthcare.iz.darq.adf.service.ADFMergeService;
 import gov.nist.healthcare.iz.darq.adf.service.MergeService;
-import gov.nist.healthcare.iz.darq.digest.domain.*;
+import gov.nist.healthcare.iz.darq.digest.domain.ADPayload;
+import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
+import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
+import gov.nist.healthcare.iz.darq.digest.domain.Summary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

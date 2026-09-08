@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, AfterViewInit, ViewChild, OnDestroy, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
-import { TREE_ACTIONS, TreeComponent, TreeNode } from 'angular-tree-component';
-import { fromEvent, Subscription, Subject, interval, combineLatest, BehaviorSubject } from 'rxjs';
-import { tap, debounceTime, filter } from 'rxjs/operators';
+import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {TREE_ACTIONS, TreeComponent, TreeNode} from 'angular-tree-component';
+import {BehaviorSubject, combineLatest, fromEvent, interval, Subscription} from 'rxjs';
+import {debounceTime, filter, tap} from 'rxjs/operators';
 
 export interface ITocNode {
   id: string;

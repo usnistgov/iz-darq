@@ -1,10 +1,9 @@
 package gov.nist.healthcare.iz.darq.parser.model;
 
 import gov.nist.healthcare.iz.darq.parser.annotation.Field;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 import gov.nist.healthcare.iz.darq.parser.type.DqDate;
 import gov.nist.healthcare.iz.darq.parser.type.DqString;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class VISInformation {
 

@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { RxjsStoreHelperService, MessageService } from '@usnistgov/ngx-dam-framework-legacy';
-import { of, Observable } from 'rxjs';
-import { UserService } from '../../services/user.service';
-import { map, flatMap, take } from 'rxjs/operators';
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {MessageService, RxjsStoreHelperService} from '@usnistgov/ngx-dam-framework-legacy';
+import {Observable, of} from 'rxjs';
+import {UserService} from '../../services/user.service';
+import {flatMap, map, take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-verify-email',

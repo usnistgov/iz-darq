@@ -1,8 +1,9 @@
 package gov.nist.healthcare.iz.darq.digest.domain;
 
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 public class TransformResult<A, B, C> {
 	

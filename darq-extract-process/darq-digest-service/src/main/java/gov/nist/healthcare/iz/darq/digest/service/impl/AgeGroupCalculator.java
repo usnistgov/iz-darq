@@ -1,17 +1,17 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
+import gov.nist.healthcare.iz.darq.digest.domain.Range;
+import gov.nist.healthcare.iz.darq.digest.service.AgeGroupService;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.joda.time.LocalDate;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
-
-import gov.nist.healthcare.iz.darq.digest.domain.Range;
-import gov.nist.healthcare.iz.darq.digest.service.AgeGroupService;
 
 public class AgeGroupCalculator implements AgeGroupService {
 

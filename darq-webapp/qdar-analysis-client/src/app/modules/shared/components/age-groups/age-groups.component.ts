@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { IRange, IBracket } from '../../model/age-group.model';
-import { AgeGroupService } from '../../services/age-group.service';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {IBracket, IRange} from '../../model/age-group.model';
+import {AgeGroupService} from '../../services/age-group.service';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-age-groups',

@@ -1,7 +1,7 @@
-import { selectFromCollection, selectPayloadData, selectValue } from '@usnistgov/ngx-dam-framework-legacy';
-import { createEntityAdapter, Dictionary } from '@ngrx/entity';
-import { createSelector } from '@ngrx/store';
-import { IReportTemplateDescriptor, IReportTemplate, IReportSection } from '../model/report-template.model';
+import {selectFromCollection, selectPayloadData, selectValue} from '@usnistgov/ngx-dam-framework-legacy';
+import {createEntityAdapter, Dictionary} from '@ngrx/entity';
+import {createSelector} from '@ngrx/store';
+import {IReportSection, IReportTemplate, IReportTemplateDescriptor} from '../model/report-template.model';
 
 const reportTemplatesAdapter = createEntityAdapter<IReportTemplateDescriptor>();
 const reportTemplatesSelectors = reportTemplatesAdapter.getSelectors();

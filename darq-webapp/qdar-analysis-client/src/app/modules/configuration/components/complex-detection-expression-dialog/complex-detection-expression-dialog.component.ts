@@ -1,11 +1,11 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { IDetectionResource } from 'src/app/modules/shared/model/public.model';
-import { ExpressionType, IExpression } from '../../model/configuration.model';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {IDetectionResource} from 'src/app/modules/shared/model/public.model';
+import {ExpressionType, IExpression} from '../../model/configuration.model';
 import * as _ from 'lodash';
-import { ComplexDetectionService } from '../../services/complex-detection.service';
-import { ComplexDetectionTreeService, ExpressionTreeNode } from '../../services/complex-detection-tree.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import {ComplexDetectionService} from '../../services/complex-detection.service';
+import {ComplexDetectionTreeService, ExpressionTreeNode} from '../../services/complex-detection-tree.service';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-complex-detection-expression-dialog',

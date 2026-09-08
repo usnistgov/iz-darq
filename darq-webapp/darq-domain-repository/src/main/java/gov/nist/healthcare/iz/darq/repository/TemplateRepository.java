@@ -1,10 +1,10 @@
 package gov.nist.healthcare.iz.darq.repository;
 
-import java.util.List;
-
 import gov.nist.healthcare.iz.darq.analyzer.model.template.ReportTemplate;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+
+import java.util.List;
 
 
 public interface TemplateRepository extends MongoRepository<ReportTemplate, String>{

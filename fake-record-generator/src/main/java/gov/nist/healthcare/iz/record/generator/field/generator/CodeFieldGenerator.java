@@ -2,8 +2,8 @@ package gov.nist.healthcare.iz.record.generator.field.generator;
 
 import com.google.common.base.Strings;
 import gov.nist.healthcare.iz.record.generator.RecordType;
-import gov.nist.healthcare.iz.record.generator.field.CodedField;
 import gov.nist.healthcare.iz.record.generator.field.CodeField;
+import gov.nist.healthcare.iz.record.generator.field.CodedField;
 import gov.nist.healthcare.iz.record.generator.model.PatientRecord;
 import org.apache.commons.lang3.RandomUtils;
 import org.immregistries.codebase.client.CodeMap;

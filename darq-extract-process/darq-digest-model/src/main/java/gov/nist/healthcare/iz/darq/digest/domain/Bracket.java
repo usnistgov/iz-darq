@@ -2,8 +2,6 @@ package gov.nist.healthcare.iz.darq.digest.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.Objects;
-
 public class Bracket implements Comparable<Bracket>{
 	private int year;
 	private int month;

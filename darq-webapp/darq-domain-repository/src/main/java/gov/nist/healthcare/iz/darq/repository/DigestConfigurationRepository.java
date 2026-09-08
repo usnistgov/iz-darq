@@ -1,10 +1,10 @@
 package gov.nist.healthcare.iz.darq.repository;
 
-import java.util.List;
-
+import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
+
+import java.util.List;
 
 public interface DigestConfigurationRepository extends MongoRepository<DigestConfiguration, String>{
 

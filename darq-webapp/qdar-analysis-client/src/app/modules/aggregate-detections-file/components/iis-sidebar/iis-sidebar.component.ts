@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { IUserFacilityDescriptor } from '../../../facility/model/facility.model';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ServerInfoService, IServerInfo } from '../../../core/services/app-info.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {IUserFacilityDescriptor} from '../../../facility/model/facility.model';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {IServerInfo, ServerInfoService} from '../../../core/services/app-info.service';
 
 
 @Component({

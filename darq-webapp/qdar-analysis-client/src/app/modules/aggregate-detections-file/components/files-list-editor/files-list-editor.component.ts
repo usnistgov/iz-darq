@@ -1,35 +1,42 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
-  DamAbstractEditorComponent,
-  IEditorMetadata,
-  EditorSave,
   ConfirmDialogComponent,
+  DamAbstractEditorComponent,
+  EditorSave,
+  EditorUpdate,
+  IEditorMetadata,
+  IMessage,
+  MessageService,
   MessageType,
   RxjsStoreHelperService,
-  EditorUpdate,
-  TurnOnLoader,
   TurnOffLoader,
-  MessageService,
-  IMessage
+  TurnOnLoader
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { Action, Store } from '@ngrx/store';
-import { Actions } from '@ngrx/effects';
-import { combineLatest, Observable, of, EMPTY, throwError, BehaviorSubject, Subscription } from 'rxjs';
-import { concatMap, flatMap, map, take, takeUntil, filter, catchError, tap } from 'rxjs/operators';
-import { IADFDescriptor } from '../../model/adf.model';
+import {Action, Store} from '@ngrx/store';
+import {Actions} from '@ngrx/effects';
+import {BehaviorSubject, combineLatest, EMPTY, Observable, of, Subscription, throwError} from 'rxjs';
+import {catchError, concatMap, filter, flatMap, map, take, takeUntil} from 'rxjs/operators';
+import {IADFDescriptor} from '../../model/adf.model';
 import * as moment from 'moment';
-import { DataTableDialogComponent } from 'src/app/modules/shared/components/data-table-dialog/data-table-dialog.component';
-import { QueryDialogComponent } from 'src/app/modules/shared/components/query-dialog/query-dialog.component';
-import { selectAllDetections, selectAllCvx, selectPatientTables, selectVaccinationTables } from 'src/app/modules/shared/store/core.selectors';
-import { AdfJobDialogComponent } from '../adf-job-dialog/adf-job-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import { ReportTemplateService } from 'src/app/modules/report-template/services/report-template.service';
-import { AnalysisService } from 'src/app/modules/shared/services/analysis.service';
-import { ValuesService } from 'src/app/modules/shared/services/values.service';
-import { FileService } from '../../services/file.service';
-import { selectUserFacilityById } from '../../store/core.selectors';
-import { AdfEditDialogComponent } from '../adf-edit-dialog/adf-edit-dialog.component';
+import {
+  DataTableDialogComponent
+} from 'src/app/modules/shared/components/data-table-dialog/data-table-dialog.component';
+import {QueryDialogComponent} from 'src/app/modules/shared/components/query-dialog/query-dialog.component';
+import {
+  selectAllCvx,
+  selectAllDetections,
+  selectPatientTables,
+  selectVaccinationTables
+} from 'src/app/modules/shared/store/core.selectors';
+import {AdfJobDialogComponent} from '../adf-job-dialog/adf-job-dialog.component';
+import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {ReportTemplateService} from 'src/app/modules/report-template/services/report-template.service';
+import {AnalysisService} from 'src/app/modules/shared/services/analysis.service';
+import {ValuesService} from 'src/app/modules/shared/services/values.service';
+import {FileService} from '../../services/file.service';
+import {selectUserFacilityById} from '../../store/core.selectors';
+import {AdfEditDialogComponent} from '../adf-edit-dialog/adf-edit-dialog.component';
 
 export const ADF_FILE_LIST_EDITOR_METADATA: IEditorMetadata = {
   id: 'ADF_FILE_LIST_EDITOR_METADATA',

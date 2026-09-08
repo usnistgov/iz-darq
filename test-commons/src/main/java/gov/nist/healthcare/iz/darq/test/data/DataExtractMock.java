@@ -5,7 +5,6 @@ import gov.nist.healthcare.iz.darq.test.helper.AgeGroupHelper;
 import gov.nist.healthcare.iz.darq.test.helper.Record;
 
 import java.util.List;
-import java.util.Set;
 
 public interface DataExtractMock {
 	ConfigurationPayload getConfigurationPayload();

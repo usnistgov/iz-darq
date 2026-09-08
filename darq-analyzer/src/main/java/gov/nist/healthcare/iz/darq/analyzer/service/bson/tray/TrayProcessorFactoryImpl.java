@@ -1,12 +1,11 @@
 package gov.nist.healthcare.iz.darq.analyzer.service.bson.tray;
 
-import java.util.function.Function;
-
-import org.springframework.stereotype.Service;
-
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisQuery.Action;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray;
 import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
+import org.springframework.stereotype.Service;
+
+import java.util.function.Function;
 
 @Service
 public class TrayProcessorFactoryImpl implements TrayProcessorFactory {

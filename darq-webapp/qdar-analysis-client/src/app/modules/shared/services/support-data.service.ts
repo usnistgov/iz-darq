@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { IDetectionMap, ICvxCode, IDetectionResource, ICvxResource } from '../model/public.model';
-import { map } from 'rxjs/operators';
-import { EntityType } from '../model/entity.model';
-import { AgeGroupService } from './age-group.service';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {ICvxCode, ICvxResource, IDetectionMap, IDetectionResource} from '../model/public.model';
+import {map} from 'rxjs/operators';
+import {EntityType} from '../model/entity.model';
+import {AgeGroupService} from './age-group.service';
 
 @Injectable({
   providedIn: 'root'

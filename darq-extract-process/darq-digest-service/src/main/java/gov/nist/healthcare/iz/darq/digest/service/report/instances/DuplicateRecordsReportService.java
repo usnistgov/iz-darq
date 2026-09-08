@@ -7,7 +7,10 @@ import gov.nist.healthcare.iz.darq.localreport.LocalReportEngineConfiguration;
 import gov.nist.healthcare.iz.darq.localreport.SimpleLocalReportService;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class DuplicateRecordsReportService extends SimpleLocalReportService {
 

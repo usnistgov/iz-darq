@@ -4,7 +4,6 @@ import gov.nist.healthcare.iz.record.generator.RecordType;
 import gov.nist.healthcare.iz.record.generator.field.DateBetweenField;
 import gov.nist.healthcare.iz.record.generator.model.PatientRecord;
 import org.apache.commons.lang3.RandomUtils;
-import org.joda.time.DurationFieldType;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;

@@ -1,15 +1,15 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, Optional } from '@angular/core';
-import { IDataTable } from '../../../report/model/report.model';
-import { Labelizer } from '../../services/values.service';
-import { fieldDisplayName } from '../../../report-template/model/analysis.values';
-import { SelectItem } from 'primeng/api/selectitem';
-import { IFieldInputOptions } from '../field-input/field-input.component';
-import { Comparator } from '../../../report-template/model/report-template.model';
-import { Table } from 'primeng/table/table';
-import { ColumnType, DataTableService, IColumn, Row, IRowTree, IRowTreeData } from '../../services/data-table.service';
-import { TreeTable } from 'primeng/treetable/treetable';
-import { DataExportCSVService } from '../../services/data-export-csv.service';
-import { ReportTablesService } from 'src/app/modules/report/services/report-tables.service';
+import {Component, Input, OnChanges, OnDestroy, OnInit, Optional} from '@angular/core';
+import {IDataTable} from '../../../report/model/report.model';
+import {Labelizer} from '../../services/values.service';
+import {fieldDisplayName} from '../../../report-template/model/analysis.values';
+import {SelectItem} from 'primeng/api/selectitem';
+import {IFieldInputOptions} from '../field-input/field-input.component';
+import {Comparator} from '../../../report-template/model/report-template.model';
+import {Table} from 'primeng/table/table';
+import {ColumnType, DataTableService, IColumn, IRowTree, IRowTreeData, Row} from '../../services/data-table.service';
+import {TreeTable} from 'primeng/treetable/treetable';
+import {DataExportCSVService} from '../../services/data-export-csv.service';
+import {ReportTablesService} from 'src/app/modules/report/services/report-tables.service';
 
 @Component({
   selector: 'app-data-table',

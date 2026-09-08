@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { IDescriptor } from '../../model/descriptor.model';
+import {Component, Input, OnInit} from '@angular/core';
+import {IDescriptor} from '../../model/descriptor.model';
 
 @Component({
   selector: 'app-descriptor-display',

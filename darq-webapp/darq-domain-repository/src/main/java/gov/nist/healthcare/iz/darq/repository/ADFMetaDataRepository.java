@@ -1,11 +1,10 @@
 package gov.nist.healthcare.iz.darq.repository;
 
-import java.util.List;
-
 import gov.nist.healthcare.iz.darq.model.UserUploadedFile;
 import org.springframework.data.mongodb.repository.MongoRepository;
-
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface ADFMetaDataRepository extends MongoRepository<UserUploadedFile, String>{

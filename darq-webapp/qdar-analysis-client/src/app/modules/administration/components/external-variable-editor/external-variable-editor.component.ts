@@ -1,16 +1,26 @@
-import { VariablesCsvImportDialogComponent } from './../variables-csv-import-dialog/variables-csv-import-dialog.component';
-import { selectFacilities } from './../../../facility/store/core.selectors';
-import { ExternalVariableDialogComponent } from './../external-variable-dialog/external-variable-dialog.component';
-import { ExternalVariableService } from './../../services/external-variables.service';
-import { IExternalQueryVariable } from './../../../shared/model/query-variable.model';
-import { DamAbstractEditorComponent, EditorSave, IEditorMetadata, MessageService, EditorUpdate, ConfirmDialogComponent, IMessage } from '@usnistgov/ngx-dam-framework-legacy';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Actions } from '@ngrx/effects';
-import { Action, Store } from '@ngrx/store';
-import { BehaviorSubject, Observable, combineLatest, of, throwError, Subscription } from 'rxjs';
-import { map, take, flatMap, catchError, tap } from 'rxjs/operators';
-import { IFacilityDescriptor } from 'src/app/modules/facility/model/facility.model';
+import {
+  VariablesCsvImportDialogComponent
+} from './../variables-csv-import-dialog/variables-csv-import-dialog.component';
+import {selectFacilities} from './../../../facility/store/core.selectors';
+import {ExternalVariableDialogComponent} from './../external-variable-dialog/external-variable-dialog.component';
+import {ExternalVariableService} from './../../services/external-variables.service';
+import {IExternalQueryVariable} from './../../../shared/model/query-variable.model';
+import {
+  ConfirmDialogComponent,
+  DamAbstractEditorComponent,
+  EditorSave,
+  EditorUpdate,
+  IEditorMetadata,
+  IMessage,
+  MessageService
+} from '@usnistgov/ngx-dam-framework-legacy';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {Actions} from '@ngrx/effects';
+import {Action, Store} from '@ngrx/store';
+import {BehaviorSubject, combineLatest, Observable, of, Subscription, throwError} from 'rxjs';
+import {catchError, flatMap, map, take, tap} from 'rxjs/operators';
+import {IFacilityDescriptor} from 'src/app/modules/facility/model/facility.model';
 
 export const EXTERNAL_VARIABLE_EDITOR_METADATA: IEditorMetadata = {
   id: 'EXTERNAL_VARIABLE_EDITOR_METADATA',

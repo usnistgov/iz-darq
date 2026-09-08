@@ -5,20 +5,14 @@ import gov.nist.healthcare.iz.darq.digest.common.CLITestRunnerUtils;
 import gov.nist.healthcare.iz.darq.digest.common.SQLiteADFTestUtils;
 import gov.nist.healthcare.iz.darq.digest.mock.BadPhoneNumberReportMock;
 import gov.nist.healthcare.iz.darq.digest.service.report.instances.BadPhoneNumberReportService;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-import org.immregistries.mqe.validator.detection.Detection;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 

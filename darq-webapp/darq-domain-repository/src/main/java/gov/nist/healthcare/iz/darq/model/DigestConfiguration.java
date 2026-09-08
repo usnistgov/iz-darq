@@ -1,14 +1,13 @@
 package gov.nist.healthcare.iz.darq.model;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.nist.healthcare.domain.trait.Owned;
 import gov.nist.healthcare.domain.trait.Publishable;
+import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import org.springframework.data.annotation.Transient;
 
-import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
+import java.util.Date;
 
 public class DigestConfiguration implements Owned, Publishable {
 

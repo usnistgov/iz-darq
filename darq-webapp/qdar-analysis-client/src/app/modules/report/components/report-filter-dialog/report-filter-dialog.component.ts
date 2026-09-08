@@ -1,9 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import * as _ from 'lodash';
-import { IFieldInputOptions } from '../../../shared/components/field-input/field-input.component';
-import { IQueryResultFilter, Comparator, IReportFilter, IValueContainer } from '../../../report-template/model/report-template.model';
-import { AnalysisType, Field, fieldDisplayName } from '../../../report-template/model/analysis.values';
+import {IFieldInputOptions} from '../../../shared/components/field-input/field-input.component';
+import {Comparator, IReportFilter, IValueContainer} from '../../../report-template/model/report-template.model';
+import {AnalysisType, Field, fieldDisplayName} from '../../../report-template/model/analysis.values';
 
 @Component({
   selector: 'app-report-filter-dialog',

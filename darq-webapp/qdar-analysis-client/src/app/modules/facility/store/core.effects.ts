@@ -1,32 +1,32 @@
-import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { catchError, map, concatMap, flatMap } from 'rxjs/operators';
-import { combineLatest } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Actions, Effect, ofType} from '@ngrx/effects';
+import {catchError, concatMap, flatMap, map} from 'rxjs/operators';
+import {combineLatest} from 'rxjs';
 import {
   CoreActionTypes,
-  LoadFacilitiesSuccess,
   LoadFacilitiesFailure,
-  LoadFacilitySuccess,
+  LoadFacilitiesSuccess,
   LoadFacilityFailure,
+  LoadFacilitySuccess,
   OpenFacilityEditor,
 } from './core.actions';
-import { Store } from '@ngrx/store';
-import { FacilityService } from '../services/facility.service';
-import { FACILITY_WIDGET } from '../components/facility-widget/facility-widget.component';
+import {Store} from '@ngrx/store';
+import {FacilityService} from '../services/facility.service';
+import {FACILITY_WIDGET} from '../components/facility-widget/facility-widget.component';
 import {
-  MessageService,
-  DamWidgetEffect,
-  LoadResourcesInRepository,
-  LoadPayloadData,
-  OpenEditor,
   DamActionTypes,
-  GlobalSave,
+  DamWidgetEffect,
   EditorSave,
+  GlobalSave,
+  LoadPayloadData,
+  LoadResourcesInRepository,
+  MessageService,
+  OpenEditor,
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { IFacilityDescriptor } from '../model/facility.model';
-import { handleError } from '../../shared/services/helper.functions';
-import { UserService } from '../../core/services/user.service';
-import { IUser } from '../../core/model/user.model';
+import {IFacilityDescriptor} from '../model/facility.model';
+import {handleError} from '../../shared/services/helper.functions';
+import {UserService} from '../../core/services/user.service';
+import {IUser} from '../../core/model/user.model';
 
 @Injectable()
 export class CoreEffects extends DamWidgetEffect {

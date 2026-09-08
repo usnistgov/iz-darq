@@ -8,7 +8,6 @@ import gov.nist.healthcare.iz.darq.digest.service.report.instances.BadPhoneNumbe
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.io.FileUtils;
 import org.immregistries.mqe.validator.detection.Detection;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -16,8 +15,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.FileReader;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;

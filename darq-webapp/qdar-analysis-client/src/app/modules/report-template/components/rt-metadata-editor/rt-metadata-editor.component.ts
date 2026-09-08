@@ -1,23 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
   DamAbstractEditorComponent,
-  IEditorMetadata,
   EditorSave,
-  selectPayloadData,
+  IEditorMetadata,
   IWorkspaceCurrent,
   LoadPayloadData,
   MessageService,
+  selectPayloadData,
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { Store, Action } from '@ngrx/store';
-import { Actions } from '@ngrx/effects';
-import { Observable, Subscription, throwError } from 'rxjs';
-import { map, take, concatMap, flatMap, catchError, withLatestFrom } from 'rxjs/operators';
-import { IReportTemplate } from '../../model/report-template.model';
-import { IConfigurationDescriptor } from 'src/app/modules/configuration/model/configuration.model';
-import { ReportTemplateService } from '../../services/report-template.service';
-import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
-import { ResourceType } from '../../../core/model/resouce-type.enum';
-import { PermissionService } from '../../../core/services/permission.service';
+import {Action, Store} from '@ngrx/store';
+import {Actions} from '@ngrx/effects';
+import {Observable, Subscription, throwError} from 'rxjs';
+import {catchError, concatMap, flatMap, map, take, withLatestFrom} from 'rxjs/operators';
+import {IReportTemplate} from '../../model/report-template.model';
+import {IConfigurationDescriptor} from 'src/app/modules/configuration/model/configuration.model';
+import {ReportTemplateService} from '../../services/report-template.service';
+import {Action as ResourceAction} from 'src/app/modules/core/model/action.enum';
+import {ResourceType} from '../../../core/model/resouce-type.enum';
+import {PermissionService} from '../../../core/services/permission.service';
 
 export const RT_METADATA_EDITOR_METADATA: IEditorMetadata = {
   id: 'RT_METADATA_EDITOR_ID',

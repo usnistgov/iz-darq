@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, EventEmitter, Output, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { SelectItem } from 'primeng/api/selectitem';
-import { IDataViewQuery } from '../../../../report-template/model/report-template.model';
-import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
-import { UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {SelectItem} from 'primeng/api/selectitem';
+import {IDataViewQuery} from '../../../../report-template/model/report-template.model';
+import {FormGroup, NgForm} from '@angular/forms';
+import {Subscription} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {QueryDialogTabComponent} from '../query-dialog-tab/query-dialog-tab.component';
+import {UserMessage} from '@usnistgov/ngx-dam-framework-legacy';
 
 @Component({
   selector: 'app-general-query-data',

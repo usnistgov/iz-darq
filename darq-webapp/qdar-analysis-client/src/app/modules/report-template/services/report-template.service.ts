@@ -1,21 +1,28 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Message, LoadPayloadData, InsertResourcesInCollection, SetValue, DeleteResourcesFromCollection, LoadResourcesInRepository } from '@usnistgov/ngx-dam-framework-legacy';
-import { EntityType } from '../../shared/model/entity.model';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 import {
-  IReportTemplateDescriptor,
-  IReportTemplate,
+  DeleteResourcesFromCollection,
+  InsertResourcesInCollection,
+  LoadPayloadData,
+  LoadResourcesInRepository,
+  Message,
+  SetValue
+} from '@usnistgov/ngx-dam-framework-legacy';
+import {EntityType} from '../../shared/model/entity.model';
+import {
   IReportSection,
+  IReportTemplate,
   IReportTemplateCreate,
+  IReportTemplateDescriptor,
+  ISection,
   ISimpleViewQuery
 } from '../model/report-template.model';
-import { Action } from '@ngrx/store';
-import { IReportSectionDisplay } from '../model/state.model';
-import { Guid } from 'guid-typescript';
-import { AnalysisType, Field } from '../model/analysis.values';
-import { QueryService } from '../../shared/services/query.service';
-import { ISection } from '../model/report-template.model';
+import {Action} from '@ngrx/store';
+import {IReportSectionDisplay} from '../model/state.model';
+import {Guid} from 'guid-typescript';
+import {AnalysisType} from '../model/analysis.values';
+import {QueryService} from '../../shared/services/query.service';
 
 @Injectable({
   providedIn: 'root'

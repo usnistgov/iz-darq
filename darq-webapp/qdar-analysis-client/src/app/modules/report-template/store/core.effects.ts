@@ -1,19 +1,19 @@
-import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { catchError, concatMap, flatMap, take, map } from 'rxjs/operators';
-import { of, combineLatest } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Actions, Effect, ofType} from '@ngrx/effects';
+import {catchError, concatMap, flatMap} from 'rxjs/operators';
+import {combineLatest, of} from 'rxjs';
 import {
-  CoreActionTypes,
   CoreActions,
+  CoreActionTypes,
   LoadReportTemplates,
   LoadReportTemplatesFailure,
   LoadReportTemplatesSuccess,
 } from './core.actions';
-import { IReportTemplateDescriptor } from '../model/report-template.model';
-import { LoadResourcesInRepository, MessageService } from '@usnistgov/ngx-dam-framework-legacy';
-import { ReportTemplateService } from '../services/report-template.service';
-import { ConfigurationService } from '../../configuration/services/configuration.service';
-import { IConfigurationDescriptor } from '../../configuration/model/configuration.model';
+import {IReportTemplateDescriptor} from '../model/report-template.model';
+import {LoadResourcesInRepository, MessageService} from '@usnistgov/ngx-dam-framework-legacy';
+import {ReportTemplateService} from '../services/report-template.service';
+import {ConfigurationService} from '../../configuration/services/configuration.service';
+import {IConfigurationDescriptor} from '../../configuration/model/configuration.model';
 
 
 @Injectable()

@@ -3,9 +3,7 @@ package gov.nist.healthcare.iz.darq.test.helper;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ExtractBuilder {

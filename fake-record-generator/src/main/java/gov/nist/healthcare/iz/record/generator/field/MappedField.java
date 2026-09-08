@@ -1,7 +1,5 @@
 package gov.nist.healthcare.iz.record.generator.field;
 
-import gov.nist.healthcare.iz.record.generator.field.generator.FieldGenerator;
-
 import java.util.HashMap;
 
 public class MappedField extends Field {

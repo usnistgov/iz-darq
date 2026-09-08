@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild, Input, OnDestroy, SimpleChanges, OnChanges } from '@angular/core';
-import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
-import { IDataViewQuery, Comparator, IComplexThreshold } from '../../../../report-template/model/report-template.model';
-import { NgForm } from '@angular/forms';
-import { IFieldInputOptions } from '../../field-input/field-input.component';
-import { UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
-import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Field } from 'src/app/modules/report-template/model/analysis.values';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {QueryDialogTabComponent} from '../query-dialog-tab/query-dialog-tab.component';
+import {Comparator, IComplexThreshold, IDataViewQuery} from '../../../../report-template/model/report-template.model';
+import {NgForm} from '@angular/forms';
+import {IFieldInputOptions} from '../../field-input/field-input.component';
+import {UserMessage} from '@usnistgov/ngx-dam-framework-legacy';
+import {Subscription} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {Field} from 'src/app/modules/report-template/model/analysis.values';
 
 @Component({
   selector: 'app-query-threshold',

@@ -2,11 +2,8 @@ package gov.nist.healthcare.iz.darq.adf.module.api;
 
 import gov.nist.healthcare.iz.darq.adf.model.ADFVersion;
 import gov.nist.healthcare.iz.darq.adf.model.Metadata;
-import gov.nist.healthcare.iz.darq.adf.utils.crypto.ADFCryptoUtil;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.model.ProcessingCount;
-import gov.nist.healthcare.iz.darq.digest.domain.ADPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
+import gov.nist.healthcare.iz.darq.adf.utils.crypto.ADFCryptoUtil;
 import gov.nist.healthcare.iz.darq.digest.domain.*;
 
 import java.io.FileWriter;

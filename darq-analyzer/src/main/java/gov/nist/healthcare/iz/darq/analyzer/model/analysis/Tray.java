@@ -1,13 +1,13 @@
 package gov.nist.healthcare.iz.darq.analyzer.model.analysis;
 
+import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import gov.nist.healthcare.iz.darq.digest.domain.Field;
-import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
 
 public abstract class Tray implements Cloneable {
 

@@ -1,24 +1,23 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.StringWriter;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import gov.nist.healthcare.iz.darq.adf.model.Metadata;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFWriter;
+import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
 import gov.nist.healthcare.iz.darq.digest.domain.Summary;
-import gov.nist.healthcare.iz.darq.digest.domain.*;
+import gov.nist.healthcare.iz.darq.digest.service.HTMLSummaryGenerator;
+import j2html.tags.ContainerTag;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
-import gov.nist.healthcare.iz.darq.digest.service.HTMLSummaryGenerator;
-import j2html.tags.ContainerTag;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static j2html.TagCreator.*;
 

@@ -1,16 +1,19 @@
-import { MessageService } from '@usnistgov/ngx-dam-framework-legacy';
-import { Store } from '@ngrx/store';
-import { IQueryPayload } from './../../../report-template/model/report-template.model';
-import { IQuerySaveRequest, QueryService } from './../../../shared/services/query.service';
-import { MatDialog } from '@angular/material/dialog';
-import { IConfigurationPayload } from './../../../configuration/model/configuration.model';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Labelizer } from '../../../shared/services/values.service';
-import { IReportSectionResult } from '../../model/report.model';
-import { Field } from '../../../report-template/model/analysis.values';
-import { of } from 'rxjs';
-import { QuerySaveDialogComponent, IQuerySaveDetails } from 'src/app/modules/shared/components/query-save-dialog/query-save-dialog.component';
-import { flatMap, map } from 'rxjs/operators';
+import {MessageService} from '@usnistgov/ngx-dam-framework-legacy';
+import {Store} from '@ngrx/store';
+import {IQueryPayload} from './../../../report-template/model/report-template.model';
+import {IQuerySaveRequest, QueryService} from './../../../shared/services/query.service';
+import {MatDialog} from '@angular/material/dialog';
+import {IConfigurationPayload} from './../../../configuration/model/configuration.model';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Labelizer} from '../../../shared/services/values.service';
+import {IReportSectionResult} from '../../model/report.model';
+import {Field} from '../../../report-template/model/analysis.values';
+import {of} from 'rxjs';
+import {
+  IQuerySaveDetails,
+  QuerySaveDialogComponent
+} from 'src/app/modules/shared/components/query-save-dialog/query-save-dialog.component';
+import {flatMap, map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-report-section',

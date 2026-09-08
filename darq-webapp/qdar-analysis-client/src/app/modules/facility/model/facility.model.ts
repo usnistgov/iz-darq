@@ -1,6 +1,6 @@
-import { EntityType } from '../../shared/model/entity.model';
-import { IDamResource } from '@usnistgov/ngx-dam-framework-legacy';
-import { IUser } from '../../core/model/user.model';
+import {EntityType} from '../../shared/model/entity.model';
+import {IDamResource} from '@usnistgov/ngx-dam-framework-legacy';
+import {IUser} from '../../core/model/user.model';
 
 
 export interface IFacilityDescriptor extends IDamResource {

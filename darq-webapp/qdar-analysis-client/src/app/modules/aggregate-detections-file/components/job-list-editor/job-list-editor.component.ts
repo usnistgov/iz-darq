@@ -1,22 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, interval, BehaviorSubject, Subscription, of, EMPTY } from 'rxjs';
-import { IAnalysisJob } from 'src/app/modules/report/model/report.model';
-import { Action, Store } from '@ngrx/store';
-import { selectCurrentFacility, selectUserFacilityById } from '../../store/core.selectors';
-import { ReportTemplateService } from '../../../report-template/services/report-template.service';
-import { AnalysisService } from '../../../shared/services/analysis.service';
-import { switchMap, flatMap, map, concatMap, take, takeUntil, filter } from 'rxjs/operators';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {BehaviorSubject, EMPTY, interval, Observable, of, Subscription} from 'rxjs';
+import {IAnalysisJob} from 'src/app/modules/report/model/report.model';
+import {Action, Store} from '@ngrx/store';
+import {selectCurrentFacility, selectUserFacilityById} from '../../store/core.selectors';
+import {ReportTemplateService} from '../../../report-template/services/report-template.service';
+import {AnalysisService} from '../../../shared/services/analysis.service';
+import {concatMap, filter, flatMap, map, switchMap, take, takeUntil} from 'rxjs/operators';
 import {
   ConfirmDialogComponent,
-  RxjsStoreHelperService,
-  MessageType,
   DamAbstractEditorComponent,
   EditorSave,
-  EditorUpdate
+  EditorUpdate,
+  IEditorMetadata,
+  MessageType,
+  RxjsStoreHelperService
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { MatDialog } from '@angular/material/dialog';
-import { Actions } from '@ngrx/effects';
-import { IEditorMetadata } from '@usnistgov/ngx-dam-framework-legacy';
+import {MatDialog} from '@angular/material/dialog';
+import {Actions} from '@ngrx/effects';
 
 export const ANALYSIS_JOB_LIST_EDITOR_METADATA: IEditorMetadata = {
   id: 'ANALYSIS_JOB_LIST_EDITOR_METADATA',

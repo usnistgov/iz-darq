@@ -9,10 +9,7 @@ import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
 import gov.nist.healthcare.iz.darq.repository.TemplateRepository;
 import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 
 @Service
 public class ConfigurationVerificationIntegrityCheck {

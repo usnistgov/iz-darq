@@ -1,5 +1,10 @@
-import { QueryVariableType, ExternalQueryVariableScope, IQueryVariableRefInstance, IDynamicQueryVariableRef } from './../../model/query-variable.model';
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  ExternalQueryVariableScope,
+  IDynamicQueryVariableRef,
+  IQueryVariableRefInstance,
+  QueryVariableType
+} from './../../model/query-variable.model';
+import {Component, Input, OnInit} from '@angular/core';
 
 export interface IQueryVariableDisplay {
   id: string;

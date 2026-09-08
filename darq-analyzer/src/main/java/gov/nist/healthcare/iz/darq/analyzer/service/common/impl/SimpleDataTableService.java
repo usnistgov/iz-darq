@@ -1,14 +1,16 @@
 package gov.nist.healthcare.iz.darq.analyzer.service.common.impl;
 
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.*;
+import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTable;
+import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTableRow;
+import gov.nist.healthcare.iz.darq.analyzer.model.analysis.QueryIssues;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.*;
 import gov.nist.healthcare.iz.darq.analyzer.model.variable.QueryVariableRefInstance;
 import gov.nist.healthcare.iz.darq.analyzer.service.common.DataTableService;
 import gov.nist.healthcare.iz.darq.analyzer.service.common.QueryValueResolverService;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Store, Action } from '@ngrx/store';
-import { IReportSection } from '../../model/report-template.model';
-import { ReportTemplateService } from '../../services/report-template.service';
-import { selectReportTemplate } from '../../store/core.selectors';
-import { take, flatMap, tap, map } from 'rxjs/operators';
-import { ITreeOptions, TreeModel } from 'angular-tree-component';
-import { TreeNode } from 'primeng/api/treenode';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Action, Store} from '@ngrx/store';
+import {IReportSection} from '../../model/report-template.model';
+import {ReportTemplateService} from '../../services/report-template.service';
+import {selectReportTemplate} from '../../store/core.selectors';
+import {flatMap, take, tap} from 'rxjs/operators';
+import {ITreeOptions, TreeModel} from 'angular-tree-component';
+import {TreeNode} from 'primeng/api/treenode';
 
 
 @Component({

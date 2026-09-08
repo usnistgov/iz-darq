@@ -1,9 +1,9 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { PermissionService } from '../../core/services/permission.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Action } from '../../core/model/action.enum';
-import { ResourceType } from '../../core/model/resouce-type.enum';
+import {Pipe, PipeTransform} from '@angular/core';
+import {PermissionService} from '../../core/services/permission.service';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {Action} from '../../core/model/action.enum';
+import {ResourceType} from '../../core/model/resouce-type.enum';
 
 @Pipe({
   name: 'accessOnResource'

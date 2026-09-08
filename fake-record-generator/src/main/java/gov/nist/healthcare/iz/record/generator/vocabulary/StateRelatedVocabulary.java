@@ -8,7 +8,6 @@ import org.apache.commons.lang3.RandomUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class StateRelatedVocabulary extends Vocabulary {
     List<StateInfo> states = new ArrayList<>();

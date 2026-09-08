@@ -12,7 +12,8 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.sql.PreparedStatement;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

@@ -1,24 +1,25 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
-import java.io.InputStream;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.google.common.base.Strings;
+import gov.nist.healthcare.domain.OpAck;
+import gov.nist.healthcare.domain.OpAck.AckStatus;
 import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
 import gov.nist.healthcare.iz.darq.access.service.EmailService;
+import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
+import gov.nist.healthcare.iz.darq.adf.service.ADFStoreUploadHandler;
 import gov.nist.healthcare.iz.darq.controller.domain.ADFEditRequest;
 import gov.nist.healthcare.iz.darq.controller.domain.ADFMergeRequest;
-import gov.nist.healthcare.iz.darq.service.domain.ADFMergeJobCreateData;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
-import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.repository.ADFMetaDataRepository;
+import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
+import gov.nist.healthcare.iz.darq.service.domain.ADFMergeJobCreateData;
+import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.service.impl.ADFMergeJobManagementService;
 import gov.nist.healthcare.iz.darq.service.impl.ADFService;
 import gov.nist.healthcare.iz.darq.service.impl.AnalysisReportService;
+import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import gov.nist.healthcare.iz.darq.users.facility.service.FacilityService;
 import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
@@ -27,18 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import gov.nist.healthcare.iz.darq.adf.service.ADFStore;
-import gov.nist.healthcare.iz.darq.adf.service.ADFStoreUploadHandler;
-import gov.nist.healthcare.iz.darq.model.ADFDescriptor;
-import gov.nist.healthcare.domain.OpAck;
-import gov.nist.healthcare.domain.OpAck.AckStatus;
-import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
-import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api")

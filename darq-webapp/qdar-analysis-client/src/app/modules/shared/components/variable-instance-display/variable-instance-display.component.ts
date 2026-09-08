@@ -1,5 +1,5 @@
-import { IQueryVariableRefInstance } from './../../model/query-variable.model';
-import { Component, Input, OnInit } from '@angular/core';
+import {IQueryVariableRefInstance} from './../../model/query-variable.model';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-variable-instance-display',

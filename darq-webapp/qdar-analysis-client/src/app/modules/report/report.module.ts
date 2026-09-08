@@ -1,18 +1,18 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
-import { ReportRoutingModule } from './report-routing.module';
-import { ReportWidgetComponent } from './components/report-widget/report-widget.component';
-import { DamFrameworkModule, DamMessagesModule } from '@usnistgov/ngx-dam-framework-legacy';
-import { EffectsModule } from '@ngrx/effects';
-import { CoreEffects } from './store/core.effects';
-import { ReportEditorComponent } from './components/report-editor/report-editor.component';
-import { ReportSectionComponent } from './components/report-section/report-section.component';
-import { SharedModule } from '../shared/shared.module';
-import { ReportTocComponent } from './components/report-toc/report-toc.component';
-import { ReportFilterDialogComponent } from './components/report-filter-dialog/report-filter-dialog.component';
-import { NgxCsvParserModule } from 'ngx-csv-parser';
-import { ReportExportDialogComponent } from './components/report-export-dialog/report-export-dialog.component';
+import {ReportRoutingModule} from './report-routing.module';
+import {ReportWidgetComponent} from './components/report-widget/report-widget.component';
+import {DamFrameworkModule, DamMessagesModule} from '@usnistgov/ngx-dam-framework-legacy';
+import {EffectsModule} from '@ngrx/effects';
+import {CoreEffects} from './store/core.effects';
+import {ReportEditorComponent} from './components/report-editor/report-editor.component';
+import {ReportSectionComponent} from './components/report-section/report-section.component';
+import {SharedModule} from '../shared/shared.module';
+import {ReportTocComponent} from './components/report-toc/report-toc.component';
+import {ReportFilterDialogComponent} from './components/report-filter-dialog/report-filter-dialog.component';
+import {NgxCsvParserModule} from 'ngx-csv-parser';
+import {ReportExportDialogComponent} from './components/report-export-dialog/report-export-dialog.component';
 
 
 @NgModule({

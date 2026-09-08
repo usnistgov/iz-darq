@@ -1,13 +1,21 @@
-import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
-import { Action, Store } from '@ngrx/store';
-import { DamAbstractEditorComponent, EditorSave, EditorUpdate, IEditorMetadata, MessageService, UserMessage, MessageType } from '@usnistgov/ngx-dam-framework-legacy';
-import { Observable, of, throwError, Subscription } from 'rxjs';
-import { Actions } from '@ngrx/effects';
-import { IWebContent } from '../../model/web-content.model';
-import { map, flatMap, catchError, take, takeUntil, filter } from 'rxjs/operators';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Action, Store} from '@ngrx/store';
+import {
+  DamAbstractEditorComponent,
+  EditorSave,
+  EditorUpdate,
+  IEditorMetadata,
+  MessageService,
+  MessageType,
+  UserMessage
+} from '@usnistgov/ngx-dam-framework-legacy';
+import {Observable, of, Subscription, throwError} from 'rxjs';
+import {Actions} from '@ngrx/effects';
+import {IWebContent} from '../../model/web-content.model';
+import {catchError, filter, flatMap, map, take, takeUntil} from 'rxjs/operators';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import * as _ from 'lodash';
-import { AdminService } from '../../services/admin.service';
+import {AdminService} from '../../services/admin.service';
 
 export const WEB_CONTENT_EDITOR_METADATA: IEditorMetadata = {
   id: 'WEB_CONTENT_EDITOR_METADATA',

@@ -1,11 +1,11 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
-import { DamWidgetComponent, IDamDataModel, selectWorkspaceActive } from '@usnistgov/ngx-dam-framework-legacy';
-import { Store } from '@ngrx/store';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { IFacility, IFacilityDescriptor } from '../../model/facility.model';
-import { selectFacilities } from '../../store/core.selectors';
-import { filter, pluck } from 'rxjs/operators';
+import {Component, forwardRef, OnInit} from '@angular/core';
+import {DamWidgetComponent, IDamDataModel, selectWorkspaceActive} from '@usnistgov/ngx-dam-framework-legacy';
+import {Store} from '@ngrx/store';
+import {MatDialog} from '@angular/material/dialog';
+import {Observable} from 'rxjs';
+import {IFacilityDescriptor} from '../../model/facility.model';
+import {selectFacilities} from '../../store/core.selectors';
+import {filter, pluck} from 'rxjs/operators';
 
 export const FACILITY_WIDGET = 'FACILITY_WIDGET';
 

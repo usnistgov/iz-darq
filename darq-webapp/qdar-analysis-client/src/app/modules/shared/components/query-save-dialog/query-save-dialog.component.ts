@@ -1,6 +1,6 @@
-import { IQuery } from './../../model/query.model';
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {IQuery} from './../../model/query.model';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 export interface IQuerySaveDetails {
   replace: boolean;

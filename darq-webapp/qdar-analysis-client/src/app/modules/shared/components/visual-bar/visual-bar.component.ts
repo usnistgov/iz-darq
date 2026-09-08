@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { IFraction } from '../../../report/model/report.model';
-import { IThreshold, Comparator } from '../../../report-template/model/report-template.model';
+import {Component, Input, OnInit} from '@angular/core';
+import {IFraction} from '../../../report/model/report.model';
+import {IThreshold} from '../../../report-template/model/report-template.model';
 
 export enum BarStyle {
   NEUTRAL = 'NEUTRAL',

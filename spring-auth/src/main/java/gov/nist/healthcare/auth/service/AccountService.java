@@ -1,12 +1,10 @@
 package gov.nist.healthcare.auth.service;
 
+import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.auth.domain.Authority;
 import gov.nist.healthcare.auth.domain.PasswordChangeRequest;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import gov.nist.healthcare.auth.domain.Account;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;

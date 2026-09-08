@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {
   ExpressionType,
   IANDExpression,
@@ -9,7 +9,7 @@ import {
   IORExpression,
   IXORExpression
 } from '../model/configuration.model';
-import { IDetectionResource } from '../../shared/model/public.model';
+import {IDetectionResource} from '../../shared/model/public.model';
 
 @Injectable({
   providedIn: 'root'

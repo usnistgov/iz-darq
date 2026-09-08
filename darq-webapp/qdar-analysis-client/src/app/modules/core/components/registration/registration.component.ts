@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { IUserAccountRegister } from '../../model/user.model';
-import { UserService } from '../../services/user.service';
-import { RxjsStoreHelperService } from '@usnistgov/ngx-dam-framework-legacy';
-import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { WebContentService } from '../../services/web-content.service';
-import { map } from 'rxjs/operators';
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {IUserAccountRegister} from '../../model/user.model';
+import {UserService} from '../../services/user.service';
+import {RxjsStoreHelperService} from '@usnistgov/ngx-dam-framework-legacy';
+import {Store} from '@ngrx/store';
+import {of} from 'rxjs';
+import {WebContentService} from '../../services/web-content.service';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-registration',

@@ -2,7 +2,6 @@ package gov.nist.healthcare.iz.darq.repository;
 
 import gov.nist.healthcare.iz.darq.model.Facility;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 

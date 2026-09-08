@@ -1,5 +1,5 @@
-import { Directive, Input } from '@angular/core';
-import { NG_VALIDATORS, Validator, ValidationErrors, FormGroup } from '@angular/forms';
+import {Directive, Input} from '@angular/core';
+import {FormGroup, NG_VALIDATORS, ValidationErrors, Validator} from '@angular/forms';
 
 @Directive({
   selector: '[appMustMatch]',

@@ -1,12 +1,19 @@
-import { IVariableQuery } from './../../report-template/model/report-template.model';
-import { IConfigurationPayload } from './../../configuration/model/configuration.model';
-import { IQuery } from './../model/query.model';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { AnalysisType, Field } from '../../report-template/model/analysis.values';
-import { ISimpleViewQuery, IDataViewQuery, Comparator, IQueryResultFilter, IQueryPayload, QueryPayloadType } from '../../report-template/model/report-template.model';
-import { IMessage } from '@usnistgov/ngx-dam-framework-legacy';
+import {IVariableQuery} from './../../report-template/model/report-template.model';
+import {IConfigurationPayload} from './../../configuration/model/configuration.model';
+import {IQuery} from './../model/query.model';
+import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {AnalysisType, Field} from '../../report-template/model/analysis.values';
+import {
+  Comparator,
+  IDataViewQuery,
+  IQueryPayload,
+  IQueryResultFilter,
+  ISimpleViewQuery,
+  QueryPayloadType
+} from '../../report-template/model/report-template.model';
+import {IMessage} from '@usnistgov/ngx-dam-framework-legacy';
 
 export interface IQueryFlag {
   detections: boolean;

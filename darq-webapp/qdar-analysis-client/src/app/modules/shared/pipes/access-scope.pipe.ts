@@ -1,11 +1,11 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { PermissionService } from '../../core/services/permission.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Action } from '../../core/model/action.enum';
-import { ResourceType } from '../../core/model/resouce-type.enum';
-import { Scope } from '../../core/model/scope.enum';
-import { AccessToken } from '../../core/model/token.enum';
+import {Pipe, PipeTransform} from '@angular/core';
+import {PermissionService} from '../../core/services/permission.service';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {Action} from '../../core/model/action.enum';
+import {ResourceType} from '../../core/model/resouce-type.enum';
+import {Scope} from '../../core/model/scope.enum';
+import {AccessToken} from '../../core/model/token.enum';
 
 @Pipe({
   name: 'accessOnScope'

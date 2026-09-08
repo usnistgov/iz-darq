@@ -1,12 +1,16 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
+import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
+import gov.nist.healthcare.iz.darq.digest.domain.TransformResult;
+import gov.nist.healthcare.iz.darq.digest.service.AgeGroupService;
+import gov.nist.healthcare.iz.darq.digest.service.DetectionFilter;
+import gov.nist.healthcare.iz.darq.digest.service.VaxGroupMapper;
 import gov.nist.healthcare.iz.darq.digest.service.model.Issue;
 import gov.nist.healthcare.iz.darq.digest.service.model.VxInfo;
+import gov.nist.healthcare.iz.darq.parser.model.AggregatePatientRecord;
+import gov.nist.healthcare.iz.darq.parser.model.VaccineRecord;
 import org.immregistries.mqe.validator.detection.Detection;
 import org.immregistries.mqe.validator.detection.ValidationReport;
 import org.immregistries.mqe.validator.engine.MessageValidator;
@@ -18,14 +22,9 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
-import gov.nist.healthcare.iz.darq.digest.domain.Field;
-import gov.nist.healthcare.iz.darq.digest.domain.TransformResult;
-import gov.nist.healthcare.iz.darq.digest.service.AgeGroupService;
-import gov.nist.healthcare.iz.darq.digest.service.DetectionFilter;
-import gov.nist.healthcare.iz.darq.digest.service.VaxGroupMapper;
-import gov.nist.healthcare.iz.darq.parser.model.AggregatePatientRecord;
-import gov.nist.healthcare.iz.darq.parser.model.VaccineRecord;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 public class DQAValidator {

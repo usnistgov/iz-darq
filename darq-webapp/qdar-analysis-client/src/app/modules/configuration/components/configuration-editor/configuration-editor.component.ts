@@ -1,30 +1,31 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
-  DamAbstractEditorComponent,
-  EditorSave,
-  IEditorMetadata,
-  EditorUpdate,
-  IWorkspaceCurrent,
-  MessageService,
   ConfirmDialogComponent,
+  DamAbstractEditorComponent,
+  DamWidgetComponent,
+  EditorSave,
+  EditorUpdate,
+  IEditorMetadata,
   InsertResourcesInCollection,
+  IWorkspaceCurrent,
+  Message,
+  MessageService,
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { Observable, of, Subscription, throwError } from 'rxjs';
-import { Store, Action } from '@ngrx/store';
-import { Actions } from '@ngrx/effects';
-import { flatMap, map, take, concatMap, catchError, tap } from 'rxjs/operators';
-import { selectConfigurationById } from '../../store/core.selectors';
-import { IConfigurationDescriptor, IDigestConfiguration } from '../../model/configuration.model';
-import { IRange } from '../../../shared/model/age-group.model';
-import { IDetectionResource } from '../../../shared/model/public.model';
-import { selectAllDetections } from '../../../shared/store/core.selectors';
-import { ConfigurationService } from '../../services/configuration.service';
-import { DamWidgetComponent, Message } from '@usnistgov/ngx-dam-framework-legacy';
-import { MatDialog } from '@angular/material/dialog';
-import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
-import { ResourceType } from '../../../core/model/resouce-type.enum';
-import { PermissionService } from '../../../core/services/permission.service';
-import { ComplexDetectionDialogComponent } from '../complex-detection-dialog/complex-detection-dialog.component';
+import {Observable, of, Subscription, throwError} from 'rxjs';
+import {Action, Store} from '@ngrx/store';
+import {Actions} from '@ngrx/effects';
+import {catchError, concatMap, flatMap, map, take, tap} from 'rxjs/operators';
+import {selectConfigurationById} from '../../store/core.selectors';
+import {IConfigurationDescriptor, IDigestConfiguration} from '../../model/configuration.model';
+import {IRange} from '../../../shared/model/age-group.model';
+import {IDetectionResource} from '../../../shared/model/public.model';
+import {selectAllDetections} from '../../../shared/store/core.selectors';
+import {ConfigurationService} from '../../services/configuration.service';
+import {MatDialog} from '@angular/material/dialog';
+import {Action as ResourceAction} from 'src/app/modules/core/model/action.enum';
+import {ResourceType} from '../../../core/model/resouce-type.enum';
+import {PermissionService} from '../../../core/services/permission.service';
+import {ComplexDetectionDialogComponent} from '../complex-detection-dialog/complex-detection-dialog.component';
 
 export const CONFIGURATION_EDITOR_MD: IEditorMetadata = {
   id: 'CONFIGURATION_EDITOR',

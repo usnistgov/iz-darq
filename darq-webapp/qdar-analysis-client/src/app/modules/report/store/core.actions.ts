@@ -1,6 +1,6 @@
-import { Action } from '@ngrx/store';
-import { IReport } from '../model/report.model';
-import { OpenEditorBase, IEditorMetadata } from '@usnistgov/ngx-dam-framework-legacy';
+import {Action} from '@ngrx/store';
+import {IReport} from '../model/report.model';
+import {IEditorMetadata, OpenEditorBase} from '@usnistgov/ngx-dam-framework-legacy';
 
 export enum CoreActionTypes {
   LoadReport = '[Report] Load Report',

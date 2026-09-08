@@ -7,7 +7,6 @@ import gov.nist.healthcare.iz.darq.adf.module.api.ADFModule;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFWriter;
 
-import java.io.BufferedInputStream;
 import java.nio.file.Paths;
 import java.util.List;
 

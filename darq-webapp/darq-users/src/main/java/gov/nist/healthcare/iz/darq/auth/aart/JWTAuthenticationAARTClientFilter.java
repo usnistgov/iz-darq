@@ -8,13 +8,10 @@ import gov.nist.healthcare.iz.darq.access.service.ConfigurableService;
 import gov.nist.healthcare.iz.darq.model.ToolConfigurationKey;
 import gov.nist.healthcare.iz.darq.model.ToolConfigurationKeyValue;
 import gov.nist.healthcare.iz.darq.model.ToolConfigurationProperty;
-
-import gov.nist.healthcare.iz.darq.users.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.apache.commons.io.IOUtils;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -26,7 +23,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -36,7 +32,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 
 public class JWTAuthenticationAARTClientFilter extends GenericFilterBean implements ConfigurableService {
 

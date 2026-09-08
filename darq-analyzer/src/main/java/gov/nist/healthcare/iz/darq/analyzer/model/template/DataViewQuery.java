@@ -2,7 +2,6 @@ package gov.nist.healthcare.iz.darq.analyzer.model.template;
 
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 
-import java.util.List;
 import java.util.Set;
 
 public class DataViewQuery extends QueryPayload {

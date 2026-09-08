@@ -1,10 +1,10 @@
 package gov.nist.healthcare.iz.darq.parser.model;
-import gov.nist.healthcare.iz.darq.parser.annotation.Field;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import gov.nist.healthcare.iz.darq.parser.annotation.Field;
 import gov.nist.healthcare.iz.darq.parser.type.DqDate;
 import gov.nist.healthcare.iz.darq.parser.type.DqNumeric;
 import gov.nist.healthcare.iz.darq.parser.type.DqString;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @gov.nist.healthcare.iz.darq.parser.annotation.Record(size = 34, name = "Patient Record")
 public class Patient extends gov.nist.healthcare.iz.darq.parser.service.model.Record {

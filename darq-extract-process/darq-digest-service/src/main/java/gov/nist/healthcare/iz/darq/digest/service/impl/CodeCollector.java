@@ -1,16 +1,16 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
+import gov.nist.healthcare.iz.darq.digest.domain.ExtractFraction;
+import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
+import gov.nist.healthcare.iz.darq.parser.service.model.DataElement;
+import gov.nist.healthcare.iz.darq.parser.type.DataUnit;
+import gov.nist.healthcare.iz.darq.parser.type.DescriptorType;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
-import gov.nist.healthcare.iz.darq.digest.domain.ExtractFraction;
-import gov.nist.healthcare.iz.darq.parser.service.model.DataElement;
-import gov.nist.healthcare.iz.darq.parser.type.DataUnit;
-import gov.nist.healthcare.iz.darq.parser.type.DescriptorType;
 
 public class CodeCollector {
 

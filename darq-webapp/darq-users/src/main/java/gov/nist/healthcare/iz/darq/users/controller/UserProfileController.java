@@ -1,6 +1,5 @@
 package gov.nist.healthcare.iz.darq.users.controller;
 
-import gov.nist.healthcare.auth.domain.PasswordChangeRequest;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
 import gov.nist.healthcare.iz.darq.users.domain.ProfileUpdateRequest;
@@ -11,6 +10,7 @@ import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletResponse;
 
 @RestController

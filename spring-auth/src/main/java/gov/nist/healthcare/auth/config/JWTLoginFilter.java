@@ -1,17 +1,9 @@
 package gov.nist.healthcare.auth.config;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Collections;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.auth.domain.Authority;
+import gov.nist.healthcare.auth.domain.LoginRequest;
 import gov.nist.healthcare.auth.service.AuthenticationService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -21,9 +13,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gov.nist.healthcare.auth.domain.LoginRequest;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Collections;
 
 public class JWTLoginFilter<T extends Account<E>, E extends Authority, P> extends AbstractAuthenticationProcessingFilter {
 

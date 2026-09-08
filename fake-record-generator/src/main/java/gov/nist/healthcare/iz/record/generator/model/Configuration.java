@@ -1,6 +1,6 @@
 package gov.nist.healthcare.iz.record.generator.model;
+
 import gov.nist.healthcare.iz.record.generator.field.Field;
-import org.joda.time.LocalDate;
 
 import java.util.Date;
 import java.util.List;

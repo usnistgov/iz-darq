@@ -9,7 +9,9 @@ import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFModule;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 @Service
 public class ConfigurableSqliteADFModule implements ADFModule, Observer {

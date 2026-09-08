@@ -1,6 +1,6 @@
-import { createSelector } from '@ngrx/store';
-import { selectUserInfo, selectIsLoggedIn } from '@usnistgov/ngx-dam-framework-legacy';
-import { ICurrentUser } from '../model/user.model';
+import {createSelector} from '@ngrx/store';
+import {selectIsLoggedIn, selectUserInfo} from '@usnistgov/ngx-dam-framework-legacy';
+import {ICurrentUser} from '../model/user.model';
 
 export const selectCurrentUser = createSelector(
   selectIsLoggedIn,

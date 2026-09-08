@@ -1,9 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import * as _ from 'lodash';
-import { BehaviorSubject } from 'rxjs';
-import { DataTableComponent } from 'src/app/modules/shared/components/data-table/data-table.component';
-import { DataExportCSVService, ICSVHeaderField } from 'src/app/modules/shared/services/data-export-csv.service';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {BehaviorSubject} from 'rxjs';
+import {DataTableComponent} from 'src/app/modules/shared/components/data-table/data-table.component';
+import {DataExportCSVService, ICSVHeaderField} from 'src/app/modules/shared/services/data-export-csv.service';
 
 interface ITable {
   id: number;

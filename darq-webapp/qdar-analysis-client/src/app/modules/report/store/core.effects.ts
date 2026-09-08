@@ -1,31 +1,31 @@
-import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { catchError, concatMap, flatMap, take, map } from 'rxjs/operators';
-import { CoreActionTypes, LoadReport, LoadReportSuccess, LoadReportFailure, OpenReportEditor } from './core.actions';
-import { Store } from '@ngrx/store';
-import { ReportTemplateService } from '../../report-template/services/report-template.service';
-import { SupportDataService } from '../../shared/services/support-data.service';
+import {Injectable} from '@angular/core';
+import {Actions, Effect, ofType} from '@ngrx/effects';
+import {catchError, concatMap, flatMap, map, take} from 'rxjs/operators';
+import {CoreActionTypes, LoadReport, LoadReportFailure, LoadReportSuccess, OpenReportEditor} from './core.actions';
+import {Store} from '@ngrx/store';
+import {ReportTemplateService} from '../../report-template/services/report-template.service';
+import {SupportDataService} from '../../shared/services/support-data.service';
 import {
-  MessageService,
-  DamWidgetEffect,
-  LoadPayloadData,
-  SetValue,
-  LoadResourcesInRepository,
-  OpenEditor,
   DamActionTypes,
+  DamWidgetEffect,
+  EditorSave,
   GlobalSave,
-  EditorSave
+  LoadPayloadData,
+  LoadResourcesInRepository,
+  MessageService,
+  OpenEditor,
+  SetValue
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { combineLatest } from 'rxjs';
-import { ReportService } from '../services/report.service';
-import { REPORT_WIDGET } from '../components/report-widget/report-widget.component';
-import { IDetectionResource, ICvxResource } from '../../shared/model/public.model';
-import { IReportSection, Comparator } from '../../report-template/model/report-template.model';
-import { handleError } from '../../shared/services/helper.functions';
-import { selectReportPayload } from './core.selectors';
-import { FileService } from '../../aggregate-detections-file/services/file.service';
-import { IUserFacilityDescriptor } from '../../facility/model/facility.model';
-import { IReportSectionResult } from '../model/report.model';
+import {combineLatest} from 'rxjs';
+import {ReportService} from '../services/report.service';
+import {REPORT_WIDGET} from '../components/report-widget/report-widget.component';
+import {ICvxResource, IDetectionResource} from '../../shared/model/public.model';
+import {Comparator, IReportSection} from '../../report-template/model/report-template.model';
+import {handleError} from '../../shared/services/helper.functions';
+import {selectReportPayload} from './core.selectors';
+import {FileService} from '../../aggregate-detections-file/services/file.service';
+import {IUserFacilityDescriptor} from '../../facility/model/facility.model';
+import {IReportSectionResult} from '../model/report.model';
 
 export type Resources = IDetectionResource | ICvxResource | IReportSection | IUserFacilityDescriptor | IReportSectionResult;
 

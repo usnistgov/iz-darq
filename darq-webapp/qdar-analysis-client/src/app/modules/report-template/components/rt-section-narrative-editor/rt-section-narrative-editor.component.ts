@@ -1,25 +1,25 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
   DamAbstractEditorComponent,
-  IEditorMetadata,
-  MessageService,
   EditorSave,
-  selectIsAdmin,
-  LoadPayloadData,
+  IEditorMetadata,
   InsertResourcesInCollection,
+  LoadPayloadData,
+  MessageService,
+  selectIsAdmin,
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { Store, Action } from '@ngrx/store';
-import { Actions } from '@ngrx/effects';
-import { ReportTemplateService } from '../../services/report-template.service';
-import { Observable, Subscription, throwError, combineLatest } from 'rxjs';
-import { IReportSectionDisplay } from '../../model/state.model';
-import { selectSectionById, selectRtIsPublished, selectReportTemplate } from '../../store/core.selectors';
-import { switchMap, map, take, concatMap, catchError, flatMap } from 'rxjs/operators';
-import { IReportSection } from '../../model/report-template.model';
-import { EntityType } from '../../../shared/model/entity.model';
-import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
-import { ResourceType } from '../../../core/model/resouce-type.enum';
-import { PermissionService } from '../../../core/services/permission.service';
+import {Action, Store} from '@ngrx/store';
+import {Actions} from '@ngrx/effects';
+import {ReportTemplateService} from '../../services/report-template.service';
+import {combineLatest, Observable, Subscription, throwError} from 'rxjs';
+import {IReportSectionDisplay} from '../../model/state.model';
+import {selectReportTemplate, selectRtIsPublished, selectSectionById} from '../../store/core.selectors';
+import {catchError, concatMap, flatMap, map, switchMap, take} from 'rxjs/operators';
+import {IReportSection} from '../../model/report-template.model';
+import {EntityType} from '../../../shared/model/entity.model';
+import {Action as ResourceAction} from 'src/app/modules/core/model/action.enum';
+import {ResourceType} from '../../../core/model/resouce-type.enum';
+import {PermissionService} from '../../../core/services/permission.service';
 
 export const RT_SECTION_NARRATIVE_EDITOR_METADATA: IEditorMetadata = {
   id: 'RT_SECTION_NARRATIVE_EDITOR_ID',

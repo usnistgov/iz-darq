@@ -1,11 +1,11 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
-import { DamWidgetComponent, IDamDataModel, selectWorkspaceActive } from '@usnistgov/ngx-dam-framework-legacy';
-import { Store } from '@ngrx/store';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { IConfigurationDescriptor } from '../../model/configuration.model';
-import { selectConfigurations } from '../../store/core.selectors';
-import { pluck, filter } from 'rxjs/operators';
+import {Component, forwardRef, OnInit} from '@angular/core';
+import {DamWidgetComponent, IDamDataModel, selectWorkspaceActive} from '@usnistgov/ngx-dam-framework-legacy';
+import {Store} from '@ngrx/store';
+import {MatDialog} from '@angular/material/dialog';
+import {Observable} from 'rxjs';
+import {IConfigurationDescriptor} from '../../model/configuration.model';
+import {selectConfigurations} from '../../store/core.selectors';
+import {filter, pluck} from 'rxjs/operators';
 
 export const CONFIG_WIDGET = 'CONFIG_WIDGET';
 

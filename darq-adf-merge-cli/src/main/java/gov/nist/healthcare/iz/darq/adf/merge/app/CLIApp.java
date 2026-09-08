@@ -3,20 +3,22 @@ package gov.nist.healthcare.iz.darq.adf.merge.app;
 import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.merge.model.LoadableCryptoKey;
+import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
 import gov.nist.healthcare.iz.darq.adf.service.ADFMergeService;
 import gov.nist.healthcare.iz.darq.adf.utils.crypto.CryptoUtils;
-import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
+import jakarta.xml.bind.DatatypeConverter;
 import org.apache.commons.cli.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import jakarta.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @ComponentScan("gov.nist.healthcare")

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {
   ExpressionType,
   IDetectionExpression,
@@ -6,9 +6,9 @@ import {
   IIMPLYExpression,
   INOTExpression
 } from '../model/configuration.model';
-import { IDetectionResource } from '../../shared/model/public.model';
-import { ComplexDetectionService } from './complex-detection.service';
-import { TreeNode } from 'primeng/api';
+import {IDetectionResource} from '../../shared/model/public.model';
+import {ComplexDetectionService} from './complex-detection.service';
+import {TreeNode} from 'primeng/api';
 
 export interface ExpressionTreeNode extends TreeNode {
   label: string;

@@ -1,13 +1,13 @@
-import { Labelizer } from './../../../services/values.service';
-import { Component, OnInit, Input, ViewChild, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
-import { Field, fieldsForAnalysis } from '../../../../report-template/model/analysis.values';
-import { IDataSelector } from '../../../../report-template/model/report-template.model';
-import { IFieldInputOptions } from '../../field-input/field-input.component';
-import { NgForm } from '@angular/forms';
-import { map } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
-import { UserMessage, MessageType } from '@usnistgov/ngx-dam-framework-legacy';
-import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
+import {Labelizer} from './../../../services/values.service';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Field, fieldsForAnalysis} from '../../../../report-template/model/analysis.values';
+import {IDataSelector} from '../../../../report-template/model/report-template.model';
+import {IFieldInputOptions} from '../../field-input/field-input.component';
+import {NgForm} from '@angular/forms';
+import {map} from 'rxjs/operators';
+import {Subscription} from 'rxjs';
+import {MessageType, UserMessage} from '@usnistgov/ngx-dam-framework-legacy';
+import {QueryDialogTabComponent} from '../query-dialog-tab/query-dialog-tab.component';
 
 @Component({
   selector: 'app-query-selector',

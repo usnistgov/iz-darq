@@ -2,9 +2,9 @@ package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 import gov.nist.extract.lucene.index.ExtractFileIndexer;
 import gov.nist.extract.lucene.index.ExtractFileSearcher;
+import gov.nist.extract.lucene.model.FormatIssue;
 import gov.nist.healthcare.iz.darq.digest.service.PatientRecordIterator;
 import gov.nist.healthcare.iz.darq.digest.service.exception.InvalidPatientRecord;
-import gov.nist.extract.lucene.model.FormatIssue;
 import gov.nist.healthcare.iz.darq.parser.annotation.Record;
 import gov.nist.healthcare.iz.darq.parser.model.Patient;
 import gov.nist.healthcare.iz.darq.parser.model.VaccineRecord;
@@ -13,20 +13,19 @@ import gov.nist.healthcare.iz.darq.parser.service.model.AggregateParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParseError;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.FSDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

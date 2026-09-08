@@ -1,20 +1,32 @@
-import { IConfigurationPayload } from './../../../configuration/model/configuration.model';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DamAbstractEditorComponent, MessageService, IEditorMetadata, EditorSave, LoadPayloadData, SetValue } from '@usnistgov/ngx-dam-framework-legacy';
-import { Store, Action } from '@ngrx/store';
-import { Actions } from '@ngrx/effects';
-import { ValuesService, Labelizer } from '../../../shared/services/values.service';
-import { Observable, combineLatest, Subscription, throwError, BehaviorSubject } from 'rxjs';
-import { IReport, IReportSectionResult } from '../../model/report.model';
-import { selectAllDetections, selectAllCvx, selectPatientTables, selectVaccinationTables } from '../../../shared/store/core.selectors';
-import { map, tap, concatMap, take, flatMap, catchError, skipUntil, withLatestFrom } from 'rxjs/operators';
-import { selectReportPayload, selectReportGeneralFilter, selectReportingGroups } from '../../store/core.selectors';
-import { ReportService } from '../../services/report.service';
-import { IReportFilter } from '../../../report-template/model/report-template.model';
-import { PermissionService } from '../../../core/services/permission.service';
-import { ResourceType } from '../../../core/model/resouce-type.enum';
-import { Action as _Action } from '../../../core/model/action.enum';
-import { ITocNode } from '../report-toc/report-toc.component';
+import {IConfigurationPayload} from './../../../configuration/model/configuration.model';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {
+  DamAbstractEditorComponent,
+  EditorSave,
+  IEditorMetadata,
+  LoadPayloadData,
+  MessageService,
+  SetValue
+} from '@usnistgov/ngx-dam-framework-legacy';
+import {Action, Store} from '@ngrx/store';
+import {Actions} from '@ngrx/effects';
+import {Labelizer, ValuesService} from '../../../shared/services/values.service';
+import {BehaviorSubject, combineLatest, Observable, Subscription, throwError} from 'rxjs';
+import {IReport, IReportSectionResult} from '../../model/report.model';
+import {
+  selectAllCvx,
+  selectAllDetections,
+  selectPatientTables,
+  selectVaccinationTables
+} from '../../../shared/store/core.selectors';
+import {catchError, concatMap, flatMap, map, skipUntil, take, tap, withLatestFrom} from 'rxjs/operators';
+import {selectReportGeneralFilter, selectReportingGroups, selectReportPayload} from '../../store/core.selectors';
+import {ReportService} from '../../services/report.service';
+import {IReportFilter} from '../../../report-template/model/report-template.model';
+import {PermissionService} from '../../../core/services/permission.service';
+import {ResourceType} from '../../../core/model/resouce-type.enum';
+import {Action as _Action} from '../../../core/model/action.enum';
+import {ITocNode} from '../report-toc/report-toc.component';
 
 export const REPORT_EDITOR_METADATA: IEditorMetadata = {
   id: 'REPORT_EDITOR',

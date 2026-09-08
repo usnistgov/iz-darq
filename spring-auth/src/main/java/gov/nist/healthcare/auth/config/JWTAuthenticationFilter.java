@@ -1,24 +1,22 @@
 package gov.nist.healthcare.auth.config;
 
-import java.io.IOException;
+import gov.nist.healthcare.auth.domain.Account;
+import gov.nist.healthcare.auth.domain.Authority;
+import io.jsonwebtoken.JwtException;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.web.filter.GenericFilterBean;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import gov.nist.healthcare.auth.domain.Account;
-import gov.nist.healthcare.auth.domain.Authority;
-import io.jsonwebtoken.JwtException;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.web.filter.GenericFilterBean;
-import org.springframework.web.util.UrlPathHelper;
+import java.io.IOException;
 
 
 public class JWTAuthenticationFilter<T extends Account<E>, E extends Authority, P> extends GenericFilterBean {

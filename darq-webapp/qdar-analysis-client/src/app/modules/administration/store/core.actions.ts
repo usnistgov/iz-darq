@@ -1,6 +1,6 @@
-import { Action } from '@ngrx/store';
-import { IUser } from '../../core/model/user.model';
-import { OpenEditorBase, IEditorMetadata } from '@usnistgov/ngx-dam-framework-legacy';
+import {Action} from '@ngrx/store';
+import {IUser} from '../../core/model/user.model';
+import {IEditorMetadata, OpenEditorBase} from '@usnistgov/ngx-dam-framework-legacy';
 
 export enum CoreActionTypes {
   LoadAdministrationWidget = '[Administration] Load Administration Widget',

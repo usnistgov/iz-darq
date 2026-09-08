@@ -1,15 +1,11 @@
-import { Observable } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
-import {
-  Component,
-  OnInit,
-  Input,
-} from '@angular/core';
-import { selectRouterURL, selectIsAdmin, selectIsLoggedIn, LogoutRequest } from '@usnistgov/ngx-dam-framework-legacy';
-import { IServerInfo } from '../../services/app-info.service';
-import { ICurrentUser } from '../../model/user.model';
-import { selectCurrentUser } from '../../store/core.selectors';
+import {Observable} from 'rxjs';
+import {Store} from '@ngrx/store';
+import {map} from 'rxjs/operators';
+import {Component, Input, OnInit,} from '@angular/core';
+import {LogoutRequest, selectIsAdmin, selectIsLoggedIn, selectRouterURL} from '@usnistgov/ngx-dam-framework-legacy';
+import {IServerInfo} from '../../services/app-info.service';
+import {ICurrentUser} from '../../model/user.model';
+import {selectCurrentUser} from '../../store/core.selectors';
 
 @Component({
   selector: 'app-header',

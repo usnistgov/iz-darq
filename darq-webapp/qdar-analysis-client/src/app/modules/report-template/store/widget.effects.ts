@@ -1,37 +1,42 @@
-import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import {Injectable} from '@angular/core';
+import {Actions, Effect, ofType} from '@ngrx/effects';
 import {
-  DamWidgetEffect,
   DamActionTypes,
-  GlobalSave,
+  DamWidgetEffect,
+  EditorReset,
   EditorSave,
-  selectWorkspaceCurrentIsChanged,
+  GlobalSave,
+  LoadPayloadData,
+  LoadResourcesInRepository,
   MessageService,
   OpenEditor,
   OpenEditorFailure,
-  LoadPayloadData,
-  SetValue,
-  LoadResourcesInRepository,
-  EditorReset
+  selectWorkspaceCurrentIsChanged,
+  SetValue
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { RT_WIDGET_ID } from '../components/report-template-widget/report-template-widget.component';
-import { map, concatMap, take, catchError, flatMap } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
-import { combineLatest, of } from 'rxjs';
-import { selectReportTemplate, selectTableOfContentIsChanged, selectInitSections, selectSectionById } from './core.selectors';
-import { ReportTemplateService } from '../services/report-template.service';
-import { SupportDataService } from '../../shared/services/support-data.service';
+import {RT_WIDGET_ID} from '../components/report-template-widget/report-template-widget.component';
+import {catchError, concatMap, flatMap, map, take} from 'rxjs/operators';
+import {Store} from '@ngrx/store';
+import {combineLatest, of} from 'rxjs';
+import {
+  selectInitSections,
+  selectReportTemplate,
+  selectSectionById,
+  selectTableOfContentIsChanged
+} from './core.selectors';
+import {ReportTemplateService} from '../services/report-template.service';
+import {SupportDataService} from '../../shared/services/support-data.service';
 import {
   CoreActionTypes,
-  OpenReportTemplateMetadata,
-  LoadReportTemplateSuccess,
   LoadReportTemplate,
   LoadReportTemplateFailure,
+  LoadReportTemplateSuccess,
+  OpenReportTemplateMetadata,
   OpenReportTemplateSection,
 } from './core.actions';
-import { IDetectionResource, ICvxResource } from '../../shared/model/public.model';
-import { IReportSection } from '../model/report-template.model';
-import { handleError } from '../../shared/services/helper.functions';
+import {ICvxResource, IDetectionResource} from '../../shared/model/public.model';
+import {IReportSection} from '../model/report-template.model';
+import {handleError} from '../../shared/services/helper.functions';
 
 
 @Injectable()

@@ -1,8 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { IADFDescriptor } from '../../model/adf.model';
-import { SelectItem } from 'primeng/api/selectitem';
-import { BehaviorSubject } from 'rxjs';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {IADFDescriptor} from '../../model/adf.model';
+import {SelectItem} from 'primeng/api/selectitem';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-adf-merge-dialog',

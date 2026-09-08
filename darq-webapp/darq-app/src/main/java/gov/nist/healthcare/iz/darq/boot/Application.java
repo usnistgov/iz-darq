@@ -1,10 +1,7 @@
 package gov.nist.healthcare.iz.darq.boot;
 
-import java.io.*;
-import java.util.*;
-
-import javax.annotation.PostConstruct;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.crypto.service.impl.JKSCryptoKey;
@@ -13,11 +10,16 @@ import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
 import gov.nist.healthcare.iz.darq.adf.module.json.BsonADFModule;
 import gov.nist.healthcare.iz.darq.adf.module.transformer.BsonSqliteADFTransformer;
 import gov.nist.healthcare.iz.darq.adf.module.transformer.TransformerService;
-import gov.nist.healthcare.iz.darq.model.*;
+import gov.nist.healthcare.iz.darq.model.CVXCode;
+import gov.nist.healthcare.iz.darq.model.EmailTemplate;
+import gov.nist.healthcare.iz.darq.model.WebContent;
+import gov.nist.healthcare.iz.darq.repository.CVXRepository;
 import gov.nist.healthcare.iz.darq.repository.EmailTemplateRepository;
 import gov.nist.healthcare.iz.darq.service.impl.ConfigurableSqliteADFModule;
+import gov.nist.healthcare.iz.darq.service.impl.SimpleDownloadService;
 import gov.nist.healthcare.iz.darq.service.impl.SimpleEmailService;
 import gov.nist.healthcare.iz.darq.service.impl.WebContentService;
+import gov.nist.healthcare.iz.darq.service.utils.DownloadService;
 import org.immregistries.codebase.client.CodeMap;
 import org.immregistries.codebase.client.CodeMapBuilder;
 import org.immregistries.codebase.client.generated.Code;
@@ -39,15 +41,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import gov.nist.healthcare.iz.darq.repository.CVXRepository;
-import gov.nist.healthcare.iz.darq.service.impl.SimpleDownloadService;
-import gov.nist.healthcare.iz.darq.service.utils.DownloadService;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, FreeMarkerAutoConfiguration.class})
 @EnableWebMvc

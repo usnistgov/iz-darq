@@ -1,21 +1,21 @@
-import { Component, OnInit, forwardRef, AfterViewInit } from '@angular/core';
+import {AfterViewInit, Component, forwardRef, OnInit} from '@angular/core';
 import {
   DamWidgetComponent,
   IDamDataModel,
+  RxjsStoreHelperService,
+  selectIsAdmin,
   selectRouteParams,
   TurnOffLoader,
-  selectIsAdmin,
-  RxjsStoreHelperService,
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { Store } from '@ngrx/store';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable, combineLatest, EMPTY, of } from 'rxjs';
-import { IUserFacilityDescriptor } from '../../../facility/model/facility.model';
-import { selectCurrentFacility, selectUserFacilitiesSorted } from '../../store/core.selectors';
-import { map, take, flatMap } from 'rxjs/operators';
-import { AdfMergeDialogComponent } from '../adf-merge-dialog/adf-merge-dialog.component';
-import { FileService } from '../../services/file.service';
-import { Router } from '@angular/router';
+import {Store} from '@ngrx/store';
+import {MatDialog} from '@angular/material/dialog';
+import {combineLatest, EMPTY, Observable} from 'rxjs';
+import {IUserFacilityDescriptor} from '../../../facility/model/facility.model';
+import {selectCurrentFacility, selectUserFacilitiesSorted} from '../../store/core.selectors';
+import {flatMap, map, take} from 'rxjs/operators';
+import {AdfMergeDialogComponent} from '../adf-merge-dialog/adf-merge-dialog.component';
+import {FileService} from '../../services/file.service';
+import {Router} from '@angular/router';
 
 export const ADF_WIDGET = 'ADF_WIDGET';
 

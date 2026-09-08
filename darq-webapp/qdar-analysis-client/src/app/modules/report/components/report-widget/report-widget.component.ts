@@ -1,39 +1,50 @@
-import { Component, OnInit, forwardRef, AfterViewInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Store } from '@ngrx/store';
+import {AfterViewInit, Component, ElementRef, forwardRef, OnInit, ViewChild} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {Store} from '@ngrx/store';
 import {
-  IDamDataModel,
-  DamWidgetComponent,
   ConfirmDialogComponent,
-  RxjsStoreHelperService,
-  MessageType,
+  DamWidgetComponent,
+  IDamDataModel,
   LoadPayloadData,
+  Message,
+  MessageService,
+  MessageType,
+  RxjsStoreHelperService,
+  SetValue,
   TurnOffLoader
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { Observable, of, combineLatest, from, throwError } from 'rxjs';
-import { IReport } from '../../model/report.model';
-import { selectReportPayload, selectReportGeneralFilter, selectReportTocNodes, selectReportingGroups } from '../../store/core.selectors';
-import { ITocNode } from '../report-toc/report-toc.component';
-import { map, concatMap, flatMap, take, tap, catchError } from 'rxjs/operators';
-import { ReportService } from '../../services/report.service';
-import { IReportFilter } from '../../../report-template/model/report-template.model';
-import { selectAllDetections, selectAllCvx, selectPatientTables, selectVaccinationTables } from '../../../shared/store/core.selectors';
-import { ValuesService } from '../../../shared/services/values.service';
-import { ReportFilterDialogComponent } from '../report-filter-dialog/report-filter-dialog.component';
-import { IFieldInputOptions } from '../../../shared/components/field-input/field-input.component';
-import { SetValue, MessageService, Message } from '@usnistgov/ngx-dam-framework-legacy';
-import { PermissionService } from '../../../core/services/permission.service';
-import { ResourceType } from 'src/app/modules/core/model/resouce-type.enum';
-import { Action } from '../../../core/model/action.enum';
-import { IUserFacilityDescriptor } from 'src/app/modules/facility/model/facility.model';
-import { selectUserFacilityById } from '../../../aggregate-detections-file/store/core.selectors';
-import { PRIVATE_FACILITY_ID } from '../../../aggregate-detections-file/services/file.service';
-import { ViewChild } from '@angular/core';
-import { NgxCSVParserError } from 'ngx-csv-parser';
-import { ReportTablesService } from '../../services/report-tables.service';
+import {combineLatest, from, Observable, of, throwError} from 'rxjs';
+import {IReport} from '../../model/report.model';
+import {
+  selectReportGeneralFilter,
+  selectReportingGroups,
+  selectReportPayload,
+  selectReportTocNodes
+} from '../../store/core.selectors';
+import {ITocNode} from '../report-toc/report-toc.component';
+import {catchError, concatMap, flatMap, map, take, tap} from 'rxjs/operators';
+import {ReportService} from '../../services/report.service';
+import {IReportFilter} from '../../../report-template/model/report-template.model';
+import {
+  selectAllCvx,
+  selectAllDetections,
+  selectPatientTables,
+  selectVaccinationTables
+} from '../../../shared/store/core.selectors';
+import {ValuesService} from '../../../shared/services/values.service';
+import {ReportFilterDialogComponent} from '../report-filter-dialog/report-filter-dialog.component';
+import {IFieldInputOptions} from '../../../shared/components/field-input/field-input.component';
+import {PermissionService} from '../../../core/services/permission.service';
+import {ResourceType} from 'src/app/modules/core/model/resouce-type.enum';
+import {Action} from '../../../core/model/action.enum';
+import {IUserFacilityDescriptor} from 'src/app/modules/facility/model/facility.model';
+import {selectUserFacilityById} from '../../../aggregate-detections-file/store/core.selectors';
+import {PRIVATE_FACILITY_ID} from '../../../aggregate-detections-file/services/file.service';
+import {NgxCSVParserError} from 'ngx-csv-parser';
+import {ReportTablesService} from '../../services/report-tables.service';
 import * as JSZip from 'jszip';
-import { ReportExportDialogComponent } from '../report-export-dialog/report-export-dialog.component';
-import { DataTableComponent } from 'src/app/modules/shared/components/data-table/data-table.component';
+import {ReportExportDialogComponent} from '../report-export-dialog/report-export-dialog.component';
+import {DataTableComponent} from 'src/app/modules/shared/components/data-table/data-table.component';
 
 export const REPORT_WIDGET = 'REPORT_WIDGET';
 

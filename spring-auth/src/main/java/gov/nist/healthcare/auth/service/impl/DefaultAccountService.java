@@ -1,16 +1,15 @@
 package gov.nist.healthcare.auth.service.impl;
 
-import java.util.*;
-
+import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.auth.domain.Authority;
 import gov.nist.healthcare.auth.domain.PasswordChangeRequest;
+import gov.nist.healthcare.auth.repository.AccountRepository;
+import gov.nist.healthcare.auth.repository.AuthorityRepository;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import gov.nist.healthcare.auth.domain.Account;
-import gov.nist.healthcare.auth.repository.AccountRepository;
-import gov.nist.healthcare.auth.repository.AuthorityRepository;
+import java.util.*;
 
 public class DefaultAccountService<T extends Account<P>, P extends Authority> implements gov.nist.healthcare.auth.service.AccountService<T, P> {
 

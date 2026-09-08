@@ -1,15 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { FileService, PRIVATE_FACILITY_ID } from '../../services/file.service';
-import { RxjsStoreHelperService, MessageType } from '@usnistgov/ngx-dam-framework-legacy';
-import { map } from 'rxjs/operators';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, combineLatest, Subscription, of } from 'rxjs';
-import { SelectItem } from 'primeng/api/selectitem';
-import { selectUserFacilitiesSorted } from '../../store/core.selectors';
-import { WebContentService } from '../../../core/services/web-content.service';
-import { ServerInfoService, IServerInfo } from '../../../core/services/app-info.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Store} from '@ngrx/store';
+import {FileService, PRIVATE_FACILITY_ID} from '../../services/file.service';
+import {MessageType, RxjsStoreHelperService} from '@usnistgov/ngx-dam-framework-legacy';
+import {map} from 'rxjs/operators';
+import {ActivatedRoute, Router} from '@angular/router';
+import {combineLatest, Observable, of, Subscription} from 'rxjs';
+import {SelectItem} from 'primeng/api/selectitem';
+import {selectUserFacilitiesSorted} from '../../store/core.selectors';
+import {WebContentService} from '../../../core/services/web-content.service';
+import {IServerInfo, ServerInfoService} from '../../../core/services/app-info.service';
 
 @Component({
   selector: 'app-adf-upload',

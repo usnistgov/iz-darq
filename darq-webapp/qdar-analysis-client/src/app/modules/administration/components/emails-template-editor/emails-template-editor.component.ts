@@ -1,12 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DamAbstractEditorComponent, EditorSave, EditorUpdate, IEditorMetadata, MessageService, MessageType, UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
-import { Actions } from '@ngrx/effects';
-import { Action, Store } from '@ngrx/store';
-import { AdminService } from '../../services/admin.service';
-import { Observable, of, Subscription, throwError } from 'rxjs';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
-import { IEmailTemplate } from '../../model/email-template.model';
-import { flatMap, map, takeUntil, filter, catchError, take } from 'rxjs/operators';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {
+  DamAbstractEditorComponent,
+  EditorSave,
+  EditorUpdate,
+  IEditorMetadata,
+  MessageService,
+  MessageType,
+  UserMessage
+} from '@usnistgov/ngx-dam-framework-legacy';
+import {Actions} from '@ngrx/effects';
+import {Action, Store} from '@ngrx/store';
+import {AdminService} from '../../services/admin.service';
+import {Observable, of, Subscription, throwError} from 'rxjs';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {IEmailTemplate} from '../../model/email-template.model';
+import {catchError, filter, flatMap, map, take, takeUntil} from 'rxjs/operators';
 
 export const EMTAIL_TEMPLATE_EDITOR_METADATA: IEditorMetadata = {
   id: 'EMTAIL_TEMPLATE_EDITOR_METADATA',

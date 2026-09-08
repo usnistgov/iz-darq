@@ -1,44 +1,28 @@
 package gov.nist.healthcare.iz.darq.digest.app;
 
-import java.io.File;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.charset.MalformedInputException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFWriter;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFModule;
-import gov.nist.healthcare.iz.darq.configuration.validation.ConfigurationPayloadValidator;
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
+import gov.nist.healthcare.iz.darq.configuration.validation.ConfigurationPayloadValidator;
 import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngineConfiguration;
 import gov.nist.healthcare.iz.darq.digest.app.config.DigestConfiguration;
 import gov.nist.healthcare.iz.darq.digest.app.exception.*;
-import gov.nist.healthcare.iz.darq.digest.service.impl.PublicOnlyCryptoKey;
-import gov.nist.healthcare.iz.darq.digest.service.impl.DetectionTestResult;
-import gov.nist.healthcare.iz.darq.digest.service.impl.DetectionTestRunner;
-import gov.nist.healthcare.iz.darq.digest.service.impl.SimpleDigestRunner;
+import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
+import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
+import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
+import gov.nist.healthcare.iz.darq.digest.service.impl.*;
 import gov.nist.healthcare.iz.darq.localreport.AvailableLocalReportServices;
 import gov.nist.healthcare.iz.darq.localreport.LocalReportEngine;
 import gov.nist.healthcare.iz.darq.localreport.LocalReportEngineConfiguration;
 import gov.nist.healthcare.iz.darq.parser.type.DqDateFormat;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import jakarta.xml.bind.DatatypeConverter;
+import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,13 +33,17 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
-import gov.nist.healthcare.iz.darq.digest.service.DigestRunner;
-import gov.nist.healthcare.iz.darq.digest.service.impl.Exporter;
-
-import jakarta.xml.bind.DatatypeConverter;
+import java.io.File;
+import java.io.UncheckedIOException;
+import java.nio.charset.MalformedInputException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Configuration
 @ComponentScan("gov.nist.healthcare")

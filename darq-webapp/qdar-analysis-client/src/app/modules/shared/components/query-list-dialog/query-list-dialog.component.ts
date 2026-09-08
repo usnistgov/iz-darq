@@ -1,14 +1,14 @@
-import { IConfigurationPayload } from './../../../configuration/model/configuration.model';
-import { ConfirmDialogComponent, IMessage, MessageService, UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
-import { map, flatMap, catchError } from 'rxjs/operators';
-import { Labelizer } from './../../services/values.service';
-import { IQueryDescriptor } from './../../model/query.model';
-import { Observable, of, BehaviorSubject, combineLatest, throwError } from 'rxjs';
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { QueryService } from '../../services/query.service';
-import { IQuery } from '../../model/query.model';
-import { HttpErrorResponse } from '@angular/common/http';
+import {IConfigurationPayload} from './../../../configuration/model/configuration.model';
+import {ConfirmDialogComponent, IMessage, MessageService, UserMessage} from '@usnistgov/ngx-dam-framework-legacy';
+import {catchError, flatMap, map} from 'rxjs/operators';
+import {Labelizer} from './../../services/values.service';
+import {IQueryDescriptor} from './../../model/query.model';
+import {BehaviorSubject, combineLatest, Observable, of, throwError} from 'rxjs';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {QueryService} from '../../services/query.service';
+import {IQuery} from '../../model/query.model';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-query-list-dialog',

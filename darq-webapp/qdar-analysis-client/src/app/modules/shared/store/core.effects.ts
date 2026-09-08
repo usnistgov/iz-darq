@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { flatMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { CoreActionTypes, CoreActions, GoToEntity } from './core.actions';
-import { Router } from '@angular/router';
-import { EntityType } from '../model/entity.model';
-import { MessageService, UserMessage, MessageType } from '@usnistgov/ngx-dam-framework-legacy';
+import {Injectable} from '@angular/core';
+import {Actions, Effect, ofType} from '@ngrx/effects';
+import {flatMap} from 'rxjs/operators';
+import {of} from 'rxjs';
+import {CoreActions, CoreActionTypes, GoToEntity} from './core.actions';
+import {Router} from '@angular/router';
+import {EntityType} from '../model/entity.model';
+import {MessageService, MessageType, UserMessage} from '@usnistgov/ngx-dam-framework-legacy';
 
 @Injectable()
 export class CoreEffects {

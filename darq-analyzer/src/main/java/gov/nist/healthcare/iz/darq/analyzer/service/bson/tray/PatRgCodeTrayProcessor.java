@@ -1,14 +1,15 @@
 package gov.nist.healthcare.iz.darq.analyzer.service.bson.tray;
 
 import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
+import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisQuery;
+import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray;
 import gov.nist.healthcare.iz.darq.analyzer.service.bson.tray.helper.CodeProcessorHelper;
 import gov.nist.healthcare.iz.darq.analyzer.service.bson.tray.helper.ReportingGroupProcessorHelper;
 import gov.nist.healthcare.iz.darq.digest.domain.ADPayload;
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisQuery;
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray;
-import gov.nist.healthcare.iz.darq.digest.domain.*;
+import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
 
-import java.util.*;
+import java.util.List;
 import java.util.function.Function;
 
 public class PatRgCodeTrayProcessor extends TrayProcessor {

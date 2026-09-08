@@ -1,9 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { SelectItem } from 'primeng/api/selectitem';
-import { ReportTemplateService } from '../../services/report-template.service';
-import { IReportTemplateDescriptor } from '../../model/report-template.model';
-import { IDescriptor } from 'src/app/modules/shared/model/descriptor.model';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {ReportTemplateService} from '../../services/report-template.service';
+import {IReportTemplateDescriptor} from '../../model/report-template.model';
+import {IDescriptor} from 'src/app/modules/shared/model/descriptor.model';
 
 @Component({
   selector: 'app-clone-rt-dialog',

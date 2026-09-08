@@ -1,15 +1,15 @@
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 import {
-    ExternalQueryVariableScope,
-    IExternalQueryVariable,
-    IGlobalExternalQueryVariable,
-    QueryVariableType,
-    IIISExternalQueryVariable,
-    IIISVariableValue
+  ExternalQueryVariableScope,
+  IExternalQueryVariable,
+  IGlobalExternalQueryVariable,
+  IIISExternalQueryVariable,
+  IIISVariableValue,
+  QueryVariableType
 } from './../../shared/model/query-variable.model';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { IMessage } from '@usnistgov/ngx-dam-framework-legacy';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {IMessage} from '@usnistgov/ngx-dam-framework-legacy';
 
 @Injectable({
     providedIn: 'root'

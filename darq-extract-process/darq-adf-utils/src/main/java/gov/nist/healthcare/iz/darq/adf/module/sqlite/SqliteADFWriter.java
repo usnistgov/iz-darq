@@ -8,15 +8,19 @@ import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.model.ADFVersion;
 import gov.nist.healthcare.iz.darq.adf.module.archive.ADFArchiveManager;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.model.Dictionaries;
-import gov.nist.healthcare.iz.darq.digest.domain.*;
+import gov.nist.healthcare.iz.darq.digest.domain.ADChunk;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
+import jakarta.xml.bind.DatatypeConverter;
 
 import javax.crypto.spec.SecretKeySpec;
-import jakarta.xml.bind.DatatypeConverter;
-import java.io.*;
+import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 
 public class SqliteADFWriter extends SimpleADFWriter {

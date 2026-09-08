@@ -1,14 +1,24 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DamAbstractEditorComponent, EditorSave, IEditorMetadata, Message, MessageService, MessageType, UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
-import { Actions } from '@ngrx/effects';
-import { Action, Store } from '@ngrx/store';
-import { AdminService } from '../../services/admin.service';
-import { Observable, Subscription, throwError, Subject } from 'rxjs';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
-import { flatMap, map, takeUntil, filter, catchError, take, tap } from 'rxjs/operators';
-import { IToolConfigurationKey } from '../../model/tool-config.model';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfigurationLoadingDialogComponent } from '../configuration-loading-dialog/configuration-loading-dialog.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {
+  DamAbstractEditorComponent,
+  EditorSave,
+  IEditorMetadata,
+  Message,
+  MessageService,
+  MessageType,
+  UserMessage
+} from '@usnistgov/ngx-dam-framework-legacy';
+import {Actions} from '@ngrx/effects';
+import {Action, Store} from '@ngrx/store';
+import {AdminService} from '../../services/admin.service';
+import {Observable, Subject, Subscription, throwError} from 'rxjs';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {catchError, filter, flatMap, map, take, takeUntil, tap} from 'rxjs/operators';
+import {IToolConfigurationKey} from '../../model/tool-config.model';
+import {MatDialog} from '@angular/material/dialog';
+import {
+  ConfigurationLoadingDialogComponent
+} from '../configuration-loading-dialog/configuration-loading-dialog.component';
 
 export const ADMIN_CONFIG_EDITOR_METADATA: IEditorMetadata = {
   id: 'ADMIN_CONFIG_EDITOR_METADATA',

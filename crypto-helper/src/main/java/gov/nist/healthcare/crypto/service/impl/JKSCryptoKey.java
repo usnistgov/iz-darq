@@ -5,7 +5,10 @@ import gov.nist.healthcare.crypto.service.CryptoKey;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.security.*;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.Certificate;
 
 public class JKSCryptoKey implements CryptoKey {

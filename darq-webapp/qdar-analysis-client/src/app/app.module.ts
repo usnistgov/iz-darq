@@ -1,27 +1,27 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { AppComponent } from './app.component';
-import { ToastrModule } from 'ngx-toastr';
-import { BlockUIModule } from 'ng-block-ui';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { AppRoutingModule } from './app-routing.module';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { environment } from '../environments/environment';
-import { CoreModule } from './modules/core/core.module';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {AppComponent} from './app.component';
+import {ToastrModule} from 'ngx-toastr';
+import {BlockUIModule} from 'ng-block-ui';
+import {CommonModule} from '@angular/common';
+import {HttpClientModule} from '@angular/common/http';
+import {AppRoutingModule} from './app-routing.module';
+import {EffectsModule} from '@ngrx/effects';
+import {StoreModule} from '@ngrx/store';
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
+import {environment} from '../environments/environment';
+import {CoreModule} from './modules/core/core.module';
 import {
-  DamLoaderModule,
   DamAuthenticationModule,
   DamFrameworkModule,
+  DamLoaderModule,
   DamMessagesModule,
   DamRoutingModule,
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ContextMenuModule } from 'ngx-contextmenu';
-import { TreeModule } from 'angular-tree-component';
-import { USER_TRANSFORM } from './modules/core/services/user.service';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ContextMenuModule} from 'ngx-contextmenu';
+import {TreeModule} from 'angular-tree-component';
+import {USER_TRANSFORM} from './modules/core/services/user.service';
 
 @NgModule({
   declarations: [

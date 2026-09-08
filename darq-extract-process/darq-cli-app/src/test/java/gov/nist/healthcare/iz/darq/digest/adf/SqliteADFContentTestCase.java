@@ -3,13 +3,15 @@ package gov.nist.healthcare.iz.darq.digest.adf;
 import gov.nist.healthcare.iz.darq.adf.model.Metadata;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFReader;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.model.Dictionaries;
+import gov.nist.healthcare.iz.darq.digest.common.CLITestRunnerUtils;
+import gov.nist.healthcare.iz.darq.digest.common.SQLiteADFTestUtils;
 import gov.nist.healthcare.iz.darq.digest.domain.ExtractPercent;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.Summary;
-import gov.nist.healthcare.iz.darq.digest.common.CLITestRunnerUtils;
-import gov.nist.healthcare.iz.darq.digest.common.SQLiteADFTestUtils;
 import gov.nist.healthcare.iz.darq.test.data.mocks.SimpleExampleMock;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.springframework.util.DigestUtils;
 

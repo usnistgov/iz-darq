@@ -1,12 +1,10 @@
 package gov.nist.healthcare.iz.darq.digest.service;
 
-import java.util.List;
-import java.util.Map;
-
+import gov.nist.healthcare.iz.darq.digest.domain.Range;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 
-import gov.nist.healthcare.iz.darq.digest.domain.Range;
+import java.util.List;
 
 
 public interface AgeGroupService {

@@ -1,25 +1,23 @@
-import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { catchError, concatMap, flatMap } from 'rxjs/operators';
-import { of, combineLatest } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Actions, Effect, ofType} from '@ngrx/effects';
+import {catchError, concatMap, flatMap} from 'rxjs/operators';
+import {combineLatest, of} from 'rxjs';
 import {
-  CoreActionTypes,
   CoreActions,
+  CoreActionTypes,
   LoadADFile,
-  LoadADFileSuccess,
   LoadADFileFailure,
-} from './core.actions';
-import { FileService } from '../services/file.service';
-import { MessageService, LoadResourcesInRepository, SetValue, IDamResource } from '@usnistgov/ngx-dam-framework-legacy';
-import { IADFDescriptor } from '../model/adf.model';
-import { SupportDataService } from '../../shared/services/support-data.service';
-import { IDetectionResource, ICvxResource } from '../../shared/model/public.model';
-import { IAnalysisJob } from '../../report/model/report.model';
-import {
+  LoadADFileSuccess,
   LoadUserFacilities,
-  LoadUserFacilitiesSuccess,
   LoadUserFacilitiesFailure,
+  LoadUserFacilitiesSuccess,
 } from './core.actions';
+import {FileService} from '../services/file.service';
+import {IDamResource, LoadResourcesInRepository, MessageService, SetValue} from '@usnistgov/ngx-dam-framework-legacy';
+import {IADFDescriptor} from '../model/adf.model';
+import {SupportDataService} from '../../shared/services/support-data.service';
+import {ICvxResource, IDetectionResource} from '../../shared/model/public.model';
+import {IAnalysisJob} from '../../report/model/report.model';
 
 
 type Resources = IDetectionResource | ICvxResource | IADFDescriptor | IAnalysisJob;

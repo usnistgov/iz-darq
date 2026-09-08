@@ -1,4 +1,4 @@
-import { IDamResource } from '@usnistgov/ngx-dam-framework-legacy';
+import {IDamResource} from '@usnistgov/ngx-dam-framework-legacy';
 
 export interface IDetectionDescriptor {
   description: string;

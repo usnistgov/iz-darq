@@ -1,14 +1,12 @@
-import { map } from 'rxjs/operators';
-import { VariableSelectDialogComponent } from './../../variable-select-dialog/variable-select-dialog.component';
-import { IDataViewQuery } from './../../../../report-template/model/report-template.model';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
-import { MessageType, UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
-import { MatDialog } from '@angular/material/dialog';
-import { QueryVariableService } from '../../../services/query-variable.service';
-import { QueryService } from '../../../services/query.service';
-import { IQueryVariableDisplay } from '../../variable-ref-display/variable-ref-display.component';
-import { QueryVariableRefType } from '../../../model/query-variable.model';
+import {map} from 'rxjs/operators';
+import {VariableSelectDialogComponent} from './../../variable-select-dialog/variable-select-dialog.component';
+import {IDataViewQuery} from './../../../../report-template/model/report-template.model';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {QueryDialogTabComponent} from '../query-dialog-tab/query-dialog-tab.component';
+import {MessageType, UserMessage} from '@usnistgov/ngx-dam-framework-legacy';
+import {MatDialog} from '@angular/material/dialog';
+import {IQueryVariableDisplay} from '../../variable-ref-display/variable-ref-display.component';
+import {QueryVariableRefType} from '../../../model/query-variable.model';
 
 @Component({
   selector: 'app-query-denominator-override',

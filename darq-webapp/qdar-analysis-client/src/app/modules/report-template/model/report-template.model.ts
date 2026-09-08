@@ -1,10 +1,10 @@
-import { IQueryVariableRef } from './../../shared/model/query-variable.model';
-import { EntityType } from '../../shared/model/entity.model';
-import { AnalysisType, Field } from './analysis.values';
-import { IDescriptor } from '../../shared/model/descriptor.model';
-import { IConfigurationDescriptor } from '../../configuration/model/configuration.model';
-import { IDamResource } from '@usnistgov/ngx-dam-framework-legacy';
-import { IReportDescriptor } from '../../report/model/report.model';
+import {IQueryVariableRef} from './../../shared/model/query-variable.model';
+import {EntityType} from '../../shared/model/entity.model';
+import {AnalysisType, Field} from './analysis.values';
+import {IDescriptor} from '../../shared/model/descriptor.model';
+import {IConfigurationDescriptor} from '../../configuration/model/configuration.model';
+import {IDamResource} from '@usnistgov/ngx-dam-framework-legacy';
+import {IReportDescriptor} from '../../report/model/report.model';
 
 
 export interface IReportTemplateDescriptor extends IDescriptor {

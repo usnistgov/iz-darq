@@ -2,8 +2,6 @@ package gov.nist.healthcare.iz.darq.analyzer.model.template;
 
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 
-import java.util.List;
-
 public class DataSingleSelector {
     private Field field;
     private String value;

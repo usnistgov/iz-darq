@@ -6,7 +6,6 @@ import gov.nist.healthcare.iz.darq.digest.common.CLITestRunnerUtils;
 import gov.nist.healthcare.iz.darq.digest.common.SQLiteADFTestUtils;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.mock.complex.ComplexDetectionDenominatorMock;
-import gov.nist.healthcare.iz.darq.digest.mock.complex.ComplexDetectionRecordLevelMock;
 import org.immregistries.mqe.validator.detection.Detection;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

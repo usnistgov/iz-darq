@@ -1,12 +1,14 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { IDetectionResource } from 'src/app/modules/shared/model/public.model';
-import { ComplexDetectionTarget, ExpressionType, IExpression } from '../../model/configuration.model';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {IDetectionResource} from 'src/app/modules/shared/model/public.model';
+import {ComplexDetectionTarget, ExpressionType, IExpression} from '../../model/configuration.model';
 import * as _ from 'lodash';
-import { ComplexDetectionService } from '../../services/complex-detection.service';
-import { ComplexDetectionExpressionDialogComponent } from '../complex-detection-expression-dialog/complex-detection-expression-dialog.component';
-import { tap } from 'rxjs/operators';
-import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import {ComplexDetectionService} from '../../services/complex-detection.service';
+import {
+  ComplexDetectionExpressionDialogComponent
+} from '../complex-detection-expression-dialog/complex-detection-expression-dialog.component';
+import {tap} from 'rxjs/operators';
+import {FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-complex-detection-dialog',

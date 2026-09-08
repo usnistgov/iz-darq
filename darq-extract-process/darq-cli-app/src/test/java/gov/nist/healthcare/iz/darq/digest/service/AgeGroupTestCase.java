@@ -1,16 +1,18 @@
 package gov.nist.healthcare.iz.darq.digest.service;
+
 import gov.nist.healthcare.iz.darq.configuration.validation.ConfigurationPayloadValidator;
 import gov.nist.healthcare.iz.darq.digest.domain.Bracket;
 import gov.nist.healthcare.iz.darq.digest.domain.Range;
 import gov.nist.healthcare.iz.darq.digest.service.impl.AgeGroupCalculator;
 import org.joda.time.LocalDate;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class AgeGroupTestCase {
 

@@ -1,15 +1,18 @@
 package gov.nist.healthcare.auth.config;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
+import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.auth.domain.Authority;
 import gov.nist.healthcare.auth.service.AuthenticationService;
 import gov.nist.healthcare.crypto.service.CryptoKey;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.web.util.WebUtils;
-import gov.nist.healthcare.auth.domain.Account;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class JWTTokenAuthenticationService<T extends Account<E>, E extends Authority, P> {
 

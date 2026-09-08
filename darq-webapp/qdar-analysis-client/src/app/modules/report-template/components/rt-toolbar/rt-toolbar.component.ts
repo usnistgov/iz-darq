@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, TemplateRef } from '@angular/core';
-import { Observable, combineLatest } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
-import { selectReportTemplate } from '../../store/core.selectors';
-import { ResourceType } from '../../../core/model/resouce-type.enum';
-import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
-import { PermissionService } from '../../../core/services/permission.service';
+import {Component, Input, OnInit, TemplateRef} from '@angular/core';
+import {combineLatest, Observable} from 'rxjs';
+import {Store} from '@ngrx/store';
+import {map} from 'rxjs/operators';
+import {selectReportTemplate} from '../../store/core.selectors';
+import {ResourceType} from '../../../core/model/resouce-type.enum';
+import {Action as ResourceAction} from 'src/app/modules/core/model/action.enum';
+import {PermissionService} from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-rt-toolbar',

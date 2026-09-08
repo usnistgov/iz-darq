@@ -1,10 +1,9 @@
-import { IQueryVariableRefInstance } from './../model/query-variable.model';
-import { IAdjustedFraction } from './../../report/model/report.model';
-import { Injectable } from '@angular/core';
-import { Field, AnalysisType } from '../../report-template/model/analysis.values';
-import { IThreshold } from '../../report-template/model/report-template.model';
-import { IDataTable, IFraction } from '../../report/model/report.model';
-import { Labelizer } from './values.service';
+import {IQueryVariableRefInstance} from './../model/query-variable.model';
+import {Injectable} from '@angular/core';
+import {AnalysisType, Field} from '../../report-template/model/analysis.values';
+import {IThreshold} from '../../report-template/model/report-template.model';
+import {IDataTable, IFraction} from '../../report/model/report.model';
+import {Labelizer} from './values.service';
 
 export interface IColumn {
   key: string;

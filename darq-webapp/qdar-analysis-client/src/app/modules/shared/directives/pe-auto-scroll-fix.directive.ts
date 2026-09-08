@@ -1,4 +1,4 @@
-import { Directive, Input, OnChanges, SimpleChange, ElementRef } from '@angular/core';
+import {Directive, ElementRef, Input, OnChanges, SimpleChange} from '@angular/core';
 
 @Directive({
   // tslint:disable-next-line: directive-selector

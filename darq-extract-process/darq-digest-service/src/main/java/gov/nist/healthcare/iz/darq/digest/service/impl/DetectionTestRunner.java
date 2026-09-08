@@ -1,12 +1,7 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
 import gov.nist.healthcare.iz.darq.configuration.validation.ConfigurationPayloadValidator;
-import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
-import gov.nist.healthcare.iz.darq.detections.DetectionContext;
-import gov.nist.healthcare.iz.darq.detections.DetectionDescriptor;
-import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
-import gov.nist.healthcare.iz.darq.detections.DetectionEngineConfiguration;
-import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
+import gov.nist.healthcare.iz.darq.detections.*;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
 import gov.nist.healthcare.iz.darq.digest.domain.expression.ComplexDetection;
@@ -31,14 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service

@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { IUser } from '../../../core/model/user.model';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {IUser} from '../../../core/model/user.model';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Subscription} from 'rxjs';
 
 export interface IProfileUpdate {
   id: string;

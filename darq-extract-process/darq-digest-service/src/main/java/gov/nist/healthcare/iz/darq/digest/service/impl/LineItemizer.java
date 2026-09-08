@@ -1,26 +1,18 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.stereotype.Component;
-
-import gov.nist.healthcare.iz.darq.parser.model.Address;
-import gov.nist.healthcare.iz.darq.parser.annotation.Code;
-import gov.nist.healthcare.iz.darq.parser.service.model.DataElement;
 import gov.nist.healthcare.iz.darq.parser.annotation.DummyValue;
-import gov.nist.healthcare.iz.darq.parser.annotation.FieldName;
-import gov.nist.healthcare.iz.darq.parser.model.Name;
-import gov.nist.healthcare.iz.darq.parser.model.Patient;
-import gov.nist.healthcare.iz.darq.parser.model.ResponsibleParty;
-import gov.nist.healthcare.iz.darq.parser.model.VISInformation;
-import gov.nist.healthcare.iz.darq.parser.model.VaccineRecord;
+import gov.nist.healthcare.iz.darq.parser.model.*;
+import gov.nist.healthcare.iz.darq.parser.service.model.DataElement;
 import gov.nist.healthcare.iz.darq.parser.type.DataUnit;
 import gov.nist.healthcare.iz.darq.parser.type.DqDate;
 import gov.nist.healthcare.iz.darq.parser.type.DqNumeric;
 import gov.nist.healthcare.iz.darq.parser.type.DqString;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class LineItemizer {

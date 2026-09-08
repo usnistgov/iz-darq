@@ -1,21 +1,38 @@
-import { ExternalVariableEditorComponent, EXTERNAL_VARIABLE_EDITOR_METADATA } from './components/external-variable-editor/external-variable-editor.component';
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { DamWidgetRoute, DataLoaderGuard, EditorActivateGuard, EditorDeactivateGuard } from '@usnistgov/ngx-dam-framework-legacy';
-import { ADMIN_WIDGET, AdminWidgetComponent } from './components/admin-widget/admin-widget.component';
 import {
-  LoadAdministrationWidget,
+  EXTERNAL_VARIABLE_EDITOR_METADATA,
+  ExternalVariableEditorComponent
+} from './components/external-variable-editor/external-variable-editor.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {
+  DamWidgetRoute,
+  DataLoaderGuard,
+  EditorActivateGuard,
+  EditorDeactivateGuard
+} from '@usnistgov/ngx-dam-framework-legacy';
+import {ADMIN_WIDGET, AdminWidgetComponent} from './components/admin-widget/admin-widget.component';
+import {
   CoreActionTypes,
+  LoadAdministrationWidget,
   LoadUsers,
-  OpenWebContentEditor,
-  OpenEmailTemplateEditor,
   OpenConfigurationEditor,
-  OpenExternalVariablesEditor
+  OpenEmailTemplateEditor,
+  OpenExternalVariablesEditor,
+  OpenWebContentEditor
 } from './store/core.actions';
-import { UsersManagementEditorComponent } from './components/users-management-editor/users-management-editor.component';
-import { WebContentEditorComponent, WEB_CONTENT_EDITOR_METADATA } from './components/web-content-editor/web-content-editor.component';
-import { EmailsTemplateEditorComponent, EMTAIL_TEMPLATE_EDITOR_METADATA } from './components/emails-template-editor/emails-template-editor.component';
-import { ConfigurationEditorComponent, ADMIN_CONFIG_EDITOR_METADATA } from './components/configuration-editor/configuration-editor.component';
+import {UsersManagementEditorComponent} from './components/users-management-editor/users-management-editor.component';
+import {
+  WEB_CONTENT_EDITOR_METADATA,
+  WebContentEditorComponent
+} from './components/web-content-editor/web-content-editor.component';
+import {
+  EmailsTemplateEditorComponent,
+  EMTAIL_TEMPLATE_EDITOR_METADATA
+} from './components/emails-template-editor/emails-template-editor.component';
+import {
+  ADMIN_CONFIG_EDITOR_METADATA,
+  ConfigurationEditorComponent
+} from './components/configuration-editor/configuration-editor.component';
 
 const routes: Routes = [
   {

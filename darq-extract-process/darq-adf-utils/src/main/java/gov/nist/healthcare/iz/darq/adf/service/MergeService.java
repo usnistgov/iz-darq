@@ -1,8 +1,8 @@
 package gov.nist.healthcare.iz.darq.adf.service;
 
-import java.util.Map;
-
 import gov.nist.healthcare.iz.darq.digest.domain.*;
+
+import java.util.Map;
 
 public interface MergeService {
 

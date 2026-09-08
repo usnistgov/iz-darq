@@ -1,13 +1,13 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { ICurrentUser } from '../model/user.model';
-import { Scope } from '../model/scope.enum';
-import { Store } from '@ngrx/store';
-import { selectCurrentUser } from '../store/core.selectors';
-import { map } from 'rxjs/operators';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { Action } from '../model/action.enum';
-import { ResourceType } from '../model/resouce-type.enum';
-import { AccessToken } from '../model/token.enum';
+import {Injectable, OnDestroy} from '@angular/core';
+import {ICurrentUser} from '../model/user.model';
+import {Scope} from '../model/scope.enum';
+import {Store} from '@ngrx/store';
+import {selectCurrentUser} from '../store/core.selectors';
+import {map} from 'rxjs/operators';
+import {BehaviorSubject, Observable, Subscription} from 'rxjs';
+import {Action} from '../model/action.enum';
+import {ResourceType} from '../model/resouce-type.enum';
+import {AccessToken} from '../model/token.enum';
 
 export interface IPermissionEvaluator {
   onScopeCan(action: Action, type: ResourceType, qscope: { scope: Scope, facilityId?: string }, token?: AccessToken): boolean;

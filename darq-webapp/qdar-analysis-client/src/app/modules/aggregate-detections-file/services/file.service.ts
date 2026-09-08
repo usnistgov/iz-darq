@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, combineLatest, of } from 'rxjs';
-import { Message } from '@usnistgov/ngx-dam-framework-legacy';
-import { IADFDescriptor, IADFMergeJobDescriptor, IADFMetadata } from '../model/adf.model';
-import { IReportTemplateDescriptor } from '../../report-template/model/report-template.model';
-import { IUserFacilityDescriptor } from '../../facility/model/facility.model';
-import { EntityType } from '../../shared/model/entity.model';
-import { PermissionService } from '../../core/services/permission.service';
-import { take, map, flatMap } from 'rxjs/operators';
-import { Action } from '../../core/model/action.enum';
-import { ResourceType } from '../../core/model/resouce-type.enum';
-import { Scope } from '../../core/model/scope.enum';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {combineLatest, Observable, of} from 'rxjs';
+import {Message} from '@usnistgov/ngx-dam-framework-legacy';
+import {IADFDescriptor, IADFMergeJobDescriptor, IADFMetadata} from '../model/adf.model';
+import {IReportTemplateDescriptor} from '../../report-template/model/report-template.model';
+import {IUserFacilityDescriptor} from '../../facility/model/facility.model';
+import {EntityType} from '../../shared/model/entity.model';
+import {PermissionService} from '../../core/services/permission.service';
+import {flatMap, map, take} from 'rxjs/operators';
+import {Action} from '../../core/model/action.enum';
+import {ResourceType} from '../../core/model/resouce-type.enum';
+import {Scope} from '../../core/model/scope.enum';
 
 export const PRIVATE_FACILITY_ID = 'private';
 

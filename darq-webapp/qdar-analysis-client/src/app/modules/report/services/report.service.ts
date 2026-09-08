@@ -1,21 +1,21 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Message } from '@usnistgov/ngx-dam-framework-legacy';
-import { IReport, IReportDescriptor, IReportSectionResult, IDataTableRow, IDataTable } from '../model/report.model';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {Message} from '@usnistgov/ngx-dam-framework-legacy';
+import {IDataTable, IDataTableRow, IReport, IReportDescriptor, IReportSectionResult} from '../model/report.model';
 import {
   Comparator,
-  IValueContainer,
   IComparatorFilter,
-  IThresholdFilter,
-  IReportFilter,
   IReportFieldFilter,
+  IReportFilter,
+  IThresholdFilter,
+  IValueContainer,
   QueryPayloadType,
   QueryType,
 } from '../../report-template/model/report-template.model';
-import { Field } from '../../report-template/model/analysis.values';
-import { NgxCsvParser } from 'ngx-csv-parser';
-import { map, catchError } from 'rxjs/operators';
+import {Field} from '../../report-template/model/analysis.values';
+import {NgxCsvParser} from 'ngx-csv-parser';
+import {map} from 'rxjs/operators';
 
 
 @Injectable({

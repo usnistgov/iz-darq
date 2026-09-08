@@ -1,6 +1,6 @@
-import { Action } from '@ngrx/store';
-import { IFacilityDescriptor, IFacility } from '../model/facility.model';
-import { OpenEditorBase, IEditorMetadata } from '@usnistgov/ngx-dam-framework-legacy';
+import {Action} from '@ngrx/store';
+import {IFacility, IFacilityDescriptor} from '../model/facility.model';
+import {IEditorMetadata, OpenEditorBase} from '@usnistgov/ngx-dam-framework-legacy';
 
 export enum CoreActionTypes {
   LoadFacilities = '[Facility] Load Facilities',

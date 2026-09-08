@@ -10,7 +10,10 @@ import org.immregistries.mqe.validator.engine.codes.KnownName;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PlaceholderNamesMock implements DataExtractMock {
 	static private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");

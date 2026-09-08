@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { IFieldInputOptions, IFieldInputData } from '../components/field-input/field-input.component';
-import { Comparator } from '../../report-template/model/report-template.model';
-import { SelectItem } from 'primeng/api/selectitem';
-import { AgeGroupService } from './age-group.service';
-import { Field } from '../../report-template/model/analysis.values';
-import { ICvxResource, IDetectionResource } from '../model/public.model';
-import { IConfigurationPayload } from '../../configuration/model/configuration.model';
+import {Injectable} from '@angular/core';
+import {IFieldInputData, IFieldInputOptions} from '../components/field-input/field-input.component';
+import {Comparator} from '../../report-template/model/report-template.model';
+import {SelectItem} from 'primeng/api/selectitem';
+import {AgeGroupService} from './age-group.service';
+import {Field} from '../../report-template/model/analysis.values';
+import {ICvxResource, IDetectionResource} from '../model/public.model';
+import {IConfigurationPayload} from '../../configuration/model/configuration.model';
 
 export interface ILabelMap {
   [key: string]: string;

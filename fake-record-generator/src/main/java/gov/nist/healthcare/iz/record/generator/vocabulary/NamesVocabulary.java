@@ -3,7 +3,7 @@ package gov.nist.healthcare.iz.record.generator.vocabulary;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomUtils;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;

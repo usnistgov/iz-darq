@@ -1,7 +1,5 @@
 package gov.nist.healthcare.iz.darq.analyzer.model.template;
 
-import gov.nist.healthcare.iz.darq.digest.domain.Field;
-
 public class CompareFilter extends Filter  {
     private Comparator comparator;
     private double value;

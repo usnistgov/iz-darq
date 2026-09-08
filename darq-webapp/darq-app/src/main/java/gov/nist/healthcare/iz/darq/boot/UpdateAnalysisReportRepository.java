@@ -5,8 +5,6 @@ import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisReport;
 import gov.nist.healthcare.iz.darq.repository.PartialAnalysisReportRepository;
 import gov.nist.healthcare.iz.darq.service.impl.AnalysisReportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 

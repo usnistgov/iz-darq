@@ -1,22 +1,22 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { IConfigurationDescriptor, IDigestConfiguration } from '../../model/configuration.model';
-import { ConfigurationService } from '../../services/configuration.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {IConfigurationDescriptor, IDigestConfiguration} from '../../model/configuration.model';
+import {ConfigurationService} from '../../services/configuration.service';
 import {
   ConfirmDialogComponent,
-  MessageType,
+  DamWidgetComponent,
   DeleteResourcesFromRepository,
   InsertResourcesInCollection,
+  MessageType,
   RxjsStoreHelperService,
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { MatDialog } from '@angular/material/dialog';
-import { concatMap, map, flatMap } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
-import { of, BehaviorSubject, Observable, combineLatest, from } from 'rxjs';
-import { GoToEntity } from '../../../shared/store/core.actions';
-import { EntityType } from 'src/app/modules/shared/model/entity.model';
-import { DamWidgetComponent } from '@usnistgov/ngx-dam-framework-legacy';
-import { FilterType, filterDescriptorByType } from '../../../shared/model/filter.model';
-import { selectCurrentUserId } from '../../../core/store/core.selectors';
+import {MatDialog} from '@angular/material/dialog';
+import {concatMap, flatMap, map} from 'rxjs/operators';
+import {Store} from '@ngrx/store';
+import {BehaviorSubject, combineLatest, from, Observable, of} from 'rxjs';
+import {GoToEntity} from '../../../shared/store/core.actions';
+import {EntityType} from 'src/app/modules/shared/model/entity.model';
+import {filterDescriptorByType, FilterType} from '../../../shared/model/filter.model';
+import {selectCurrentUserId} from '../../../core/store/core.selectors';
 
 @Component({
   selector: 'app-configuration-side-bar',

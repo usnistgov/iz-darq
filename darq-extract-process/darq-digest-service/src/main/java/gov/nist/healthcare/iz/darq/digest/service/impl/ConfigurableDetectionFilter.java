@@ -1,9 +1,9 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
+import gov.nist.healthcare.iz.darq.digest.service.DetectionFilter;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import gov.nist.healthcare.iz.darq.digest.service.DetectionFilter;
 
 public class ConfigurableDetectionFilter implements DetectionFilter {
 	

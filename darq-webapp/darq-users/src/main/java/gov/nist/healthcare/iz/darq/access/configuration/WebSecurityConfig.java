@@ -1,6 +1,9 @@
 package gov.nist.healthcare.iz.darq.access.configuration;
 
 
+import gov.nist.healthcare.auth.config.JWTAuthenticationFilter;
+import gov.nist.healthcare.auth.config.JWTLoginFilter;
+import gov.nist.healthcare.auth.service.AccountService;
 import gov.nist.healthcare.iz.darq.access.domain.UserRole;
 import gov.nist.healthcare.iz.darq.auth.aart.JWTAuthenticationAARTClientFilter;
 import gov.nist.healthcare.iz.darq.auth.aart.JWTAuthenticationAARTFilter;
@@ -21,9 +24,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import gov.nist.healthcare.auth.config.JWTAuthenticationFilter;
-import gov.nist.healthcare.auth.config.JWTLoginFilter;
-import gov.nist.healthcare.auth.service.AccountService;
 
 @Configuration
 @EnableWebSecurity

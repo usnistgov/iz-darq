@@ -1,8 +1,8 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
-import java.util.Map;
-
 import gov.nist.healthcare.iz.darq.digest.service.VaxGroupMapper;
+
+import java.util.Map;
 
 public class SimpleVaxGroupMapper implements VaxGroupMapper {
 

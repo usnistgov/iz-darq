@@ -1,8 +1,9 @@
 package gov.nist.healthcare.iz.darq.parser.model;
 
-import java.util.List;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import gov.nist.healthcare.iz.darq.parser.annotation.Field;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.util.List;
 
 public class AggregatePatientRecord {
 	

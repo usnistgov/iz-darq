@@ -1,7 +1,7 @@
-import { selectFromCollection, selectWorkspaceCurrent } from '@usnistgov/ngx-dam-framework-legacy';
-import { createEntityAdapter, Dictionary } from '@ngrx/entity';
-import { IConfigurationDescriptor, IDigestConfiguration } from '../model/configuration.model';
-import { createSelector } from '@ngrx/store';
+import {selectFromCollection, selectWorkspaceCurrent} from '@usnistgov/ngx-dam-framework-legacy';
+import {createEntityAdapter, Dictionary} from '@ngrx/entity';
+import {IConfigurationDescriptor, IDigestConfiguration} from '../model/configuration.model';
+import {createSelector} from '@ngrx/store';
 
 const configurationsAdapter = createEntityAdapter<IConfigurationDescriptor>();
 const configurationsSelectors = configurationsAdapter.getSelectors();

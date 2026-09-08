@@ -1,21 +1,21 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, interval, BehaviorSubject, Subscription, of, EMPTY } from 'rxjs';
-import { Action, Store } from '@ngrx/store';
-import { selectCurrentFacility, selectUserFacilities, selectUserFacilityById } from '../../store/core.selectors';
-import { switchMap, flatMap, map, concatMap, take, takeUntil, filter } from 'rxjs/operators';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {BehaviorSubject, EMPTY, interval, Observable, of, Subscription} from 'rxjs';
+import {Action, Store} from '@ngrx/store';
+import {selectCurrentFacility, selectUserFacilities, selectUserFacilityById} from '../../store/core.selectors';
+import {concatMap, filter, flatMap, map, switchMap, take, takeUntil} from 'rxjs/operators';
 import {
   ConfirmDialogComponent,
-  RxjsStoreHelperService,
-  MessageType,
   DamAbstractEditorComponent,
   EditorSave,
-  EditorUpdate
+  EditorUpdate,
+  IEditorMetadata,
+  MessageType,
+  RxjsStoreHelperService
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { MatDialog } from '@angular/material/dialog';
-import { Actions } from '@ngrx/effects';
-import { IEditorMetadata } from '@usnistgov/ngx-dam-framework-legacy';
-import { IADFMergeJobDescriptor } from '../../model/adf.model';
-import { FileService } from '../../services/file.service';
+import {MatDialog} from '@angular/material/dialog';
+import {Actions} from '@ngrx/effects';
+import {IADFMergeJobDescriptor} from '../../model/adf.model';
+import {FileService} from '../../services/file.service';
 
 export const MERGE_JOB_LIST_EDITOR_METADATA: IEditorMetadata = {
   id: 'MERGE_JOB_LIST_EDITOR_METADATA',

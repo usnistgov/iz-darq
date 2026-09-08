@@ -1,16 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store, Action } from '@ngrx/store';
-import { Actions } from '@ngrx/effects';
-import { IEditorMetadata, DamAbstractEditorComponent, EditorSave, IWorkspaceCurrent, InsertResourcesInCollection, MessageService } from '@usnistgov/ngx-dam-framework-legacy';
-import { Observable, Subscription, throwError, combineLatest } from 'rxjs';
-import { IFacilityContent } from '../../model/facility.model';
-import { map, take, flatMap, concatMap, catchError } from 'rxjs/operators';
-import { selectFacility } from '../../store/core.selectors';
-import { MatDialog } from '@angular/material/dialog';
-import { UserListComponent } from '../user-list/user-list.component';
-import { FacilityService } from '../../services/facility.service';
-import { IUser } from '../../../core/model/user.model';
-import { selectUsers, selectUserById } from '../../../shared/store/core.selectors';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Action, Store} from '@ngrx/store';
+import {Actions} from '@ngrx/effects';
+import {
+  DamAbstractEditorComponent,
+  EditorSave,
+  IEditorMetadata,
+  InsertResourcesInCollection,
+  IWorkspaceCurrent,
+  MessageService
+} from '@usnistgov/ngx-dam-framework-legacy';
+import {combineLatest, Observable, Subscription, throwError} from 'rxjs';
+import {IFacilityContent} from '../../model/facility.model';
+import {catchError, concatMap, flatMap, map, take} from 'rxjs/operators';
+import {selectFacility} from '../../store/core.selectors';
+import {MatDialog} from '@angular/material/dialog';
+import {UserListComponent} from '../user-list/user-list.component';
+import {FacilityService} from '../../services/facility.service';
+import {IUser} from '../../../core/model/user.model';
+import {selectUserById, selectUsers} from '../../../shared/store/core.selectors';
 
 export const FACILITY_EDITOR_METADATA: IEditorMetadata = {
   id: 'FACILITY_EDITOR',

@@ -1,7 +1,7 @@
 package gov.nist.healthcare.iz.darq.access.configuration;
 
-import gov.nist.healthcare.iz.darq.access.security.SimpleResourceQualifier;
 import gov.nist.healthcare.iz.darq.access.security.CustomMethodSecurityExpressionHandler;
+import gov.nist.healthcare.iz.darq.access.security.SimpleResourceQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;

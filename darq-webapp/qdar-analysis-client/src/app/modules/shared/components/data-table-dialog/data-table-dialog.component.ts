@@ -1,17 +1,17 @@
-import { Store } from '@ngrx/store';
-import { IMessage, MessageService, UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
-import { IQuerySaveDetails, QuerySaveDialogComponent } from './../query-save-dialog/query-save-dialog.component';
-import { IConfigurationPayload } from './../../../configuration/model/configuration.model';
-import { IQuerySaveRequest, QueryService } from './../../services/query.service';
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DataTableComponent } from '../data-table/data-table.component';
-import { IDataTable } from '../../../report/model/report.model';
-import { Labelizer } from '../../services/values.service';
-import { Field } from '../../../report-template/model/analysis.values';
-import { of, throwError } from 'rxjs';
-import { catchError, flatMap, map } from 'rxjs/operators';
-import { HttpErrorResponse } from '@angular/common/http';
+import {Store} from '@ngrx/store';
+import {IMessage, MessageService, UserMessage} from '@usnistgov/ngx-dam-framework-legacy';
+import {IQuerySaveDetails, QuerySaveDialogComponent} from './../query-save-dialog/query-save-dialog.component';
+import {IConfigurationPayload} from './../../../configuration/model/configuration.model';
+import {IQuerySaveRequest, QueryService} from './../../services/query.service';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {DataTableComponent} from '../data-table/data-table.component';
+import {IDataTable} from '../../../report/model/report.model';
+import {Labelizer} from '../../services/values.service';
+import {Field} from '../../../report-template/model/analysis.values';
+import {of, throwError} from 'rxjs';
+import {catchError, flatMap, map} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-data-table-dialog',

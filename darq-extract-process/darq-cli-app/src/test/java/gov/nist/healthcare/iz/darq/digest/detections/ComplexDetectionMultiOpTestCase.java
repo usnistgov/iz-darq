@@ -5,7 +5,6 @@ import gov.nist.healthcare.iz.darq.adf.module.sqlite.model.Dictionaries;
 import gov.nist.healthcare.iz.darq.digest.common.CLITestRunnerUtils;
 import gov.nist.healthcare.iz.darq.digest.common.SQLiteADFTestUtils;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
-import gov.nist.healthcare.iz.darq.digest.mock.complex.ComplexDetectionDenominatorMock;
 import gov.nist.healthcare.iz.darq.digest.mock.complex.ComplexDetectionMultiOpMock;
 import org.immregistries.mqe.validator.detection.Detection;
 import org.junit.AfterClass;

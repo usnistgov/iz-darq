@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, TemplateRef } from '@angular/core';
-import { IConfigurationDescriptor } from '../../model/configuration.model';
+import {Component, Input, OnInit} from '@angular/core';
+import {IConfigurationDescriptor} from '../../model/configuration.model';
 
 @Component({
   selector: 'app-configuration-title',

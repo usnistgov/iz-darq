@@ -1,27 +1,34 @@
-import { Injectable } from '@angular/core';
-import { Effect, ofType, Actions } from '@ngrx/effects';
-import { Store, Action } from '@ngrx/store';
-import { DamWidgetEffect, SetValue, LoadResourcesInRepository, OpenEditor, OpenEditorFailure, MessageService } from '@usnistgov/ngx-dam-framework-legacy';
-import { combineLatest, of, Observable } from 'rxjs';
-import { concatMap, flatMap, catchError, take } from 'rxjs/operators';
-import { AnalysisService } from '../../shared/services/analysis.service';
-import { SupportDataService } from '../../shared/services/support-data.service';
-import { ADF_WIDGET } from '../components/adf-widget/adf-widget.component';
-import { FileService } from '../services/file.service';
+import {Injectable} from '@angular/core';
+import {Actions, Effect, ofType} from '@ngrx/effects';
+import {Action, Store} from '@ngrx/store';
 import {
+  DamWidgetEffect,
+  LoadResourcesInRepository,
+  MessageService,
+  OpenEditor,
+  OpenEditorFailure,
+  SetValue
+} from '@usnistgov/ngx-dam-framework-legacy';
+import {combineLatest, Observable, of} from 'rxjs';
+import {catchError, concatMap, flatMap, take} from 'rxjs/operators';
+import {AnalysisService} from '../../shared/services/analysis.service';
+import {SupportDataService} from '../../shared/services/support-data.service';
+import {ADF_WIDGET} from '../components/adf-widget/adf-widget.component';
+import {FileService} from '../services/file.service';
+import {
+  CoreActions,
+  CoreActionTypes,
   LoadADFDashboard,
   LoadADFDashboardSuccess,
   OpenADFListEditor,
   OpenAnalysisJobEditor,
-  CoreActionTypes,
-  CoreActions,
   OpenMergeJobEditor,
+  OpenReportsEditor,
 } from './core.actions';
 
-import { selectUserFacilityById } from './core.selectors';
-import { OpenReportsEditor } from './core.actions';
-import { ReportService } from '../../report/services/report.service';
-import { IUserFacilityDescriptor } from '../../facility/model/facility.model';
+import {selectUserFacilityById} from './core.selectors';
+import {ReportService} from '../../report/services/report.service';
+import {IUserFacilityDescriptor} from '../../facility/model/facility.model';
 
 @Injectable()
 export class WidgetEffects extends DamWidgetEffect {

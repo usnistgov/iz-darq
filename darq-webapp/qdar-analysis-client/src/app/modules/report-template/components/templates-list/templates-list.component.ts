@@ -1,29 +1,29 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, of, Subject, combineLatest, BehaviorSubject, from } from 'rxjs';
-import { IReportTemplateDescriptor, IReportTemplate } from '../../model/report-template.model';
-import { Store } from '@ngrx/store';
-import { selectReportTemplates } from '../../store/core.selectors';
+import {Component, OnInit} from '@angular/core';
+import {BehaviorSubject, combineLatest, from, Observable, of} from 'rxjs';
+import {IReportTemplate, IReportTemplateDescriptor} from '../../model/report-template.model';
+import {Store} from '@ngrx/store';
+import {selectReportTemplates} from '../../store/core.selectors';
 import {
-  selectIsAdmin,
-  RxjsStoreHelperService,
   ConfirmDialogComponent,
-  MessageType,
   DeleteResourcesFromRepository,
   InsertResourcesInCollection,
+  MessageType,
+  RxjsStoreHelperService,
+  selectIsAdmin,
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { MatDialog } from '@angular/material/dialog';
-import { concatMap, map, take, flatMap } from 'rxjs/operators';
-import { ReportTemplateService } from '../../services/report-template.service';
-import { FilterType } from 'src/app/modules/shared/model/filter.model';
-import { filterDescriptorByType } from '../../../shared/model/filter.model';
-import { GoToEntity } from '../../../shared/store/core.actions';
-import { EntityType } from '../../../shared/model/entity.model';
-import { CreateRtDialogComponent } from '../create-rt-dialog/create-rt-dialog.component';
-import { IConfigurationDescriptor } from '../../../configuration/model/configuration.model';
-import { selectConfigurations } from '../../../configuration/store/core.selectors';
-import { selectCurrentUserId } from 'src/app/modules/core/store/core.selectors';
-import { CloneRtDialogComponent } from '../clone-rt-dialog/clone-rt-dialog.component';
-import { ConfigurationService } from 'src/app/modules/configuration/services/configuration.service';
+import {MatDialog} from '@angular/material/dialog';
+import {concatMap, flatMap, map, take} from 'rxjs/operators';
+import {ReportTemplateService} from '../../services/report-template.service';
+import {FilterType} from 'src/app/modules/shared/model/filter.model';
+import {filterDescriptorByType} from '../../../shared/model/filter.model';
+import {GoToEntity} from '../../../shared/store/core.actions';
+import {EntityType} from '../../../shared/model/entity.model';
+import {CreateRtDialogComponent} from '../create-rt-dialog/create-rt-dialog.component';
+import {IConfigurationDescriptor} from '../../../configuration/model/configuration.model';
+import {selectConfigurations} from '../../../configuration/store/core.selectors';
+import {selectCurrentUserId} from 'src/app/modules/core/store/core.selectors';
+import {CloneRtDialogComponent} from '../clone-rt-dialog/clone-rt-dialog.component';
+import {ConfigurationService} from 'src/app/modules/configuration/services/configuration.service';
 
 @Component({
   selector: 'app-templates-list',

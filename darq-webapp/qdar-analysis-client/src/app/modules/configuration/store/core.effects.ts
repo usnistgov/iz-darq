@@ -1,34 +1,33 @@
-
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { concatMap, flatMap, take, switchMap, map, catchError } from 'rxjs/operators';
+import {Actions, Effect, ofType} from '@ngrx/effects';
+import {catchError, concatMap, flatMap, map, switchMap, take} from 'rxjs/operators';
 import {
-  CoreActionTypes,
   CoreActions,
-  RouteLoadConfigurationPage,
-  RouteLoadConfigurationPageSuccess,
+  CoreActionTypes,
   OpenConfigurationEditor,
-  RouteLoadConfigurationPageFailure
+  RouteLoadConfigurationPage,
+  RouteLoadConfigurationPageFailure,
+  RouteLoadConfigurationPageSuccess
 } from './core.actions';
-import { ConfigurationService } from '../services/configuration.service';
-import { SupportDataService } from '../../shared/services/support-data.service';
-import { combineLatest, of } from 'rxjs';
+import {ConfigurationService} from '../services/configuration.service';
+import {SupportDataService} from '../../shared/services/support-data.service';
+import {combineLatest, of} from 'rxjs';
 import {
-  LoadResourcesInRepository,
-  DamWidgetEffect,
-  OpenEditor,
   DamActionTypes,
+  DamWidgetEffect,
   EditorSave,
   GlobalSave,
-  OpenEditorFailure,
-  MessageService
+  LoadResourcesInRepository,
+  MessageService,
+  OpenEditor,
+  OpenEditorFailure
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { IDetectionResource } from '../../shared/model/public.model';
-import { IConfigurationDescriptor } from '../model/configuration.model';
-import { CONFIG_WIDGET } from '../components/configuration-widget/configuration-widget.component';
-import { Store } from '@ngrx/store';
-import { selectConfigurationById } from './core.selectors';
-import { CONFIGURATION_EDITOR_MD } from '../components/configuration-editor/configuration-editor.component';
-import { Injectable } from '@angular/core';
+import {IDetectionResource} from '../../shared/model/public.model';
+import {IConfigurationDescriptor} from '../model/configuration.model';
+import {CONFIG_WIDGET} from '../components/configuration-widget/configuration-widget.component';
+import {Store} from '@ngrx/store';
+import {selectConfigurationById} from './core.selectors';
+import {CONFIGURATION_EDITOR_MD} from '../components/configuration-editor/configuration-editor.component';
+import {Injectable} from '@angular/core';
 
 @Injectable()
 export class CoreEffects extends DamWidgetEffect {

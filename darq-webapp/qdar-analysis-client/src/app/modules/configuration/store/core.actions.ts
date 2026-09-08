@@ -1,6 +1,6 @@
-import { Action } from '@ngrx/store';
-import { IConfigurationDescriptor } from '../model/configuration.model';
-import { OpenEditorBase, IEditorMetadata } from '@usnistgov/ngx-dam-framework-legacy';
+import {Action} from '@ngrx/store';
+import {IConfigurationDescriptor} from '../model/configuration.model';
+import {IEditorMetadata, OpenEditorBase} from '@usnistgov/ngx-dam-framework-legacy';
 
 export enum CoreActionTypes {
   RouteLoadConfigurationPage = '[qDAR Configuration] Route Load Configuration Page',

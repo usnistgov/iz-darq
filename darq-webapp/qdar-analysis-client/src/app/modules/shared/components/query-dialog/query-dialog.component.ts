@@ -1,24 +1,24 @@
-import { IQueryVariableDisplay } from './../variable-ref-display/variable-ref-display.component';
-import { QueryVariableService } from './../../services/query-variable.service';
-import { QuerySaveDialogComponent, IQuerySaveDetails } from './../query-save-dialog/query-save-dialog.component';
-import { IQuerySaveRequest } from './../../services/query.service';
-import { IConfigurationPayload } from './../../../configuration/model/configuration.model';
-import { map, flatMap, catchError } from 'rxjs/operators';
-import { IQuery } from './../../model/query.model';
-import { QueryListDialogComponent } from './../query-list-dialog/query-list-dialog.component';
-import { ValuesService } from 'src/app/modules/shared/services/values.service';
-import { Labelizer } from './../../services/values.service';
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { SelectItem } from 'primeng/api/selectitem';
-import { AnalysisType, names, Field } from '../../../report-template/model/analysis.values';
-import { IDataSelector, QueryPayloadType, QueryType } from '../../../report-template/model/report-template.model';
-import { IFieldInputOptions } from '../field-input/field-input.component';
-import { UserMessage, MessageService, IMessage } from '@usnistgov/ngx-dam-framework-legacy';
+import {IQueryVariableDisplay} from './../variable-ref-display/variable-ref-display.component';
+import {QueryVariableService} from './../../services/query-variable.service';
+import {IQuerySaveDetails, QuerySaveDialogComponent} from './../query-save-dialog/query-save-dialog.component';
+import {IQuerySaveRequest} from './../../services/query.service';
+import {IConfigurationPayload} from './../../../configuration/model/configuration.model';
+import {catchError, flatMap, map} from 'rxjs/operators';
+import {IQuery} from './../../model/query.model';
+import {QueryListDialogComponent} from './../query-list-dialog/query-list-dialog.component';
+import {ValuesService} from 'src/app/modules/shared/services/values.service';
+import {Labelizer} from './../../services/values.service';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {SelectItem} from 'primeng/api/selectitem';
+import {AnalysisType, Field, names} from '../../../report-template/model/analysis.values';
+import {IDataSelector, QueryPayloadType, QueryType} from '../../../report-template/model/report-template.model';
+import {IFieldInputOptions} from '../field-input/field-input.component';
+import {IMessage, MessageService, UserMessage} from '@usnistgov/ngx-dam-framework-legacy';
 import * as _ from 'lodash';
-import { QueryService } from '../../services/query.service';
-import { of, throwError } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
+import {QueryService} from '../../services/query.service';
+import {of, throwError} from 'rxjs';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-query-dialog',

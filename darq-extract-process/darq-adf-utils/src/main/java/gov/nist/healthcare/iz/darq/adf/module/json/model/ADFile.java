@@ -2,8 +2,8 @@ package gov.nist.healthcare.iz.darq.adf.module.json.model;
 
 import gov.nist.healthcare.iz.darq.digest.domain.ADPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.Summary;
 import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
+import gov.nist.healthcare.iz.darq.digest.domain.Summary;
 
 import java.util.Date;
 import java.util.Map;

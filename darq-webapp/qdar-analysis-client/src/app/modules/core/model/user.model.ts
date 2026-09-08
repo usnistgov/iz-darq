@@ -1,8 +1,8 @@
-import { IDamResource, IDamUser } from '@usnistgov/ngx-dam-framework-legacy';
-import { EntityType } from '../../shared/model/entity.model';
-import { ResourceType } from './resouce-type.enum';
-import { Scope } from './scope.enum';
-import { Action } from './action.enum';
+import {IDamResource, IDamUser} from '@usnistgov/ngx-dam-framework-legacy';
+import {EntityType} from '../../shared/model/entity.model';
+import {ResourceType} from './resouce-type.enum';
+import {Scope} from './scope.enum';
+import {Action} from './action.enum';
 
 export interface IUser extends IDamResource, IDamUser {
   id: string;

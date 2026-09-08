@@ -1,4 +1,4 @@
-import { IHomePage } from '../../core/services/web-content.service';
+import {IHomePage} from '../../core/services/web-content.service';
 
 export interface IWebContent {
   id: string;

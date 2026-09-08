@@ -1,7 +1,10 @@
 package gov.nist.healthcare.iz.record.generator.vocabulary;
+
 import org.apache.commons.lang3.RandomUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ValueSetVocabulary extends Vocabulary {
     List<String> values;

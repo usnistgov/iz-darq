@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { DownloadService, FileDescriptor, JarInfo } from '../../services/download.service';
-import { Observable } from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {DownloadService, FileDescriptor, JarInfo} from '../../services/download.service';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-download',

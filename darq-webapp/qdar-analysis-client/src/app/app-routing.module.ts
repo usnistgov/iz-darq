@@ -1,21 +1,21 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule, ActivatedRouteSnapshot } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {ActivatedRouteSnapshot, RouterModule, Routes} from '@angular/router';
 import {
-  LoginComponent,
   AuthenticatedGuard,
+  IDamUser,
+  LoginComponent,
   NotAuthenticatedGuard,
   TokenValidGuard,
   UserPredicateGuard,
-  IDamUser,
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { HomeComponent } from './modules/core/components/home/home.component';
-import { ErrorPageComponent } from './modules/core/components/error-page/error-page.component';
-import { RegistrationComponent } from './modules/core/components/registration/registration.component';
-import { VerifyEmailComponent } from './modules/core/components/verify-email/verify-email.component';
-import { UpdateProfileComponent } from './modules/core/components/update-profile/update-profile.component';
-import { ForgotPasswordComponent } from './modules/core/components/forgot-password/forgot-password.component';
-import { ResetPasswordComponent } from './modules/core/components/reset-password/reset-password.component';
-import { DownloadComponent } from './modules/core/components/download/download.component';
+import {HomeComponent} from './modules/core/components/home/home.component';
+import {ErrorPageComponent} from './modules/core/components/error-page/error-page.component';
+import {RegistrationComponent} from './modules/core/components/registration/registration.component';
+import {VerifyEmailComponent} from './modules/core/components/verify-email/verify-email.component';
+import {UpdateProfileComponent} from './modules/core/components/update-profile/update-profile.component';
+import {ForgotPasswordComponent} from './modules/core/components/forgot-password/forgot-password.component';
+import {ResetPasswordComponent} from './modules/core/components/reset-password/reset-password.component';
+import {DownloadComponent} from './modules/core/components/download/download.component';
 
 
 const routes: Routes = [

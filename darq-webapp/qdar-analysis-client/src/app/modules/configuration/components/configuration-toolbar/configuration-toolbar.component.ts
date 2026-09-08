@@ -1,12 +1,12 @@
-import { Component, OnInit, Input, TemplateRef } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { DamWidgetComponent } from '@usnistgov/ngx-dam-framework-legacy';
-import { Observable, combineLatest } from 'rxjs';
-import { selectCurrentConfiguration } from '../../store/core.selectors';
-import { ResourceType } from '../../../core/model/resouce-type.enum';
-import { Action } from '../../../core/model/action.enum';
-import { map } from 'rxjs/operators';
-import { PermissionService } from '../../../core/services/permission.service';
+import {Component, Input, OnInit, TemplateRef} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {DamWidgetComponent} from '@usnistgov/ngx-dam-framework-legacy';
+import {combineLatest, Observable} from 'rxjs';
+import {selectCurrentConfiguration} from '../../store/core.selectors';
+import {ResourceType} from '../../../core/model/resouce-type.enum';
+import {Action} from '../../../core/model/action.enum';
+import {map} from 'rxjs/operators';
+import {PermissionService} from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-configuration-toolbar',

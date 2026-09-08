@@ -1,23 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { Action, Store } from '@ngrx/store';
-import { Observable, EMPTY, of, BehaviorSubject, combineLatest } from 'rxjs';
-import { IUser } from 'src/app/modules/core/model/user.model';
-import { selectUsers } from '../../../shared/store/core.selectors';
+import {Component, OnInit} from '@angular/core';
+import {Action, Store} from '@ngrx/store';
+import {BehaviorSubject, combineLatest, EMPTY, Observable, of} from 'rxjs';
+import {IUser} from 'src/app/modules/core/model/user.model';
+import {selectUsers} from '../../../shared/store/core.selectors';
 import {
-  RxjsStoreHelperService,
-  MessageType,
   ConfirmDialogComponent,
-  InsertResourcesInCollection,
   DeleteResourcesFromCollection,
+  InsertResourcesInCollection,
+  Message,
+  MessageType,
+  RxjsStoreHelperService,
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { UserService } from '../../../core/services/user.service';
-import { MatDialog } from '@angular/material/dialog';
-import { concatMap, map } from 'rxjs/operators';
-import { UserProfileDialogComponent } from '../user-profile-dialog/user-profile-dialog.component';
-import { UserRoleDialogComponent } from '../user-role-dialog/user-role-dialog.component';
-import { selectCurrentUserId } from '../../../core/store/core.selectors';
-import { FormGroup, FormControl } from '@angular/forms';
-import { Message } from '@usnistgov/ngx-dam-framework-legacy';
+import {UserService} from '../../../core/services/user.service';
+import {MatDialog} from '@angular/material/dialog';
+import {concatMap, map} from 'rxjs/operators';
+import {UserProfileDialogComponent} from '../user-profile-dialog/user-profile-dialog.component';
+import {UserRoleDialogComponent} from '../user-role-dialog/user-role-dialog.component';
+import {selectCurrentUserId} from '../../../core/store/core.selectors';
+import {FormControl, FormGroup} from '@angular/forms';
 
 export interface IUserFilter {
   name: string;

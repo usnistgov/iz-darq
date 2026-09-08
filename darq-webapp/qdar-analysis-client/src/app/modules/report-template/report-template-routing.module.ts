@@ -1,16 +1,40 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { TemplatesListComponent } from './components/templates-list/templates-list.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {TemplatesListComponent} from './components/templates-list/templates-list.component';
 import {
+  CoreActionTypes,
+  LoadReportTemplate,
   LoadReportTemplates,
-  CoreActionTypes, LoadReportTemplate, OpenReportTemplateMetadata, OpenReportTemplateSection, OpenReportTemplateLabels
+  OpenReportTemplateLabels,
+  OpenReportTemplateMetadata,
+  OpenReportTemplateSection
 } from './store/core.actions';
-import { DataLoaderGuard, DamWidgetRoute, EditorActivateGuard, EditorDeactivateGuard } from '@usnistgov/ngx-dam-framework-legacy';
-import { RT_WIDGET_ID, ReportTemplateWidgetComponent } from './components/report-template-widget/report-template-widget.component';
-import { RtMetadataEditorComponent, RT_METADATA_EDITOR_METADATA } from './components/rt-metadata-editor/rt-metadata-editor.component';
-import { RT_SECTION_NARRATIVE_EDITOR_METADATA, RtSectionNarrativeEditorComponent } from './components/rt-section-narrative-editor/rt-section-narrative-editor.component';
-import { RtSectionPayloadEditorComponent, RT_SECTION_PAYLOAD_EDITOR_METADATA } from './components/rt-section-payload-editor/rt-section-payload-editor.component';
-import { RtLabelsEditorComponent, RT_LABEL_EDITOR_METADATA } from './components/rt-labels-editor/rt-labels-editor.component';
+import {
+  DamWidgetRoute,
+  DataLoaderGuard,
+  EditorActivateGuard,
+  EditorDeactivateGuard
+} from '@usnistgov/ngx-dam-framework-legacy';
+import {
+  ReportTemplateWidgetComponent,
+  RT_WIDGET_ID
+} from './components/report-template-widget/report-template-widget.component';
+import {
+  RT_METADATA_EDITOR_METADATA,
+  RtMetadataEditorComponent
+} from './components/rt-metadata-editor/rt-metadata-editor.component';
+import {
+  RT_SECTION_NARRATIVE_EDITOR_METADATA,
+  RtSectionNarrativeEditorComponent
+} from './components/rt-section-narrative-editor/rt-section-narrative-editor.component';
+import {
+  RT_SECTION_PAYLOAD_EDITOR_METADATA,
+  RtSectionPayloadEditorComponent
+} from './components/rt-section-payload-editor/rt-section-payload-editor.component';
+import {
+  RT_LABEL_EDITOR_METADATA,
+  RtLabelsEditorComponent
+} from './components/rt-labels-editor/rt-labels-editor.component';
 
 
 const routes: Routes = [

@@ -1,14 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, combineLatest, Subscription, ReplaySubject } from 'rxjs';
-import { IADFMetadata, IExtractPercent } from '../../model/adf.model';
-import { Store } from '@ngrx/store';
-import { selectOpenFileMetadata, selectUserFacilities } from '../../store/core.selectors';
-import { AgeGroupService } from '../../../shared/services/age-group.service';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { selectDetectionById } from '../../../shared/store/core.selectors';
-import { IDetectionResource } from '../../../shared/model/public.model';
-import { ActivatedRoute } from '@angular/router';
-import { selectIsAdmin } from '@usnistgov/ngx-dam-framework-legacy';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {combineLatest, Observable, ReplaySubject, Subscription} from 'rxjs';
+import {IADFMetadata, IExtractPercent} from '../../model/adf.model';
+import {Store} from '@ngrx/store';
+import {selectOpenFileMetadata, selectUserFacilities} from '../../store/core.selectors';
+import {AgeGroupService} from '../../../shared/services/age-group.service';
+import {map, switchMap, tap} from 'rxjs/operators';
+import {selectDetectionById} from '../../../shared/store/core.selectors';
+import {IDetectionResource} from '../../../shared/model/public.model';
+import {ActivatedRoute} from '@angular/router';
+import {selectIsAdmin} from '@usnistgov/ngx-dam-framework-legacy';
 
 @Component({
   selector: 'app-adf-summary',

@@ -1,14 +1,19 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
-import { DamWidgetComponent, IWorkspaceActive, selectWorkspaceActive, selectWorkspaceCurrentIsChanged } from '@usnistgov/ngx-dam-framework-legacy';
-import { Store } from '@ngrx/store';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable, combineLatest } from 'rxjs';
-import { IReportTemplate, IReportSection } from '../../model/report-template.model';
-import { selectReportTemplate, selectTableOfContentIsChanged } from '../../store/core.selectors';
-import { map } from 'rxjs/operators';
-import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
-import { ResourceType } from '../../../core/model/resouce-type.enum';
-import { PermissionService } from '../../../core/services/permission.service';
+import {Component, forwardRef, OnInit} from '@angular/core';
+import {
+  DamWidgetComponent,
+  IWorkspaceActive,
+  selectWorkspaceActive,
+  selectWorkspaceCurrentIsChanged
+} from '@usnistgov/ngx-dam-framework-legacy';
+import {Store} from '@ngrx/store';
+import {MatDialog} from '@angular/material/dialog';
+import {combineLatest, Observable} from 'rxjs';
+import {IReportSection, IReportTemplate} from '../../model/report-template.model';
+import {selectReportTemplate, selectTableOfContentIsChanged} from '../../store/core.selectors';
+import {map} from 'rxjs/operators';
+import {Action as ResourceAction} from 'src/app/modules/core/model/action.enum';
+import {ResourceType} from '../../../core/model/resouce-type.enum';
+import {PermissionService} from '../../../core/services/permission.service';
 
 export const RT_WIDGET_ID = 'RT_WIDGET_ID';
 

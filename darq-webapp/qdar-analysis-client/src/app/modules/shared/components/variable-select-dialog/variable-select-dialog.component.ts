@@ -1,12 +1,12 @@
-import { IQueryVariableDisplay } from './../variable-ref-display/variable-ref-display.component';
+import {IQueryVariableDisplay} from './../variable-ref-display/variable-ref-display.component';
 import {
-  IQueryVariable,
-  QueryVariableType,
+  ExternalQueryVariableScope,
   IExternalQueryVariable,
-  ExternalQueryVariableScope
+  IQueryVariable,
+  QueryVariableType
 } from './../../model/query-variable.model';
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-variable-select-dialog',

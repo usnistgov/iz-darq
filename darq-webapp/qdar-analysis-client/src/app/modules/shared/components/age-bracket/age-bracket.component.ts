@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { IBracket } from '../../model/age-group.model';
-import { AgeGroupService } from '../../services/age-group.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {IBracket} from '../../model/age-group.model';
+import {AgeGroupService} from '../../services/age-group.service';
 
 @Component({
   selector: 'app-age-bracket',

@@ -1,9 +1,12 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { DamWidgetRoute, AuthenticatedGuard, EditorActivateGuard, EditorDeactivateGuard } from '@usnistgov/ngx-dam-framework-legacy';
-import { FACILITY_WIDGET, FacilityWidgetComponent } from './components/facility-widget/facility-widget.component';
-import { LoadFacilities, CoreActionTypes, LoadFacility, OpenFacilityEditor } from './store/core.actions';
-import { FacilityEditorComponent, FACILITY_EDITOR_METADATA } from './components/facility-editor/facility-editor.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {DamWidgetRoute, EditorActivateGuard, EditorDeactivateGuard} from '@usnistgov/ngx-dam-framework-legacy';
+import {FACILITY_WIDGET, FacilityWidgetComponent} from './components/facility-widget/facility-widget.component';
+import {CoreActionTypes, LoadFacilities, OpenFacilityEditor} from './store/core.actions';
+import {
+  FACILITY_EDITOR_METADATA,
+  FacilityEditorComponent
+} from './components/facility-editor/facility-editor.component';
 
 
 const routes: Routes = [

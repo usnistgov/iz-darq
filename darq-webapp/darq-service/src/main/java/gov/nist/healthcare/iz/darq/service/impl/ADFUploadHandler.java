@@ -1,5 +1,16 @@
 package gov.nist.healthcare.iz.darq.service.impl;
 
+import gov.nist.healthcare.crypto.service.CryptoKey;
+import gov.nist.healthcare.iz.darq.adf.model.ADFVersion;
+import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
+import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
+import gov.nist.healthcare.iz.darq.adf.service.ADFStoreUploadHandler;
+import gov.nist.healthcare.iz.darq.adf.service.exception.InvalidFileFormat;
+import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -8,18 +19,6 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import gov.nist.healthcare.crypto.service.CryptoKey;
-import gov.nist.healthcare.iz.darq.adf.model.ADFVersion;
-import gov.nist.healthcare.iz.darq.adf.module.ADFManager;
-import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
-import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import gov.nist.healthcare.iz.darq.adf.service.ADFStoreUploadHandler;
-import gov.nist.healthcare.iz.darq.adf.service.exception.InvalidFileFormat;
 
 @Service
 public class ADFUploadHandler implements ADFStoreUploadHandler {

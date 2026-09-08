@@ -1,10 +1,10 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { WebContentService } from '../../services/web-content.service';
-import { Observable } from 'rxjs';
-import { DomSanitizer } from '@angular/platform-browser';
-import { map } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
-import { TurnOffLoader } from '@usnistgov/ngx-dam-framework-legacy';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {WebContentService} from '../../services/web-content.service';
+import {Observable} from 'rxjs';
+import {DomSanitizer} from '@angular/platform-browser';
+import {map} from 'rxjs/operators';
+import {Store} from '@ngrx/store';
+import {TurnOffLoader} from '@usnistgov/ngx-dam-framework-legacy';
 
 @Component({
   selector: 'app-home',

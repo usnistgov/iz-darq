@@ -1,10 +1,9 @@
 package gov.nist.healthcare.auth.repository;
 
+import gov.nist.healthcare.auth.domain.Account;
 import gov.nist.healthcare.auth.domain.Authority;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-
-import gov.nist.healthcare.auth.domain.Account;
 
 import java.util.List;
 

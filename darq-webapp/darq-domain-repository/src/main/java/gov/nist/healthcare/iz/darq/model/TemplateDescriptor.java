@@ -1,10 +1,11 @@
 package gov.nist.healthcare.iz.darq.model;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.nist.healthcare.domain.trait.Owned;
 import gov.nist.healthcare.domain.trait.Publishable;
+
+import java.util.List;
 
 public class TemplateDescriptor implements Owned, Publishable {
 

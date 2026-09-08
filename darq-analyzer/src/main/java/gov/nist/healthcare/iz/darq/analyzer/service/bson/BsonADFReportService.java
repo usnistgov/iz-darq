@@ -1,21 +1,21 @@
 package gov.nist.healthcare.iz.darq.analyzer.service.bson;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import gov.nist.healthcare.iz.darq.adf.model.ADFVersion;
 import gov.nist.healthcare.iz.darq.adf.module.json.BsonADFReader;
+import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.*;
 import gov.nist.healthcare.iz.darq.analyzer.model.template.*;
 import gov.nist.healthcare.iz.darq.analyzer.service.ADFReportService;
 import gov.nist.healthcare.iz.darq.analyzer.service.bson.tray.TrayProcessor;
 import gov.nist.healthcare.iz.darq.analyzer.service.bson.tray.TrayProcessorFactoryImpl;
+import gov.nist.healthcare.iz.darq.analyzer.service.common.DataTableService;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import gov.nist.healthcare.iz.darq.analyzer.service.common.DataTableService;
-import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
-import gov.nist.healthcare.iz.darq.digest.domain.Field;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BsonADFReportService extends ADFReportService<BsonADFReader> {

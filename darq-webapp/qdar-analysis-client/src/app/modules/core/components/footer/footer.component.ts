@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { IServerInfo } from '../../services/app-info.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {IServerInfo} from '../../services/app-info.service';
 
 @Component({
   selector: 'app-footer',

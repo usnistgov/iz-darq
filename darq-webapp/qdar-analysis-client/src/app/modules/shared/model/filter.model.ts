@@ -1,4 +1,5 @@
-import { IDescriptor } from './descriptor.model';
+import {IDescriptor} from './descriptor.model';
+
 export enum FilterType {
   OWNED = 'OWNED',
   PUBLIC = 'PUBLIC',

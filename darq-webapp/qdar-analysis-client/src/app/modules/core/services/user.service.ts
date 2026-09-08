@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { IUserAccountRegister, IUser, ICreateCredentials } from '../model/user.model';
-import { Message, UserTransformer, IDamUser } from '@usnistgov/ngx-dam-framework-legacy';
-import { IProfileUpdate } from '../../shared/components/user-profile/user-profile.component';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {IUser, IUserAccountRegister} from '../model/user.model';
+import {IDamUser, Message, UserTransformer} from '@usnistgov/ngx-dam-framework-legacy';
+import {IProfileUpdate} from '../../shared/components/user-profile/user-profile.component';
 
 @Injectable({
   providedIn: 'root'

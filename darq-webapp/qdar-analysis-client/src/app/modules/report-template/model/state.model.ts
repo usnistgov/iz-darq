@@ -1,5 +1,5 @@
-import { IReportTemplate } from './report-template.model';
-import { EntityType } from '../../shared/model/entity.model';
+import {IReportTemplate} from './report-template.model';
+import {EntityType} from '../../shared/model/entity.model';
 
 export interface IReportTemplateStatePayload {
   payload: IReportTemplate;

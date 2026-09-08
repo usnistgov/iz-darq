@@ -1,11 +1,14 @@
 package gov.nist.extract.lucene.index;
+
 import gov.nist.extract.lucene.model.FormatIssue;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.index.*;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

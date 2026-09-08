@@ -1,37 +1,42 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
+  ConfirmDialogComponent,
   DamAbstractEditorComponent,
-  IEditorMetadata,
-  MessageService,
   EditorSave,
+  IEditorMetadata,
+  InsertResourcesInCollection,
   LoadPayloadData,
-  InsertResourcesInCollection
+  MessageService
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { Store, Action } from '@ngrx/store';
-import { Actions } from '@ngrx/effects';
-import { ReportTemplateService } from '../../services/report-template.service';
-import { Observable, Subscription, throwError, combineLatest } from 'rxjs';
-import { IReportSectionDisplay } from '../../model/state.model';
+import {Action, Store} from '@ngrx/store';
+import {Actions} from '@ngrx/effects';
+import {ReportTemplateService} from '../../services/report-template.service';
+import {combineLatest, Observable, Subscription, throwError} from 'rxjs';
+import {IReportSectionDisplay} from '../../model/state.model';
 import {
-  selectSectionById,
-  selectRtIsPublished,
-  selectReportTemplateConfiguration,
   selectReportTemplate,
+  selectReportTemplateConfiguration,
+  selectRtIsPublished,
+  selectSectionById,
 } from '../../store/core.selectors';
-import { switchMap, map, take, concatMap, catchError, flatMap, distinctUntilChanged } from 'rxjs/operators';
-import { IReportSection, IDataViewQuery, QueryType } from '../../model/report-template.model';
-import { EntityType } from '../../../shared/model/entity.model';
-import { IDetectionResource, ICvxResource } from 'src/app/modules/shared/model/public.model';
-import { selectAllDetections, selectAllCvx, selectPatientTables, selectVaccinationTables } from '../../../shared/store/core.selectors';
-import { MatDialog } from '@angular/material/dialog';
-import { QueryDialogComponent } from '../../../shared/components/query-dialog/query-dialog.component';
-import { AnalysisType, names } from '../../model/analysis.values';
-import { IFieldInputOptions } from 'src/app/modules/shared/components/field-input/field-input.component';
-import { ValuesService, Labelizer } from '../../../shared/services/values.service';
-import { ConfirmDialogComponent } from '@usnistgov/ngx-dam-framework-legacy';
-import { ResourceType } from '../../../core/model/resouce-type.enum';
-import { Action as ResourceAction } from 'src/app/modules/core/model/action.enum';
-import { PermissionService } from '../../../core/services/permission.service';
+import {catchError, concatMap, distinctUntilChanged, flatMap, map, switchMap, take} from 'rxjs/operators';
+import {IDataViewQuery, IReportSection, QueryType} from '../../model/report-template.model';
+import {EntityType} from '../../../shared/model/entity.model';
+import {ICvxResource, IDetectionResource} from 'src/app/modules/shared/model/public.model';
+import {
+  selectAllCvx,
+  selectAllDetections,
+  selectPatientTables,
+  selectVaccinationTables
+} from '../../../shared/store/core.selectors';
+import {MatDialog} from '@angular/material/dialog';
+import {QueryDialogComponent} from '../../../shared/components/query-dialog/query-dialog.component';
+import {AnalysisType, names} from '../../model/analysis.values';
+import {IFieldInputOptions} from 'src/app/modules/shared/components/field-input/field-input.component';
+import {Labelizer, ValuesService} from '../../../shared/services/values.service';
+import {ResourceType} from '../../../core/model/resouce-type.enum';
+import {Action as ResourceAction} from 'src/app/modules/core/model/action.enum';
+import {PermissionService} from '../../../core/services/permission.service';
 
 export const RT_SECTION_PAYLOAD_EDITOR_METADATA: IEditorMetadata = {
   id: 'RT_SECTION_PAYLOAD_EDITOR_ID',

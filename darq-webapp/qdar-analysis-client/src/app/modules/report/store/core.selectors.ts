@@ -1,8 +1,8 @@
-import { createSelector } from '@ngrx/store';
-import { selectPayloadData, selectValue } from '@usnistgov/ngx-dam-framework-legacy';
-import { IReport } from '../model/report.model';
-import { IReportFilter } from '../../report-template/model/report-template.model';
-import { ITocNode } from '../components/report-toc/report-toc.component';
+import {createSelector} from '@ngrx/store';
+import {selectPayloadData, selectValue} from '@usnistgov/ngx-dam-framework-legacy';
+import {IReport} from '../model/report.model';
+import {IReportFilter} from '../../report-template/model/report-template.model';
+import {ITocNode} from '../components/report-toc/report-toc.component';
 
 
 export const selectReportGeneralFilter = selectValue<IReportFilter>('reportGeneralFilter');

@@ -1,7 +1,7 @@
-import { IQueryVariableRefInstance } from './../model/query-variable.model';
-import { Injectable } from '@angular/core';
-import { IThreshold } from '../../report-template/model/report-template.model';
-import { ColumnType, IColumn, Row } from './data-table.service';
+import {IQueryVariableRefInstance} from './../model/query-variable.model';
+import {Injectable} from '@angular/core';
+import {IThreshold} from '../../report-template/model/report-template.model';
+import {ColumnType, IColumn, Row} from './data-table.service';
 
 export interface ITableFlags {
   hasGroup: boolean;

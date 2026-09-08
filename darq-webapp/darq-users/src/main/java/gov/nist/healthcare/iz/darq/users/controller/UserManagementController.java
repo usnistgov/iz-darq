@@ -1,9 +1,10 @@
 package gov.nist.healthcare.iz.darq.users.controller;
+
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
 import gov.nist.healthcare.iz.darq.service.exception.OperationFailureException;
-import gov.nist.healthcare.iz.darq.users.domain.ProfileUpdateRequest;
 import gov.nist.healthcare.iz.darq.users.domain.LockRequest;
+import gov.nist.healthcare.iz.darq.users.domain.ProfileUpdateRequest;
 import gov.nist.healthcare.iz.darq.users.domain.SetRoleRequest;
 import gov.nist.healthcare.iz.darq.users.domain.User;
 import gov.nist.healthcare.iz.darq.users.exception.FieldValidationException;
@@ -13,6 +14,7 @@ import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 

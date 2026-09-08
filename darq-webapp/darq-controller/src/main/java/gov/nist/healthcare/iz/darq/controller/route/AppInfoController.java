@@ -1,12 +1,13 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
-import com.google.api.client.http.HttpMediaType;
+import gov.nist.healthcare.iz.darq.controller.domain.ServerInfo;
 import gov.nist.healthcare.iz.darq.model.HomePage;
 import gov.nist.healthcare.iz.darq.service.impl.WebContentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import gov.nist.healthcare.iz.darq.controller.domain.ServerInfo;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController

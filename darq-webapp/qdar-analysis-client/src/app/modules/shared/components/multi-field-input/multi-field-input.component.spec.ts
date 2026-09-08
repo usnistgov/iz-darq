@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { MultiFieldInputComponent } from './multi-field-input.component';
+import {MultiFieldInputComponent} from './multi-field-input.component';
 
 describe('MultiFieldInputComponent', () => {
   let component: MultiFieldInputComponent;

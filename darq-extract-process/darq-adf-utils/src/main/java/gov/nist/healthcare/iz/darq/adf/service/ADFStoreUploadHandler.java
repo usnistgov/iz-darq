@@ -1,9 +1,9 @@
 package gov.nist.healthcare.iz.darq.adf.service;
 
+import gov.nist.healthcare.iz.darq.adf.service.exception.InvalidFileFormat;
+
 import java.io.InputStream;
 import java.util.List;
-
-import gov.nist.healthcare.iz.darq.adf.service.exception.InvalidFileFormat;
 
 public interface ADFStoreUploadHandler {
 	

@@ -1,17 +1,16 @@
-import { IQueryVariableDisplay } from './../../variable-ref-display/variable-ref-display.component';
-import { QueryVariableRefType } from './../../../model/query-variable.model';
-import { map } from 'rxjs/operators';
-import { VariableSelectDialogComponent } from './../../variable-select-dialog/variable-select-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { Component, OnInit, SimpleChanges, OnChanges } from '@angular/core';
-import { AnalysisType, Field } from 'src/app/modules/report-template/model/analysis.values';
-import { Comparator, IThreshold } from 'src/app/modules/report-template/model/report-template.model';
-import { QueryDialogTabComponent } from '../query-dialog-tab/query-dialog-tab.component';
-import { ISimpleViewQuery } from '../../../../report-template/model/report-template.model';
-import { MessageType, UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
-import { Input } from '@angular/core';
-import { IFieldInputOptions } from '../../field-input/field-input.component';
-import { QueryService } from '../../../services/query.service';
+import {IQueryVariableDisplay} from './../../variable-ref-display/variable-ref-display.component';
+import {QueryVariableRefType} from './../../../model/query-variable.model';
+import {map} from 'rxjs/operators';
+import {VariableSelectDialogComponent} from './../../variable-select-dialog/variable-select-dialog.component';
+import {MatDialog} from '@angular/material/dialog';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {AnalysisType, Field} from 'src/app/modules/report-template/model/analysis.values';
+import {Comparator, IThreshold} from 'src/app/modules/report-template/model/report-template.model';
+import {QueryDialogTabComponent} from '../query-dialog-tab/query-dialog-tab.component';
+import {ISimpleViewQuery} from '../../../../report-template/model/report-template.model';
+import {MessageType, UserMessage} from '@usnistgov/ngx-dam-framework-legacy';
+import {IFieldInputOptions} from '../../field-input/field-input.component';
+import {QueryService} from '../../../services/query.service';
 
 export interface ISimpleQuery {
   filter: {

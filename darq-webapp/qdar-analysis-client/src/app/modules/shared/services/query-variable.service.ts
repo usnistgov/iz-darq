@@ -1,8 +1,8 @@
-import { IQueryVariableDisplay } from './../components/variable-ref-display/variable-ref-display.component';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { IQueryVariable } from '../model/query-variable.model';
+import {IQueryVariableDisplay} from './../components/variable-ref-display/variable-ref-display.component';
+import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {IQueryVariable} from '../model/query-variable.model';
 
 @Injectable({
     providedIn: 'root'

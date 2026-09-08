@@ -1,19 +1,19 @@
 package gov.nist.healthcare.iz.darq.analyzer.service.bson.tray;
 
+import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
+import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisQuery.Action;
+import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray;
+import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray.VaxTray;
+import gov.nist.healthcare.iz.darq.analyzer.service.bson.tray.helper.CodeProcessorHelper;
+import gov.nist.healthcare.iz.darq.analyzer.service.bson.tray.helper.ReportingGroupProcessorHelper;
+import gov.nist.healthcare.iz.darq.digest.domain.ADPayload;
+import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
+import gov.nist.healthcare.iz.darq.digest.domain.Field;
+import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
-import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
-import gov.nist.healthcare.iz.darq.digest.domain.ADPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.TablePayload;
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisQuery.Action;
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray;
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray.*;
-import gov.nist.healthcare.iz.darq.analyzer.service.bson.tray.helper.CodeProcessorHelper;
-import gov.nist.healthcare.iz.darq.analyzer.service.bson.tray.helper.ReportingGroupProcessorHelper;
-import gov.nist.healthcare.iz.darq.digest.domain.*;
-import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
 
 public class VaxTrayProcessor extends TrayProcessor {
 	CodeProcessorHelper codeProcessorHelper;

@@ -1,26 +1,24 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
-import gov.nist.healthcare.iz.darq.digest.domain.ExtractFraction;
 import gov.nist.healthcare.iz.darq.adf.service.MergeService;
 import gov.nist.healthcare.iz.darq.detections.AggregatedRecordDetections;
 import gov.nist.healthcare.iz.darq.detections.DetectionContext;
 import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
-import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
+import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
 import gov.nist.healthcare.iz.darq.digest.domain.*;
-import gov.nist.healthcare.iz.darq.localreport.LocalReportEngine;
+import gov.nist.healthcare.iz.darq.digest.service.RecordChewer;
 import gov.nist.healthcare.iz.darq.digest.service.vocabulary.RecordValuesAnalysisResult;
 import gov.nist.healthcare.iz.darq.digest.service.vocabulary.SimpleRecordValueAnalysisService;
+import gov.nist.healthcare.iz.darq.localreport.LocalReportEngine;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import gov.nist.healthcare.iz.darq.digest.service.RecordChewer;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class SimpleRecordChewer implements RecordChewer {

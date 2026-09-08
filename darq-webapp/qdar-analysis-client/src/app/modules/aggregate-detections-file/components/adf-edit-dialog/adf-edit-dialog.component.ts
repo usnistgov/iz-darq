@@ -1,9 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { IADFDescriptor } from '../../model/adf.model';
-import { SelectItem } from 'primeng/api/selectitem';
-import { BehaviorSubject } from 'rxjs';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {IADFDescriptor} from '../../model/adf.model';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-adf-edit-dialog',

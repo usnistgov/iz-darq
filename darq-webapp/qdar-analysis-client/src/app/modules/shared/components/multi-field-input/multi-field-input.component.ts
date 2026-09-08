@@ -1,8 +1,8 @@
-import { IValueContainer } from './../../../report-template/model/report-template.model';
-import { AnalysisType, Field } from 'src/app/modules/report-template/model/analysis.values';
-import { IFieldInputOptions } from 'src/app/modules/shared/components/field-input/field-input.component';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Component, OnInit, forwardRef, Input } from '@angular/core';
+import {IValueContainer} from './../../../report-template/model/report-template.model';
+import {AnalysisType, Field} from 'src/app/modules/report-template/model/analysis.values';
+import {IFieldInputOptions} from 'src/app/modules/shared/components/field-input/field-input.component';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {Component, forwardRef, Input, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-multi-field-input',

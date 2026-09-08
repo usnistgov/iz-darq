@@ -1,26 +1,20 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
-import com.google.common.base.Strings;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.analyzer.model.variable.ExternalQueryVariableScope;
-import gov.nist.healthcare.iz.darq.model.EmailType;
 import gov.nist.healthcare.iz.darq.model.ExternalQueryVariable;
-import gov.nist.healthcare.iz.darq.model.Facility;
 import gov.nist.healthcare.iz.darq.repository.ExternalQueryVariableRepository;
 import gov.nist.healthcare.iz.darq.service.exception.VariableImportException;
 import gov.nist.healthcare.iz.darq.service.impl.ExternalQueryVariableService;
-import gov.nist.healthcare.iz.darq.users.domain.User;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController

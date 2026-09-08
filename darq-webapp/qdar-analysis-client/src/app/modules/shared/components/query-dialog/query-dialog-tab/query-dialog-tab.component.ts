@@ -1,6 +1,7 @@
-import { OnInit, Input, Output, EventEmitter, Component } from '@angular/core';
-import { AnalysisType, fieldDisplayName } from '../../../../report-template/model/analysis.values';
-import { UserMessage } from '@usnistgov/ngx-dam-framework-legacy';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AnalysisType, fieldDisplayName} from '../../../../report-template/model/analysis.values';
+import {UserMessage} from '@usnistgov/ngx-dam-framework-legacy';
+
 @Component({
   template: ''
 })

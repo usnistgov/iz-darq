@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { TurnOffLoader } from '@usnistgov/ngx-dam-framework-legacy';
+import {Component, OnInit} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {TurnOffLoader} from '@usnistgov/ngx-dam-framework-legacy';
 
 @Component({
   selector: 'app-error-page',

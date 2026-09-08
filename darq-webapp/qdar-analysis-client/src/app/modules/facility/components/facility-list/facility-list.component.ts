@@ -1,14 +1,19 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { IFacilityDescriptor } from '../../model/facility.model';
-import { BehaviorSubject, Observable, combineLatest, of, from } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
-import { DamWidgetComponent, RxjsStoreHelperService, MessageType, InsertResourcesInCollection } from '@usnistgov/ngx-dam-framework-legacy';
-import { FacilityService } from '../../services/facility.service';
-import { MatDialog } from '@angular/material/dialog';
-import { Store } from '@ngrx/store';
-import { NameDialogComponent } from '../../../shared/components/name-dialog/name-dialog.component';
-import { EntityType } from 'src/app/modules/shared/model/entity.model';
-import { GoToEntity } from '../../../shared/store/core.actions';
+import {Component, Input, OnInit} from '@angular/core';
+import {IFacilityDescriptor} from '../../model/facility.model';
+import {BehaviorSubject, combineLatest, from, Observable, of} from 'rxjs';
+import {flatMap, map} from 'rxjs/operators';
+import {
+  DamWidgetComponent,
+  InsertResourcesInCollection,
+  MessageType,
+  RxjsStoreHelperService
+} from '@usnistgov/ngx-dam-framework-legacy';
+import {FacilityService} from '../../services/facility.service';
+import {MatDialog} from '@angular/material/dialog';
+import {Store} from '@ngrx/store';
+import {NameDialogComponent} from '../../../shared/components/name-dialog/name-dialog.component';
+import {EntityType} from 'src/app/modules/shared/model/entity.model';
+import {GoToEntity} from '../../../shared/store/core.actions';
 
 @Component({
   selector: 'app-facility-list',

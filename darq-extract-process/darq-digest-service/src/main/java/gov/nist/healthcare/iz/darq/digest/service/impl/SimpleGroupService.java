@@ -1,12 +1,12 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import gov.nist.healthcare.iz.darq.digest.domain.*;
-import org.springframework.stereotype.Component;
 import gov.nist.healthcare.iz.darq.digest.service.AgeGroupService;
 import gov.nist.healthcare.iz.darq.digest.service.GroupService;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class SimpleGroupService implements GroupService {

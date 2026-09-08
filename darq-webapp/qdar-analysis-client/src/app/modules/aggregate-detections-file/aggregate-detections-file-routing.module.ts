@@ -1,24 +1,41 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { AdfUploadComponent } from './components/adf-upload/adf-upload.component';
-import { DataLoaderGuard, DamWidgetRoute, EditorActivateGuard, EditorDeactivateGuard } from '@usnistgov/ngx-dam-framework-legacy';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {AdfUploadComponent} from './components/adf-upload/adf-upload.component';
+import {
+  DamWidgetRoute,
+  DataLoaderGuard,
+  EditorActivateGuard,
+  EditorDeactivateGuard
+} from '@usnistgov/ngx-dam-framework-legacy';
 import {
   CoreActionTypes,
+  LoadADFDashboard,
   LoadADFile,
   LoadUserFacilities,
-  LoadADFDashboard,
   OpenADFListEditor,
   OpenAnalysisJobEditor,
-  OpenReportsEditor,
-  OpenMergeJobEditor
+  OpenMergeJobEditor,
+  OpenReportsEditor
 } from './store/core.actions';
-import { AdfSummaryComponent } from './components/adf-summary/adf-summary.component';
-import { ADF_WIDGET, AdfWidgetComponent } from './components/adf-widget/adf-widget.component';
-import { FilesListEditorComponent, ADF_FILE_LIST_EDITOR_METADATA } from './components/files-list-editor/files-list-editor.component';
-import { JobListEditorComponent, ANALYSIS_JOB_LIST_EDITOR_METADATA } from './components/job-list-editor/job-list-editor.component';
-import { ReportListEditorComponent, REPORT_LIST_EDITOR_METADATA } from './components/report-list-editor/report-list-editor.component';
-import { LoaderGuard } from '../shared/guards/loader.guard';
-import { MERGE_JOB_LIST_EDITOR_METADATA, MergeJobListEditorComponent } from './components/merge-job-list-editor/merge-job-list-editor.component';
+import {AdfSummaryComponent} from './components/adf-summary/adf-summary.component';
+import {ADF_WIDGET, AdfWidgetComponent} from './components/adf-widget/adf-widget.component';
+import {
+  ADF_FILE_LIST_EDITOR_METADATA,
+  FilesListEditorComponent
+} from './components/files-list-editor/files-list-editor.component';
+import {
+  ANALYSIS_JOB_LIST_EDITOR_METADATA,
+  JobListEditorComponent
+} from './components/job-list-editor/job-list-editor.component';
+import {
+  REPORT_LIST_EDITOR_METADATA,
+  ReportListEditorComponent
+} from './components/report-list-editor/report-list-editor.component';
+import {LoaderGuard} from '../shared/guards/loader.guard';
+import {
+  MERGE_JOB_LIST_EDITOR_METADATA,
+  MergeJobListEditorComponent
+} from './components/merge-job-list-editor/merge-job-list-editor.component';
 
 
 const routes: Routes = [

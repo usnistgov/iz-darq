@@ -1,8 +1,11 @@
 package gov.nist.healthcare.iz.darq.analyzer.model.analysis;
+
 import gov.nist.healthcare.iz.darq.analyzer.model.template.QueryPayload;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DataTable {

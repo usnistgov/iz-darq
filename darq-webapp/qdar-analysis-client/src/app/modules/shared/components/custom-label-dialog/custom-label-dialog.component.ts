@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DataTableComponent } from '../data-table/data-table.component';
-import { SelectItem } from 'primeng/api/selectitem';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {DataTableComponent} from '../data-table/data-table.component';
+import {SelectItem} from 'primeng/api/selectitem';
 
 @Component({
   selector: 'app-custom-label-dialog',

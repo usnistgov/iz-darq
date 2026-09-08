@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { IRange, IBracket } from '../model/age-group.model';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {IBracket, IRange} from '../model/age-group.model';
 
 @Injectable({
   providedIn: 'root'

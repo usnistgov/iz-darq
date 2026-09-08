@@ -7,14 +7,14 @@ import gov.nist.healthcare.iz.darq.parser.model.Issue;
 import gov.nist.healthcare.iz.darq.parser.service.model.ParsedRecord;
 import gov.nist.healthcare.iz.darq.parser.type.*;
 
-import static org.reflections.ReflectionUtils.getAllFields;
-import static org.reflections.ReflectionUtils.withAnnotation;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static org.reflections.ReflectionUtils.getAllFields;
+import static org.reflections.ReflectionUtils.withAnnotation;
 
 public class RecordParser {
     public static final char SEPARATOR = '\t';

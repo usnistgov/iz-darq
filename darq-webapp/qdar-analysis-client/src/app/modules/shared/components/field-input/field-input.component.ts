@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
-import { SelectItem } from 'primeng/api/selectitem';
-import { IDetectionResource, ICvxResource } from '../../model/public.model';
-import { IRange } from '../../model/age-group.model';
-import { Field } from 'src/app/modules/report-template/model/analysis.values';
-import { AnalysisType } from '../../../report-template/model/analysis.values';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {Component, forwardRef, Input, OnInit} from '@angular/core';
+import {SelectItem} from 'primeng/api/selectitem';
+import {ICvxResource, IDetectionResource} from '../../model/public.model';
+import {IRange} from '../../model/age-group.model';
+import {Field} from 'src/app/modules/report-template/model/analysis.values';
+import {AnalysisType} from '../../../report-template/model/analysis.values';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 export interface IFieldInputInfo {
   inputType: 'TEXT' | 'DROPDOWN';

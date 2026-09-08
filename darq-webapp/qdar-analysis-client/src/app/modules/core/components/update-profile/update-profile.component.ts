@@ -1,20 +1,21 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
+import {Component, Inject, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Store} from '@ngrx/store';
 import {
-  RxjsStoreHelperService,
+  AuthenticationService,
   DAM_AUTH_USER_TRANSFORMER,
-  UserTransformer, IDamUser,
+  IDamUser,
   MessageType,
-  UpdateAuthStatus,
+  RxjsStoreHelperService,
   selectIsAdmin,
-  AuthenticationService
+  UpdateAuthStatus,
+  UserTransformer
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { of, Observable } from 'rxjs';
-import { ICurrentUser } from '../../model/user.model';
-import { UserService } from '../../services/user.service';
-import { IProfileUpdate } from '../../../shared/components/user-profile/user-profile.component';
-import { map } from 'rxjs/operators';
+import {Observable, of} from 'rxjs';
+import {ICurrentUser} from '../../model/user.model';
+import {UserService} from '../../services/user.service';
+import {IProfileUpdate} from '../../../shared/components/user-profile/user-profile.component';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-update-profile',

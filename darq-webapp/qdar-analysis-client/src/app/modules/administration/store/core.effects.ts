@@ -1,40 +1,39 @@
-import { FacilityService } from './../../facility/services/facility.service';
-import { ExternalVariableService } from './../services/external-variables.service';
-import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { map, concatMap, flatMap, catchError } from 'rxjs/operators';
+import {FacilityService} from './../../facility/services/facility.service';
+import {ExternalVariableService} from './../services/external-variables.service';
+import {Injectable} from '@angular/core';
+import {Actions, Effect, ofType} from '@ngrx/effects';
+import {catchError, concatMap, flatMap, map} from 'rxjs/operators';
 import {
-  CoreActionTypes,
   CoreActions,
+  CoreActionTypes,
   LoadAdministrationWidgetSuccess,
-  LoadUsersSuccess,
   LoadUsersFailure,
-  OpenWebContentEditor,
-  OpenEmailTemplateEditor,
+  LoadUsersSuccess,
   OpenConfigurationEditor,
+  OpenEmailTemplateEditor,
   OpenExternalVariablesEditor,
+  OpenWebContentEditor,
 } from './core.actions';
 import {
+  DamActionTypes,
   DamWidgetEffect,
+  EditorSave,
+  GlobalSave,
   LoadResourcesInRepository,
   MessageService,
-  SetValue,
   OpenEditor,
   OpenEditorFailure,
-  DamActionTypes,
-  GlobalSave,
-  EditorSave,
+  SetValue,
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { ADMIN_WIDGET } from '../components/admin-widget/admin-widget.component';
-import { IUser } from '../../core/model/user.model';
-import { handleError } from '../../shared/services/helper.functions';
-import { UserService } from '../../core/services/user.service';
-import { AdminTabs } from '../components/admin-sidebar/admin-sidebar.component';
-import { AdminService } from '../services/admin.service';
-import { of, combineLatest, Observable } from 'rxjs';
-import { Action } from '@ngrx/store';
-import { IFacilityDescriptor } from '../../facility/model/facility.model';
-
+import {ADMIN_WIDGET} from '../components/admin-widget/admin-widget.component';
+import {IUser} from '../../core/model/user.model';
+import {handleError} from '../../shared/services/helper.functions';
+import {UserService} from '../../core/services/user.service';
+import {AdminTabs} from '../components/admin-sidebar/admin-sidebar.component';
+import {AdminService} from '../services/admin.service';
+import {combineLatest, Observable, of} from 'rxjs';
+import {Action} from '@ngrx/store';
+import {IFacilityDescriptor} from '../../facility/model/facility.model';
 
 
 @Injectable()

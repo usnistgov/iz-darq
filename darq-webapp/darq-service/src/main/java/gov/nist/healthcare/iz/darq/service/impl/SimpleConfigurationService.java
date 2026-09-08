@@ -1,18 +1,17 @@
 package gov.nist.healthcare.iz.darq.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
 import gov.nist.healthcare.iz.darq.configuration.validation.ConfigurationPayloadValidator;
+import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
+import gov.nist.healthcare.iz.darq.digest.domain.Range;
 import gov.nist.healthcare.iz.darq.digest.domain.expression.ComplexDetection;
+import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
+import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.Range;
-import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
-import gov.nist.healthcare.iz.darq.service.utils.ConfigurationService;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class SimpleConfigurationService implements ConfigurationService {

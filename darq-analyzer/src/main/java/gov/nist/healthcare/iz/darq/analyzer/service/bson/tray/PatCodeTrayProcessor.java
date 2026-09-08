@@ -1,16 +1,17 @@
 package gov.nist.healthcare.iz.darq.analyzer.service.bson.tray;
 
-import java.util.*;
-import java.util.function.Function;
-
+import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisQuery.Action;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray;
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray.*;
+import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray.PatCodeTray;
 import gov.nist.healthcare.iz.darq.analyzer.service.bson.tray.helper.CodeProcessorHelper;
-import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
+import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.PatientPayload;
-import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 public class PatCodeTrayProcessor extends TrayProcessor {
 	CodeProcessorHelper codeProcessorHelper;

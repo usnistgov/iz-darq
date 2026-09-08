@@ -1,5 +1,5 @@
-import { Action } from '@ngrx/store';
-import { EntityType } from '../model/entity.model';
+import {Action} from '@ngrx/store';
+import {EntityType} from '../model/entity.model';
 
 export enum CoreActionTypes {
   GoToEntity = '[Main] Go To Entity',

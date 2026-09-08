@@ -2,8 +2,8 @@ package gov.nist.healthcare.iz.darq.adf.module.sqlite;
 
 import gov.nist.healthcare.crypto.service.CryptoKey;
 import gov.nist.healthcare.iz.darq.adf.model.ADFVersion;
-import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
 import gov.nist.healthcare.iz.darq.adf.module.api.ADFModule;
+import gov.nist.healthcare.iz.darq.adf.module.api.ADFReader;
 import gov.nist.healthcare.iz.darq.adf.module.archive.ADFArchiveManager;
 
 import java.nio.charset.StandardCharsets;

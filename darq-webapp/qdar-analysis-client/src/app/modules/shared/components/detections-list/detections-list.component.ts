@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { IDetectionResource } from '../../model/public.model';
-import { MatDialog } from '@angular/material/dialog';
-import { DetectionsPickerComponent } from '../detections-picker/detections-picker.component';
-import { map } from 'rxjs/operators';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {IDetectionResource} from '../../model/public.model';
+import {MatDialog} from '@angular/material/dialog';
+import {DetectionsPickerComponent} from '../detections-picker/detections-picker.component';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-detections-list',

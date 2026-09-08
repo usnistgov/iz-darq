@@ -1,13 +1,13 @@
 package gov.nist.healthcare.iz.darq.analyzer.service.bson.tray;
 
+import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
+import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisQuery.Action;
+import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray;
+import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisQuery.Action;
-import gov.nist.healthcare.iz.darq.analyzer.model.analysis.Tray;
-import gov.nist.healthcare.iz.darq.adf.module.json.model.ADFile;
-import gov.nist.healthcare.iz.darq.digest.domain.AnalysisType;
 
 public abstract class TrayProcessor {
 

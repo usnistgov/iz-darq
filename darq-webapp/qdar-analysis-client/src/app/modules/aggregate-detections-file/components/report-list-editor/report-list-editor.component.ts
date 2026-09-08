@@ -1,20 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { Action, Store } from '@ngrx/store';
-import { selectUserFacilityById } from '../../store/core.selectors';
-import { Observable, of } from 'rxjs';
-import { IReportDescriptor } from '../../../report/model/report.model';
+import {Component, OnInit} from '@angular/core';
+import {Action, Store} from '@ngrx/store';
+import {selectUserFacilityById} from '../../store/core.selectors';
+import {Observable, of} from 'rxjs';
+import {IReportDescriptor} from '../../../report/model/report.model';
 import {
   ConfirmDialogComponent,
-  RxjsStoreHelperService,
   DamAbstractEditorComponent,
   EditorSave,
   EditorUpdate,
+  IEditorMetadata,
+  RxjsStoreHelperService,
 } from '@usnistgov/ngx-dam-framework-legacy';
-import { map, concatMap, flatMap, filter, takeUntil, take } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
-import { ReportService } from '../../../report/services/report.service';
-import { Actions } from '@ngrx/effects';
-import { IEditorMetadata } from '@usnistgov/ngx-dam-framework-legacy';
+import {concatMap, filter, flatMap, map, take, takeUntil} from 'rxjs/operators';
+import {MatDialog} from '@angular/material/dialog';
+import {ReportService} from '../../../report/services/report.service';
+import {Actions} from '@ngrx/effects';
 
 export const REPORT_LIST_EDITOR_METADATA: IEditorMetadata = {
   id: 'REPORT_LIST_EDITOR_METADATA',

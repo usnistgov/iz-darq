@@ -4,7 +4,6 @@ import gov.nist.healthcare.iz.darq.test.helper.ExtractBuilder;
 import gov.nist.healthcare.iz.darq.test.helper.Record;
 
 import java.util.List;
-import java.util.Set;
 
 public class SimpleExamplePartTwoMock  extends SimpleExampleMock {
 

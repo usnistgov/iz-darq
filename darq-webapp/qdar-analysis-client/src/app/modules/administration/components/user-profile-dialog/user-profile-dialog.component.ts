@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { IUser } from '../../../core/model/user.model';
-import { IProfileUpdate } from '../../../shared/components/user-profile/user-profile.component';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {IUser} from '../../../core/model/user.model';
+import {IProfileUpdate} from '../../../shared/components/user-profile/user-profile.component';
 
 @Component({
   selector: 'app-user-profile-dialog',

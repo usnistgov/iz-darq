@@ -1,10 +1,10 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
-import { DamWidgetComponent, IDamDataModel } from '@usnistgov/ngx-dam-framework-legacy';
-import { Store } from '@ngrx/store';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { AdminTabs } from '../admin-sidebar/admin-sidebar.component';
-import { selectAdminActiveTab } from '../../store/core.selectors';
+import {Component, forwardRef, OnInit} from '@angular/core';
+import {DamWidgetComponent, IDamDataModel} from '@usnistgov/ngx-dam-framework-legacy';
+import {Store} from '@ngrx/store';
+import {MatDialog} from '@angular/material/dialog';
+import {Observable} from 'rxjs';
+import {AdminTabs} from '../admin-sidebar/admin-sidebar.component';
+import {selectAdminActiveTab} from '../../store/core.selectors';
 
 export const ADMIN_WIDGET = 'ADMIN_WIDGET';
 

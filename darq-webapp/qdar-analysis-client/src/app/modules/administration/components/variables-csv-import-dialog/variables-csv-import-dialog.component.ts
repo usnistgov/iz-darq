@@ -1,6 +1,6 @@
-import { ExternalQueryVariableScope } from './../../../shared/model/query-variable.model';
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {ExternalQueryVariableScope} from './../../../shared/model/query-variable.model';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-variables-csv-import-dialog',

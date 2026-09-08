@@ -1,20 +1,23 @@
 package gov.nist.healthcare.iz.darq.digest.service.impl;
 
+import gov.nist.healthcare.iz.darq.adf.model.Metadata;
+import gov.nist.healthcare.iz.darq.adf.module.api.ADFWriter;
+import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
+import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
+import gov.nist.healthcare.iz.darq.digest.domain.Summary;
+import gov.nist.healthcare.iz.darq.digest.service.ExportADChunk;
+import gov.nist.healthcare.iz.darq.digest.service.HTMLSummaryGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import gov.nist.healthcare.iz.darq.adf.model.Metadata;
-import gov.nist.healthcare.iz.darq.adf.module.api.ADFWriter;
-import gov.nist.healthcare.iz.darq.detections.DetectionEngine;
-import gov.nist.healthcare.iz.darq.digest.domain.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import gov.nist.healthcare.iz.darq.digest.service.ExportADChunk;
-import gov.nist.healthcare.iz.darq.digest.service.HTMLSummaryGenerator;
 
 
 @Service

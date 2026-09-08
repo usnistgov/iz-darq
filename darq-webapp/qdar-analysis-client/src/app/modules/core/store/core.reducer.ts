@@ -1,5 +1,4 @@
-
-import { CoreActions, CoreActionTypes } from './core.actions';
+import {CoreActions, CoreActionTypes} from './core.actions';
 
 export const coreFeatureKey = 'core';
 

@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs';
-import { IServerInfo, ServerInfoService } from './modules/core/services/app-info.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Observable} from 'rxjs';
+import {IServerInfo, ServerInfoService} from './modules/core/services/app-info.service';
 
 @Component({
   selector: 'app-root',

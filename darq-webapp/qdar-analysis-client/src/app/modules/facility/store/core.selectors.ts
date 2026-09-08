@@ -1,7 +1,7 @@
-import { createEntityAdapter, Dictionary } from '@ngrx/entity';
-import { createSelector } from '@ngrx/store';
-import { selectFromCollection, selectPayloadData } from '@usnistgov/ngx-dam-framework-legacy';
-import { IFacility, IFacilityDescriptor } from '../model/facility.model';
+import {createEntityAdapter, Dictionary} from '@ngrx/entity';
+import {createSelector} from '@ngrx/store';
+import {selectFromCollection, selectPayloadData} from '@usnistgov/ngx-dam-framework-legacy';
+import {IFacility, IFacilityDescriptor} from '../model/facility.model';
 
 const facilitiesAdapter = createEntityAdapter<IFacilityDescriptor>();
 const facilitiesSelectors = facilitiesAdapter.getSelectors();

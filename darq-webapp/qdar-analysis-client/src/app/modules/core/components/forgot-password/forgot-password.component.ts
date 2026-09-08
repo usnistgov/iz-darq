@@ -1,9 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { RxjsStoreHelperService, DAM_AUTH_USER_TRANSFORMER, UserTransformer, IDamUser } from '@usnistgov/ngx-dam-framework-legacy';
-import { EMPTY } from 'rxjs';
-import { UserService } from '../../services/user.service';
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Store} from '@ngrx/store';
+import {RxjsStoreHelperService} from '@usnistgov/ngx-dam-framework-legacy';
+import {EMPTY} from 'rxjs';
+import {UserService} from '../../services/user.service';
 
 
 @Component({
