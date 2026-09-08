@@ -5,10 +5,13 @@ import gov.nist.healthcare.iz.darq.test.data.DataExtractMock;
 import gov.nist.healthcare.iz.darq.test.helper.AgeGroupHelper;
 import gov.nist.healthcare.iz.darq.test.helper.ExtractBuilder;
 import gov.nist.healthcare.iz.darq.test.helper.Record;
+import org.immregistries.mqe.validator.detection.Detection;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
 	Mixed manufacturer (MVX) code casing. SimpleDigestRunner.processVaccinationManufacturer

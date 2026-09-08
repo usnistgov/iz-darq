@@ -1,16 +1,14 @@
 package gov.nist.healthcare.iz.darq.digest.service.report.instances;
 
 import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
-import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
 import gov.nist.healthcare.iz.darq.localreport.AggregateLocalReportService;
 import gov.nist.healthcare.iz.darq.localreport.AggregateRow;
-import gov.nist.healthcare.iz.darq.localreport.SimpleLocalReportService;
-import gov.nist.healthcare.iz.darq.parser.type.DqString;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
-import org.immregistries.mqe.validator.detection.Detection;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Reports the MVX that had to be set to Uppercase during preprocess

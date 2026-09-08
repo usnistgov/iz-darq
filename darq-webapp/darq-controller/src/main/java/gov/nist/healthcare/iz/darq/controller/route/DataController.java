@@ -1,37 +1,28 @@
 package gov.nist.healthcare.iz.darq.controller.route;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletResponse;
-
 import gov.nist.healthcare.iz.darq.detections.AvailableDetectionEngines;
-import gov.nist.healthcare.iz.darq.model.FileDescriptorWrapper;
-import gov.nist.healthcare.iz.darq.model.qDARJarFile;
-import gov.nist.healthcare.iz.darq.patient.matching.model.PatientMatchingDetection;
-import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
-import gov.nist.healthcare.iz.darq.service.impl.SimpleDownloadService;
-import gov.nist.healthcare.iz.darq.service.utils.CodeSetService;
-import org.apache.commons.io.IOUtils;
-import org.immregistries.mqe.validator.detection.Detection;
-import org.immregistries.mqe.validator.engine.rules.ValidationRuleEntityLists;
-import org.immregistries.mqe.vxu.TargetType;
-import org.immregistries.mqe.vxu.VxuObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import gov.nist.healthcare.iz.darq.detections.DetectionDescriptor;
 import gov.nist.healthcare.iz.darq.model.CVXCode;
 import gov.nist.healthcare.iz.darq.model.FileDescriptor;
+import gov.nist.healthcare.iz.darq.model.FileDescriptorWrapper;
+import gov.nist.healthcare.iz.darq.model.qDARJarFile;
 import gov.nist.healthcare.iz.darq.repository.CVXRepository;
+import gov.nist.healthcare.iz.darq.service.exception.NotFoundException;
+import gov.nist.healthcare.iz.darq.service.impl.SimpleDownloadService;
+import gov.nist.healthcare.iz.darq.service.utils.CodeSetService;
 import gov.nist.healthcare.iz.darq.service.utils.DownloadService;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/public")
@@ -109,12 +100,12 @@ public class DataController {
 		qDARJarFile file = this.download.getJarFileInfo();
 		response.setContentType("application/java-archive");
 		response.setHeader("Content-disposition", "attachment;filename="+ SimpleDownloadService.RESOURCES_JAR_FILE);
-		response.getOutputStream().write(IOUtils.toByteArray(new FileInputStream(file.getLocation().toFile())));
+		response.getOutputStream().write(IOUtils.toByteArray(Files.newInputStream(file.getLocation().toFile().toPath())));
 	}
 
 	@RequestMapping(value = "/download/cli/info", method = RequestMethod.GET)
 	@ResponseBody
-	public qDARJarFile cliInfo(HttpServletResponse response) throws NotFoundException {
+	public qDARJarFile cliInfo() throws NotFoundException {
 		qDARJarFile file = this.download.getJarFileInfo();
 		if(file == null) {
 			throw  new NotFoundException("Jar file not found");
@@ -125,7 +116,7 @@ public class DataController {
     
     @RequestMapping(value = "/download/files", method = RequestMethod.GET)
     @ResponseBody
-    public List<FileDescriptorWrapper> downloads(HttpServletResponse response) throws IOException {
+    public List<FileDescriptorWrapper> downloads() {
     	return this.download.catalog();
     }
 
