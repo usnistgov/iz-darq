@@ -45,9 +45,10 @@ public class DetectionTestRunner {
 	public DetectionTestRunner() {
 	}
 
-	public DetectionTestRunner(ConfigurationPayloadValidator configurationPayloadValidator, DetectionEngine detectionEngine) {
+	public DetectionTestRunner(ConfigurationPayloadValidator configurationPayloadValidator, DetectionEngine detectionEngine, CodeParseStatsUtil codeParseStatsUtil) {
 		this.configurationPayloadValidator = configurationPayloadValidator;
 		this.detectionEngine = detectionEngine;
+		this.codeParseStatsUtil = codeParseStatsUtil;
 	}
 
 	public DetectionTestResult run(

@@ -392,7 +392,8 @@ public class CLIApp {
 		DigestConfiguration digestConfiguration = new DigestConfiguration();
 		return new DetectionTestRunner(
 				new ConfigurationPayloadValidator(),
-				digestConfiguration.detectionEngine()
+				digestConfiguration.detectionEngine(),
+				new CodeParseStatsUtil()
 		);
 	}
 
