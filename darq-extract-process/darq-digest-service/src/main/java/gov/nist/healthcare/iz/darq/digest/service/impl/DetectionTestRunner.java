@@ -39,6 +39,8 @@ public class DetectionTestRunner {
 	ConfigurationPayloadValidator configurationPayloadValidator;
 	@Autowired
 	DetectionEngine detectionEngine;
+	@Autowired
+	CodeParseStatsUtil codeParseStatsUtil;
 
 	public DetectionTestRunner() {
 	}
@@ -317,7 +319,15 @@ public class DetectionTestRunner {
 		String patientAgeGroup = detectionContext.calculateAgeGroupAsOfEvaluationDate(apr.patient.date_of_birth.getValue());
 		Map<String, String> providersByVaccinationId = apr.history.stream().collect(Collectors.toMap((vx) -> vx.vax_event_id.getValue(), (vx) -> vx.reporting_group.getValue()));
 		Map<String, String> ageGroupAtVaccinationByVaccinationId = apr.history.stream().collect(Collectors.toMap((vx) -> vx.vax_event_id.getValue(), (vx) -> detectionContext.calculateAgeGroup(apr.patient.date_of_birth.getValue(), vx.administration_date.getValue())));
-		return new PreProcessRecord(apr, patientAgeGroup, providersByVaccinationId, ageGroupAtVaccinationByVaccinationId);
+		Map<String, Integer> lowercaseMvxCodes = new HashMap<>();
+		for (VaccineRecord vaccineRecord : apr.history) {
+			codeParseStatsUtil.processVaccinationManufacturer(vaccineRecord, lowercaseMvxCodes);
+		}
+		Map<String, Integer> cvxCodes = new HashMap<>();
+		for (VaccineRecord vaccineRecord : apr.history) {
+			codeParseStatsUtil.processVaccineCodes(vaccineRecord, cvxCodes);
+		}
+		return new PreProcessRecord(apr, patientAgeGroup, providersByVaccinationId, ageGroupAtVaccinationByVaccinationId, lowercaseMvxCodes, cvxCodes);
 	}
 
 	private DetectionTestResultRow.Result classifyParserIssues(String detection, List<ParseError> issues) {

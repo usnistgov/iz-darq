@@ -9,4 +9,5 @@ public class AvailableLocalReportServices {
 	public static final String LR_PLACEHOLDER_NAMES = "PLACEHOLDER_NAMES";
 	public static final String LR_MISMERGED_PATIENT_CANDIDATES = "MISMERGED_PATIENT_CANDIDATES";
 	public static final String LR_LOWERCASE_MVX = "LOWERCASE_MVX";
+	public static final String LR_VACCINE_CODE = "VACCINE_CODE";
 }

@@ -11,20 +11,15 @@ public class PreProcessRecord {
 	private Map<String, String> ageGroupAtVaccinationByVaccinationId;
 
 	private Map<String, Integer> lowercaseMvxCodes;
+	private Map<String, Integer> vaccineCodes;
 
-	public PreProcessRecord(AggregatePatientRecord record, String patientAgeGroup, Map<String, String> providersByVaccinationId, Map<String, String> ageGroupAtVaccinationByVaccinationId) {
-		this.record = record;
-		this.patientAgeGroup = patientAgeGroup;
-		this.providersByVaccinationId = providersByVaccinationId;
-		this.ageGroupAtVaccinationByVaccinationId = ageGroupAtVaccinationByVaccinationId;
-	}
-
-	public PreProcessRecord(AggregatePatientRecord record, String patientAgeGroup, Map<String, String> providersByVaccinationId, Map<String, String> ageGroupAtVaccinationByVaccinationId, Map<String, Integer> lowercaseMvxCodes) {
+	public PreProcessRecord(AggregatePatientRecord record, String patientAgeGroup, Map<String, String> providersByVaccinationId, Map<String, String> ageGroupAtVaccinationByVaccinationId, Map<String, Integer> lowercaseMvxCodes, Map<String, Integer> vaccineCodes) {
 		this.record = record;
 		this.patientAgeGroup = patientAgeGroup;
 		this.providersByVaccinationId = providersByVaccinationId;
 		this.ageGroupAtVaccinationByVaccinationId = ageGroupAtVaccinationByVaccinationId;
 		this.lowercaseMvxCodes = lowercaseMvxCodes;
+		this.vaccineCodes = vaccineCodes;
 	}
 
 	public AggregatePatientRecord getRecord() {
@@ -65,5 +60,13 @@ public class PreProcessRecord {
 
     public void setLowercaseMvxCodes(Map<String, Integer> lowercaseMvxCodes) {
         this.lowercaseMvxCodes = lowercaseMvxCodes;
+    }
+
+    public Map<String, Integer> getVaccineCodes() {
+        return vaccineCodes;
+    }
+
+    public void setVaccineCodes(Map<String, Integer> vaccineCodes) {
+        this.vaccineCodes = vaccineCodes;
     }
 }
