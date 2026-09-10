@@ -29,6 +29,9 @@ public class MismergedPatientCandidatesReportService extends AggregateLocalRepor
                     Detection.PatientCovid2021DoseCountIs4OrMore,
                     Detection.PatientCovid2021DoseCountIs5OrMore,
                     Detection.PatientCovid2021DoseCountIs6OrMore
+            ),
+            Collections.singletonList(
+                    Detection.AdministeredVaccinationsCountIsLargerThanExpected
             )
     );
 
@@ -51,6 +54,7 @@ public class MismergedPatientCandidatesReportService extends AggregateLocalRepor
                 "More than 5 invalid doses",
                 "Too many flu doses",
                 "Too many COVID doses",
+                "High volume immunizations",
                 // AggregateLocalReportService appends the aggregate count as a trailing column,
                 // so the header needs an entry for it or it sits one short of every data row.
                 "Count"
