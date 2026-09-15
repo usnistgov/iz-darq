@@ -7,7 +7,6 @@ import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -28,16 +27,7 @@ public class VaccineCodeReportService extends AggregateLocalReportService {
         List<AggregateRow> rows = new ArrayList<>();
         context.getVaccineCodes().forEach(
                 (cvx, count) -> {
-                    rows.add(
-                            new AggregateRow(
-                                    Collections.singletonList(
-                                            cvx
-                                    ),
-                                    Collections.singletonList(
-                                            String.valueOf(count)
-                                    )
-                            )
-                    );
+                    rows.add(AggregateRow.withIndexed(cvx));
                 }
         );
         return rows;

@@ -70,7 +70,7 @@ public class VaccineCodeReportNoDetectionsTestCase {
 		// 1 header + the same 4 distinct codes as the detection-configured run
 		assertEquals(5, lines.size());
 		assertTrue(lines.stream().anyMatch((record) ->
-				record.get(0).equals(mock.cvxHepBPedNormalised) && record.get(2).equals("3")));
+				record.get(0).equals(mock.cvxHepBPedNormalised) && record.get(1).equals("3")));
 	}
 
 	@AfterClass

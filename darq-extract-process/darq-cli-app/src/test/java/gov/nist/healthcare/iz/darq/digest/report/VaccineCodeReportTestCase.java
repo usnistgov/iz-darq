@@ -32,8 +32,7 @@ public class VaccineCodeReportTestCase {
 	 * header row and lines.size() is 1 + the number of distinct codes.
 	 */
 	private static final int COL_CVX = 0;
-	private static final int COL_ROW_COUNT = 1;
-	private static final int COL_AGGREGATE_COUNT = 2;
+	private static final int COL_AGGREGATE_COUNT = 1;
 
 	static TemporaryFolder folder = new TemporaryFolder();
 	static SqliteADFReader reader;
@@ -138,8 +137,6 @@ public class VaccineCodeReportTestCase {
 				.filter((record) -> record.get(COL_CVX).equals(mock.cvxHepBPedNormalised))
 				.findFirst()
 				.orElseThrow(() -> new AssertionError("expected a row for " + mock.cvxHepBPedNormalised));
-
-		assertEquals("1", hepB.get(COL_ROW_COUNT));
 		assertEquals("3", hepB.get(COL_AGGREGATE_COUNT));
 	}
 
@@ -151,7 +148,7 @@ public class VaccineCodeReportTestCase {
 	public void headerIsOneColumnNarrowerThanDataRows() throws Exception {
 		List<CSVRecord> lines = readReport();
 		assertEquals(2, lines.get(0).size());
-		lines.stream().skip(1).forEach((record) -> assertEquals(3, record.size()));
+		lines.stream().skip(1).forEach((record) -> assertEquals(2, record.size()));
 	}
 
 	private List<CSVRecord> readReport() throws Exception {
