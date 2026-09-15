@@ -75,6 +75,12 @@
                 <includes>
                     <include>**/*</include>
                 </includes>
+                <!-- Must be excluded here: this block runs after the filtered one above and a
+                     plain copy would overwrite target/classes/application.properties with the
+                     raw source, putting the @version@ / @timestamp@ tokens back. -->
+                <excludes>
+                    <exclude>application.properties</exclude>
+                </excludes>
             </resource>
         </resources>
         <plugins>
