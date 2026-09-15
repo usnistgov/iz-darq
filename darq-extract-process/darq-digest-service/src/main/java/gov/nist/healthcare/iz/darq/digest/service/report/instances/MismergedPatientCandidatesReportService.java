@@ -2,8 +2,7 @@ package gov.nist.healthcare.iz.darq.digest.service.report.instances;
 
 import gov.nist.healthcare.iz.darq.detections.RecordDetectionEngineResult;
 import gov.nist.healthcare.iz.darq.digest.domain.DetectionSum;
-import gov.nist.healthcare.iz.darq.localreport.AggregateLocalReportService;
-import gov.nist.healthcare.iz.darq.localreport.AggregateRow;
+import gov.nist.healthcare.iz.darq.localreport.SimpleLocalReportService;
 import gov.nist.healthcare.iz.darq.parser.type.DqString;
 import gov.nist.healthcare.iz.darq.preprocess.PreProcessRecord;
 import org.immregistries.mqe.validator.detection.Detection;
@@ -11,7 +10,7 @@ import org.immregistries.mqe.validator.detection.Detection;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MismergedPatientCandidatesReportService extends AggregateLocalReportService {
+public class MismergedPatientCandidatesReportService extends SimpleLocalReportService {
 
     public static final String FILENAME = "mismerged_candidates.csv";
 
@@ -54,36 +53,27 @@ public class MismergedPatientCandidatesReportService extends AggregateLocalRepor
                 "More than 5 invalid doses",
                 "Too many flu doses",
                 "Too many COVID doses",
-                "High volume immunizations",
-                // AggregateLocalReportService appends the aggregate count as a trailing column,
-                // so the header needs an entry for it or it sits one short of every data row.
-                "Count"
+                "High volume immunizations"
         );
     }
 
     @Override
-    public List<AggregateRow> getRows(PreProcessRecord context, RecordDetectionEngineResult detectionEngineResult) {
-        List<AggregateRow> rows = new ArrayList<>();
+    public List<List<String>> getRows(PreProcessRecord context, RecordDetectionEngineResult detectionEngineResult) {
+        List<List<String>> rows = new ArrayList<>();
         List<Detection> mismergedDetections = getMismergeDetections(
                 detectionEngineResult.getPatientDetections()
         );
         if (!mismergedDetections.isEmpty()) {
             DqString patientID = context.getRecord().patient.patID;
             if (patientID.hasValue()) {
-                List<String> columns = COLUMN_DETECTIONS.stream()
+                List<String> columns = new ArrayList<>(1 + mismergedDetections.size());
+                columns.add(patientID.getValue());
+                columns.addAll(COLUMN_DETECTIONS.stream()
                         .map((columnDetections) -> mark(mismergedDetections, columnDetections))
-                        .collect(Collectors.toList());
-                rows.add(
-                        new AggregateRow(
-                                Collections.singletonList(
-                                        patientID.getValue()
-                                ),
-                                columns
-                        )
-                );
+                        .collect(Collectors.toList()));
+                rows.add(columns);
             }
         }
-
         return rows;
     }
 

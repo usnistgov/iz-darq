@@ -133,8 +133,8 @@ public class MismergedPatientCandidatesReportTestCase {
 	@Test
 	public void headerMatchesRowWidth() throws Exception {
 		List<CSVRecord> lines = readReport();
-		assertEquals(COL_COUNT + 1, lines.get(0).size());
-		lines.forEach((record) -> assertEquals(COL_COUNT + 1, record.size()));
+		assertEquals(COL_COUNT, lines.get(0).size());
+		lines.forEach((record) -> assertEquals(COL_COUNT, record.size()));
 	}
 
 	private void assertColumns(String patient, String invalidDoses, String flu, String covid, String highVolume)
@@ -144,7 +144,6 @@ public class MismergedPatientCandidatesReportTestCase {
 		assertEquals(patient + " flu doses", flu, record.get(COL_FLU_DOSES));
 		assertEquals(patient + " covid doses", covid, record.get(COL_COVID_DOSES));
 		assertEquals(patient + " high volume", highVolume, record.get(COL_HIGH_VOLUME));
-		assertEquals(patient + " count", "1", record.get(COL_COUNT));
 	}
 
 	private CSVRecord rowFor(String patient) throws Exception {
