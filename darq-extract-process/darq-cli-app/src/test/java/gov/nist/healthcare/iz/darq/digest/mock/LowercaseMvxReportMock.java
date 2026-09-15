@@ -27,12 +27,13 @@ import java.util.stream.Stream;
 	RECORD 3
 		VX 1 => Skb  mixed case         -> reported
 		VX 2 => msd  all lowercase      -> same code as RECORD 1, aggregates across records
+		VX 3 => msd
 	RECORD 4
 		VX 1 => PMC  already uppercase  -> not reported
 		VX 2 => (not set)               -> blank, not reported
  */
 
-public class FixedMvxReportMock implements DataExtractMock {
+public class LowercaseMvxReportMock implements DataExtractMock {
 	static private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	// Patient record field indices
@@ -63,15 +64,15 @@ public class FixedMvxReportMock implements DataExtractMock {
 	public final AgeGroupHelper ageGroupHelper;
 	public final ConfigurationPayload configurationPayload;
 
-	protected FixedMvxReportMock() {
+	protected LowercaseMvxReportMock() {
 		ageGroupHelper = new AgeGroupHelper(LocalDate.parse("2020-12-14", DATE_FORMATTER), 3);
 		configurationPayload = new ConfigurationPayload();
 		configurationPayload.setAsOf("12/14/2020");
 		/*
-		 * FixedMvxReportService declares no required detections (super(FILENAME)), so the report
-		 * is produced regardless of what is configured here - the casing fix happens in
+		 * LowercaseMvxReportService declares no required detections (super(FILENAME)), so the
+		 * report is produced regardless of what is configured here - the casing fix happens in
 		 * SimpleDigestRunner's preprocess, before any detection runs. A realistic manufacturer
-		 * detection set is configured anyway; FixedMvxReportNoDetectionsTestCase clears it to
+		 * detection set is configured anyway; LowercaseMvxReportNoDetectionsTestCase clears it to
 		 * show the report is produced either way.
 		 */
 		configurationPayload.setDetections(Stream.of(
@@ -166,7 +167,7 @@ public class FixedMvxReportMock implements DataExtractMock {
 		return ageGroupHelper;
 	}
 
-	public static FixedMvxReportMock get() {
-		return new FixedMvxReportMock();
+	public static LowercaseMvxReportMock get() {
+		return new LowercaseMvxReportMock();
 	}
 }
