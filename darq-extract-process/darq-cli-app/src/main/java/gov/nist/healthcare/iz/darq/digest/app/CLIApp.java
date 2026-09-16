@@ -61,6 +61,8 @@ public class CLIApp {
 
 	public static void run(String[] args) throws TerminalException {
 		try {
+			boolean detectionTestMode = args.length > 0 && "test".equalsIgnoreCase(args[0]);
+			String[] parserArgs = detectionTestMode ? Arrays.copyOfRange(args, 1, args.length) : args;
             Properties properties = new Properties();
 			properties.load(CLIApp.class.getResourceAsStream("/application.properties"));
 			String version = properties.getProperty("app.version");
@@ -87,9 +89,8 @@ public class CLIApp {
 			Options options = getOptions();
 
 			CommandLineParser parser = new DefaultParser();
-			CommandLine cmd = parser.parse(options, args);
+			CommandLine cmd = parser.parse(options, parserArgs);
 
-			boolean detectionTestMode = false;
 			if(cmd.hasOption(HELP)){
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("Data At Rest Quality Analysis Command Line Tool "+ tag, options);
@@ -133,7 +134,7 @@ public class CLIApp {
 				// --- Read Date Format
 				DqDateFormat simpleDateFormat = readDateFormat(dateFormat);
 
-				if(cmd.hasOption(TEST_MODE)) {
+				if(detectionTestMode) {
 					runDetectionTest(
 							cmd,
 							configurationPayload,
