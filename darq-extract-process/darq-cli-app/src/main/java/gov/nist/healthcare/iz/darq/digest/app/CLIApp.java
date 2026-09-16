@@ -319,7 +319,6 @@ public class CLIApp {
 
 	private static @NonNull Options getOptions() {
 		Options options = new Options();
-		options.addOption(TEST_MODE, false, "Detection test mode");
 		options.addOption(HELP, false, "print help");
 		options.addOption("s", "suffixOut", true, "Suffix for output files");
 		options.addOption("p", "patients", true, "Patients Extract File");
