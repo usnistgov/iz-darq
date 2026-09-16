@@ -54,7 +54,19 @@ public class CLIApp {
 	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 	private final static Logger logger = LoggerFactory.getLogger(CLIApp.class.getName());
 	public static final String HELP = "help";
-	public static final String TEST_MODE = "test";
+	public static final String S_OPT = "s";
+	public static final String P_OPT = "p";
+	public static final String V_OPT = "v";
+	public static final String C_OPT = "c";
+	public static final String T_OPT = "t";
+	public static final String OUT_OPT = "out";
+	public static final String PA_OPT = "pa";
+	public static final String D_OPT = "d";
+	public static final String PUB_OPT = "pub";
+	public static final String PM_OPT = "pm";
+	public static final String NPM_OPT = "npm";
+	public static final String DETECTION_LONG_OPT = "detection";
+	public static final String VERBOSE_LONG_OPT = "verbose";
 
 	private static boolean running = false;
 	private static Path temporaryDirectory = null;
@@ -100,27 +112,27 @@ public class CLIApp {
 
 				Date timestamp = new Date();
 				SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
-				String prefix = cmd.hasOption("s") ? cmd.getOptionValue("s") : timestampFormat.format(timestamp);
+				String prefix = cmd.hasOption(S_OPT) ? cmd.getOptionValue(S_OPT) : timestampFormat.format(timestamp);
 
 				System.out.println("===================================================================================================");
 				System.out.println(" [NIST] Welcome to Data At Rest Quality Analysis Command Line Tool " + tag + " ");
 				System.out.println("===================================================================================================");
 
-				boolean patientParamMissing = !cmd.hasOption("p");
-				boolean vaxParamMissing = !cmd.hasOption("v");
-				boolean confParamMissing = !cmd.hasOption("c");
+				boolean patientParamMissing = !cmd.hasOption(P_OPT);
+				boolean vaxParamMissing = !cmd.hasOption(V_OPT);
+				boolean confParamMissing = !cmd.hasOption(C_OPT);
 				if(patientParamMissing || vaxParamMissing || confParamMissing){
 					throw new RequiredParameterMissingException(new FileErrorCode(patientParamMissing, vaxParamMissing, confParamMissing));
 				}
 
-				String pFilePath = cmd.getOptionValue("p");
-				String vFilePath = cmd.getOptionValue("v");
-				String cFilePath = cmd.getOptionValue("c");
-				String tmpDirLocation = cmd.getOptionValue("t");
-				boolean printAdf = cmd.hasOption("pa");
-				boolean activePatientMatching = cmd.hasOption("pm");
-				boolean deActivatePatientMatching = cmd.hasOption("npm");
-				String dateFormat = cmd.getOptionValue("d");
+				String pFilePath = cmd.getOptionValue(P_OPT);
+				String vFilePath = cmd.getOptionValue(V_OPT);
+				String cFilePath = cmd.getOptionValue(C_OPT);
+				String tmpDirLocation = cmd.getOptionValue(T_OPT);
+				boolean printAdf = cmd.hasOption(PA_OPT);
+				boolean activePatientMatching = cmd.hasOption(PM_OPT);
+				boolean deActivatePatientMatching = cmd.hasOption(NPM_OPT);
+				String dateFormat = cmd.getOptionValue(D_OPT);
 
 				// --- Check Source files
 				File patients = new File(pFilePath);
@@ -147,8 +159,8 @@ public class CLIApp {
 					);
 				} else {
 					// --- Read Public Key
-					if(cmd.hasOption("pub")) {
-						String publicKeyLocation = cmd.getOptionValue("pub");
+					if(cmd.hasOption(PUB_OPT)) {
+						String publicKeyLocation = cmd.getOptionValue(PUB_OPT);
 						if(cryptoKey instanceof PublicOnlyCryptoKey) {
 							((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromLocation(publicKeyLocation);
 							System.out.println("* Using provided public key " + DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash()) + "(MD5)");
@@ -158,7 +170,7 @@ public class CLIApp {
 					}
 
 					// --- Create Outputs Folder
-					String outputRoot = cmd.hasOption("out") ? cmd.getOptionValue("out") : ".";
+					String outputRoot = cmd.hasOption(OUT_OPT) ? cmd.getOptionValue(OUT_OPT) : ".";
 
 					File output = Paths.get(outputRoot, "darq-analysis"+"_"+ prefix).toFile();
 
@@ -320,19 +332,19 @@ public class CLIApp {
 	private static @NonNull Options getOptions() {
 		Options options = new Options();
 		options.addOption(HELP, false, "print help");
-		options.addOption("s", "suffixOut", true, "Suffix for output files");
-		options.addOption("p", "patients", true, "Patients Extract File");
-		options.addOption("v", "vaccinations", true, "Vaccinations Extract File");
-		options.addOption("c", "configuration", true, "Analysis Configuration");
-		options.addOption("t", "temporaryDirectory", true, "Location where to create temporary directory");
-		options.addOption("out", "output", true, "Location where to create result directory");
-		options.addOption("pa", "printAdf", false, "print ADF content (deprecated)");
-		options.addOption("d", "dateFormat", true, "Date Format");
-		options.addOption("pub", "publicKey", true, "qDAR Public Key");
-		options.addOption("pm", "patientMatching", false, "Activate patient matching");
-		options.addOption("npm", "noPatientMatching", false, "Deactivate patient matching");
-		options.addOption(Option.builder().longOpt("detection").hasArg().desc("Detection ID to test; may be repeated").build());
-		options.addOption(Option.builder().longOpt("verbose").desc("Print each detection test row to the console").build());
+		options.addOption(S_OPT, "suffixOut", true, "Suffix for output files");
+		options.addOption(P_OPT, "patients", true, "Patients Extract File");
+		options.addOption(V_OPT, "vaccinations", true, "Vaccinations Extract File");
+		options.addOption(C_OPT, "configuration", true, "Analysis Configuration");
+		options.addOption(T_OPT, "temporaryDirectory", true, "Location where to create temporary directory");
+		options.addOption(OUT_OPT, "output", true, "Location where to create result directory");
+		options.addOption(PA_OPT, "printAdf", false, "print ADF content (deprecated)");
+		options.addOption(D_OPT, "dateFormat", true, "Date Format");
+		options.addOption(PUB_OPT, "publicKey", true, "qDAR Public Key");
+		options.addOption(PM_OPT, "patientMatching", false, "Activate patient matching");
+		options.addOption(NPM_OPT, "noPatientMatching", false, "Deactivate patient matching");
+		options.addOption(Option.builder().longOpt(DETECTION_LONG_OPT).hasArg().desc("Detection ID to test; may be repeated").build());
+		options.addOption(Option.builder().longOpt(VERBOSE_LONG_OPT).desc("Print each detection test row to the console").build());
 		return options;
 	}
 
@@ -370,7 +382,7 @@ public class CLIApp {
 			boolean activePatientMatching,
 			boolean deActivatePatientMatching
 	) throws Exception {
-		String[] requestedDetections = cmd.getOptionValues("detection");
+		String[] requestedDetections = cmd.getOptionValues(DETECTION_LONG_OPT);
 		if(requestedDetections == null || requestedDetections.length == 0) {
 			throw new DetectionTestException("At least one --detection value is required in test mode.");
 		}
@@ -396,7 +408,7 @@ public class CLIApp {
 			throw new DetectionTestException(e.getMessage());
 		}
 
-		String outputRoot = cmd.hasOption("out") ? cmd.getOptionValue("out") : ".";
+		String outputRoot = cmd.hasOption(OUT_OPT) ? cmd.getOptionValue(OUT_OPT) : ".";
 		SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
 		File output = Paths.get(outputRoot, "darq-detection-test_" + timestampFormat.format(new Date())).toFile();
 		temporaryDirectory = createTemporaryDirectory(Optional.ofNullable(tmpDirLocation));
@@ -427,7 +439,7 @@ public class CLIApp {
 		}
 		System.out.println("Detailed results: " + result.getDetailsFile().toAbsolutePath());
 
-		if(cmd.hasOption("verbose")) {
+		if(cmd.hasOption(VERBOSE_LONG_OPT)) {
 			try(java.util.stream.Stream<String> lines = Files.lines(result.getDetailsFile())) {
 				lines.forEach(System.out::println);
 			}
