@@ -26,6 +26,7 @@ import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -52,64 +53,48 @@ public class CLIApp {
 	private static final DecimalFormat df = new DecimalFormat(".##");
 	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 	private final static Logger logger = LoggerFactory.getLogger(CLIApp.class.getName());
+	public static final String HELP = "help";
+	public static final String TEST_MODE = "test";
 
 	private static boolean running = false;
 	private static Path temporaryDirectory = null;
 
 	public static void run(String[] args) throws TerminalException {
 		try {
-			boolean detectionTestMode = args.length > 0 && "test".equalsIgnoreCase(args[0]);
-			String[] parserArgs = detectionTestMode ? Arrays.copyOfRange(args, 1, args.length) : args;
-			Properties properties = new Properties();
+            Properties properties = new Properties();
 			properties.load(CLIApp.class.getResourceAsStream("/application.properties"));
 			String version = properties.getProperty("app.version");
 			String build = properties.getProperty("app.date");
 			String mqeVersion = properties.getProperty("mqe.version");
 			String publicKeyHash = "";
+
 			ApplicationContext context = null;
 			CryptoKey cryptoKey = null;
+			context = new AnnotationConfigApplicationContext(CLIApp.class);
+			cryptoKey = context.getBean(CryptoKey.class);
+			if(cryptoKey instanceof PublicOnlyCryptoKey) {
+				try {
+					((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromResource();
+					publicKeyHash = DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash());
+				} catch (Exception e) {
+					System.out.println("! No public key found in bundle");
+					logger.warn("! No public found in bundle", e);
+				}
+			}
 			String tag = String.format("v%s (%s) [MQE v%s] " + (!Strings.isNullOrEmpty(publicKeyHash) ? "[Key MD5 " + publicKeyHash + "]" : "") , version, build, mqeVersion);
 
 			//--- OPTIONS
-			Options options = new Options();
-			options.addOption("help", false, "print help");
-			options.addOption("s", "suffixOut", true, "Suffix for output files");
-			options.addOption("p", "patients", true, "Patients Extract File");
-			options.addOption("v", "vaccinations", true, "Vaccinations Extract File");
-			options.addOption("c", "configuration", true, "Analysis Configuration");
-			options.addOption("t", "temporaryDirectory", true, "Location where to create temporary directory");
-			options.addOption("out", "output", true, "Location where to create result directory");
-			options.addOption("pa", "printAdf", false, "print ADF content (deprecated)");
-			options.addOption("d", "dateFormat", true, "Date Format");
-			options.addOption("pub", "publicKey", true, "qDAR Public Key");
-			options.addOption("pm", "patientMatching", false, "Activate patient matching");
-			options.addOption("npm", "noPatientMatching", false, "Deactivate patient matching");
-			options.addOption(Option.builder().longOpt("detection").hasArg().desc("Detection ID to test; may be repeated").build());
-			options.addOption(Option.builder().longOpt("verbose").desc("Print each detection test row to the console").build());
-
+			Options options = getOptions();
 
 			CommandLineParser parser = new DefaultParser();
-			CommandLine cmd = parser.parse(options, parserArgs);
-			if(cmd.hasOption("help")){
+			CommandLine cmd = parser.parse(options, args);
+
+			boolean detectionTestMode = false;
+			if(cmd.hasOption(HELP)){
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("Data At Rest Quality Analysis Command Line Tool "+ tag, options);
 				System.exit(0);
-			}
-			else {
-				if(!detectionTestMode) {
-					context = new AnnotationConfigApplicationContext(CLIApp.class);
-					cryptoKey = context.getBean(CryptoKey.class);
-				}
-
-				if(cryptoKey instanceof PublicOnlyCryptoKey) {
-					try {
-						((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromResource();
-						publicKeyHash = DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash());
-					} catch (Exception e) {
-						System.out.println("! No public key found in bundle");
-						logger.warn("! No public found in bundle", e);
-					}
-				}
+			} else {
 				tag = String.format("v%s (%s) [MQE v%s] " + (!Strings.isNullOrEmpty(publicKeyHash) ? "[Key MD5 " + publicKeyHash + "]" : "") , version, build, mqeVersion);
 
 				Date timestamp = new Date();
@@ -126,160 +111,74 @@ public class CLIApp {
 				if(patientParamMissing || vaxParamMissing || confParamMissing){
 					throw new RequiredParameterMissingException(new FileErrorCode(patientParamMissing, vaxParamMissing, confParamMissing));
 				}
-				else {
-					String pFilePath = cmd.getOptionValue("p");
-					String vFilePath = cmd.getOptionValue("v");
-					String cFilePath = cmd.getOptionValue("c");
-					String tmpDirLocation = cmd.getOptionValue("t");
-					boolean printAdf = cmd.hasOption("pa");
-					boolean activePatientMatching = cmd.hasOption("pm");
-					boolean deActivatePatientMatching = cmd.hasOption("npm");
-					String dateFormat = cmd.getOptionValue("d");
 
-					File patients = new File(pFilePath);
-					File vaccines = new File(vFilePath);
-					File config = new File(cFilePath);
-					boolean pFile = patients.exists() && !patients.isDirectory();
-					boolean vFile = vaccines.exists() && !vaccines.isDirectory();
-					boolean cFile = config.exists() && !config.isDirectory();
+				String pFilePath = cmd.getOptionValue("p");
+				String vFilePath = cmd.getOptionValue("v");
+				String cFilePath = cmd.getOptionValue("c");
+				String tmpDirLocation = cmd.getOptionValue("t");
+				boolean printAdf = cmd.hasOption("pa");
+				boolean activePatientMatching = cmd.hasOption("pm");
+				boolean deActivatePatientMatching = cmd.hasOption("npm");
+				String dateFormat = cmd.getOptionValue("d");
 
+				// --- Check Source files
+				File patients = new File(pFilePath);
+				File vaccines = new File(vFilePath);
+				File config = new File(cFilePath);
+				checkFilesExistence(patients, vaccines, config, pFilePath, vFilePath, cFilePath);
 
-					System.out.println("Patients File @ "+ pFilePath + " " + (pFile ? "[FOUND]" : "[ERROR]"));
-					System.out.println("Vaccinations File @ "+ vFilePath + " " + (vFile ? "[FOUND]" : "[ERROR]"));
-					System.out.println("Configuration File @ "+ cFilePath + " " + (cFile ? "[FOUND]" : "[ERROR]"));
-					System.out.println("===================================================================================================");
+				// --- Read Configuration file
+				ConfigurationPayload configurationPayload = readConfigurationFile(config);
 
-					if(!pFile || !vFile || !cFile) {
-						throw new FileNotFoundException(new FileErrorCode(!pFile, !vFile, !cFile));
-					} else {
+				// --- Read Date Format
+				DqDateFormat simpleDateFormat = readDateFormat(dateFormat);
 
-						// --- Read Configuration file
-						ConfigurationPayload configurationPayload;
-						try {
-							ObjectMapper mapper = new ObjectMapper();
-							configurationPayload = mapper.readValue(config,ConfigurationPayload.class);
-						}
-						catch (Exception e) {
-							throw new InvalidConfigurationFileFormatException(e);
-						}
-
-						// --- Read Date Format
-						DqDateFormat simpleDateFormat = DqDateFormat.forPattern(DEFAULT_DATE_FORMAT);
-						if(!Strings.isNullOrEmpty(dateFormat)) {
-							try{
-								simpleDateFormat = DqDateFormat.forPattern(dateFormat);
-							} catch (Exception e) {
-								throw new InvalidDateFormatException(e, "Date Format " + dateFormat + " is Invalid ");
-							}
-						}
-
-						if(detectionTestMode) {
-							runDetectionTest(
-									cmd,
-									configurationPayload,
-									pFilePath,
-									vFilePath,
-									tmpDirLocation,
-									simpleDateFormat,
-									activePatientMatching,
-									deActivatePatientMatching
-							);
-							return;
-						}
-
-						// --- Read Public Key
-						if(cmd.hasOption("pub")) {
-							String publicKeyLocation = cmd.getOptionValue("pub");
-							if(cryptoKey instanceof PublicOnlyCryptoKey) {
-								((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromLocation(publicKeyLocation);
-								System.out.println("* Using provided public key " + DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash()) + "(MD5)");
-							} else {
-								throw new PublicKeyException("Public Key parameter (pub) is not supported");
-							}
-						}
-
-						if(cryptoKey.getPublicKey() == null) {
-							throw new PublicKeyException("No public key provided or bundled");
-						}
-
-						// --- Create Outputs Folder
-						String outputRoot = cmd.hasOption("out") ? cmd.getOptionValue("out") : ".";
-
-						File output = Paths.get(outputRoot, "darq-analysis"+"_"+prefix).toFile();
-						output.mkdirs();
-
-						// --- Create Temporary Directory
-						temporaryDirectory = createTemporaryDirectory(Optional.ofNullable(tmpDirLocation));
-
-						// --- Configure Detection Engine
-						logger.info("Configuring the detection engine");
-						DetectionEngine detectionEngine = context.getBean(DetectionEngine.class);
-						DetectionEngineConfiguration detectionEngineConfiguration = new DetectionEngineConfiguration();
-						detectionEngineConfiguration.setOutputDirectory(output.getAbsolutePath());
-						detectionEngineConfiguration.setTemporaryDirectory(temporaryDirectory.toAbsolutePath().toString());
-						detectionEngineConfiguration.setConfigurationPayload(configurationPayload);
-						detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_MQE);
-						if(!deActivatePatientMatching && (configurationPayload.isActivatePatientMatching() || activePatientMatching)) {
-							detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_PM);
-						}
-						detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_VD);
-						// The order is important here, complex_detections should be last since they rely on other detections being detected prior
-						if(!configurationPayload.getComplexDetections().isEmpty()) {
-							detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_COMPLEX_DETECTIONS);
-						}
-						detectionEngine.configure(detectionEngineConfiguration);
-
-						// --- Configure Local Report Engine
-						logger.info("Configuring the local report engine");
-						LocalReportEngine localReportEngine = context.getBean(LocalReportEngine.class);
-						LocalReportEngineConfiguration localReportEngineConfiguration = new LocalReportEngineConfiguration();
-						localReportEngineConfiguration.setOutputDirectory(output.getAbsolutePath());
-						localReportEngineConfiguration.setTemporaryDirectory(temporaryDirectory.toAbsolutePath().toString());
-						localReportEngineConfiguration.setConfigurationPayload(configurationPayload);
-						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_BAD_ZIP_CODES);
-						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_BAD_PHONES);
-						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_DUPLICATE_RECORDS);
-						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_LOT_NUMBERS);
-						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_PLACEHOLDER_NAMES);
-						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_DUPLICATE_VACCINATIONS);
-						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_MISMERGED_PATIENT_CANDIDATES);
-						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_LOWERCASE_MVX);
-						localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_VACCINE_CODE);
-						localReportEngine.configure(localReportEngineConfiguration, detectionEngine);
-
-
-
-						// --- Configure Services
-						logger.info("Configuring Services");
-						SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
-						Exporter export = context.getBean(Exporter.class);
-						ADFManager adfManager = context.getBean(ADFManager.class);
-						adfManager.register(new SqliteADFModule(temporaryDirectory.toAbsolutePath().toString()), false, true);
-
-						// --- Start Analysis
-						System.out.println("Analysis Progress");
-						running = true;
-						Thread t = progress(runner);
-						t.start();
-						long start = System.currentTimeMillis();
-						boolean hasIssue;
-						try(ADFWriter writer = adfManager.getWriter(cryptoKey)) {
-							writer.open(temporaryDirectory.toAbsolutePath().toString());
-							runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, writer, output.toPath(), temporaryDirectory);
-							t.join();
-							System.out.println("Analysis Finished - Exporting Results");
-							long elapsed = System.currentTimeMillis() - start;
-							hasIssue = writer.getIssues().size() > 0;
-							export.export(configurationPayload, output.toPath(), writer, version, build, mqeVersion, elapsed, printAdf);
-							System.out.println("Results Exported - END");
-							logger.info("* Closing ADF Writer");
-						}
-						if(hasIssue) {
-							throw new SummaryIssuesException();
+				if(cmd.hasOption(TEST_MODE)) {
+					runDetectionTest(
+							cmd,
+							configurationPayload,
+							pFilePath,
+							vFilePath,
+							tmpDirLocation,
+							simpleDateFormat,
+							activePatientMatching,
+							deActivatePatientMatching
+					);
+				} else {
+					// --- Read Public Key
+					if(cmd.hasOption("pub")) {
+						String publicKeyLocation = cmd.getOptionValue("pub");
+						if(cryptoKey instanceof PublicOnlyCryptoKey) {
+							((PublicOnlyCryptoKey) cryptoKey).setPublicKeyFromLocation(publicKeyLocation);
+							System.out.println("* Using provided public key " + DatatypeConverter.printHexBinary(cryptoKey.getPublicKeyHash()) + "(MD5)");
+						} else {
+							throw new PublicKeyException("Public Key parameter (pub) is not supported");
 						}
 					}
+
+					// --- Create Outputs Folder
+					String outputRoot = cmd.hasOption("out") ? cmd.getOptionValue("out") : ".";
+
+					File output = Paths.get(outputRoot, "darq-analysis"+"_"+ prefix).toFile();
+
+					runCliApp(context,
+							output,
+							configurationPayload,
+							pFilePath,
+							vFilePath,
+							tmpDirLocation,
+							simpleDateFormat,
+							activePatientMatching,
+							deActivatePatientMatching,
+							version,
+							build,
+							mqeVersion,
+							cryptoKey,
+							printAdf
+					);
 				}
 			}
+
 		}
 		catch (ParseException exp) {
 			throw new InvalidCommandException(exp);
@@ -312,6 +211,153 @@ public class CLIApp {
 		finally {
 			running = false;
 		}
+	}
+
+	private static void checkFilesExistence(File patients, File vaccines, File config, String pFilePath, String vFilePath, String cFilePath) throws FileNotFoundException {
+		boolean pFile = patients.exists() && !patients.isDirectory();
+		boolean vFile = vaccines.exists() && !vaccines.isDirectory();
+		boolean cFile = config.exists() && !config.isDirectory();
+
+
+		System.out.println("Patients File @ "+ pFilePath + " " + (pFile ? "[FOUND]" : "[ERROR]"));
+		System.out.println("Vaccinations File @ "+ vFilePath + " " + (vFile ? "[FOUND]" : "[ERROR]"));
+		System.out.println("Configuration File @ "+ cFilePath + " " + (cFile ? "[FOUND]" : "[ERROR]"));
+		System.out.println("===================================================================================================");
+
+		if(!pFile || !vFile || !cFile) {
+			throw new FileNotFoundException(new FileErrorCode(!pFile, !vFile, !cFile));
+		}
+	}
+
+	private static void runCliApp(ApplicationContext context, File output, ConfigurationPayload configurationPayload, String pFilePath, String vFilePath, String tmpDirLocation, DqDateFormat simpleDateFormat, boolean activePatientMatching, boolean deActivatePatientMatching, String version, String build, String mqeVersion, CryptoKey cryptoKey, boolean printAdf) throws Exception {
+		if(cryptoKey.getPublicKey() == null) {
+			throw new PublicKeyException("No public key provided or bundled");
+		}
+
+		output.mkdirs();
+
+		// --- Create Temporary Directory
+		temporaryDirectory = createTemporaryDirectory(Optional.ofNullable(tmpDirLocation));
+
+		// --- Configure Detection Engine
+		logger.info("Configuring the detection engine");
+		DetectionEngine detectionEngine = configureDetectionEngine(context, configurationPayload, deActivatePatientMatching, activePatientMatching, output);
+
+		// --- Configure Local Report Engine
+		LocalReportEngine localReportEngine = configureLocalReportEngine(context, configurationPayload, output, detectionEngine);
+
+
+		// --- Configure Services
+		logger.info("Configuring Services");
+		SimpleDigestRunner runner = context.getBean(SimpleDigestRunner.class);
+		Exporter export = context.getBean(Exporter.class);
+		ADFManager adfManager = context.getBean(ADFManager.class);
+		adfManager.register(new SqliteADFModule(temporaryDirectory.toAbsolutePath().toString()), false, true);
+
+		// --- Start Analysis
+		System.out.println("Analysis Progress");
+		running = true;
+		Thread t = progress(runner);
+		t.start();
+		long start = System.currentTimeMillis();
+		boolean hasIssue;
+		try(ADFWriter writer = adfManager.getWriter(cryptoKey)) {
+			writer.open(temporaryDirectory.toAbsolutePath().toString());
+			runner.digest(configurationPayload, pFilePath, vFilePath, simpleDateFormat, writer, output.toPath(), temporaryDirectory);
+			t.join();
+			System.out.println("Analysis Finished - Exporting Results");
+			long elapsed = System.currentTimeMillis() - start;
+			hasIssue = writer.getIssues().size() > 0;
+			export.export(configurationPayload, output.toPath(), writer, version, build, mqeVersion, elapsed, printAdf);
+			System.out.println("Results Exported - END");
+			logger.info("* Closing ADF Writer");
+		}
+		if(hasIssue) {
+			throw new SummaryIssuesException();
+		}
+	}
+
+	private static @NonNull DetectionEngine configureDetectionEngine(ApplicationContext context, ConfigurationPayload configurationPayload, boolean deActivatePatientMatching, boolean activePatientMatching, File output) throws Exception {
+		DetectionEngine detectionEngine = context.getBean(DetectionEngine.class);
+		DetectionEngineConfiguration detectionEngineConfiguration = new DetectionEngineConfiguration();
+		detectionEngineConfiguration.setOutputDirectory(output.getAbsolutePath());
+		detectionEngineConfiguration.setTemporaryDirectory(temporaryDirectory.toAbsolutePath().toString());
+		detectionEngineConfiguration.setConfigurationPayload(configurationPayload);
+		detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_MQE);
+		if(!deActivatePatientMatching && (configurationPayload.isActivatePatientMatching() || activePatientMatching)) {
+			detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_PM);
+		}
+		detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_VD);
+		// The order is important here, complex_detections should be last since they rely on other detections being detected prior
+		if(!configurationPayload.getComplexDetections().isEmpty()) {
+			detectionEngineConfiguration.addActiveProvider(AvailableDetectionEngines.DP_ID_COMPLEX_DETECTIONS);
+		}
+		detectionEngine.configure(detectionEngineConfiguration);
+		return detectionEngine;
+	}
+
+	private static LocalReportEngine configureLocalReportEngine(ApplicationContext context, ConfigurationPayload configurationPayload, File output, DetectionEngine detectionEngine) throws Exception {
+		logger.info("Configuring the local report engine");
+		LocalReportEngine localReportEngine = context.getBean(LocalReportEngine.class);
+		LocalReportEngineConfiguration localReportEngineConfiguration = new LocalReportEngineConfiguration();
+		localReportEngineConfiguration.setOutputDirectory(output.getAbsolutePath());
+		localReportEngineConfiguration.setTemporaryDirectory(temporaryDirectory.toAbsolutePath().toString());
+		localReportEngineConfiguration.setConfigurationPayload(configurationPayload);
+		localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_BAD_ZIP_CODES);
+		localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_BAD_PHONES);
+		localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_DUPLICATE_RECORDS);
+		localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_LOT_NUMBERS);
+		localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_PLACEHOLDER_NAMES);
+		localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_DUPLICATE_VACCINATIONS);
+		localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_MISMERGED_PATIENT_CANDIDATES);
+		localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_LOWERCASE_MVX);
+		localReportEngineConfiguration.addActiveLocalReportEngine(AvailableLocalReportServices.LR_VACCINE_CODE);
+		localReportEngine.configure(localReportEngineConfiguration, detectionEngine);
+		return localReportEngine;
+	}
+
+	private static @NonNull Options getOptions() {
+		Options options = new Options();
+		options.addOption(TEST_MODE, false, "Detection test mode");
+		options.addOption(HELP, false, "print help");
+		options.addOption("s", "suffixOut", true, "Suffix for output files");
+		options.addOption("p", "patients", true, "Patients Extract File");
+		options.addOption("v", "vaccinations", true, "Vaccinations Extract File");
+		options.addOption("c", "configuration", true, "Analysis Configuration");
+		options.addOption("t", "temporaryDirectory", true, "Location where to create temporary directory");
+		options.addOption("out", "output", true, "Location where to create result directory");
+		options.addOption("pa", "printAdf", false, "print ADF content (deprecated)");
+		options.addOption("d", "dateFormat", true, "Date Format");
+		options.addOption("pub", "publicKey", true, "qDAR Public Key");
+		options.addOption("pm", "patientMatching", false, "Activate patient matching");
+		options.addOption("npm", "noPatientMatching", false, "Deactivate patient matching");
+		options.addOption(Option.builder().longOpt("detection").hasArg().desc("Detection ID to test; may be repeated").build());
+		options.addOption(Option.builder().longOpt("verbose").desc("Print each detection test row to the console").build());
+		return options;
+	}
+
+	private static ConfigurationPayload readConfigurationFile(File config) throws InvalidConfigurationFileFormatException {
+		ConfigurationPayload configurationPayload;
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			configurationPayload = mapper.readValue(config,ConfigurationPayload.class);
+		}
+		catch (Exception e) {
+			throw new InvalidConfigurationFileFormatException(e);
+		}
+		return configurationPayload;
+	}
+
+	private static @NonNull DqDateFormat readDateFormat(String dateFormat) throws InvalidDateFormatException {
+		DqDateFormat simpleDateFormat = DqDateFormat.forPattern(DEFAULT_DATE_FORMAT);
+		if(!Strings.isNullOrEmpty(dateFormat)) {
+			try{
+				simpleDateFormat = DqDateFormat.forPattern(dateFormat);
+			} catch (Exception e) {
+				throw new InvalidDateFormatException(e, "Date Format " + dateFormat + " is Invalid ");
+			}
+		}
+		return simpleDateFormat;
 	}
 
 	private static void runDetectionTest(
