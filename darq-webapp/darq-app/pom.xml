@@ -149,12 +149,28 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
+                <!-- Must be excluded here: this block runs after the filtered one above and a
+                     plain copy would overwrite target/classes/application.properties with the
+                     raw source, putting the @project.version@ / @timestamp@ tokens back. -->
+                <excludes>
+                    <exclude>application.properties</exclude>
+                </excludes>
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <!-- Only @token@ is a filter delimiter. The default set also contains ${*},
+                         which collides with the Spring placeholders in application.properties
+                         (e.g. ${QDAR_MONGODB_HOST:localhost}) - those must reach Spring intact. -->
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

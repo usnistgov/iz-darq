@@ -72,18 +72,27 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
                 <!-- Must be excluded here: this block runs after the filtered one above and a
                      plain copy would overwrite target/classes/application.properties with the
-                     raw source, putting the @version@ / @timestamp@ tokens back. -->
+                     raw source, putting the @project.version@ / @timestamp@ tokens back. -->
                 <excludes>
                     <exclude>application.properties</exclude>
                 </excludes>
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <!-- Only @token@ is a filter delimiter, so any ${...} placeholder in a
+                         filtered resource is left untouched for the runtime to resolve. -->
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
