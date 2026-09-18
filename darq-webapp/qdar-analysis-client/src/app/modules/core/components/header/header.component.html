@@ -1,5 +1,4 @@
 <nav class="navbar navbar-light nav-title">
-  <img height="45px" src="assets/nist_logo.png">
   <a class="navbar-brand toolbar-name">
     Data At Rest Quality Analysis Tool
     <span class="toolname-abbrv">(qDAR)</span>
@@ -42,17 +41,19 @@
     </li>
   </ul>
   <ul *ngIf="(isLogged$  | async)" class="navbar-nav username-label">
-    <li [ngClass]="{ 'active' : log.isOpen() }" class="nav-item" #log="ngbDropdown" ngbDropdown display="dynamic" *ngIf="(currentUser$ | async) as user">
-      <span  class="nav-link" href="#" style="display: flex; align-items: center; justify-content: center;" ngbDropdownToggle>
+    <li [ngClass]="{ 'active' : log.isOpen() }" class="nav-item" #log="ngbDropdown" ngbDropdown display="dynamic"
+      *ngIf="(currentUser$ | async) as user">
+      <span class="nav-link" href="#" style="display: flex; align-items: center; justify-content: center;"
+        ngbDropdownToggle>
         <i class="fa fa-user" style="margin-right: 5px;"></i>
         {{ user.screenName }}
-        <span style="margin-left: 5px;"  class="badge badge-dark" *ngIf="!user.credentials">
+        <span style="margin-left: 5px;" class="badge badge-dark" *ngIf="!user.credentials">
           {{ user.source}}
         </span>
       </span>
 
       <div ngbDropdownMenu>
-        <button [routerLink]="['/', 'update-profile' ]"  *ngIf="!user.source" ngbDropdownItem>
+        <button [routerLink]="['/', 'update-profile' ]" *ngIf="!user.source" ngbDropdownItem>
           <i class="fa fa-user"></i> Update User Profile
         </button>
         <button (click)="logout()" ngbDropdownItem>
