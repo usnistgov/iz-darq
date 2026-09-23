@@ -10,9 +10,9 @@ import org.immregistries.mqe.validator.detection.Detection;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MismergedPatientCandidatesReportService extends SimpleLocalReportService {
+public class PossibleMismergedRecordsReportService extends SimpleLocalReportService {
 
-    public static final String FILENAME = "mismerged_candidates.csv";
+    public static final String FILENAME = "possible_mismerged_records.csv";
 
     // One entry per report column, in column order. A column is marked when the patient has any
     // of its detections. DETECTIONS is derived from this, so a detection cannot be treated as a
@@ -42,7 +42,7 @@ public class MismergedPatientCandidatesReportService extends SimpleLocalReportSe
             )
     );
 
-    public MismergedPatientCandidatesReportService() {
+    public PossibleMismergedRecordsReportService() {
         super(FILENAME, DETECTIONS.stream().map(Detection::getMqeMqeCode).toArray(String[]::new));
     }
 

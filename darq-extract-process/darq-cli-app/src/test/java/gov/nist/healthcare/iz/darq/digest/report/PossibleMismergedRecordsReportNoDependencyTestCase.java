@@ -3,8 +3,8 @@ package gov.nist.healthcare.iz.darq.digest.report;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFReader;
 import gov.nist.healthcare.iz.darq.digest.common.CLITestRunnerUtils;
 import gov.nist.healthcare.iz.darq.digest.common.SQLiteADFTestUtils;
-import gov.nist.healthcare.iz.darq.digest.mock.MismergedPatientCandidatesReportMock;
-import gov.nist.healthcare.iz.darq.digest.service.report.instances.MismergedPatientCandidatesReportService;
+import gov.nist.healthcare.iz.darq.digest.mock.PossibleMismergedRecordsReportMock;
+import gov.nist.healthcare.iz.darq.digest.service.report.instances.PossibleMismergedRecordsReportService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,17 +20,17 @@ import static org.junit.Assert.*;
  * With none of the required detections configured, LocalReportService.dependenciesAreMet is false
  * and the report should not be produced at all.
  */
-public class MismergedPatientCandidatesReportNoDependencyTestCase {
+public class PossibleMismergedRecordsReportNoDependencyTestCase {
 	static TemporaryFolder folder = new TemporaryFolder();
 	static SqliteADFReader reader;
-	static MismergedPatientCandidatesReportMock mock;
+	static PossibleMismergedRecordsReportMock mock;
 	static CLITestRunnerUtils utils;
 	static SQLiteADFTestUtils sqliteAdfHelper;
 
 	@BeforeClass
 	public static void setup() throws Exception {
 		folder.create();
-		mock = MismergedPatientCandidatesReportMock.get();
+		mock = PossibleMismergedRecordsReportMock.get();
 		// Remove required detections
 		mock.getConfigurationPayload().setDetections(new ArrayList<>());
 		utils = new CLITestRunnerUtils(mock, folder);
@@ -49,7 +49,7 @@ public class MismergedPatientCandidatesReportNoDependencyTestCase {
 
 	@Test
 	public void checkReportDoesNotExists() {
-		Path reportPath = utils.getLocalReport(MismergedPatientCandidatesReportService.FILENAME);
+		Path reportPath = utils.getLocalReport(PossibleMismergedRecordsReportService.FILENAME);
 		assertFalse(Files.exists(reportPath));
 	}
 

@@ -66,7 +66,7 @@ public class DigestConfiguration {
 		localReportServices.put(AvailableLocalReportServices.LR_LOT_NUMBERS, new LotNumberReportService());
 		localReportServices.put(AvailableLocalReportServices.LR_PLACEHOLDER_NAMES, new PlaceholderNameReportService());
 		localReportServices.put(AvailableLocalReportServices.LR_DUPLICATE_VACCINATIONS, new DuplicateVaccinationReportService());
-		localReportServices.put(AvailableLocalReportServices.LR_MISMERGED_PATIENT_CANDIDATES, new MismergedPatientCandidatesReportService());
+		localReportServices.put(AvailableLocalReportServices.LR_POSSIBLE_MISMERGED_RECORD, new PossibleMismergedRecordsReportService());
 		localReportServices.put(AvailableLocalReportServices.LR_LOWERCASE_MVX, new LowercaseMvxReportService());
 		localReportServices.put(AvailableLocalReportServices.LR_VACCINE_CODE, new VaccineCodeReportService());
 		return new LocalReportEngine(localReportServices);

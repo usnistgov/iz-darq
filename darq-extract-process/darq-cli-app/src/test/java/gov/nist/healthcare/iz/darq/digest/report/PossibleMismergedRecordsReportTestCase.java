@@ -3,8 +3,8 @@ package gov.nist.healthcare.iz.darq.digest.report;
 import gov.nist.healthcare.iz.darq.adf.module.sqlite.SqliteADFReader;
 import gov.nist.healthcare.iz.darq.digest.common.CLITestRunnerUtils;
 import gov.nist.healthcare.iz.darq.digest.common.SQLiteADFTestUtils;
-import gov.nist.healthcare.iz.darq.digest.mock.MismergedPatientCandidatesReportMock;
-import gov.nist.healthcare.iz.darq.digest.service.report.instances.MismergedPatientCandidatesReportService;
+import gov.nist.healthcare.iz.darq.digest.mock.PossibleMismergedRecordsReportMock;
+import gov.nist.healthcare.iz.darq.digest.service.report.instances.PossibleMismergedRecordsReportService;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
  * Drives the SME-supplied extract (src/test/resources/mismerged) through the CLI and checks each
  * cohort lands in the column it was designed for.
  */
-public class MismergedPatientCandidatesReportTestCase {
+public class PossibleMismergedRecordsReportTestCase {
 
 	/*
 	 * Report layout, as written by AggregateLocalReportService:
@@ -51,14 +51,14 @@ public class MismergedPatientCandidatesReportTestCase {
 
 	static TemporaryFolder folder = new TemporaryFolder();
 	static SqliteADFReader reader;
-	static MismergedPatientCandidatesReportMock mock;
+	static PossibleMismergedRecordsReportMock mock;
 	static CLITestRunnerUtils utils;
 	static SQLiteADFTestUtils sqliteAdfHelper;
 
 	@BeforeClass
 	public static void setup() throws Exception {
 		folder.create();
-		mock = MismergedPatientCandidatesReportMock.get();
+		mock = PossibleMismergedRecordsReportMock.get();
 		utils = new CLITestRunnerUtils(mock, folder);
 		sqliteAdfHelper = new SQLiteADFTestUtils();
 		utils.createFiles();
@@ -74,7 +74,7 @@ public class MismergedPatientCandidatesReportTestCase {
 
 	@Test
 	public void checkReportExists() {
-		Path reportPath = utils.getLocalReport(MismergedPatientCandidatesReportService.FILENAME);
+		Path reportPath = utils.getLocalReport(PossibleMismergedRecordsReportService.FILENAME);
 		assertTrue(Files.exists(reportPath));
 	}
 
@@ -155,7 +155,7 @@ public class MismergedPatientCandidatesReportTestCase {
 	}
 
 	private List<CSVRecord> readReport() throws Exception {
-		Path reportPath = utils.getLocalReport(MismergedPatientCandidatesReportService.FILENAME);
+		Path reportPath = utils.getLocalReport(PossibleMismergedRecordsReportService.FILENAME);
 		FileReader fileReader = new FileReader(reportPath.toFile());
 		CSVParser parser = new CSVParser(fileReader, CSVFormat.DEFAULT);
 		return parser.getRecords();

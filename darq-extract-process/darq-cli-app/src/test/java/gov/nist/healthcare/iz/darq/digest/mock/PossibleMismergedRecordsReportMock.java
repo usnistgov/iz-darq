@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  * 501, 502, 503  controls                       - 2 well-spaced doses, below every threshold
  * </pre>
  */
-public class MismergedPatientCandidatesReportMock implements DataExtractMock {
+public class PossibleMismergedRecordsReportMock implements DataExtractMock {
 	static private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	private static final String PATIENTS_RESOURCE = "/mismerged/patients.txt";
@@ -71,7 +71,7 @@ public class MismergedPatientCandidatesReportMock implements DataExtractMock {
 	public final AgeGroupHelper ageGroupHelper;
 	public final ConfigurationPayload configurationPayload;
 
-	protected MismergedPatientCandidatesReportMock() {
+	protected PossibleMismergedRecordsReportMock() {
 		/*
 		 * Evaluated after the last administered dose in the fixture (2025-04-01, patient 401) so
 		 * that no vaccination is future-dated relative to the evaluation date. The age groups are
@@ -134,7 +134,7 @@ public class MismergedPatientCandidatesReportMock implements DataExtractMock {
 
 	/** Reads an extract file, dropping the trailing CR of its CRLF line endings and blank lines. */
 	private List<String> readLines(String resource) {
-		InputStream in = MismergedPatientCandidatesReportMock.class.getResourceAsStream(resource);
+		InputStream in = PossibleMismergedRecordsReportMock.class.getResourceAsStream(resource);
 		if (in == null) {
 			throw new IllegalStateException("Missing test resource " + resource);
 		}
@@ -153,7 +153,7 @@ public class MismergedPatientCandidatesReportMock implements DataExtractMock {
 		return ageGroupHelper;
 	}
 
-	public static MismergedPatientCandidatesReportMock get() {
-		return new MismergedPatientCandidatesReportMock();
+	public static PossibleMismergedRecordsReportMock get() {
+		return new PossibleMismergedRecordsReportMock();
 	}
 }
