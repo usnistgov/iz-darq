@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class BadZipCodeReportService extends AggregateLocalReportService {
 
-    public final static String FILENAME = "zip_codes.csv";
+    public final static String FILENAME = "bad_zip_codes.csv";
 
     public static final Set<Detection> DETECTIONS = new HashSet<>(Arrays.asList(
             Detection.PatientAddressZipIsInvalid
