@@ -35,7 +35,7 @@ RUN ./qdar-build.sh -q $(pwd) -o /output -d /dependencies
 
 
 # Final: Isolate the single output folder
-FROM scratch AS export-stage
+FROM scratch AS qdar-export-stage
 COPY --from=qdar-builder /output .
 
 FROM tomcat:9.0.108-jdk8-temurin-noble AS deploy
