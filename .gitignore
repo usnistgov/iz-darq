@@ -27,3 +27,5 @@ Compiled.xml
 /.env
 /certs/
 /adf-store/
+/.dev.env
+/.sdkmanrc
