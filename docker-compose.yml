@@ -3,6 +3,7 @@
 # from .env — see .dev.example.env for the full list.
 x-qdar-paths: &qdar-paths
   QDAR_STORE: /store
+  QDAR_MONGODB_HOST: qdar-mongodb-green-apple
   QDAR_ADF_JKS_PATH: /certs/adf.jks
   QDAR_AUTH_JKS_PATH: /certs/auth.jks
 

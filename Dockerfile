@@ -1,4 +1,4 @@
-FROM eclipse-temurin:8-jdk-focal as qdar-builder
+FROM eclipse-temurin:8-jdk-focal AS qdar-builder
 
 # 1. Setup Environment
 ENV NVM_DIR /root/.nvm
@@ -38,7 +38,7 @@ RUN ./qdar-build.sh -q $(pwd) -o /output -d /dependencies
 FROM scratch AS qdar-export-stage
 COPY --from=qdar-builder /output .
 
-FROM tomcat:9.0.108-jdk8-temurin-noble AS deploy
+FROM tomcat:9.0.108-jdk8-temurin-noble AS qdar-deploy
 RUN rm -rf /usr/local/tomcat/webapps/*
 RUN rm -rf /usr/local/tomcat/webapps.dist
 RUN sed -i '/<\/web-app>/i \
