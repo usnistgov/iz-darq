@@ -11,6 +11,12 @@ public class RowDifferential {
     private boolean passStatusChanged;
     private Fraction baseResult;
     private Fraction newResult;
+    private String thresholdText;
+    private boolean basePass;
+    private boolean newPass;
+    private Double basePercent;
+    private Double newPercent;
+
 
     public Map<Field, String> getRowIdentifier() {
         return rowIdentifier;
@@ -50,5 +56,45 @@ public class RowDifferential {
 
     public void setNewResult(Fraction newResult) {
         this.newResult = newResult;
+    }
+
+    public String getThresholdText() {
+        return thresholdText;
+    }
+
+    public void setThresholdText(String thresholdText) {
+        this.thresholdText = thresholdText;
+    }
+
+    public boolean isBasePass() {
+        return basePass;
+    }
+
+    public void setBasePass(boolean basePass) {
+        this.basePass = basePass;
+    }
+
+    public boolean isNewPass() {
+        return newPass;
+    }
+
+    public void setNewPass(boolean newPass) {
+        this.newPass = newPass;
+    }
+
+    public Double getBasePercent() {
+        return basePercent;
+    }
+
+    public void setBasePercent(Double basePercent) {
+        this.basePercent = basePercent;
+    }
+
+    public Double getNewPercent() {
+        return newPercent;
+    }
+
+    public void setNewPercent(Double newPercent) {
+        this.newPercent = newPercent;
     }
 }

@@ -1,4 +1,4 @@
-package gov.nist.healthcare.iz.darq.analyzer.service;
+package gov.nist.healthcare.iz.darq.analyzer.service.comparison;
 
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisReport;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTable;
@@ -6,6 +6,7 @@ import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTableRow;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.ReportSectionResult;
 import gov.nist.healthcare.iz.darq.analyzer.model.comparison.*;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
+import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -114,11 +115,34 @@ public class ReportComparisonService {
                     }
 
                     diff.setPassStatusChanged(baseRow.isPass() != newRow.isPass());
+
+                    // --- NEW FIELDS FOR CSV EXPORT ---
+                    diff.setBasePass(baseRow.isPass());
+                    diff.setNewPass(newRow.isPass());
+
+                    // Assuming Threshold has a toString(), getDisplay(), or getValue() method
+                    diff.setThresholdText(baseRow.getThreshold() != null ? baseRow.getThreshold().toString() : "");
+
+                    // Assuming Fraction has a way to extract the double/percentage value.
+                    // Replace 'extractPercent' with your actual Fraction math (e.g. fraction.getPercent())
+                    diff.setBasePercent(extractPercent(baseRow.getEffectiveResult()));
+                    diff.setNewPercent(extractPercent(newRow.getEffectiveResult()));
+
                     diff.setBaseResult(baseRow.getEffectiveResult());
                     diff.setNewResult(newRow.getEffectiveResult());
 
                     return diff;
                 })
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Helper method to convert your Fraction object into a usable percentage double.
+     * Implement this based on the exact properties of gov.nist.healthcare.iz.darq.digest.domain.Fraction
+     */
+    private Double extractPercent(Fraction fraction) {
+        if (fraction == null) return 0.0;
+        // Example: return (double) fraction.getCount() / fraction.getTotal() * 100;
+        return 0.0; // TODO: Map to actual Fraction logic
     }
 }

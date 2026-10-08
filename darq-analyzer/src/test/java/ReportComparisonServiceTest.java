@@ -1,6 +1,6 @@
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.*;
 import gov.nist.healthcare.iz.darq.analyzer.model.comparison.*;
-import gov.nist.healthcare.iz.darq.analyzer.service.ReportComparisonService;
+import gov.nist.healthcare.iz.darq.analyzer.service.comparison.ReportComparisonService;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import org.junit.Before;
 import org.junit.Test;
