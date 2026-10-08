@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {Message} from '@usnistgov/ngx-dam-framework-legacy';
-import {IDataTable, IDataTableRow, IReport, IReportDescriptor, IReportSectionResult} from '../model/report.model';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http'; // Added HttpParams
+import { Observable } from 'rxjs';
+import { Message } from '@usnistgov/ngx-dam-framework-legacy';
+import { IDataTable, IDataTableRow, IReport, IReportDescriptor, IReportSectionResult } from '../model/report.model';
 import {
   Comparator,
   IComparatorFilter,
@@ -13,10 +13,9 @@ import {
   QueryPayloadType,
   QueryType,
 } from '../../report-template/model/report-template.model';
-import {Field} from '../../report-template/model/analysis.values';
-import {NgxCsvParser} from 'ngx-csv-parser';
-import {map} from 'rxjs/operators';
-
+import { Field } from '../../report-template/model/analysis.values';
+import { NgxCsvParser } from 'ngx-csv-parser';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +42,6 @@ export class ReportService {
     return this.http.delete<Message<IReport>>(this.URL_PREFIX + id);
   }
 
-
   getById(id: string): Observable<IReport> {
     return this.http.get<IReport>(this.URL_PREFIX + id);
   }
@@ -51,6 +49,22 @@ export class ReportService {
   save(report: IReport): Observable<Message<IReport>> {
     return this.http.post<Message<IReport>>(this.URL_PREFIX, report);
   }
+
+  // --- NEW COMPARISON ENDPOINTS ---
+
+  compareByIds(baseId: string, newId: string): Observable<any> {
+    const params = new HttpParams()
+      .append('id', baseId)
+      .append('id', newId);
+
+    return this.http.get<any>(this.URL_PREFIX + 'compare', { params });
+  }
+
+  compareWithUploaded(baseId: string, uploadedReport: IReport): Observable<any> {
+    return this.http.post<any>(this.URL_PREFIX + 'compare/' + baseId, uploadedReport);
+  }
+
+  // --------------------------------
 
   getReportingGroupHashMap(file: File): Observable<Record<string, string>> {
     return this.ngxCsvParser.parse(file, { header: false, delimiter: ',' }).pipe(
@@ -210,7 +224,4 @@ export class ReportService {
     }
     return false;
   }
-
-
-
 }

@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisReport;
+import gov.nist.healthcare.iz.darq.analyzer.model.comparison.ReportComparisonResult;
+import gov.nist.healthcare.iz.darq.analyzer.service.comparison.ReportComparisonService;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
 import gov.nist.healthcare.iz.darq.repository.AnalysisJobRepository;
@@ -48,6 +50,8 @@ public class ReportController {
     private SimpleEmailService emailService;
     @Autowired
     private UserManagementService userManagementService;
+    @Autowired
+    private ReportComparisonService reportComparisonService;
 
     //  Get Report Template by Id (Owned or Published [viewOnly])
     @RequestMapping(value="/{id}", method=RequestMethod.GET)
@@ -111,11 +115,11 @@ public class ReportController {
         try {
             Facility facility = this.facilityService.getFacilityById(report.getFacilityId());
             Stream.concat(facility
-                    .getMembers()
-                    .stream()
-                    .map(this.userManagementService::findUserById),
-                    this.userManagementService.getAllUsers().stream().filter(User::isAdministrator)
-            )
+                                    .getMembers()
+                                    .stream()
+                                    .map(this.userManagementService::findUserById),
+                            this.userManagementService.getAllUsers().stream().filter(User::isAdministrator)
+                    )
                     .filter(u -> u != null && !Strings.isNullOrEmpty(u.getEmail()))
                     .forEach((user) -> {
                         HashMap<String, String> params = new HashMap<>();
@@ -143,6 +147,48 @@ public class ReportController {
             @PathVariable("reportId") String id) {
         this.analysisReportService.delete(id);
         return new OpAck<>(OpAck.AckStatus.SUCCESS, "Report Successfully Deleted", null, "report-delete");
+    }
+
+    // Compare Two Saved Reports by ID
+    @RequestMapping(value="/compare", method=RequestMethod.GET)
+    @ResponseBody
+    @PreAuthorize("#ids != null and #ids.size() >= 2 and AccessResource(#request, REPORT, VIEW, #ids[0]) and AccessResource(#request, REPORT, VIEW, #ids[1])")
+    public ReportComparisonResult compareByIds(
+            HttpServletRequest request,
+            @RequestParam("id") List<String> ids) throws OperationFailureException {
+
+        if (ids == null || ids.size() < 2) {
+            throw new OperationFailureException("Report IDs must contain at least two elements");
+        }
+        String baseId = ids.get(0);
+        String newId = ids.get(1);
+
+        // Assumes analysisReportService exposes a standard findById (or similar get) method
+        AnalysisReport baseReport = this.analysisReportService.findOne(baseId);
+        AnalysisReport newReport = this.analysisReportService.findOne(newId);
+
+        if (baseReport == null) {
+            throw new OperationFailureException("Base report for comparison (" + baseId + ") could not be found.");
+        }
+        if (newReport == null) {
+            throw new OperationFailureException("Target report for comparison (" + newId + ") could not be found.");
+        }
+
+        return this.reportComparisonService.compare(baseReport, newReport);
+    }
+
+    // Compare Saved Report by ID with Uploaded Request Body
+    @RequestMapping(value="/compare/{baseId}", method=RequestMethod.POST)
+    @ResponseBody
+    @PreAuthorize("AccessResource(#request, REPORT, VIEW, #baseId)")
+    public ReportComparisonResult compareWithUploaded(
+            HttpServletRequest request,
+            @PathVariable("baseId") String baseId,
+            @RequestBody AnalysisReport uploadedReport) {
+
+        AnalysisReport baseReport = (AnalysisReport) request.getAttribute(CustomSecurityExpressionRoot.RESOURCE_ATTRIBUTE);
+
+        return this.reportComparisonService.compare(baseReport, uploadedReport);
     }
 
     List<ReportDescriptor> getReportDescriptorList(List<AnalysisReport> reports, User user) {
