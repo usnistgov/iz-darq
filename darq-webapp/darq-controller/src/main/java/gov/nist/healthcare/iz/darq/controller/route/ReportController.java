@@ -5,6 +5,7 @@ import gov.nist.healthcare.domain.OpAck;
 import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisReport;
 import gov.nist.healthcare.iz.darq.analyzer.model.comparison.ReportComparisonResult;
+import gov.nist.healthcare.iz.darq.analyzer.service.comparison.ReportComparisonCsvExportService;
 import gov.nist.healthcare.iz.darq.analyzer.service.comparison.ReportComparisonService;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
 import gov.nist.healthcare.iz.darq.model.*;
@@ -18,12 +19,17 @@ import gov.nist.healthcare.iz.darq.users.domain.User;
 import gov.nist.healthcare.iz.darq.users.facility.service.FacilityService;
 import gov.nist.healthcare.iz.darq.users.service.impl.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -198,5 +204,50 @@ public class ReportController {
             result.add(this.descriptorService.getReportDescriptor(report, this.configService.compatibilities(report.getConfiguration(), configurations)));
         }
         return result;
+    }
+
+
+    @Autowired
+    private ReportComparisonCsvExportService reportComparisonCsvExportService;
+
+    // Export Comparison to CSV
+    @RequestMapping(value="/compare/export", method=RequestMethod.GET)
+    @PreAuthorize("#ids != null and #ids.size() >= 2 and AccessResource(#request, REPORT, VIEW, #ids[0]) and AccessResource(#request, REPORT, VIEW, #ids[1])")
+    public ResponseEntity<byte[]> exportComparisonCsv(
+            HttpServletRequest request,
+            @RequestParam("id") List<String> ids,
+            @RequestParam(value = "baseNickname", defaultValue = "Base Report") String baseNickname,
+            @RequestParam(value = "newNickname", defaultValue = "New Report") String newNickname) throws OperationFailureException {
+
+        if (ids == null || ids.size() < 2) {
+            throw new OperationFailureException("Report IDs must contain at least two elements");
+        }
+        String baseId = ids.get(0);
+        String newId = ids.get(1);
+
+        // Fetch reports
+        AnalysisReport baseReport = this.analysisReportService.findOne(baseId);
+        AnalysisReport newReport = this.analysisReportService.findOne(newId);
+
+        if (baseReport == null) {
+            throw new OperationFailureException("Base report for comparison (" + baseId + ") could not be found.");
+        }
+        if (newReport == null) {
+            throw new OperationFailureException("Target report for comparison (" + newId + ") could not be found.");
+        }
+
+        // Calculate differential and generate CSV
+        ReportComparisonResult comparisonResult = this.reportComparisonService.compare(baseReport, newReport);
+        String csvContent = this.reportComparisonCsvExportService.exportToCsv(comparisonResult, baseNickname, newNickname);
+
+        // Configure headers for file download
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("text/csv"));
+        headers.setContentDispositionFormData("attachment", "differential_report.csv");
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        // Return as byte array
+        byte[] csvBytes = csvContent.getBytes(StandardCharsets.UTF_8);
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 }

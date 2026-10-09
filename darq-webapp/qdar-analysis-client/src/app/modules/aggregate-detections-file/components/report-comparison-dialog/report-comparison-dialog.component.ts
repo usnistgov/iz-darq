@@ -34,16 +34,33 @@ export class ReportComparisonDialogComponent implements OnInit {
 
   submit() {
     if (this.selectedReportId) {
-      this.reportService.compareByIds(this.baseReport.id, this.selectedReportId).subscribe(
-        () => {
-          this.dialogRef.close(true);
+      this.reportService.exportComparisonCsv(this.baseReport.id, this.selectedReportId).subscribe({
+        next: (blob: Blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'differential_report.csv';
+          a.click();
+          window.URL.revokeObjectURL(url);
         },
-        (error) => {
-          console.error('Comparison failed', error);
-          this.dialogRef.close(true); // Close anyway or handle error
-        }
-      );
+        error: (err) => console.error("Failed to download CSV", err)
+      });
     }
   }
+
+  // submit() {
+  //   if (this.selectedReportId) {
+  //     this.reportService.exportComparisonCsv(this.baseReport.id, this.selectedReportId).subscribe(
+  //       (res) => {
+  //         console.log(res)
+  //         this.dialogRef.close(true);
+  //       },
+  //       (error) => {
+  //         console.error('Comparison failed', error);
+  //         this.dialogRef.close(true); // Close anyway or handle error
+  //       }
+  //     );
+  //   }
+  // }
 
 }

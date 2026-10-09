@@ -64,6 +64,27 @@ export class ReportService {
     return this.http.post<any>(this.URL_PREFIX + 'compare/' + baseId, uploadedReport);
   }
 
+  /**
+   * Downloads the differential CSV file.
+   * @param baseId The first Report ID
+   * @param newId The second Report ID
+   * @param baseNickname e.g., '2023' (Used for CSV column headers)
+   * @param newNickname e.g., '2024' (Used for CSV column headers)
+   */
+  exportComparisonCsv(baseId: string, newId: string, baseNickname: string = 'Base', newNickname: string = 'New'): Observable<Blob> {
+    const params = new HttpParams()
+      .append('id', baseId)
+      .append('id', newId)
+      .append('baseNickname', baseNickname)
+      .append('newNickname', newNickname);
+
+    // Note the responseType: 'blob' - crucial for downloading files
+    return this.http.get(this.URL_PREFIX + 'compare/export', {
+      params,
+      responseType: 'blob'
+    });
+  }
+
   // --------------------------------
 
   getReportingGroupHashMap(file: File): Observable<Record<string, string>> {
