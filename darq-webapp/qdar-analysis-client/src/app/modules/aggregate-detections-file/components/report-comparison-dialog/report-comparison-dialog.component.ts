@@ -1,6 +1,6 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ReportService} from '../../../report/services/report.service';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ReportService } from '../../../report/services/report.service';
 
 @Component({
   selector: 'app-report-comparison-dialog',
@@ -21,6 +21,7 @@ export class ReportComparisonDialogComponent implements OnInit {
   ) {
     this.baseReport = data.baseReport;
     this.reports = data.reports || [];
+    console.log(this.reports)
     this.compatibleReports = this.reports.filter(r =>
       r.id !== this.baseReport.id &&
       r.template && this.baseReport.template &&

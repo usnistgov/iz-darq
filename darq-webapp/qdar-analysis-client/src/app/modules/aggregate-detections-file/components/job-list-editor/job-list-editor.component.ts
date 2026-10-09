@@ -185,19 +185,23 @@ export class JobListEditorComponent extends DamAbstractEditorComponent implement
   onDeactivate(): void {
   }
 
-  compare(job: IAnalysisJob) {
+  compare(job: IAnalysisJob, allJobs: IAnalysisJob[]) {
     if (!job.reportId) return;
 
-    this.facilityId$.pipe(
-      take(1),
-      switchMap(facilityId => (facilityId === 'private' || facilityId === 'local') ? this.reportService.published() : this.reportService.publishedForFacility(facilityId))
-    ).subscribe(reports => {
-      this.dialog.open(ReportComparisonDialogComponent, {
-        data: {
-          baseReport: { id: job.reportId, template: job.template, name: job.name },
-          reports: reports
-        }
-      });
+    const reports = (allJobs || [])
+      .filter(j => j.reportId)
+      .map(j => ({
+        id: j.reportId,
+        template: j.template,
+        name: j.name,
+        publishDate: j.endTime
+      }));
+
+    this.dialog.open(ReportComparisonDialogComponent, {
+      data: {
+        baseReport: { id: job.reportId, template: job.template, name: job.name },
+        reports: reports
+      }
     });
   }
 
