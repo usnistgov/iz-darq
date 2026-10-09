@@ -15,6 +15,7 @@ import {concatMap, filter, flatMap, map, take, takeUntil} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {ReportService} from '../../../report/services/report.service';
 import {Actions} from '@ngrx/effects';
+import {ReportComparisonDialogComponent} from '../report-comparison-dialog/report-comparison-dialog.component';
 
 export const REPORT_LIST_EDITOR_METADATA: IEditorMetadata = {
   id: 'REPORT_LIST_EDITOR_METADATA',
@@ -82,7 +83,8 @@ export class ReportListEditorComponent extends DamAbstractEditorComponent implem
               return this.facilityId$.pipe(
                 take(1),
                 flatMap((facilityId) => {
-                  return this.reportService.publishedForFacility(facilityId).pipe(
+                  const getReports = (facilityId === 'private' || facilityId === 'local') ? this.reportService.published() : this.reportService.publishedForFacility(facilityId);
+                  return getReports.pipe(
                     map((reports) => {
                       return new EditorUpdate({
                         value: { reports },
@@ -112,6 +114,17 @@ export class ReportListEditorComponent extends DamAbstractEditorComponent implem
   }
 
   ngOnInit(): void {
+  }
+
+  compare(report: IReportDescriptor) {
+    this.reports$.pipe(take(1)).subscribe(reports => {
+      this.dialog.open(ReportComparisonDialogComponent, {
+        data: {
+          baseReport: report,
+          reports: reports
+        }
+      });
+    });
   }
 
 }

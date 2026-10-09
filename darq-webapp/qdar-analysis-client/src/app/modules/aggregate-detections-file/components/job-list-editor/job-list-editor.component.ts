@@ -1,11 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {BehaviorSubject, EMPTY, interval, Observable, of, Subscription} from 'rxjs';
-import {IAnalysisJob} from 'src/app/modules/report/model/report.model';
-import {Action, Store} from '@ngrx/store';
-import {selectCurrentFacility, selectUserFacilityById} from '../../store/core.selectors';
-import {ReportTemplateService} from '../../../report-template/services/report-template.service';
-import {AnalysisService} from '../../../shared/services/analysis.service';
-import {concatMap, filter, flatMap, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, EMPTY, interval, Observable, of, Subscription } from 'rxjs';
+import { IAnalysisJob } from 'src/app/modules/report/model/report.model';
+import { Action, Store } from '@ngrx/store';
+import { selectCurrentFacility, selectUserFacilityById } from '../../store/core.selectors';
+import { ReportTemplateService } from '../../../report-template/services/report-template.service';
+import { AnalysisService } from '../../../shared/services/analysis.service';
+import { concatMap, filter, flatMap, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import {
   ConfirmDialogComponent,
   DamAbstractEditorComponent,
@@ -15,9 +15,10 @@ import {
   MessageType,
   RxjsStoreHelperService
 } from '@usnistgov/ngx-dam-framework-legacy';
-import {MatDialog} from '@angular/material/dialog';
-import {Actions} from '@ngrx/effects';
-
+import { MatDialog } from '@angular/material/dialog';
+import { Actions } from '@ngrx/effects';
+import { ReportService } from '../../../report/services/report.service';
+import { ReportComparisonDialogComponent } from '../report-comparison-dialog/report-comparison-dialog.component';
 export const ANALYSIS_JOB_LIST_EDITOR_METADATA: IEditorMetadata = {
   id: 'ANALYSIS_JOB_LIST_EDITOR_METADATA',
   title: 'Analysis Job List'
@@ -68,6 +69,7 @@ export class JobListEditorComponent extends DamAbstractEditorComponent implement
     private helper: RxjsStoreHelperService,
     private dialog: MatDialog,
     public rtService: ReportTemplateService,
+    private reportService: ReportService,
   ) {
     super(
       ANALYSIS_JOB_LIST_EDITOR_METADATA,
@@ -181,6 +183,22 @@ export class JobListEditorComponent extends DamAbstractEditorComponent implement
   }
 
   onDeactivate(): void {
+  }
+
+  compare(job: IAnalysisJob) {
+    if (!job.reportId) return;
+
+    this.facilityId$.pipe(
+      take(1),
+      switchMap(facilityId => (facilityId === 'private' || facilityId === 'local') ? this.reportService.published() : this.reportService.publishedForFacility(facilityId))
+    ).subscribe(reports => {
+      this.dialog.open(ReportComparisonDialogComponent, {
+        data: {
+          baseReport: { id: job.reportId, template: job.template, name: job.name },
+          reports: reports
+        }
+      });
+    });
   }
 
 }

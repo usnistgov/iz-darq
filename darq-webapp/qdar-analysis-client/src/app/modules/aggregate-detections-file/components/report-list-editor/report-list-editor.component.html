@@ -49,6 +49,10 @@
           </div>
         <td>
           <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;">
+            <button class="btn btn-sm btn-info" style="margin-right: 5px;" *ngIf="rowData.id" (click)="compare(rowData)">
+              <i class="fa fa-exchange"></i>
+              Compare
+            </button>
             <button class="btn btn-sm btn-primary"  style="margin-right: 5px;" *ngIf="rowData.id" [routerLink]="['/', 'report', rowData.id ]">
               <i class="fa fa-eye"></i>
               View Report

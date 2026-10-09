@@ -17,8 +17,8 @@ import {ReportListEditorComponent} from './components/report-list-editor/report-
 import {AdfMergeDialogComponent} from './components/adf-merge-dialog/adf-merge-dialog.component';
 import {AdfEditDialogComponent} from './components/adf-edit-dialog/adf-edit-dialog.component';
 import {MergeJobListEditorComponent} from './components/merge-job-list-editor/merge-job-list-editor.component';
-
-
+import {ReportComparisonDialogComponent} from './components/report-comparison-dialog/report-comparison-dialog.component';
+import {FormsModule} from '@angular/forms';
 @NgModule({
   declarations: [
     AdfUploadComponent,
@@ -32,12 +32,14 @@ import {MergeJobListEditorComponent} from './components/merge-job-list-editor/me
     AdfMergeDialogComponent,
     AdfEditDialogComponent,
     MergeJobListEditorComponent,
+    ReportComparisonDialogComponent,
   ],
   imports: [
     CommonModule,
     AggregateDetectionsFileRoutingModule,
     SharedModule,
     DamFrameworkModule,
+    FormsModule,
     EffectsModule.forFeature([CoreEffects, WidgetEffects]),
   ]
 })

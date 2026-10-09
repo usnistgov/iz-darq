@@ -1,0 +1,21 @@
+<div style="width: 500px">
+  <h4 mat-dialog-title>Compare Report: {{baseReport?.name}}</h4>
+  <div mat-dialog-content>
+    <div *ngIf="compatibleReports.length === 0" class="alert alert-warning">
+      No compatible reports found for comparison.
+    </div>
+    
+    <div *ngIf="compatibleReports.length > 0" class="form-group">
+      <label for="reportSelector">Select a compatible report to compare against:</label>
+      <select id="reportSelector" class="form-control" [(ngModel)]="selectedReportId">
+        <option *ngFor="let report of compatibleReports" [value]="report.id">
+          {{report.name}} ({{report.publishDate | date:'MM-dd-yyyy HH:mm'}})
+        </option>
+      </select>
+    </div>
+  </div>
+  <div mat-dialog-actions style="justify-content: flex-end;">
+    <button class="btn btn-sm btn-secondary" style="margin-right: 5px;" mat-dialog-close>Cancel</button>
+    <button class="btn btn-sm btn-primary" [disabled]="!selectedReportId" (click)="submit()">Submit Comparison</button>
+  </div>
+</div>
