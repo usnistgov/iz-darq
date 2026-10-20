@@ -1,0 +1,51 @@
+<div class="dashboard">
+
+  <div class="dashboard-title">
+    <h4>
+      <i class="fa fa-exchange" style="color: darkgreen; margin-right: 10px;"></i>
+      Report Comparison
+    </h4>
+    <div class="report-pair">
+      <span class="report-name">{{ baseLabel }}</span>
+      <i class="fa fa-long-arrow-right"></i>
+      <span class="report-name">{{ newLabel }}</span>
+    </div>
+  </div>
+
+  <div class="dashboard-toolbar">
+    <div class="totals" *ngIf="summary$ | async as summary">
+      <span class="badge badge-success" *ngIf="summary.better > 0">{{ summary.better }} Better</span>
+      <span class="badge badge-danger" *ngIf="summary.worse > 0">{{ summary.worse }} Worse</span>
+      <span class="badge badge-secondary" *ngIf="summary.noChange > 0">{{ summary.noChange }} No Change</span>
+      <span class="badge badge-warning" *ngIf="summary.missing > 0">{{ summary.missing }} Missing</span>
+      <span style="margin-left: 10px; color: #6c757d;">{{ summary.total }} measures compared</span>
+    </div>
+    <button class="btn btn-sm"
+            [ngClass]="changesOnly ? 'btn-success' : 'btn-dark'"
+            (click)="toggleChangesOnly()">
+      <i class="fa fa-filter"></i>
+      {{ changesOnly ? 'Showing Changes Only' : 'Show Changes Only' }}
+    </button>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="no-match" *ngIf="!hasSections">
+      NO SECTION TO COMPARE
+    </div>
+    <app-comparison-section *ngFor="let section of comparison.sectionDifferentials"
+                            [section]="section"
+                            [labelizer]="labelizer$ | async"
+                            [baseLabel]="baseLabel"
+                            [newLabel]="newLabel"
+                            [changesOnly]="changesOnly"></app-comparison-section>
+  </div>
+
+  <div class="dashboard-actions">
+    <button class="btn btn-sm btn-primary" style="margin-right: 5px;" (click)="exportCsv()">
+      <i class="fa fa-download"></i>
+      Export CSV
+    </button>
+    <button class="btn btn-sm btn-secondary" mat-dialog-close>Close</button>
+  </div>
+
+</div>

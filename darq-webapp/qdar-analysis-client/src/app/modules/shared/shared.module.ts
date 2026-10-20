@@ -64,6 +64,11 @@ import {
 import {VariableRefComponent} from './components/variable-ref/variable-ref.component';
 import {VariableQueryComponent} from './components/query-dialog/variable-query/variable-query.component';
 import {ChipsModule} from 'primeng/chips';
+import {
+  ComparisonDashboardComponent
+} from '../report/components/comparison-dashboard/comparison-dashboard.component';
+import {ComparisonSectionComponent} from '../report/components/comparison-section/comparison-section.component';
+import {ComparisonTableComponent} from '../report/components/comparison-table/comparison-table.component';
 
 @NgModule({
   declarations: [
@@ -104,6 +109,9 @@ import {ChipsModule} from 'primeng/chips';
     QueryDenominatorOverrideComponent,
     VariableRefComponent,
     VariableQueryComponent,
+    ComparisonDashboardComponent,
+    ComparisonSectionComponent,
+    ComparisonTableComponent,
   ],
   imports: [
     CommonModule,
@@ -177,7 +185,10 @@ import {ChipsModule} from 'primeng/chips';
     PeAutoscrollFixDirective,
     CustomLabelDialogComponent,
     QueryListDialogComponent,
+    ComparisonDashboardComponent,
+    ComparisonSectionComponent,
+    ComparisonTableComponent,
   ],
-  entryComponents: [CustomLabelDialogComponent]
+  entryComponents: [CustomLabelDialogComponent, ComparisonDashboardComponent]
 })
 export class SharedModule { }

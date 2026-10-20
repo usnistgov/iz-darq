@@ -5,6 +5,8 @@ import java.util.List;
 
 public class SectionDifferential {
     private String sectionId;
+    private String sectionPath;
+    private String sectionHeader;
     private boolean missingInNewReport;
     private boolean thresholdViolationChanged;
     private List<TableDifferential> tableDifferentials = new ArrayList<>();
@@ -16,6 +18,22 @@ public class SectionDifferential {
 
     public void setSectionId(String sectionId) {
         this.sectionId = sectionId;
+    }
+
+    public String getSectionPath() {
+        return sectionPath;
+    }
+
+    public void setSectionPath(String sectionPath) {
+        this.sectionPath = sectionPath;
+    }
+
+    public String getSectionHeader() {
+        return sectionHeader;
+    }
+
+    public void setSectionHeader(String sectionHeader) {
+        this.sectionHeader = sectionHeader;
     }
 
     public boolean isMissingInNewReport() {

@@ -1,0 +1,55 @@
+<ng-container *ngIf="visible">
+  <div style="margin-bottom: 15px;" [id]="section.sectionId" class="scroll-to">
+    <div class="section-header">
+      <h5 style="margin: 0;">
+        {{ section.sectionPath }}. {{ section.sectionHeader }}
+        <i *ngIf="section.thresholdViolationChanged"
+           class="fa fa-warning"
+           style="color: red;"
+           pTooltip="Threshold violation status changed between the two reports"></i>
+        <i *ngIf="section.missingInNewReport"
+           class="fa fa-ban"
+           style="color: #b8860b;"
+           [pTooltip]="'This section is missing in ' + newLabel"></i>
+      </h5>
+      <div class="summary-badges" *ngIf="summary && summary.total > 0">
+        <span class="badge badge-success" *ngIf="summary.better > 0" pTooltip="Measures that improved">
+          {{ summary.better }} Better
+        </span>
+        <span class="badge badge-danger" *ngIf="summary.worse > 0" pTooltip="Measures that regressed">
+          {{ summary.worse }} Worse
+        </span>
+        <span class="badge badge-secondary" *ngIf="summary.noChange > 0" pTooltip="Measures with no outcome change">
+          {{ summary.noChange }} No Change
+        </span>
+        <span class="badge badge-warning" *ngIf="summary.missing > 0" [pTooltip]="'Measures missing in ' + newLabel">
+          {{ summary.missing }} Missing
+        </span>
+      </div>
+    </div>
+
+    <div *ngIf="section.missingInNewReport" class="no-data">
+      THIS SECTION IS NOT PRESENT IN {{ newLabel | uppercase }}
+    </div>
+
+    <ng-container *ngFor="let table of section.tableDifferentials">
+      <div class="table-caption">{{ table.tableCaption }}</div>
+      <div *ngIf="table.missingInNewReport" class="no-data">
+        THIS TABLE IS NOT PRESENT IN {{ newLabel | uppercase }}
+      </div>
+      <app-comparison-table *ngIf="!table.missingInNewReport"
+                            [table]="table"
+                            [labelizer]="labelizer"
+                            [baseLabel]="baseLabel"
+                            [newLabel]="newLabel"
+                            [changesOnly]="changesOnly"></app-comparison-table>
+    </ng-container>
+  </div>
+
+  <app-comparison-section *ngFor="let child of section.children"
+                          [section]="child"
+                          [labelizer]="labelizer"
+                          [baseLabel]="baseLabel"
+                          [newLabel]="newLabel"
+                          [changesOnly]="changesOnly"></app-comparison-section>
+</ng-container>

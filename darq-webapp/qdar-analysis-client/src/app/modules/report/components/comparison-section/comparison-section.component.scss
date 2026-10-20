@@ -1,0 +1,34 @@
+:host {
+  display: block;
+}
+
+.section-header {
+  background-color: #fff;
+  padding: 5px;
+  border-bottom: 2px solid #d6d6d6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summary-badges {
+  display: flex;
+  align-items: center;
+
+  .badge {
+    margin-left: 5px;
+  }
+}
+
+.table-caption {
+  font-weight: 600;
+  padding: 8px 5px 4px 5px;
+  background-color: #fff;
+}
+
+.no-data {
+  padding: 10px;
+  color: lightgray;
+  font-weight: bold;
+  text-align: center;
+}

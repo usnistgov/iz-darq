@@ -1,0 +1,91 @@
+// The Material dialog container is padded and scrollable by default; the
+// dashboard manages its own layout and scrolling instead.
+:host {
+  display: block;
+}
+
+::ng-deep .comparison-dashboard-panel .mat-dialog-container {
+  padding: 0;
+  overflow: hidden;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  height: 85vh;
+  width: 90vw;
+  max-width: 1400px;
+  overflow: hidden;
+}
+
+.dashboard-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  border-bottom: 2px solid #d6d6d6;
+
+  h4 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.report-pair {
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+  color: #6c757d;
+
+  .report-name {
+    font-weight: 600;
+    color: #212529;
+  }
+
+  i {
+    margin: 0 10px;
+  }
+}
+
+.dashboard-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 15px;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #e3e3e3;
+}
+
+.totals {
+  display: flex;
+  align-items: center;
+
+  .badge {
+    margin-right: 5px;
+    font-size: 0.95em;
+  }
+}
+
+.dashboard-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 15px;
+}
+
+.dashboard-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 15px;
+  border-top: 1px solid #e3e3e3;
+}
+
+.no-match {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f7f7f7;
+  color: lightgray;
+  font-weight: bold;
+}

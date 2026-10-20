@@ -53,11 +53,11 @@ public class ReportComparisonCsvExportService {
                 .append(escape(newReportNickname)).append(CSV_SEPARATOR)
                 .append(escape(newReportNickname + HEADER_OUTCOME_SUFFIX)).append(CSV_SEPARATOR)
                 .append(HEADER_POINT_CHANGE).append(CSV_SEPARATOR)
-                .append(HEADER_MEASURE_OUTCOME).append(CSV_SEPARATOR)
-                .append(HEADER_MIN).append(CSV_SEPARATOR)
-                .append(HEADER_MEAN).append(CSV_SEPARATOR)
-                .append(HEADER_MAX).append(CSV_SEPARATOR)
-                .append(HEADER_PERCENT_IIS_PASS).append(NEW_LINE);
+                .append(HEADER_MEASURE_OUTCOME).append(CSV_SEPARATOR);
+//                .append(HEADER_MIN).append(CSV_SEPARATOR)
+//                .append(HEADER_MEAN).append(CSV_SEPARATOR)
+//                .append(HEADER_MAX).append(CSV_SEPARATOR)
+//                .append(HEADER_PERCENT_IIS_PASS).append(NEW_LINE);
 
         if (comparisonResult == null || comparisonResult.getSectionDifferentials() == null) {
             return csv.toString();
@@ -101,11 +101,10 @@ public class ReportComparisonCsvExportService {
                             .append(row.isNewPass() ? STATUS_MET : STATUS_NOT_MET).append(CSV_SEPARATOR)
                             .append(formatPercent(pointChange)).append(CSV_SEPARATOR)
                             .append(measureOutcome).append(CSV_SEPARATOR)
-                            // Aggregate placeholders
-                            .append("").append(CSV_SEPARATOR) // Min
-                            .append("").append(CSV_SEPARATOR) // Mean
-                            .append("").append(CSV_SEPARATOR) // Max
-                            .append("")                       // % of IIS that Pass
+//                            .append(formatPercent(row.getMinPercent())).append(CSV_SEPARATOR)
+//                            .append(formatPercent(row.getMeanPercent())).append(CSV_SEPARATOR)
+//                            .append(formatPercent(row.getMaxPercent())).append(CSV_SEPARATOR)
+//                            .append(formatPercent(row.getPercentOfReportsPassing()))
                             .append(NEW_LINE);
                 }
             }

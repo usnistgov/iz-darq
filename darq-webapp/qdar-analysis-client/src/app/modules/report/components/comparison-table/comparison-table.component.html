@@ -1,0 +1,53 @@
+<div *ngIf="visibleRows.length === 0" class="no-rows">
+  NO MEASURE TO DISPLAY
+</div>
+
+<table *ngIf="visibleRows.length > 0" class="table table-sm table-striped table-bordered comparison-table">
+  <thead>
+    <tr>
+      <th class="measure-cell">Measure</th>
+      <th class="numeric">Threshold</th>
+      <th class="numeric">{{ baseLabel }}</th>
+      <th>{{ baseLabel }} Outcome</th>
+      <th class="numeric">{{ newLabel }}</th>
+      <th>{{ newLabel }} Outcome</th>
+      <th class="numeric">% Point Change</th>
+      <th>Measure Outcome</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of visibleRows"
+        [ngClass]="{ 'row-changed': row.passStatusChanged && !row.missingInNewReport, 'row-missing': row.missingInNewReport }">
+      <td class="measure-cell">{{ rowIdentifier(row) }}</td>
+      <td class="numeric">{{ row.thresholdText || '-' }}</td>
+
+      <ng-container *ngIf="row.missingInNewReport; else presentInBoth">
+        <td class="numeric">{{ row.basePercent | number:'1.2-2' }}%</td>
+        <td [ngClass]="row.basePass ? 'status-met' : 'status-not-met'">{{ row.basePass ? 'Met' : 'Not Met' }}</td>
+        <td colspan="4" style="text-align: center;">
+          <i class="fa fa-warning" style="color: #b8860b;"></i>
+          Missing in {{ newLabel }}
+        </td>
+      </ng-container>
+
+      <ng-template #presentInBoth>
+        <td class="numeric">{{ row.basePercent | number:'1.2-2' }}%</td>
+        <td [ngClass]="row.basePass ? 'status-met' : 'status-not-met'">{{ row.basePass ? 'Met' : 'Not Met' }}</td>
+        <td class="numeric">{{ row.newPercent | number:'1.2-2' }}%</td>
+        <td [ngClass]="row.newPass ? 'status-met' : 'status-not-met'">{{ row.newPass ? 'Met' : 'Not Met' }}</td>
+        <td class="numeric">
+          {{ row.pointChange > 0 ? '+' : '' }}{{ row.pointChange | number:'1.2-2' }}%
+        </td>
+        <td [ngSwitch]="row.outcome">
+          <span *ngSwitchCase="outcomes.BETTER" class="outcome-better">
+            <i class="fa fa-arrow-up"></i> {{ outcomes.BETTER }}
+          </span>
+          <span *ngSwitchCase="outcomes.WORSE" class="outcome-worse">
+            <i class="fa fa-arrow-down"></i> {{ outcomes.WORSE }}
+          </span>
+          <span *ngSwitchDefault class="outcome-no-change">{{ outcomes.NO_CHANGE }}</span>
+        </td>
+      </ng-template>
+    </tr>
+  </tbody>
+</table>

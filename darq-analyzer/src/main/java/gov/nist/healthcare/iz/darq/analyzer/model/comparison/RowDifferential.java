@@ -16,6 +16,10 @@ public class RowDifferential {
     private boolean newPass;
     private Double basePercent;
     private Double newPercent;
+    private Double minPercent;
+    private Double meanPercent;
+    private Double maxPercent;
+    private Double percentOfReportsPassing;
 
 
     public Map<Field, String> getRowIdentifier() {
@@ -96,5 +100,37 @@ public class RowDifferential {
 
     public void setNewPercent(Double newPercent) {
         this.newPercent = newPercent;
+    }
+
+    public Double getMinPercent() {
+        return minPercent;
+    }
+
+    public void setMinPercent(Double minPercent) {
+        this.minPercent = minPercent;
+    }
+
+    public Double getMeanPercent() {
+        return meanPercent;
+    }
+
+    public void setMeanPercent(Double meanPercent) {
+        this.meanPercent = meanPercent;
+    }
+
+    public Double getMaxPercent() {
+        return maxPercent;
+    }
+
+    public void setMaxPercent(Double maxPercent) {
+        this.maxPercent = maxPercent;
+    }
+
+    public Double getPercentOfReportsPassing() {
+        return percentOfReportsPassing;
+    }
+
+    public void setPercentOfReportsPassing(Double percentOfReportsPassing) {
+        this.percentOfReportsPassing = percentOfReportsPassing;
     }
 }

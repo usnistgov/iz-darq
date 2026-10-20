@@ -4,7 +4,7 @@
     <div *ngIf="compatibleReports.length === 0" class="alert alert-warning">
       No compatible reports found for comparison.
     </div>
-    
+
     <div *ngIf="compatibleReports.length > 0" class="form-group">
       <label for="reportSelector">Select a compatible report to compare against:</label>
       <select id="reportSelector" class="form-control" [(ngModel)]="selectedReportId">
@@ -13,9 +13,21 @@
         </option>
       </select>
     </div>
+
+    <div *ngIf="error" class="alert alert-danger" style="margin-top: 10px;">
+      {{ error }}
+    </div>
   </div>
   <div mat-dialog-actions style="justify-content: flex-end;">
     <button class="btn btn-sm btn-secondary" style="margin-right: 5px;" mat-dialog-close>Cancel</button>
-    <button class="btn btn-sm btn-primary" [disabled]="!selectedReportId" (click)="submit()">Submit Comparison</button>
+    <button class="btn btn-sm btn-outline-primary" style="margin-right: 5px;"
+            [disabled]="!selectedReportId || loading" (click)="submit()">
+      <i class="fa fa-download"></i>
+      Export CSV
+    </button>
+    <button class="btn btn-sm btn-primary" [disabled]="!selectedReportId || loading" (click)="viewComparison()">
+      <i class="fa" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-exchange'"></i>
+      {{ loading ? 'Comparing...' : 'View Comparison' }}
+    </button>
   </div>
 </div>

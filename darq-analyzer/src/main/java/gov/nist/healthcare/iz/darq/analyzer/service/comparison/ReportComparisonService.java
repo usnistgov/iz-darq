@@ -13,6 +13,7 @@ import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,8 @@ public class ReportComparisonService {
                     ReportSectionResult newSec = newSectionsMap.get(base.getId());
                     SectionDifferential diff = new SectionDifferential();
                     diff.setSectionId(base.getId());
+                    diff.setSectionPath(base.getPath());
+                    diff.setSectionHeader(base.getHeader());
 
                     if (newSec == null) {
                         diff.setMissingInNewReport(true);
@@ -137,9 +140,57 @@ public class ReportComparisonService {
                     diff.setBaseResult(baseRow.getEffectiveResult());
                     diff.setNewResult(newRow.getEffectiveResult());
 
+                    computeAggregates(diff);
+
                     return diff;
                 })
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Computes the Min / Mean / Max and pass-rate aggregates over the observations
+     * available for a row. A comparison holds two reports, so the aggregate is taken
+     * over the base and new values that are actually present.
+     */
+    private void computeAggregates(RowDifferential diff) {
+        List<Double> percents = new ArrayList<>();
+        if (diff.getBasePercent() != null) {
+            percents.add(diff.getBasePercent());
+        }
+        if (diff.getNewPercent() != null) {
+            percents.add(diff.getNewPercent());
+        }
+
+        if (percents.isEmpty()) {
+            diff.setMinPercent(null);
+            diff.setMeanPercent(null);
+            diff.setMaxPercent(null);
+            diff.setPercentOfReportsPassing(null);
+            return;
+        }
+
+        double min = percents.get(0);
+        double max = percents.get(0);
+        double sum = 0.0;
+        for (Double percent : percents) {
+            min = Math.min(min, percent);
+            max = Math.max(max, percent);
+            sum += percent;
+        }
+
+        diff.setMinPercent(min);
+        diff.setMaxPercent(max);
+        diff.setMeanPercent(sum / percents.size());
+
+        // Pass rate counts only the reports that contributed an observation
+        int passing = 0;
+        if (diff.getBasePercent() != null && diff.isBasePass()) {
+            passing++;
+        }
+        if (diff.getNewPercent() != null && diff.isNewPass()) {
+            passing++;
+        }
+        diff.setPercentOfReportsPassing((passing * 100.0) / percents.size());
     }
 
     /**

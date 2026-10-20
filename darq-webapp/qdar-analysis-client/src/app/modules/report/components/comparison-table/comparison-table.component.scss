@@ -1,0 +1,55 @@
+.comparison-table {
+  margin-bottom: 0;
+
+  th {
+    white-space: nowrap;
+  }
+
+  td.numeric,
+  th.numeric {
+    text-align: right;
+  }
+}
+
+.measure-cell {
+  min-width: 220px;
+}
+
+.outcome-better {
+  color: #17722c;
+  font-weight: 600;
+}
+
+.outcome-worse {
+  color: #b02a37;
+  font-weight: 600;
+}
+
+.outcome-no-change {
+  color: #6c757d;
+}
+
+.status-met {
+  color: #17722c;
+}
+
+.status-not-met {
+  color: #b02a37;
+}
+
+.row-changed {
+  background-color: #fffdf0;
+}
+
+.row-missing {
+  background-color: #f7f7f7;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.no-rows {
+  padding: 10px;
+  color: lightgray;
+  font-weight: bold;
+  text-align: center;
+}
