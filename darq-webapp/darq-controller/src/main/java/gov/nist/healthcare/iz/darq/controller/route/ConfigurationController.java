@@ -7,6 +7,7 @@ import gov.nist.healthcare.domain.OpAck.AckStatus;
 import gov.nist.healthcare.iz.darq.access.security.CustomSecurityExpressionRoot;
 import gov.nist.healthcare.iz.darq.configuration.exception.InvalidConfigurationPayload;
 import gov.nist.healthcare.iz.darq.controller.service.DescriptorService;
+import gov.nist.healthcare.iz.darq.digest.domain.ConfigurationPayload;
 import gov.nist.healthcare.iz.darq.model.ConfigurationDescriptor;
 import gov.nist.healthcare.iz.darq.model.DigestConfiguration;
 import gov.nist.healthcare.iz.darq.repository.DigestConfigurationRepository;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -173,6 +175,57 @@ public class ConfigurationController {
 		rsp.setContentType("application/json");
 		rsp.setHeader("Content-disposition", "attachment;filename=configuration.json");
 		rsp.getOutputStream().write(mapper.writeValueAsBytes(conf.getPayload()));
+	}
+
+	//  Import a Configuration Payload as a New Configuration
+	@RequestMapping(value="/import", method=RequestMethod.POST)
+	@ResponseBody
+	@PreAuthorize("AccessOperation(CONFIGURATION, CREATE, GLOBAL)")
+	public OpAck<DigestConfiguration> importConfiguration(
+			@AuthenticationPrincipal User user,
+			@RequestParam("file") MultipartFile file,
+			@RequestParam(value = "name", required = false) String name,
+			@RequestParam(value = "description", required = false) String description) throws OperationFailureException, IOException {
+		ConfigurationPayload payload;
+		try {
+			payload = mapper.readValue(file.getInputStream(), ConfigurationPayload.class);
+		} catch (IOException e) {
+			throw new OperationFailureException("Could not read configuration file : " + e.getMessage());
+		}
+		if(payload == null) {
+			throw new OperationFailureException("Configuration file is empty");
+		}
+		try {
+			this.configService.validateConfigurationPayload(payload, true);
+			this.configService.validateAgeGroups(payload.getAgeGroups(), false);
+		} catch (InvalidConfigurationPayload invalidConfigurationPayload) {
+			throw new OperationFailureException(invalidConfigurationPayload.getMessage());
+		}
+
+		DigestConfiguration config = new DigestConfiguration();
+		config.setPayload(payload);
+		config.setName(name != null && !name.trim().isEmpty() ? name.trim() : defaultImportName(file.getOriginalFilename()));
+		config.setDescription(description);
+		config.setOwner(user.getUsername());
+		config.setOwnerId(user.getId());
+		config.setPublished(false);
+		config.setLocked(false);
+		config.setLastUpdated(new Date());
+
+		DigestConfiguration saved = this.confRepo.save(config);
+		return new OpAck<>(AckStatus.SUCCESS, "Configuration Successfully Imported", saved, "config-import");
+	}
+
+	private String defaultImportName(String fileName) {
+		if(fileName == null || fileName.trim().isEmpty()) {
+			return "[Imported] Configuration";
+		}
+		String base = fileName.substring(fileName.lastIndexOf('/') + 1);
+		int dot = base.lastIndexOf('.');
+		if(dot > 0) {
+			base = base.substring(0, dot);
+		}
+		return "[Imported] " + base;
 	}
 
 	//  Lock Configuration Owned

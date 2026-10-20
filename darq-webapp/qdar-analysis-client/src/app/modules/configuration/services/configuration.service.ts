@@ -65,6 +65,18 @@ export class ConfigurationService {
     return this.http.post<Message<IDigestConfiguration>>(this.URL_PREFIX + id + '/publish', {});
   }
 
+  import(file: File, name?: string, description?: string): Observable<Message<IDigestConfiguration>> {
+    const form = new FormData();
+    form.append('file', file);
+    if (name) {
+      form.append('name', name);
+    }
+    if (description) {
+      form.append('description', description);
+    }
+    return this.http.post<Message<IDigestConfiguration>>(this.URL_PREFIX + 'import', form);
+  }
+
   clone(id: string): Observable<Message<IDigestConfiguration>> {
     return this.http.post<Message<IDigestConfiguration>>(this.URL_PREFIX + id + '/clone', {});
   }

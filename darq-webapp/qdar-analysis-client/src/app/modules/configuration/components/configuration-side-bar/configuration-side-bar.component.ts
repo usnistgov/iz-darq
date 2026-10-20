@@ -152,6 +152,22 @@ export class ConfigurationSideBarComponent implements OnInit {
     ).subscribe();
   }
 
+  importConfiguration(input: HTMLInputElement) {
+    const file = input.files && input.files.length > 0 ? input.files[0] : undefined;
+    // Reset so selecting the same file again re-triggers the change event
+    input.value = '';
+    if (!file) {
+      return;
+    }
+    return this.helper.getMessageAndHandle<IDigestConfiguration>(
+      this.store,
+      () => {
+        return this.configurationService.import(file);
+      },
+      this.addAndOpenHandler,
+    ).subscribe();
+  }
+
   createConfiguration() {
     return this.helper.getMessageAndHandle<IDigestConfiguration>(
       this.store,

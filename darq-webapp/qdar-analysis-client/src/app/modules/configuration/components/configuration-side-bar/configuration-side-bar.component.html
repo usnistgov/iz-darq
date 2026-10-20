@@ -1,7 +1,8 @@
 <div class="side-bar">
   <div class="buttons">
     <dam-side-bar-toggle></dam-side-bar-toggle>
-    <div class="btn-group btn-group-toggle" ngbRadioGroup name="listType" [(ngModel)]="listType" style="border: 1px solid #dee2e6; border-radius: 3px;">
+    <div class="btn-group btn-group-toggle" ngbRadioGroup name="listType" [(ngModel)]="listType"
+      style="border: 1px solid #dee2e6; border-radius: 3px;">
       <label ngbButtonLabel class="btn-light btn-sm">
         <input ngbButton type="radio" [value]="filterType.OWNED"> Owned
       </label>
@@ -12,10 +13,19 @@
         <input ngbButton type="radio" [value]="filterType.ALL"> All
       </label>
     </div>
-    <button class="btn btn-sm btn-primary" (click)="createConfiguration()" *ngIf="'CREATE' | accessOnScope: 'CONFIGURATION':{ scope:'GLOBAL' }| async" >
+    <ng-container *ngIf="'CREATE' | accessOnScope: 'CONFIGURATION':{ scope:'GLOBAL' }| async">
+      <button class="btn btn-sm btn-primary" (click)="importInput.click()">
+        <i class="fa fa-upload"></i>
+      </button>
+      <input #importInput type="file" accept="application/json,.json" style="display: none;"
+        (change)="importConfiguration(importInput)">
+    </ng-container>
+    <button class="btn btn-sm btn-primary" (click)="createConfiguration()"
+      *ngIf="'CREATE' | accessOnScope: 'CONFIGURATION':{ scope:'GLOBAL' }| async">
       <i class="fa fa-plus"></i>
       Create Configuration
     </button>
+
   </div>
   <div class="filter">
     <div class="input-group" style="margin-left: 5px; min-width: 400px;">
@@ -27,24 +37,25 @@
   </div>
   <div class="list">
     <ul class="list-group">
-      <li
-        *ngFor="let configuration of filtered$ | async"
-        [routerLink]="configuration.id"
-        routerLinkActive="active"
-        #rla="routerLinkActive"
-        class="list-group-item cursor-pointer"
-        [contextMenu]="cm"
+      <li *ngFor="let configuration of filtered$ | async" [routerLink]="configuration.id" routerLinkActive="active"
+        #rla="routerLinkActive" class="list-group-item cursor-pointer" [contextMenu]="cm"
         [contextMenuSubject]="configuration">
 
         <app-descriptor-display [descriptor]="configuration" [userId]="userId$ | async"></app-descriptor-display>
 
-        <context-menu #cm [disabled]="('CLONE' | accessOnResource:configuration:'CONFIGURATION'| async) === false && ('DELETE' | accessOnResource: configuration: 'CONFIGURATION' | async) === false">
-          <ng-template *ngIf="'CLONE' | accessOnResource:configuration:'CONFIGURATION'| async" contextMenuItem let-configuration (execute)="cloneConfiguration($event.item)" [enabled]="!rla.isActive || (rla.isActive && !(widget.containsUnsavedChanges$() | async))">
+        <context-menu #cm
+          [disabled]="('CLONE' | accessOnResource:configuration:'CONFIGURATION'| async) === false && ('DELETE' | accessOnResource: configuration: 'CONFIGURATION' | async) === false">
+          <ng-template *ngIf="'CLONE' | accessOnResource:configuration:'CONFIGURATION'| async" contextMenuItem
+            let-configuration (execute)="cloneConfiguration($event.item)"
+            [enabled]="!rla.isActive || (rla.isActive && !(widget.containsUnsavedChanges$() | async))">
             <i class="fa fa-files-o"></i>
             Clone Configuration
           </ng-template>
-          <ng-template contextMenuItem divider="true" *ngIf="'DELETE' | accessOnResource: configuration:'CONFIGURATION' | async"></ng-template>
-          <ng-template contextMenuItem let-configuration (execute)="deleteConfiguration($event.item, rla.isActive)" *ngIf="'DELETE' | accessOnResource: configuration:'CONFIGURATION' | async" [enabled]="!rla.isActive || (rla.isActive && !(widget.containsUnsavedChanges$() | async))">
+          <ng-template contextMenuItem divider="true"
+            *ngIf="'DELETE' | accessOnResource: configuration:'CONFIGURATION' | async"></ng-template>
+          <ng-template contextMenuItem let-configuration (execute)="deleteConfiguration($event.item, rla.isActive)"
+            *ngIf="'DELETE' | accessOnResource: configuration:'CONFIGURATION' | async"
+            [enabled]="!rla.isActive || (rla.isActive && !(widget.containsUnsavedChanges$() | async))">
             <i class="fa fa-trash"></i>
             Delete Configuration
           </ng-template>
@@ -53,4 +64,3 @@
     </ul>
   </div>
 </div>
-
