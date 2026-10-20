@@ -44,3 +44,19 @@
   overflow: scroll;
   display: flex;
 }
+
+.node-link {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+
+::ng-deep tree-node-content {
+  display: block;
+  width: 100%;
+}
+
+::ng-deep .node-content-wrapper {
+  display: block;
+  width: 100%;
+}
