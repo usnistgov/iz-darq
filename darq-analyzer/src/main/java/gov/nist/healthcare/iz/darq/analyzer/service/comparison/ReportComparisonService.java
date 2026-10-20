@@ -4,12 +4,19 @@ import gov.nist.healthcare.iz.darq.analyzer.model.analysis.AnalysisReport;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTable;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.DataTableRow;
 import gov.nist.healthcare.iz.darq.analyzer.model.analysis.ReportSectionResult;
-import gov.nist.healthcare.iz.darq.analyzer.model.comparison.*;
+import gov.nist.healthcare.iz.darq.analyzer.model.comparison.ReportComparisonResult;
+import gov.nist.healthcare.iz.darq.analyzer.model.comparison.RowDifferential;
+import gov.nist.healthcare.iz.darq.analyzer.model.comparison.SectionDifferential;
+import gov.nist.healthcare.iz.darq.analyzer.model.comparison.TableDifferential;
+import gov.nist.healthcare.iz.darq.analyzer.model.template.Threshold;
 import gov.nist.healthcare.iz.darq.digest.domain.Field;
 import gov.nist.healthcare.iz.darq.digest.domain.Fraction;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -120,8 +127,7 @@ public class ReportComparisonService {
                     diff.setBasePass(baseRow.isPass());
                     diff.setNewPass(newRow.isPass());
 
-                    // Assuming Threshold has a toString(), getDisplay(), or getValue() method
-                    diff.setThresholdText(baseRow.getThreshold() != null ? baseRow.getThreshold().toString() : "");
+                    diff.setThresholdText(formatThreshold(baseRow.getThreshold()));
 
                     // Assuming Fraction has a way to extract the double/percentage value.
                     // Replace 'extractPercent' with your actual Fraction math (e.g. fraction.getPercent())
@@ -134,6 +140,31 @@ public class ReportComparisonService {
                     return diff;
                 })
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Renders a threshold the way the report UI does, e.g. ">99%" or "<5.5%".
+     */
+    private String formatThreshold(Threshold threshold) {
+        if (threshold == null || threshold.getComparator() == null) {
+            return "";
+        }
+        String symbol;
+        switch (threshold.getComparator()) {
+            case GT:
+                symbol = ">";
+                break;
+            case LT:
+                symbol = "<";
+                break;
+            default:
+                return "";
+        }
+        double value = threshold.getValue();
+        String valueText = value == Math.floor(value) && !Double.isInfinite(value)
+                ? String.valueOf((long) value)
+                : String.valueOf(value);
+        return symbol + valueText + "%";
     }
 
     /**
