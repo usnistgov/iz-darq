@@ -11,7 +11,7 @@
     <artifactId>darq-users</artifactId>
     <properties>
         <qdar.webtool.version>4.1.7</qdar.webtool.version>
-        <qdar.api.version>3.1.4.4</qdar.api.version>
+        <qdar.api.version>3.1.4.5</qdar.api.version>
     </properties>
     <dependencies>
         <dependency>
