@@ -5,7 +5,7 @@
 <table *ngIf="visibleRows.length > 0" class="table table-sm table-striped table-bordered comparison-table">
   <thead>
     <tr>
-      <th class="measure-cell">Measure</th>
+      <th class="measure-cell" *ngFor="let field of identifierFields">{{ identifierFieldLabel(field) }}</th>
       <th class="numeric">Threshold</th>
       <th class="numeric">{{ baseLabel }}</th>
       <th>{{ baseLabel }} Outcome</th>
@@ -18,7 +18,7 @@
   <tbody>
     <tr *ngFor="let row of visibleRows"
         [ngClass]="{ 'row-changed': row.passStatusChanged && !row.missingInNewReport, 'row-missing': row.missingInNewReport }">
-      <td class="measure-cell">{{ rowIdentifier(row) }}</td>
+      <td class="measure-cell" *ngFor="let field of identifierFields">{{ identifierValue(row, field) }}</td>
       <td class="numeric">{{ row.thresholdText || '-' }}</td>
 
       <ng-container *ngIf="row.missingInNewReport; else presentInBoth">

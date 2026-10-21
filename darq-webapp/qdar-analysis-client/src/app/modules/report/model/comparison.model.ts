@@ -52,6 +52,10 @@ export enum MeasureOutcome {
  */
 export interface IComparisonRow {
   measureName: string;
+  /** Row identifier values keyed by field, one entry per identifier column. */
+  identifier: {
+    [key in Field]?: string;
+  };
   thresholdText: string;
   basePercent: number;
   basePass: boolean;

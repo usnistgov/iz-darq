@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Field} from '../../report-template/model/analysis.values';
+import {Field, fieldDisplayName} from '../../report-template/model/analysis.values';
 import {Labelizer} from '../../shared/services/values.service';
 import {
   IComparisonRow,
@@ -39,6 +39,43 @@ export class ReportComparisonService {
   }
 
   /**
+   * Identifier values of a row, keyed by field, resolved through the labelizer.
+   */
+  rowIdentifierValues(row: IRowDifferential, labelizer: Labelizer): { [key in Field]?: string } {
+    if (!row.rowIdentifier) {
+      return {};
+    }
+    return Object.keys(row.rowIdentifier).reduce((values, field) => {
+      const value = row.rowIdentifier[field];
+      return {
+        ...values,
+        [field]: labelizer ? labelizer.for(field as Field, value) : value,
+      };
+    }, {});
+  }
+
+  /**
+   * The identifier fields used by a table, in the order they first appear. Each one
+   * becomes its own column so the measure reads like the analysis report display.
+   */
+  identifierFields(table: ITableDifferential): Field[] {
+    return (table && table.rowDifferentials || []).reduce((fields, row) => {
+      const rowFields = Object.keys(row.rowIdentifier || {}) as Field[];
+      return [...fields, ...rowFields.filter((field) => fields.indexOf(field) === -1)];
+    }, [] as Field[]);
+  }
+
+  /**
+   * Human readable column header for an identifier field, e.g. PROVIDER -> Reporting Group.
+   */
+  identifierFieldLabel(field: Field): string {
+    const name = fieldDisplayName[field] || field;
+    return name.split('_')
+      .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+      .join(' ');
+  }
+
+  /**
    * A measure improves when it goes from failing to passing, and worsens on the
    * reverse transition. This mirrors the outcome logic used for the CSV export.
    */
@@ -63,6 +100,7 @@ export class ReportComparisonService {
   toComparisonRow(table: ITableDifferential, row: IRowDifferential, labelizer: Labelizer): IComparisonRow {
     return {
       measureName: this.measureName(table, row, labelizer),
+      identifier: this.rowIdentifierValues(row, labelizer),
       thresholdText: row.thresholdText,
       basePercent: row.basePercent,
       basePass: row.basePass,

@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Field} from '../../../report-template/model/analysis.values';
 import {Labelizer} from '../../../shared/services/values.service';
 import {IComparisonRow, ITableDifferential, MeasureOutcome} from '../../model/comparison.model';
 import {ReportComparisonService} from '../../services/report-comparison.service';
@@ -12,6 +13,8 @@ export class ComparisonTableComponent implements OnInit {
 
   outcomes = MeasureOutcome;
   rows: IComparisonRow[] = [];
+  // One column per row identifier field (Reporting Group, Detection Type, ...)
+  identifierFields: Field[] = [];
 
   @Input()
   baseLabel: string;
@@ -50,8 +53,10 @@ export class ComparisonTableComponent implements OnInit {
   buildRows() {
     if (!this.ptable) {
       this.rows = [];
+      this.identifierFields = [];
       return;
     }
+    this.identifierFields = this.comparisonService.identifierFields(this.ptable);
     this.rows = (this.ptable.rowDifferentials || [])
       .map((row) => this.comparisonService.toComparisonRow(this.ptable, row, this.plabelizer));
   }
@@ -60,14 +65,12 @@ export class ComparisonTableComponent implements OnInit {
     return this.changesOnly ? this.rows.filter((row) => this.comparisonService.rowHasChange(row)) : this.rows;
   }
 
-  rowIdentifier(row: IComparisonRow): string {
-    // The caption is already shown as the table header, only the identifier varies per row
-    const caption = this.ptable && this.ptable.tableCaption ? this.ptable.tableCaption : '';
-    if (caption && row.measureName.startsWith(caption)) {
-      const rest = row.measureName.substring(caption.length).replace(/^\s*—\s*/, '');
-      return rest || caption;
-    }
-    return row.measureName;
+  identifierFieldLabel(field: Field): string {
+    return this.comparisonService.identifierFieldLabel(field);
+  }
+
+  identifierValue(row: IComparisonRow, field: Field): string {
+    return (row.identifier && row.identifier[field]) || '-';
   }
 
   ngOnInit(): void {
