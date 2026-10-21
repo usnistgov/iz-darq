@@ -1,4 +1,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideMockStore} from '@ngrx/store/testing';
 
 import {HomeComponent} from './home.component';
 
@@ -8,7 +11,13 @@ describe('HomeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HomeComponent ]
+      // WebContentService fetches the home page content over HTTP
+      imports: [HttpClientTestingModule],
+      declarations: [ HomeComponent ],
+      providers: [
+        provideMockStore({ initialState: {} }),
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
     })
     .compileComponents();
   }));
