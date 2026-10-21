@@ -1,0 +1,23 @@
+.delta {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.delta-positive {
+  color: #17722c;
+}
+
+.delta-negative {
+  color: #b02a37;
+}
+
+.delta-none {
+  color: #6c757d;
+  font-weight: 400;
+}
+
+.delta-missing {
+  color: #b8860b;
+  font-style: italic;
+  white-space: nowrap;
+}

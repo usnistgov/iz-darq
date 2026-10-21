@@ -37,6 +37,13 @@ import {ValuesService} from 'src/app/modules/shared/services/values.service';
 import {FileService} from '../../services/file.service';
 import {selectUserFacilityById} from '../../store/core.selectors';
 import {AdfEditDialogComponent} from '../adf-edit-dialog/adf-edit-dialog.component';
+import {
+  AdfComparisonDialogComponent,
+  IAdfComparisonDialogData
+} from '../adf-comparison-dialog/adf-comparison-dialog.component';
+import {
+  AdfComparisonSummaryDialogComponent
+} from '../adf-comparison-summary-dialog/adf-comparison-summary-dialog.component';
 
 export const ADF_FILE_LIST_EDITOR_METADATA: IEditorMetadata = {
   id: 'ADF_FILE_LIST_EDITOR_METADATA',
@@ -142,6 +149,49 @@ export class FilesListEditorComponent extends DamAbstractEditorComponent impleme
           return of();
         }
       })
+    ).subscribe();
+  }
+
+  /**
+   * Opens the ADF picker, then loads both summaries and shows their differentials.
+   * The comparison itself is computed on the client from the two metadata payloads.
+   */
+  compare(adf: IADFDescriptor) {
+    this.files$.pipe(
+      take(1),
+      flatMap((files) => {
+        const data: IAdfComparisonDialogData = {
+          baseFile: adf,
+          files,
+        };
+        return this.dialog.open(AdfComparisonDialogComponent, { data }).afterClosed().pipe(
+          flatMap((selectedId) => {
+            if (!selectedId) {
+              return EMPTY;
+            }
+            this.store.dispatch(new TurnOnLoader({ blockUI: true }));
+            return combineLatest([
+              this.fileService.getFileMetadata(adf.id),
+              this.fileService.getFileMetadata(selectedId),
+            ]).pipe(
+              take(1),
+              map(([baseMeta, newMeta]) => {
+                this.store.dispatch(new TurnOffLoader(true));
+                this.dialog.open(AdfComparisonSummaryDialogComponent, {
+                  maxWidth: '95vw',
+                  panelClass: 'adf-comparison-panel',
+                  data: { baseMeta, newMeta },
+                });
+              }),
+              catchError((error) => {
+                this.store.dispatch(new TurnOffLoader(true));
+                this.store.dispatch(this.message.actionFromError(error));
+                return throwError(error);
+              })
+            );
+          }),
+        );
+      }),
     ).subscribe();
   }
 

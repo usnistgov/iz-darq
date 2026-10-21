@@ -1,0 +1,41 @@
+<div style="width: 560px;">
+  <h4 mat-dialog-title>Compare ADF</h4>
+  <div mat-dialog-content>
+
+    <div class="base-file">
+      <i class="fa fa-file" style="color: blue; margin-right: 10px;"></i>
+      <span class="file-name">{{ baseFile?.name }}</span>
+      <span class="badge badge-secondary" style="margin-left: 8px;">Base</span>
+    </div>
+
+    <div *ngIf="candidates.length === 0" class="alert alert-warning">
+      There is no other ADF in this list to compare against.
+    </div>
+
+    <div *ngIf="candidates.length > 0" class="form-group">
+      <label for="adfSelector"><strong>Select an ADF to compare against:</strong></label>
+      <select id="adfSelector" class="form-control" [(ngModel)]="selectedFileId" name="adfSelector">
+        <option [ngValue]="undefined" disabled>-- Select an ADF --</option>
+        <option *ngFor="let candidate of candidates" [ngValue]="candidate.file.id">
+          {{ candidate.file.name }}
+          ({{ candidate.file.analysedOn | date:'MM-dd-yyyy HH:mm' }})
+          {{ candidate.compatible ? '' : ' — different tool version' }}
+        </option>
+      </select>
+    </div>
+
+    <div *ngIf="selectionIsIncompatible" class="alert alert-warning" style="margin-top: 10px;">
+      <i class="fa fa-warning"></i>
+      This ADF was produced by a different tool version than the base file. The comparison will still
+      run, but some statistics may not be directly comparable.
+    </div>
+
+  </div>
+  <div mat-dialog-actions style="justify-content: flex-end;">
+    <button class="btn btn-sm btn-secondary" style="margin-right: 5px;" mat-dialog-close>Cancel</button>
+    <button class="btn btn-sm btn-primary" [disabled]="!selectedFileId" (click)="compare()">
+      <i class="fa fa-exchange"></i>
+      Compare
+    </button>
+  </div>
+</div>

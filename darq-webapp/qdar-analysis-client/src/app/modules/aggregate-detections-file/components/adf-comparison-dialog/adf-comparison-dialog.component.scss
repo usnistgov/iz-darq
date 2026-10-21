@@ -1,0 +1,13 @@
+.base-file {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  background-color: #f7f7f7;
+  border: 1px solid #e3e3e3;
+  border-radius: 3px;
+  margin-bottom: 15px;
+
+  .file-name {
+    font-weight: 600;
+  }
+}

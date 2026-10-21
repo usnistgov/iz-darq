@@ -87,6 +87,10 @@
             <i class="fa fa-table"></i>
             Query
           </button>
+          <button class="btn btn-sm btn-dark" style="margin-right: 5px;" (click)="compare(rowData)">
+            <i class="fa fa-exchange"></i>
+            Compare
+          </button>
           <button
             *ngIf="'ANALYSE' | accessOnResource: rowData:'ADF' | async"
             class="btn btn-sm btn-primary"

@@ -1,0 +1,65 @@
+// .page-container is height: 100%, so the host must be a block with a height
+// of its own, otherwise the grid collapses and the page renders empty.
+:host {
+  display: block;
+  height: 100%;
+}
+
+.no-comparison {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 120px;
+  padding: 20px;
+  background-color: #fff;
+  color: #b8860b;
+  font-weight: 600;
+}
+
+.summary-page-title {
+  background-color: white;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.summary-page-content {
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  overflow: scroll;
+  padding: 20px;
+}
+
+.content {
+  width: 100%;
+}
+
+ul {
+  position: absolute;
+}
+
+.adf-pair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .adf-name {
+    font-weight: 600;
+  }
+
+  i {
+    margin: 0 12px;
+  }
+}
+
+th.numeric,
+td.numeric {
+  text-align: right;
+}
+
+.value-cell {
+  color: #495057;
+}

@@ -17,8 +17,17 @@ import {ReportListEditorComponent} from './components/report-list-editor/report-
 import {AdfMergeDialogComponent} from './components/adf-merge-dialog/adf-merge-dialog.component';
 import {AdfEditDialogComponent} from './components/adf-edit-dialog/adf-edit-dialog.component';
 import {MergeJobListEditorComponent} from './components/merge-job-list-editor/merge-job-list-editor.component';
-import {ReportComparisonDialogComponent} from './components/report-comparison-dialog/report-comparison-dialog.component';
+import {
+  ReportComparisonDialogComponent
+} from './components/report-comparison-dialog/report-comparison-dialog.component';
 import {FormsModule} from '@angular/forms';
+import {AdfComparisonSummaryComponent} from './components/adf-comparison-summary/adf-comparison-summary.component';
+import {StatDeltaComponent} from './components/stat-delta/stat-delta.component';
+import {AdfComparisonDialogComponent} from './components/adf-comparison-dialog/adf-comparison-dialog.component';
+import {
+  AdfComparisonSummaryDialogComponent
+} from './components/adf-comparison-summary-dialog/adf-comparison-summary-dialog.component';
+
 @NgModule({
   declarations: [
     AdfUploadComponent,
@@ -33,6 +42,10 @@ import {FormsModule} from '@angular/forms';
     AdfEditDialogComponent,
     MergeJobListEditorComponent,
     ReportComparisonDialogComponent,
+    AdfComparisonSummaryComponent,
+    AdfComparisonDialogComponent,
+    AdfComparisonSummaryDialogComponent,
+    StatDeltaComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +54,14 @@ import {FormsModule} from '@angular/forms';
     DamFrameworkModule,
     FormsModule,
     EffectsModule.forFeature([CoreEffects, WidgetEffects]),
+  ],
+  exports: [
+    AdfComparisonSummaryComponent,
+    StatDeltaComponent,
+  ],
+  entryComponents: [
+    AdfComparisonDialogComponent,
+    AdfComparisonSummaryDialogComponent,
   ]
 })
 export class AggregateDetectionsFileModule { }

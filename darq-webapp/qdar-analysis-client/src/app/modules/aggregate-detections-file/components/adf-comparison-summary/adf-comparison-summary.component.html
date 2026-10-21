@@ -1,0 +1,183 @@
+<div class="no-comparison" *ngIf="!comparison">
+  <i class="fa fa-exclamation-triangle" style="margin-right: 8px;"></i>
+  <span *ngIf="!baseMeta || !newMeta">Waiting for both ADF summaries to load.</span>
+  <span *ngIf="baseMeta && newMeta">These ADFs carry no summary data to compare.</span>
+</div>
+
+<div class="page-container" *ngIf="comparison as cmp">
+  <div class="page-alerts">
+    <dam-alerts-container></dam-alerts-container>
+  </div>
+  <div class="page-title summary-page-title">
+    <ul class="nav nav-pills pull-left" *ngIf="!embedded">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="dashboardRoute$ | async">
+          <h5 class="title-text">
+            <i class="fa fa-chevron-left" style="margin-right: 15px;"></i>
+            <i class="fa fa-database" style="color: crimson;"></i>
+            Dashboard
+          </h5>
+        </a>
+      </li>
+    </ul>
+    <div style="display: flex; flex-direction: column; margin: 0px auto; align-items: center;">
+      <h4 class="title-text title-heading">
+        <i class="fa fa-exchange" style="color: rgb(223, 148, 10);"></i>
+        ADF Comparison [Summary]
+      </h4>
+      <div class="adf-pair">
+        <span class="adf-name">{{ cmp.baseMeta.name }}</span>
+        <i class="fa fa-long-arrow-right"></i>
+        <span class="adf-name">{{ cmp.newMeta.name }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content summary-page-content">
+    <div class="content">
+
+      <div style="flex-grow: 1; margin-bottom: 15px;">
+        <h5>Compared Files</h5>
+        <table class="table table-bordered table-sm table-striped">
+          <thead>
+            <tr>
+              <th style="vertical-align: middle; width: 240px;">Name</th>
+              <th style="vertical-align: middle; width: 150px;">Uploaded On</th>
+              <th style="vertical-align: middle; width: 150px;">Analysed On</th>
+              <th style="vertical-align: middle; width: 100px;">Size</th>
+              <th style="vertical-align: middle; width: 100px;">Facility (IIS)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let meta of [cmp.baseMeta, cmp.newMeta]; let first = first">
+              <td>
+                <i class="fa fa-file" style="color: blue; margin-right: 10px;"></i>
+                <strong>{{ meta.name }}</strong>
+                <span class="badge badge-secondary" style="margin-left: 8px;">{{ first ? 'Base' : 'Compared' }}</span>
+              </td>
+              <td>{{ meta.uploadedOn | date:'MM-dd-yyyy HH:mm' }}</td>
+              <td>{{ meta.analysedOn | date:'MM-dd-yyyy HH:mm' }}</td>
+              <td>{{ meta.size }}</td>
+              <td *ngIf="facilityMap$ | async as facilityMap">{{ facilityMap[meta.facilityId] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="flex-grow: 1; margin-bottom: 15px;">
+        <h5>Command Line Tool Info</h5>
+        <table class="table table-bordered table-sm table-striped">
+          <thead>
+            <tr>
+              <th style="width: 250px;">Label</th>
+              <th>{{ cmp.baseMeta.name }}</th>
+              <th>{{ cmp.newMeta.name }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th style="width: 250px;">Version</th>
+              <td>{{ cmp.baseMeta.version ? 'v' + cmp.baseMeta.version : 'pre-1.5.0' }}</td>
+              <td>{{ cmp.newMeta.version ? 'v' + cmp.newMeta.version : 'pre-1.5.0' }}</td>
+            </tr>
+            <tr *ngIf="cmp.baseMeta.build || cmp.newMeta.build">
+              <th style="width: 250px;">Build</th>
+              <td>{{ cmp.baseMeta.build }}</td>
+              <td>{{ cmp.newMeta.build }}</td>
+            </tr>
+            <tr *ngIf="cmp.baseMeta.mqeVersion || cmp.newMeta.mqeVersion">
+              <th style="width: 250px;">Mqe Version</th>
+              <td>{{ cmp.baseMeta.mqeVersion }}</td>
+              <td>{{ cmp.newMeta.mqeVersion }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr>
+      <div style="display: flex; width: 100%; justify-content: stretch;">
+        <div style="flex-grow: 1; margin-right: 5px;">
+          <h5>General Counts</h5>
+          <table class="table table-bordered table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Label</th>
+                <th class="numeric">{{ cmp.baseMeta.name }}</th>
+                <th class="numeric">{{ cmp.newMeta.name }}</th>
+                <th class="numeric">Difference</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let stat of cmp.counts">
+                <td>{{ stat.label }}</td>
+                <td class="numeric value-cell">{{ stat.missingInBase ? '-' : (stat.base | number:'1.0-2') }}</td>
+                <td class="numeric value-cell">{{ stat.missingInNew ? '-' : (stat.new | number:'1.0-2') }}</td>
+                <td class="numeric"><app-stat-delta [value]="stat"></app-stat-delta></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="flex-grow: 1; margin-left: 5px;">
+          <h5>Age Groups</h5>
+          <table class="table table-bordered table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Range</th>
+                <th class="numeric">{{ cmp.baseMeta.name }}</th>
+                <th class="numeric">{{ cmp.newMeta.name }}</th>
+                <th class="numeric">Difference</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ageGroup of cmp.ageGroups">
+                <td>{{ agService.getAgeGroupLabel(ageGroup.range) }}</td>
+                <td class="numeric value-cell">{{ ageGroup.missingInBase ? '-' : (ageGroup.base | number) }}</td>
+                <td class="numeric value-cell">{{ ageGroup.missingInNew ? '-' : (ageGroup.new | number) }}</td>
+                <td class="numeric"><app-stat-delta [value]="ageGroup"></app-stat-delta></td>
+              </tr>
+              <tr>
+                <td>+</td>
+                <td class="numeric value-cell">{{ cmp.outOfRange.missingInBase ? '-' : (cmp.outOfRange.base | number) }}</td>
+                <td class="numeric value-cell">{{ cmp.outOfRange.missingInNew ? '-' : (cmp.outOfRange.new | number) }}</td>
+                <td class="numeric"><app-stat-delta [value]="cmp.outOfRange"></app-stat-delta></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <hr>
+      <h5>Extract Percentages</h5>
+      <p-table #tte [value]="extractItems" [globalFilterFields]="['label']" [rowHover]="true" [rows]="10"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50, 100]" [paginatorDropdownAppendTo]="'body'"
+        [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [filterDelay]="0">
+        <ng-template pTemplate="caption">
+          <input type="text" pInputText size="50" placeholder="Filter"
+            (input)="tte.filterGlobal($event.target.value, 'contains')" style="width:100%;">
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th [pSortableColumn]="'label'" style="width: 400px;">Element <p-sortIcon field="label"></p-sortIcon></th>
+            <th *ngFor="let column of extractColumns" class="numeric">{{ column.label }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-node>
+          <tr>
+            <td style="width: 350px;">
+              {{ node.label }}
+              <span *ngIf="node.missingInBase" class="badge badge-warning" style="margin-left: 5px;">New</span>
+              <span *ngIf="node.missingInNew" class="badge badge-warning" style="margin-left: 5px;">Removed</span>
+            </td>
+            <td *ngFor="let column of extractColumns" class="numeric">
+              <app-stat-delta [value]="node.columns[column.key]" [percent]="true" [digits]="'1.1-1'"></app-stat-delta>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <div style="margin-bottom: 20px; width: 100%; height: 5px;"></div>
+    </div>
+  </div>
+</div>

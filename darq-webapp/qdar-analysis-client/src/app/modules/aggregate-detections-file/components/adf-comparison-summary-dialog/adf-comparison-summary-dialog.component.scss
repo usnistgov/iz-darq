@@ -1,0 +1,33 @@
+// The Material dialog container is padded and scrollable by default; the
+// comparison summary manages its own layout and scrolling instead.
+:host {
+  display: block;
+}
+
+::ng-deep .adf-comparison-panel .mat-dialog-container {
+  padding: 0;
+  overflow: hidden;
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  height: 88vh;
+  width: 92vw;
+  max-width: 1500px;
+  overflow: hidden;
+}
+
+.dialog-content {
+  flex: 1;
+  overflow: auto;
+  // Needed for the summary's height: 100% grid to resolve inside the flex item
+  min-height: 0;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 15px;
+  border-top: 1px solid #e3e3e3;
+}

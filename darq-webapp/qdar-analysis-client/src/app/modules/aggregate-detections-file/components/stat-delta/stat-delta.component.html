@@ -1,0 +1,10 @@
+<span *ngIf="incomparable" class="delta-missing" [pTooltip]="value?.missingInBase ? 'Absent from the base ADF' : 'Absent from the compared ADF'">
+  <i class="fa fa-minus-circle"></i>
+  N/A
+</span>
+
+<span *ngIf="!incomparable"
+      class="delta"
+      [ngClass]="{ 'delta-positive': positive, 'delta-negative': negative, 'delta-none': !positive && !negative }">
+  <ng-container *ngIf="positive">+</ng-container>{{ delta | number:digits }}<ng-container *ngIf="percent">%</ng-container>
+</span>
