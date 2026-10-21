@@ -138,8 +138,10 @@
               </tr>
               <tr>
                 <td>+</td>
-                <td class="numeric value-cell">{{ cmp.outOfRange.missingInBase ? '-' : (cmp.outOfRange.base | number) }}</td>
-                <td class="numeric value-cell">{{ cmp.outOfRange.missingInNew ? '-' : (cmp.outOfRange.new | number) }}</td>
+                <td class="numeric value-cell">{{ cmp.outOfRange.missingInBase ? '-' : (cmp.outOfRange.base | number) }}
+                </td>
+                <td class="numeric value-cell">{{ cmp.outOfRange.missingInNew ? '-' : (cmp.outOfRange.new | number) }}
+                </td>
                 <td class="numeric"><app-stat-delta [value]="cmp.outOfRange"></app-stat-delta></td>
               </tr>
             </tbody>
@@ -171,7 +173,7 @@
               <span *ngIf="node.missingInNew" class="badge badge-warning" style="margin-left: 5px;">Removed</span>
             </td>
             <td *ngFor="let column of extractColumns" class="numeric">
-              <app-stat-delta [value]="node.columns[column.key]" [percent]="true" [digits]="'1.1-1'"></app-stat-delta>
+              <app-stat-delta [value]="node.columns[column.key]" [percent]="true" [digits]="'1.1-2'"></app-stat-delta>
             </td>
           </tr>
         </ng-template>
