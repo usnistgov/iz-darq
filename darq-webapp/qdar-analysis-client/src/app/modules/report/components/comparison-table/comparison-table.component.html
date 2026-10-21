@@ -1,29 +1,124 @@
-<div *ngIf="visibleRows.length === 0" class="no-rows">
+<div *ngIf="rows.length === 0" class="no-rows">
   NO MEASURE TO DISPLAY
 </div>
 
-<table *ngIf="visibleRows.length > 0" class="table table-sm table-striped table-bordered comparison-table">
-  <thead>
+<p-table
+  #ct
+  *ngIf="rows.length > 0"
+  [value]="rows"
+  [rowHover]="true"
+  [globalFilterFields]="searchFields"
+  [resizableColumns]="true"
+  sortMode="multiple"
+  styleClass="comparison-table"
+  [filterDelay]="0">
+
+  <ng-template pTemplate="caption" *ngIf="rows.length > 1">
+    <div class="input-group" style="min-width: 300px;">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa fa-search"></i></span>
+      </div>
+      <input class="form-control" type="text" (input)="ct.filterGlobal($event.target.value, 'contains')"
+             placeholder="Search">
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="header">
     <tr>
-      <th class="measure-cell" *ngFor="let field of identifierFields">{{ identifierFieldLabel(field) }}</th>
-      <th class="numeric">Threshold</th>
-      <th class="numeric">{{ baseLabel }}</th>
-      <th>{{ baseLabel }} Outcome</th>
-      <th class="numeric">{{ newLabel }}</th>
-      <th>{{ newLabel }} Outcome</th>
-      <th class="numeric">% Point Change</th>
-      <th>Measure Outcome</th>
+      <th class="measure-cell" *ngFor="let field of identifierFields"
+          [pSortableColumnDisabled]="rows.length <= 1" [pSortableColumn]="field" pResizableColumn>
+        {{ identifierFieldLabel(field) }}
+        <p-sortIcon *ngIf="rows.length > 1" [field]="field"></p-sortIcon>
+      </th>
+      <th class="numeric" [pSortableColumnDisabled]="rows.length <= 1" pSortableColumn="thresholdText" pResizableColumn>
+        Threshold
+        <p-sortIcon *ngIf="rows.length > 1" field="thresholdText"></p-sortIcon>
+      </th>
+      <th class="numeric" [pSortableColumnDisabled]="rows.length <= 1" pSortableColumn="basePercent" pResizableColumn>
+        {{ baseLabel }}
+        <p-sortIcon *ngIf="rows.length > 1" field="basePercent"></p-sortIcon>
+      </th>
+      <th [pSortableColumnDisabled]="rows.length <= 1" pSortableColumn="basePass" pResizableColumn>
+        {{ baseLabel }} Outcome
+        <p-sortIcon *ngIf="rows.length > 1" field="basePass"></p-sortIcon>
+      </th>
+      <th class="numeric" [pSortableColumnDisabled]="rows.length <= 1" pSortableColumn="newPercent" pResizableColumn>
+        {{ newLabel }}
+        <p-sortIcon *ngIf="rows.length > 1" field="newPercent"></p-sortIcon>
+      </th>
+      <th [pSortableColumnDisabled]="rows.length <= 1" pSortableColumn="newPass" pResizableColumn>
+        {{ newLabel }} Outcome
+        <p-sortIcon *ngIf="rows.length > 1" field="newPass"></p-sortIcon>
+      </th>
+      <th class="numeric" [pSortableColumnDisabled]="rows.length <= 1" pSortableColumn="pointChange" pResizableColumn>
+        % Point Change
+        <p-sortIcon *ngIf="rows.length > 1" field="pointChange"></p-sortIcon>
+      </th>
+      <th [pSortableColumnDisabled]="rows.length <= 1" pSortableColumn="outcome" pResizableColumn>
+        Measure Outcome
+        <p-sortIcon *ngIf="rows.length > 1" field="outcome"></p-sortIcon>
+      </th>
     </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let row of visibleRows"
-        [ngClass]="{ 'row-changed': row.passStatusChanged && !row.missingInNewReport, 'row-missing': row.missingInNewReport }">
-      <td class="measure-cell" *ngFor="let field of identifierFields">{{ identifierValue(row, field) }}</td>
+
+    <tr *ngIf="rows.length > 1">
+      <th *ngFor="let field of identifierFields">
+        <div style="display: flex; align-items: center;">
+          <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active': search.fields[field] }"></i>
+          <input class="form-control form-control-sm" type="text" placeholder="Search Filter"
+                 [(ngModel)]="search.fields[field]"
+                 (ngModelChange)="ct.filter($event, field, 'contains')">
+        </div>
+      </th>
+      <th>
+        <div style="display: flex; align-items: center;">
+          <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active': search.fields.thresholdText }"></i>
+          <input class="form-control form-control-sm" type="text" placeholder="Search Filter"
+                 [(ngModel)]="search.fields.thresholdText"
+                 (ngModelChange)="ct.filter($event, 'thresholdText', 'contains')">
+        </div>
+      </th>
+
+      <th *ngFor="let key of ['basePercent']">
+        <ng-container *ngTemplateOutlet="valueFilter; context: { key: key, dt: ct }"></ng-container>
+      </th>
+      <th>
+        <ng-container *ngTemplateOutlet="passFilter; context: { key: 'basePass', dt: ct }"></ng-container>
+      </th>
+      <th *ngFor="let key of ['newPercent']">
+        <ng-container *ngTemplateOutlet="valueFilter; context: { key: key, dt: ct }"></ng-container>
+      </th>
+      <th>
+        <ng-container *ngTemplateOutlet="passFilter; context: { key: 'newPass', dt: ct }"></ng-container>
+      </th>
+      <th *ngFor="let key of ['pointChange']">
+        <ng-container *ngTemplateOutlet="valueFilter; context: { key: key, dt: ct }"></ng-container>
+      </th>
+      <th>
+        <div style="display: flex; align-items: center;">
+          <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active': search.outcome !== null }"></i>
+          <p-dropdown
+            [options]="outcomeOptions"
+            [autoDisplayFirst]="false"
+            appendTo="body"
+            [showClear]="true"
+            [style]="{ 'flex-grow': '1', 'min-width': 'unset', 'width': '100%' }"
+            [(ngModel)]="search.outcome"
+            (ngModelChange)="filterOutcome(ct)"
+            placeholder="Outcome">
+          </p-dropdown>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-row>
+    <tr [ngClass]="{ 'row-changed': row.passStatusChanged && !row.missingInNewReport, 'row-missing': row.missingInNewReport }">
+      <td class="measure-cell" *ngFor="let field of identifierFields">{{ row[field] || '-' }}</td>
       <td class="numeric">{{ row.thresholdText || '-' }}</td>
 
       <ng-container *ngIf="row.missingInNewReport; else presentInBoth">
         <td class="numeric">{{ row.basePercent | number:'1.2-2' }}%</td>
-        <td [ngClass]="row.basePass ? 'status-met' : 'status-not-met'">{{ row.basePass ? 'Met' : 'Not Met' }}</td>
+        <td [ngClass]="row.basePass ? 'status-met' : 'status-not-met'">{{ row.baseOutcome }}</td>
         <td colspan="4" style="text-align: center;">
           <i class="fa fa-warning" style="color: #b8860b;"></i>
           Missing in {{ newLabel }}
@@ -32,9 +127,9 @@
 
       <ng-template #presentInBoth>
         <td class="numeric">{{ row.basePercent | number:'1.2-2' }}%</td>
-        <td [ngClass]="row.basePass ? 'status-met' : 'status-not-met'">{{ row.basePass ? 'Met' : 'Not Met' }}</td>
+        <td [ngClass]="row.basePass ? 'status-met' : 'status-not-met'">{{ row.baseOutcome }}</td>
         <td class="numeric">{{ row.newPercent | number:'1.2-2' }}%</td>
-        <td [ngClass]="row.newPass ? 'status-met' : 'status-not-met'">{{ row.newPass ? 'Met' : 'Not Met' }}</td>
+        <td [ngClass]="row.newPass ? 'status-met' : 'status-not-met'">{{ row.newOutcome }}</td>
         <td class="numeric">
           {{ row.pointChange > 0 ? '+' : '' }}{{ row.pointChange | number:'1.2-2' }}%
         </td>
@@ -49,5 +144,54 @@
         </td>
       </ng-template>
     </tr>
-  </tbody>
-</table>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td [attr.colspan]="columnCount" style="text-align: left;">
+        No measure matches the current filters
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<ng-template #valueFilter let-key="key" let-dt="dt">
+  <div style="display: flex; align-items: center;">
+    <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active': valueFilterIsSet(key) }"></i>
+    <p-dropdown
+      [options]="comparatorOptions"
+      [autoDisplayFirst]="false"
+      appendTo="body"
+      [(ngModel)]="search.value[key].comparator"
+      (ngModelChange)="filterValue(dt, key)"
+      [style]="{ 'min-width': '80px' }"
+      placeholder="CMP">
+    </p-dropdown>
+    <input pInputText
+           class="form-control form-control-sm"
+           style="margin-left: 5px; width: 70px;"
+           type="number"
+           [(ngModel)]="search.value[key].value"
+           (ngModelChange)="filterValue(dt, key)"
+           placeholder="%">
+    <button class="btn btn-sm btn-danger" style="margin-left: 5px;" (click)="clearValue(dt, key)">
+      <i class="fa fa-trash"></i>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #passFilter let-key="key" let-dt="dt">
+  <div style="display: flex; align-items: center;">
+    <i class="fa fa-filter filter-icon" [ngClass]="{ 'filter-active': search[key] !== null }"></i>
+    <p-dropdown
+      [options]="passOptions"
+      [autoDisplayFirst]="false"
+      appendTo="body"
+      [showClear]="true"
+      [style]="{ 'flex-grow': '1', 'min-width': 'unset', 'width': '100%' }"
+      [(ngModel)]="search[key]"
+      (ngModelChange)="filterPass(dt, key, $event)"
+      placeholder="Value">
+    </p-dropdown>
+  </div>
+</ng-template>

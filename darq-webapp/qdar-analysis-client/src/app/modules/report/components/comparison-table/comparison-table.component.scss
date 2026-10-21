@@ -1,4 +1,4 @@
-.comparison-table {
+::ng-deep .comparison-table {
   margin-bottom: 0;
 
   th {
@@ -9,6 +9,16 @@
   th.numeric {
     text-align: right;
   }
+}
+
+.filter-icon {
+  font-size: 1.2em;
+  margin-right: 5px;
+  color: lightgray;
+}
+
+.filter-active {
+  color: green;
 }
 
 .measure-cell {
@@ -52,4 +62,8 @@
   color: lightgray;
   font-weight: bold;
   text-align: center;
+}
+
+p-dropdown {
+  flex-grow: 1;
 }
