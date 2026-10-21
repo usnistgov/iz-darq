@@ -150,7 +150,23 @@
       </div>
 
       <hr>
-      <h5>Extract Percentages</h5>
+      <div class="extract-heading">
+        <h5 style="margin: 0;">Extract Percentages</h5>
+        <div style="display: flex; align-items: center;">
+          <span *ngIf="changedExtractOnly && hiddenExtractCount > 0" class="hidden-count">
+            {{ hiddenExtractCount }} unchanged hidden
+          </span>
+          <button class="btn btn-sm"
+                  [ngClass]="changedExtractOnly ? 'btn-success' : 'btn-dark'"
+                  (click)="toggleChangedExtractOnly()">
+            <i class="fa fa-filter"></i>
+            {{ changedExtractOnly ? 'Showing Changes Only' : 'Hide Identical' }}
+          </button>
+        </div>
+      </div>
+      <div *ngIf="extractItems.length === 0" class="alert alert-info" style="margin-top: 10px;">
+        Every element has identical percentages in both ADFs.
+      </div>
       <p-table #tte [value]="extractItems" [globalFilterFields]="['label']" [rowHover]="true" [rows]="10"
         [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50, 100]" [paginatorDropdownAppendTo]="'body'"
         [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"

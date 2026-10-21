@@ -153,6 +153,42 @@ export class AdfComparisonService {
   }
 
   /**
+   * True when an extract element differs between the two ADFs on any column.
+   * An element present on only one side counts as a difference, since there is
+   * nothing to match it against.
+   */
+  extractHasChange(item: IExtractDifferential): boolean {
+    if (!item) {
+      return false;
+    }
+    if (item.missingInBase || item.missingInNew) {
+      return true;
+    }
+    return EXTRACT_COLUMNS.some((column) => {
+      const stat = item.columns[column.key];
+      if (!stat) {
+        return false;
+      }
+      // A column absent from both ADFs is not a difference; absent from only
+      // one is. Otherwise compare the values.
+      if (stat.missingInBase && stat.missingInNew) {
+        return false;
+      }
+      if (stat.missingInBase || stat.missingInNew) {
+        return true;
+      }
+      return stat.delta !== 0;
+    });
+  }
+
+  /**
+   * Drops the elements whose percentages are identical across both ADFs.
+   */
+  changedExtractOnly(items: IExtractDifferential[]): IExtractDifferential[] {
+    return (items || []).filter((item) => this.extractHasChange(item));
+  }
+
+  /**
    * Extract percentages are matched on the element key, so elements present in
    * only one of the two ADFs still appear.
    */

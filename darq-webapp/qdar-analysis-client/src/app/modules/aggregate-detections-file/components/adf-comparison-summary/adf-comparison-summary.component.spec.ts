@@ -60,6 +60,26 @@ describe('AdfComparisonSummaryComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Waiting for both ADF summaries');
   });
 
+  it('hides identical elements when the filter is toggled on', () => {
+    const withExtract = (extract: any): any => ({
+      id: 'x', name: 'x',
+      summary: { counts: {}, extract, countByAgeGroup: [], outOfRange: 0 },
+    });
+    component.baseMeta = withExtract({ same: { valued: 90 }, diff: { valued: 80 } });
+    component.newMeta = withExtract({ same: { valued: 90 }, diff: { valued: 85 } });
+
+    expect(component.extractItems.length).toBe(2);
+
+    component.toggleChangedExtractOnly();
+    expect(component.changedExtractOnly).toBe(true);
+    expect(component.extractItems.map((i) => i.label)).toEqual(['diff']);
+    expect(component.hiddenExtractCount).toBe(1);
+
+    component.toggleChangedExtractOnly();
+    expect(component.extractItems.length).toBe(2);
+    expect(component.hiddenExtractCount).toBe(0);
+  });
+
   it('explains itself when both ADFs carry no summary data', () => {
     component.baseMeta = { id: 'a', name: 'a' } as any;
     component.newMeta = { id: 'b', name: 'b' } as any;

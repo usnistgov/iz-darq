@@ -5,6 +5,19 @@
   height: 100%;
 }
 
+.extract-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.hidden-count {
+  color: #6c757d;
+  font-size: 0.9em;
+  margin-right: 10px;
+}
+
 .no-comparison {
   display: flex;
   align-items: center;

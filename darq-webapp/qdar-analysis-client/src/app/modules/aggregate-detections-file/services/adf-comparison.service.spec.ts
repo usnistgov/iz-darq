@@ -130,3 +130,57 @@ describe('AdfComparisonService comparability', () => {
     expect(candidates[1].compatible).toBe(false);
   });
 });
+
+describe('AdfComparisonService extract filtering', () => {
+  let service: AdfComparisonService;
+
+  const meta = (extract: any): any => ({
+    summary: { counts: {}, extract, countByAgeGroup: [], outOfRange: 0 },
+  });
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+    service = TestBed.inject(AdfComparisonService);
+  });
+
+  it('treats an element with identical percentages as unchanged', () => {
+    const items = service.compareExtract(
+      meta({ PID5: { valued: 90, empty: 10 } }),
+      meta({ PID5: { valued: 90, empty: 10 } }),
+    );
+    expect(service.extractHasChange(items[0])).toBe(false);
+  });
+
+  it('treats any differing column as a change', () => {
+    const items = service.compareExtract(
+      meta({ PID5: { valued: 90, empty: 10 } }),
+      meta({ PID5: { valued: 90, empty: 11 } }),
+    );
+    expect(service.extractHasChange(items[0])).toBe(true);
+  });
+
+  it('treats an element present on only one side as a change', () => {
+    const items = service.compareExtract(
+      meta({ PID5: { valued: 90 } }),
+      meta({ PID5: { valued: 90 }, PID7: { valued: 50 } }),
+    );
+    expect(service.extractHasChange(items.find((i) => i.label === 'PID7'))).toBe(true);
+  });
+
+  it('filters out only the identical elements', () => {
+    const items = service.compareExtract(
+      meta({ same: { valued: 90, empty: 10 }, diff: { valued: 80, empty: 20 } }),
+      meta({ same: { valued: 90, empty: 10 }, diff: { valued: 85, empty: 15 } }),
+    );
+    const changed = service.changedExtractOnly(items);
+    expect(changed.map((i) => i.label)).toEqual(['diff']);
+  });
+
+  it('returns an empty list when nothing changed', () => {
+    const items = service.compareExtract(
+      meta({ a: { valued: 1 }, b: { valued: 2 } }),
+      meta({ a: { valued: 1 }, b: { valued: 2 } }),
+    );
+    expect(service.changedExtractOnly(items).length).toBe(0);
+  });
+});

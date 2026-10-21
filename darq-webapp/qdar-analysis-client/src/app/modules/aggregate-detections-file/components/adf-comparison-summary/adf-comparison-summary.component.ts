@@ -20,6 +20,8 @@ export class AdfComparisonSummaryComponent implements OnInit {
   extractColumns = EXTRACT_COLUMNS;
   comparison: IAdfComparison;
   extractItems: IExtractDifferential[] = [];
+  /** When on, elements whose percentages are identical in both ADFs are hidden. */
+  changedExtractOnly = false;
   isAdmin$: Observable<boolean>;
   dashboardRoute$: Observable<string[]>;
   facilityMap$: Observable<Record<string, string>>;
@@ -90,7 +92,24 @@ export class AdfComparisonSummaryComponent implements OnInit {
       return;
     }
     this.comparison = this.comparisonService.compare(this.pbaseMeta, this.pnewMeta);
-    this.extractItems = this.comparison.extract;
+    this.refreshExtractItems();
+  }
+
+  refreshExtractItems() {
+    const all = this.comparison ? this.comparison.extract : [];
+    this.extractItems = this.changedExtractOnly ? this.comparisonService.changedExtractOnly(all) : all;
+  }
+
+  toggleChangedExtractOnly() {
+    this.changedExtractOnly = !this.changedExtractOnly;
+    this.refreshExtractItems();
+  }
+
+  get hiddenExtractCount(): number {
+    if (!this.comparison) {
+      return 0;
+    }
+    return this.comparison.extract.length - this.extractItems.length;
   }
 
   ngOnInit(): void {
