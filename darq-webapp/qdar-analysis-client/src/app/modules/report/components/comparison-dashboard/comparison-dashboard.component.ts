@@ -104,7 +104,7 @@ export class ComparisonDashboardComponent implements OnInit {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'differential_report.csv';
+      a.download = 'differential_analysis_report.csv';
       a.click();
       window.URL.revokeObjectURL(url);
     });

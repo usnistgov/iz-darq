@@ -1,6 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ReportService } from '../../../report/services/report.service';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {ReportService} from '../../../report/services/report.service';
 import {
   ComparisonDashboardComponent,
   IComparisonDashboardData
@@ -58,7 +58,7 @@ export class ReportComparisonDialogComponent implements OnInit {
         };
         this.dialog.open(ComparisonDashboardComponent, {
           data: dialogData,
-          maxWidth: '95vw',
+          maxWidth: '98vw',
           panelClass: 'comparison-dashboard-panel',
         });
       },
@@ -76,7 +76,7 @@ export class ReportComparisonDialogComponent implements OnInit {
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'differential_report.csv';
+          a.download = 'differential_analysis_report.csv';
           a.click();
           window.URL.revokeObjectURL(url);
         },
