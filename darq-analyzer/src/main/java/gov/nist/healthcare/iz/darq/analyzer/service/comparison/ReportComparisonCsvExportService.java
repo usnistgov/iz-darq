@@ -53,7 +53,7 @@ public class ReportComparisonCsvExportService {
                 .append(escape(newReportNickname)).append(CSV_SEPARATOR)
                 .append(escape(newReportNickname + HEADER_OUTCOME_SUFFIX)).append(CSV_SEPARATOR)
                 .append(HEADER_POINT_CHANGE).append(CSV_SEPARATOR)
-                .append(HEADER_MEASURE_OUTCOME).append(CSV_SEPARATOR);
+                .append(HEADER_MEASURE_OUTCOME).append(NEW_LINE);
 //                .append(HEADER_MIN).append(CSV_SEPARATOR)
 //                .append(HEADER_MEAN).append(CSV_SEPARATOR)
 //                .append(HEADER_MAX).append(CSV_SEPARATOR)

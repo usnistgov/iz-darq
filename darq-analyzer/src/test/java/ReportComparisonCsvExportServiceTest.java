@@ -9,7 +9,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ReportComparisonCsvExportServiceTest {
 
@@ -24,7 +25,7 @@ public class ReportComparisonCsvExportServiceTest {
     public void exportToCsv_WithNullResult_GeneratesHeaderOnly() {
         String csv = exportService.exportToCsv(new ReportComparisonResult(), "2023", "2024");
 
-        String expectedHeader = "Measure Code,Measure Name,Threshold,2023,2023 Outcome,2024,2024 Outcome,% Point Change Improvement,Measure Outcome,Min.,Mean,Max.,% of IIS that Pass\n";
+        String expectedHeader = "Measure Code,Measure Name,Threshold,2023,2023 Outcome,2024,2024 Outcome,% Point Change Improvement,Measure Outcome\n";//,Min.,Mean,Max.,% of IIS that Pass\n";
         assertEquals("Should generate only the header line", expectedHeader, csv);
     }
 
