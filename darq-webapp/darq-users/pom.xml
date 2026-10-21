@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>darq-users</artifactId>
     <properties>
-        <qdar.webtool.version>4.1.6</qdar.webtool.version>
+        <qdar.webtool.version>4.1.7</qdar.webtool.version>
         <qdar.api.version>3.1.4.4</qdar.api.version>
     </properties>
     <dependencies>

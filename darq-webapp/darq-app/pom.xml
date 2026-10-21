@@ -9,7 +9,7 @@
     <packaging>war</packaging>
     <artifactId>darq-app</artifactId>
     <properties>
-        <qdar.webtool.version>4.1.6</qdar.webtool.version>
+        <qdar.webtool.version>4.1.7</qdar.webtool.version>
         <mqe.version>2026.8-BETA</mqe.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>MM-dd-yyyy</maven.build.timestamp.format>
