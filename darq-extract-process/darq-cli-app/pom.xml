@@ -3,7 +3,7 @@
     <parent>
         <groupId>gov.nist.healthcare.iz</groupId>
         <artifactId>darq-extract-process</artifactId>
-        <version>3.1.4.4</version>
+        <version>3.1.4.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <properties>
@@ -13,7 +13,7 @@
         <mqe.version>2026.8-BETA</mqe.version>
     </properties>
     <artifactId>darq-cli-app</artifactId>
-    <version>3.1.4.4</version>
+    <version>3.1.4.5</version>
     <dependencies>
         <dependency>
             <groupId>gov.nist.healthcare.iz</groupId>
