@@ -116,14 +116,16 @@ export class ReportListEditorComponent extends DamAbstractEditorComponent implem
   ngOnInit(): void {
   }
 
-  compare(report: IReportDescriptor) {
-    this.reports$.pipe(take(1)).subscribe(reports => {
-      this.dialog.open(ReportComparisonDialogComponent, {
-        data: {
-          baseReport: report,
-          reports: reports
-        }
-      });
+  compare(report: IReportDescriptor, allReports: IReportDescriptor[]) {
+    if (!report.id) {
+      return;
+    }
+
+    this.dialog.open(ReportComparisonDialogComponent, {
+      data: {
+        baseReport: report,
+        reports: allReports || [],
+      }
     });
   }
 

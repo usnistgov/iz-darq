@@ -1,11 +1,6 @@
-<div class="ui-table-dash" >
-  <p-table
-  [value]="reports$ | async"
-  [paginator]="true"
-  [sortField]="'publishDate'"
-  [sortOrder]="-1"
-  [rows]="10"
-  [tableStyleClass]="'table table-sm table-striped'">
+<div class="ui-table-dash">
+  <p-table #dt [value]="reports$ | async" [paginator]="true" [sortField]="'publishDate'" [sortOrder]="-1" [rows]="10"
+    [tableStyleClass]="'table table-sm table-striped'">
     <ng-template pTemplate="header">
       <tr>
         <th style="vertical-align: middle;" pSortableColumn="name">
@@ -43,21 +38,27 @@
         <td><i class="fa fa-user" style="color: blue;"></i> {{rowData.ownerDisplayName}}</td>
         <td>{{rowData.publishDate | date:'MM-dd-yyyy HH:mm' }}</td>
         <td>
-          <div class="badge cursor-pointer" style="background-color: rgb(235, 235, 235); font-size: initial; margin-top: 2px;" [routerLink]="['/', 'report-templates', rowData.template.id ]">
+          <div class="badge cursor-pointer"
+            style="background-color: rgb(235, 235, 235); font-size: initial; margin-top: 2px;"
+            [routerLink]="['/', 'report-templates', rowData.template.id ]">
             <i class="fa fa-object-group" style="color: rgb(2, 224, 121); margin-right: 5px;"></i>
             <app-descriptor-display [descriptor]="rowData.template"></app-descriptor-display>
           </div>
+        </td>
         <td>
           <div style="width: 100%; height: 100%; display: flex; justify-content: flex-end;">
-            <button class="btn btn-sm btn-info" style="margin-right: 5px;" *ngIf="rowData.id" (click)="compare(rowData)">
+            <button class="btn btn-sm btn-info" style="margin-right: 5px;" *ngIf="rowData.id"
+              (click)="compare(rowData, dt.value)">
               <i class="fa fa-exchange"></i>
               Compare
             </button>
-            <button class="btn btn-sm btn-primary"  style="margin-right: 5px;" *ngIf="rowData.id" [routerLink]="['/', 'report', rowData.id ]">
+            <button class="btn btn-sm btn-primary" style="margin-right: 5px;" *ngIf="rowData.id"
+              [routerLink]="['/', 'report', rowData.id ]">
               <i class="fa fa-eye"></i>
               View Report
             </button>
-            <button *ngIf="'DELETE' |  accessOnResource: rowData:'REPORT' | async" class="btn btn-sm btn-danger" (click)="remove(rowData)" >
+            <button *ngIf="'DELETE' |  accessOnResource: rowData:'REPORT' | async" class="btn btn-sm btn-danger"
+              (click)="remove(rowData)">
               <i class="fa fa-trash"></i>
               Delete
             </button>
