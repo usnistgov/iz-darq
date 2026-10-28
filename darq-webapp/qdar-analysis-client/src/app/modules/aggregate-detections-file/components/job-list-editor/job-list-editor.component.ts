@@ -19,6 +19,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Actions } from '@ngrx/effects';
 import { ReportService } from '../../../report/services/report.service';
 import { ReportComparisonDialogComponent } from '../report-comparison-dialog/report-comparison-dialog.component';
+import { ComparisonCandidatesService } from '../../../report/services/comparison-candidates.service';
 export const ANALYSIS_JOB_LIST_EDITOR_METADATA: IEditorMetadata = {
   id: 'ANALYSIS_JOB_LIST_EDITOR_METADATA',
   title: 'Analysis Job List'
@@ -70,6 +71,7 @@ export class JobListEditorComponent extends DamAbstractEditorComponent implement
     private dialog: MatDialog,
     public rtService: ReportTemplateService,
     private reportService: ReportService,
+    private candidatesService: ComparisonCandidatesService,
   ) {
     super(
       ANALYSIS_JOB_LIST_EDITOR_METADATA,
@@ -186,22 +188,20 @@ export class JobListEditorComponent extends DamAbstractEditorComponent implement
   }
 
   compare(job: IAnalysisJob, allJobs: IAnalysisJob[]) {
-    if (!job.reportId) return;
+    if (!job.reportId) {
+      return;
+    }
 
-    const reports = (allJobs || [])
-      .filter(j => j.reportId)
-      .map(j => ({
-        id: j.reportId,
-        template: j.template,
-        name: j.name,
-        publishDate: j.endTime
-      }));
-
-    this.dialog.open(ReportComparisonDialogComponent, {
-      data: {
-        baseReport: { id: job.reportId, template: job.template, name: job.name },
-        reports: reports
-      }
+    this.facilityId$.pipe(take(1)).subscribe((facilityId) => {
+      this.dialog.open(ReportComparisonDialogComponent, {
+        data: {
+          baseReport: this.candidatesService.fromJob(job),
+          reports: (allJobs || [])
+            .filter((j) => j.reportId)
+            .map((j) => this.candidatesService.fromJob(j)),
+          facilityId,
+        }
+      });
     });
   }
 

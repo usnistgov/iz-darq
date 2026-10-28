@@ -1,7 +1,12 @@
-<div style="width: 500px">
-  <h4 mat-dialog-title>Compare Report: {{baseReport?.name}}</h4>
+<div style="width: 550px">
+  <h4 mat-dialog-title>Compare Report: {{ baseReport?.name }}</h4>
   <div mat-dialog-content>
-    <div *ngIf="compatibleReports.length === 0" class="alert alert-warning">
+
+    <div *ngIf="loadingCandidates" class="text-muted" style="margin-bottom: 10px;">
+      <i class="fa fa-spinner fa-spin"></i> Looking for comparable reports...
+    </div>
+
+    <div *ngIf="!loadingCandidates && compatibleReports.length === 0" class="alert alert-warning">
       No compatible reports found for comparison.
     </div>
 
@@ -9,9 +14,12 @@
       <label for="reportSelector">Select a compatible report to compare against:</label>
       <select id="reportSelector" class="form-control" [(ngModel)]="selectedReportId">
         <option *ngFor="let report of compatibleReports" [value]="report.id">
-          {{report.name}} ({{report.publishDate | date:'MM-dd-yyyy HH:mm'}})
+          {{ report.name }} ({{ report.publishDate | date:'MM-dd-yyyy HH:mm' }}) &mdash; {{ report.source }}
         </option>
       </select>
+      <small class="form-text text-muted">
+        Reports are listed from both the published reports and the analysis jobs of this facility.
+      </small>
     </div>
 
     <div *ngIf="error" class="alert alert-danger" style="margin-top: 10px;">

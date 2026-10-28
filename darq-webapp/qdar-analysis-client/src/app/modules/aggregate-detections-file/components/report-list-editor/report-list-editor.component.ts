@@ -16,6 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ReportService } from '../../../report/services/report.service';
 import { Actions } from '@ngrx/effects';
 import { ReportComparisonDialogComponent } from '../report-comparison-dialog/report-comparison-dialog.component';
+import { ComparisonCandidatesService } from '../../../report/services/comparison-candidates.service';
 
 export const REPORT_LIST_EDITOR_METADATA: IEditorMetadata = {
   id: 'REPORT_LIST_EDITOR_METADATA',
@@ -38,6 +39,7 @@ export class ReportListEditorComponent extends DamAbstractEditorComponent implem
     private dialog: MatDialog,
     private helper: RxjsStoreHelperService,
     private reportService: ReportService,
+    private candidatesService: ComparisonCandidatesService,
   ) {
     super(
       REPORT_LIST_EDITOR_METADATA,
@@ -121,12 +123,16 @@ export class ReportListEditorComponent extends DamAbstractEditorComponent implem
       return;
     }
 
-    this.dialog.open(ReportComparisonDialogComponent, {
-      data: {
-        baseReport: report,
-        reports: allReports || [],
-      }
+    this.facilityId$.pipe(take(1)).subscribe((facilityId) => {
+      this.dialog.open(ReportComparisonDialogComponent, {
+        data: {
+          baseReport: this.candidatesService.fromReport(report),
+          reports: (allReports || []).map((r) => this.candidatesService.fromReport(r)),
+          facilityId,
+        }
+      });
     });
   }
+
 
 }
